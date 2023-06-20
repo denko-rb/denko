@@ -14,7 +14,7 @@ button.down do
 end
 ````
 
-Denko doesn't run Ruby on the microcontroller (see the [mruby-denko](#mruby) project). It runs a C++ firmware that exposes as much low-level I/O as possible, so we can use it in Ruby. It becomes a peripheral for your computer.
+Denko doesn't run Ruby on the microcontroller (see the [mruby-dino](#mruby) project). It runs a C++ firmware that exposes as much low-level I/O as possible, so we can use it in Ruby. It becomes a peripheral for your computer.
 
 High-level abstraction in Ruby makes hardware classes easy to implement, with intuitive interfaces. They multitask a single core microcontroller, with thread-safe state, and callbacks for inputs, but no "task" priority. If you need more I/O, integration is seamless. Connect another board and instantiate it in Ruby.
 
@@ -28,14 +28,14 @@ See a full list of supported mircocontroller platforms, interfaces, and peripher
 
 **Note:** If using Ruby in WSL on Windows, you can follow the Mac/Linux instructions, but it is not recommended. Serial (COM port) forwarding isn't currently working on WSL2, which would make it impossible to communicate with the microcontroller. There are workarounds, and you might get it working by switching to WSL1, but the [RubyInstaller for Windows](https://rubyinstaller.org/) and Arduino IDE are recommended instead.
 
-#### 1) Install the Gem
+#### 1. Install the Gem
 ```shell
 gem install denko
 ```
 
 Before using the microcontroller in Ruby, we need to flash it with the denko firmware (or "sketch" in Arduino lingo). This is needed **once** for each board, but future denko versions may need reflashing to add functionality.
 
-#### 2) Install the Arduino IDE OR CLI
+#### 2. Install the Arduino IDE OR CLI
 
 Get the Arduino IDE [here](http://arduino.cc/en/Main/Software) for a graphical interface (recommended for Windows), or use the command line interface from [here](https://github.com/arduino/arduino-cli/releases), or Homebrew.
 
@@ -45,12 +45,12 @@ brew update
 brew install arduino-cli
 ````
 
-#### 3) Install Arduino Dependencies
+#### 3. Install Arduino Dependencies
 Denko uses Arduino cores, which add support for microcontrollers, and a few libraries. Install only the ones for your microcontroller, or install everything. There are no conflcits. Instructions for supported microcontrollers:
   * [Install Dependencies in IDE](DEPS_IDE.md) 
   * [Install Dependencies in CLI](DEPS_CLI.md) 
 
-#### 4) Generate the Arduino Sketch
+#### 4. Generate the Arduino Sketch
 The `denko` command is included with the gem. It will make the Arduino sketch folder for you, and configure it.
 
 **For ATmega boards, Serial over USB:** (Arduino Uno, Nano, Mega, Leonardo, Micro)
@@ -68,6 +68,7 @@ denko sketch serial --target esp8266
 denko sketch wifi --target esp8266 --ssid YOUR_SSID --password YOUR_PASSWORD
 denko sketch wifi --target esp32 --ssid YOUR_SSID --password YOUR_PASSWORD
 ````
+
 **Note:** [This example](examples/connection/tcp.rb) shows how to connect to a board with a TCP socket, but the WiFi & Ethernet sketches fall back to the serial interface when no TCP client is connected.
 
 #### 5a) IDE Flashing
@@ -111,7 +112,7 @@ Most boards have a regular LED on-board. Test it with the [blink](examples/led/b
 
 #### Tutorial
 
-* [Here](tutorial) you will find a beginner-friendly tutorial, that goes through the basics, using commented examples and diagrams. Read the comments and try modifying the code. You will need the following:
+- [Here](tutorial) you will find a beginner-friendly tutorial, that goes through the basics, using commented examples and diagrams. Read the comments and try modifying the code. You will need the following:
   * 1 compatible microcontroller (see [supported hardware](HARDWARE.md))
   * 1 button or momentary switch
   * 1 potentiometer (any value)
@@ -125,26 +126,26 @@ Most boards have a regular LED on-board. Test it with the [blink](examples/led/b
 
 #### Included Examples
 
-* The [examples](examples) folder contains at least one example per supported peripheral, demonstrating its interface, and a few that use multiple peripherals together.
-* Each example should incldue a wiring diagram alongside its code (still incomplete).
+- The [examples](examples) folder contains at least one example per supported peripheral, demonstrating its interface, and a few that use multiple peripherals together.
+- Each example should incldue a wiring diagram alongside its code (still incomplete).
 
 ####  More Examples
 
-* Try [Getting Started with Arduino and Denko](http://tutorials.jumpstartlab.com/projects/arduino/introducing_arduino.html) from [Jumpstart Lab](http://jumpstartlab.com) (_ignore old install instructions_).
-* An example [rails app](https://github.com/denko-rb/denko_rails_example)  using Denko and Pusher.
-* For a Sinatra example, look at the [site](https://github.com/denko-rb/denko_cannon) used to shoot the cannon at RubyConf2012.
+- Try [Getting Started with Arduino and Denko](http://tutorials.jumpstartlab.com/projects/arduino/introducing_arduino.html) from [Jumpstart Lab](http://jumpstartlab.com) (_ignore old install instructions_).
+- An example [rails app](https://github.com/denko-rb/denko_rails_example)  using Denko and Pusher.
+- For a Sinatra example, look at the [site](https://github.com/denko-rb/denko_cannon) used to shoot the cannon at RubyConf2012.
 
 ## Explanatory Talks
 
-* "Arduino the Ruby Way" at RubyConf 2012
-  * [Video by ConFreaks](https://www.youtube.com/watch?v=oUIor6GK-qA)
-  * [Slides on SpeakerDeck](https://speakerdeck.com/austinbv/arduino-the-ruby-way)
+- "Arduino the Ruby Way" at RubyConf 2012
+  - [Video by ConFreaks](https://www.youtube.com/watch?v=oUIor6GK-qA)
+  - [Slides on SpeakerDeck](https://speakerdeck.com/austinbv/arduino-the-ruby-way)
   
 ## mruby Port
 
 A single-board computer plus microcontroller can be a great standalone solution, especially if your project needs the computer anyway. For example, a Raspberry Pi Zero and Arduino Nano combo, running CRuby, Denko and other software.
 
-But what if you want to be _really_ small? Building on the [mruby-esp32](https://github.com/mruby-esp32/mruby-esp32) project, Denko is being ported to run directly on the ESP32 here: [mruby-denko-template](https://github.com/denko-rb/mruby-denko-template).
+But what if you want to be _really_ small? Building on the [mruby-esp32](https://github.com/mruby-esp32/mruby-esp32) project, Denko is being ported to run directly on the ESP32 here: [mruby-dino-template](https://github.com/denko-rb/mruby-dino-template).
 
 ## denko-piboard
 
