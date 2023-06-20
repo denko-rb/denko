@@ -1,4 +1,4 @@
-# Denko 0.13.0 [![Test Status](https://github.com/austinbv/denko/actions/workflows/ruby.yml/badge.svg)](https://github.com/austinbv/denko/actions/workflows/ruby.yml)
+# Denko 0.13.0 [![Test Status](https://github.com/denko-rb/denko/actions/workflows/ruby.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/ruby.yml)
 ### Ruby Meets Microcontrollers
 Denko gives you a high-level Ruby interface to low-level hardware, without writing microcontroller code. Use LEDs, buttons, sensors and more, just as easily as any Ruby object:
 
@@ -131,8 +131,8 @@ Most boards have a regular LED on-board. Test it with the [blink](examples/led/b
 ####  More Examples
 
 * Try [Getting Started with Arduino and Denko](http://tutorials.jumpstartlab.com/projects/arduino/introducing_arduino.html) from [Jumpstart Lab](http://jumpstartlab.com) (_ignore old install instructions_).
-* An example [rails app](https://github.com/austinbv/denko_rails_example)  using Denko and Pusher.
-* For a Sinatra example, look at the [site](https://github.com/austinbv/denko_cannon) used to shoot the cannon at RubyConf2012.
+* An example [rails app](https://github.com/denko-rb/denko_rails_example)  using Denko and Pusher.
+* For a Sinatra example, look at the [site](https://github.com/denko-rb/denko_cannon) used to shoot the cannon at RubyConf2012.
 
 ## Explanatory Talks
 
