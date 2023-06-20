@@ -5,9 +5,10 @@ Gem::Specification.new do |gem|
   gem.authors       = ["vickash, Austinbv"]
   gem.email         = ["mail@vickash.com"]
   gem.description   = %q{GPIO library for Ruby}
-  gem.summary       = %q{GPIO library for Ruby}
+  gem.summary       = %q{Use GPIO, I2C, SPI, UART and more on a connected microcontroller}
   gem.homepage      = 'https://github.com/denko-rb/denko'
   gem.files         = `git ls-files`.split($\)
+  gem.licenses      = ['MIT']
 
   # Copy full submodule contents into the gem when building.
   # Credit:
@@ -37,10 +38,10 @@ Gem::Specification.new do |gem|
   gem.version       = Denko::VERSION
   gem.executables   = ["denko"]
 
-  gem.add_dependency 'rubyserial'
-  gem.add_dependency 'bcd'
+  gem.add_dependency 'rubyserial',  '~> 0.6'
+  gem.add_dependency 'bcd',         '~> 1'
 
-  gem.add_development_dependency 'rake'
-  gem.add_development_dependency 'minitest'
-  gem.add_development_dependency 'simplecov'
+  gem.add_development_dependency 'rake',      '~> 13'
+  gem.add_development_dependency 'minitest',  '~> 5'
+  gem.add_development_dependency 'simplecov', '~> 0.22'
 end
