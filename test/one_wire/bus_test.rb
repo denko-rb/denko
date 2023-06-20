@@ -9,12 +9,12 @@ class OneWireBusTest < MiniTest::Test
     return @part if @part
     # Respond with disabled parasite power.
     board.inject_read_for_pin(1, "1")
-    @part ||= Dino::OneWire::Bus.new(board: board, pin: 1)
+    @part ||= Denko::OneWire::Bus.new(board: board, pin: 1)
   end
 
   def test_initialize
     board.inject_read_for_pin(2, "0")
-    bus2 = Dino::OneWire::Bus.new(board: board, pin: 2)
+    bus2 = Denko::OneWire::Bus.new(board: board, pin: 2)
     assert bus2.parasite_power
   end
 

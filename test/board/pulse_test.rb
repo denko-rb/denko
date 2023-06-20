@@ -8,14 +8,14 @@ class BoardPulseTest < Minitest::Test
   end
 
   def board
-    @board ||= Dino::Board.new(connection)
+    @board ||= Denko::Board.new(connection)
   end
 
   def test_pulse_read
     # Default settings
     mock = MiniTest::Mock.new
     aux = pack(:uint16, [0, 200]) << pack(:uint8, 100)
-    message = Dino::Message.encode command: 9, pin: 4, value: 0b00, aux_message: aux
+    message = Denko::Message.encode command: 9, pin: 4, value: 0b00, aux_message: aux
     
     mock.expect :call, nil, [message]
     board.stub(:write, mock) do
@@ -26,8 +26,8 @@ class BoardPulseTest < Minitest::Test
     # Good options
     mock = MiniTest::Mock.new
     aux = pack(:uint16, [1000, 200]) << pack(:uint8, 160)
-    message1 = Dino::Message.encode command: 9, pin: 4, value: 0b01, aux_message: aux
-    message2 = Dino::Message.encode command: 9, pin: 4, value: 0b11, aux_message: aux
+    message1 = Denko::Message.encode command: 9, pin: 4, value: 0b01, aux_message: aux
+    message2 = Denko::Message.encode command: 9, pin: 4, value: 0b11, aux_message: aux
     
     mock.expect :call, nil, [message1]
     mock.expect :call, nil, [message2]

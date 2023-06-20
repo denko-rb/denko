@@ -6,18 +6,18 @@ class BoardTest < Minitest::Test
   end
 
   def board
-    @board ||= Dino::Board.new(connection)
+    @board ||= Denko::Board.new(connection)
   end
 
   def test_require_a_connection_object
-    assert_raises(Exception) { Dino::Board.new }
+    assert_raises(Exception) { Denko::Board.new }
   end
 
   def test_starts_observing_connection
     io = ConnectionMock.new
-    mock = MiniTest::Mock.new.expect(:call, nil, [Dino::Board])
+    mock = MiniTest::Mock.new.expect(:call, nil, [Denko::Board])
     io.stub(:add_observer, mock) do
-      Dino::Board.new(io)
+      Denko::Board.new(io)
     end
     mock.verify
   end
@@ -25,7 +25,7 @@ class BoardTest < Minitest::Test
   def test_calls_handshake_on_connection
     mock = MiniTest::Mock.new.expect(:call, Constants::ACK)
     connection.stub(:handshake, mock) do
-      Dino::Board.new(connection)
+      Denko::Board.new(connection)
     end
     mock.verify
   end
@@ -50,8 +50,8 @@ class BoardTest < Minitest::Test
     assert_equal 10,   board.analog_read_resolution
     
     mock = MiniTest::Mock.new
-    mock.expect(:call, nil, [Dino::Message.encode(command:96, value:12)])
-    mock.expect(:call, nil, [Dino::Message.encode(command:97, value:12)])
+    mock.expect(:call, nil, [Denko::Message.encode(command:96, value:12)])
+    mock.expect(:call, nil, [Denko::Message.encode(command:97, value:12)])
     board.stub(:write, mock) do
       board.analog_write_resolution = 12
       board.analog_read_resolution = 12
@@ -67,7 +67,7 @@ class BoardTest < Minitest::Test
   
   def test_eeprom
     mock = MiniTest::Mock.new.expect(:call, "test eeprom", [], board: board)
-    Dino::EEPROM::BuiltIn.stub(:new, mock) do
+    Denko::EEPROM::BuiltIn.stub(:new, mock) do
       board.eeprom
     end
     mock.verify
@@ -124,7 +124,7 @@ class BoardTest < Minitest::Test
   end
 
   def test_pin_uniqueness_for_single_pin_components
-    led = Dino::LED.new(board: board, pin:13)
-    assert_raises { Dino::Led.new(board: board, pin: 13) }
+    led = Denko::LED.new(board: board, pin:13)
+    assert_raises { Denko::Led.new(board: board, pin: 13) }
   end
 end

@@ -1,17 +1,17 @@
 require_relative '../test_helper'
 
 class CallbackComponent
-  include Dino::Behaviors::Component
-  include Dino::Behaviors::Callbacks
+  include Denko::Behaviors::Component
+  include Denko::Behaviors::Callbacks
 
   def pre_callback_filter(data)
-    "dino: #{data}"
+    "denko: #{data}"
   end
 end
 
 class CallbackComponentNilFilter
-  include Dino::Behaviors::Component
-  include Dino::Behaviors::Callbacks
+  include Denko::Behaviors::Component
+  include Denko::Behaviors::Callbacks
 
   def pre_callback_filter(data)
     nil
@@ -84,7 +84,7 @@ class CallbacksTest < Minitest::Test
   end
 
   def test_pre_callback_filter_modifies_data
-    cb = MiniTest::Mock.new.expect :call, nil, ["dino: value"]
+    cb = MiniTest::Mock.new.expect :call, nil, ["denko: value"]
     part.add_callback { |x| cb.call(x) }
     part.update("value")
     cb.verify
@@ -92,13 +92,13 @@ class CallbacksTest < Minitest::Test
 
   def test_update_state
     part.update("test")
-    assert_equal "dino: test", part.state
+    assert_equal "denko: test", part.state
   end
 
   def test_no_state_update_when_data_nil
     part.update("test")
     part.update(nil)
-    assert_equal "dino: test", part.state
+    assert_equal "denko: test", part.state
   end
 
   def test_no_callback_with_data_input_nil

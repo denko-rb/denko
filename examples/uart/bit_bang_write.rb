@@ -2,12 +2,12 @@
 # Example that writes to bit bang UART and reads back on hardware UART1. Tested on Arduino Mega.
 #
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
-board = Dino::Board.new(Dino::Connection::Serial.new)
+board = Denko::Board.new(Denko::Connection::Serial.new)
 
-hw_uart = Dino::UART::Hardware.new(board: board, index: 1, baud: 31250)
-bb_uart = Dino::UART::BitBang.new(board: board, pins: { rx:10, tx:11 }, baud: 31250)
+hw_uart = Denko::UART::Hardware.new(board: board, index: 1, baud: 31250)
+bb_uart = Denko::UART::BitBang.new(board: board, pins: { rx:10, tx:11 }, baud: 31250)
 
 bb_uart.write("Hello World!\n")
 

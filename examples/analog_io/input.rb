@@ -5,10 +5,10 @@
 # will exit before any callbacks can be called
 #
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
-board = Dino::Board.new(Dino::Connection::Serial.new)
-sensor = Dino::AnalogIO::Sensor.new(pin: 'A0', board: board)
+board = Denko::Board.new(Denko::Connection::Serial.new)
+sensor = Denko::AnalogIO::Sensor.new(pin: 'A0', board: board)
 
 # Single read with block as callback. Blocks main thread.
 # Callback fires only once then is removed automatically.

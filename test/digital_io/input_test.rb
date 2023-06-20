@@ -6,7 +6,7 @@ class DigitalIOInputTest < Minitest::Test
   end
 
   def part
-    @part ||= Dino::DigitalIO::Input.new(board: board, pin: 14)
+    @part ||= Denko::DigitalIO::Input.new(board: board, pin: 14)
   end
 
   def test_start_listening_immediately

@@ -7,7 +7,7 @@ class BusSimulator
     @devices = []
     device_count.times do
       rando = rand(2**56)
-      crc = Dino::OneWire::Helper.calculate_crc(rando)[0]
+      crc = Denko::OneWire::Helper.calculate_crc(rando)[0]
       crc = crc << 56
       rando = rando & crc
       @devices << { rom: rando, in_search: true }
@@ -96,7 +96,7 @@ class BoardSimulator
 end
 
 # Monkeypatch Bus and Helper to stub in simulations.
-module Dino
+module Denko
   module OneWire
     class BusStub < Bus
       def read_power_supply
@@ -123,7 +123,7 @@ class OneWireEnumeratorTest < Minitest::Test
     # This gets slow with large number of devices.
     bus_sim = BusSimulator.new(20)
     board_sim = BoardSimulator.new(bus_sim)
-    bus = Dino::OneWire::BusStub.new board: BoardMock.new,
+    bus = Denko::OneWire::BusStub.new board: BoardMock.new,
                                      pin: 1,
                                      board_sim: board_sim
     bus.search

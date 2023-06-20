@@ -2,10 +2,10 @@
 # Example using a rotary encoder to control audio output volume on a Mac.
 #
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
-board = Dino::Board.new(Dino::Connection::Serial.new)
-encoder = Dino::DigitalIO::RotaryEncoder.new  board: board,
+board = Denko::Board.new(Denko::Connection::Serial.new)
+encoder = Denko::DigitalIO::RotaryEncoder.new  board: board,
                                               pins:{ clock: 4, data: 5 },
                                               divider: 1,                # (default) read approx every divider ms
                                               steps_per_revolution: 30   # (default)

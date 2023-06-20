@@ -5,17 +5,17 @@
 # Both devices are conected to the same I2C bus.
 #
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
-board = Dino::Board.new(Dino::Connection::Serial.new)
-i2c = Dino::I2C::Bus.new(board: board, pin: :SDA)
+board = Denko::Board.new(Denko::Connection::Serial.new)
+i2c = Denko::I2C::Bus.new(board: board, pin: :SDA)
 
 # Get temperature and humidity every second.
-htu21d = Dino::Sensor::HTU21D.new(bus: i2c)
+htu21d = Denko::Sensor::HTU21D.new(bus: i2c)
 htu21d.temperature.poll(1)
 htu21d.humidity.poll(1)
 
-oled = Dino::Display::SSD1306.new(bus: i2c, rotate: true)
+oled = Denko::Display::SSD1306.new(bus: i2c, rotate: true)
 canvas = oled.canvas
 last_refresh = Time.now
 

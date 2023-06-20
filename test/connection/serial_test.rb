@@ -8,7 +8,7 @@ class SerialConnectionTest < Minitest::Test
   end
 
   def connection
-    @connection ||= Dino::Connection::Serial.new
+    @connection ||= Denko::Connection::Serial.new
   end
 
   def io
@@ -20,7 +20,7 @@ class SerialConnectionTest < Minitest::Test
   def test_connect_with_device_specified
     mock = MiniTest::Mock.new.expect(:call, "SerialMock", ["/dev/ttyACM0", 9600])
     ::Serial.stub(:new, mock) do
-      connection = Dino::Connection::Serial.new(device: "/dev/ttyACM0", baud: 9600)
+      connection = Denko::Connection::Serial.new(device: "/dev/ttyACM0", baud: 9600)
       assert_equal "SerialMock", suppress_output { connection.send(:io) }
     end
     mock.verify
@@ -28,7 +28,7 @@ class SerialConnectionTest < Minitest::Test
 
   def test_connect_with_no_devices
     connection.stub(:tty_devices, []) do
-      assert_raises(Dino::Connection::SerialConnectError) { io }
+      assert_raises(Denko::Connection::SerialConnectError) { io }
     end
   end
 
@@ -37,7 +37,7 @@ class SerialConnectionTest < Minitest::Test
       mock =  MiniTest::Mock.new
       # Raise error for first device
       mock.expect(:call, nil) { raise RubySerial::Error }
-      mock.expect :call, "serial-obj", ['/dev/tty.usbmodem1', Dino::Connection::Serial::BAUD]
+      mock.expect :call, "serial-obj", ['/dev/tty.usbmodem1', Denko::Connection::Serial::BAUD]
 
       ::Serial.stub(:new, mock) do
         assert_equal "serial-obj", io
@@ -53,7 +53,7 @@ class SerialConnectionTest < Minitest::Test
     mock =  MiniTest::Mock.new
     # Raise error for COM1
     mock.expect(:call, nil) { raise RubySerial::Error }
-    mock.expect :call, "serial-obj", ["COM2", Dino::Connection::Serial::BAUD]
+    mock.expect :call, "serial-obj", ["COM2", Denko::Connection::Serial::BAUD]
 
     ::Serial.stub(:new, mock) do
       assert_equal "serial-obj", io

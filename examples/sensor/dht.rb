@@ -2,10 +2,10 @@
 # Example of how to use the DHT class for DHT 11 and DHT 22 sensors.
 #
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
-board = Dino::Board.new(Dino::Connection::Serial.new)
-dht = Dino::Sensor::DHT.new(pin: 5, board: board)
+board = Denko::Board.new(Denko::Connection::Serial.new)
+dht = Denko::Sensor::DHT.new(pin: 5, board: board)
 
 # The DHT class pre-processes raw data from the board. When it reaches callbacks
 # it's already hash of :temperature and :humidity keys, both with Float values.

@@ -14,7 +14,7 @@ class SPIBusTest < Minitest::Test
   end
 
   def part
-    @bus ||= Dino::SPI::Bus.new(board: board)
+    @bus ||= Denko::SPI::Bus.new(board: board)
   end
 
   PIN = 9

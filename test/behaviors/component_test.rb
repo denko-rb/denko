@@ -1,7 +1,7 @@
 require_relative '../test_helper'
 
 class BaseComponent
-  include Dino::Behaviors::Component
+  include Denko::Behaviors::Component
 end
 
 class ComponentTest < Minitest::Test

@@ -20,7 +20,7 @@ class DHTTest < MiniTest::Test
   end
 
   def part
-    @part ||= Dino::Sensor::DHT.new(board: board, pin:PIN)
+    @part ||= Denko::Sensor::DHT.new(board: board, pin:PIN)
   end
   
   # It should tell the board to do a #pulse_read

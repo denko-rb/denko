@@ -6,7 +6,7 @@ class PWMOutTest < Minitest::Test
   end
 
   def part
-    @part ||= Dino::PulseIO::PWMOutput.new(board: board, pin: 14)
+    @part ||= Denko::PulseIO::PWMOutput.new(board: board, pin: 14)
   end
   
   def test_pwm_write

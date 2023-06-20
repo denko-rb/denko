@@ -1,6 +1,6 @@
-# Dino 0.13.0 [![Test Status](https://github.com/austinbv/dino/actions/workflows/ruby.yml/badge.svg)](https://github.com/austinbv/dino/actions/workflows/ruby.yml)
+# Denko 0.13.0 [![Test Status](https://github.com/austinbv/denko/actions/workflows/ruby.yml/badge.svg)](https://github.com/austinbv/denko/actions/workflows/ruby.yml)
 ### Ruby Meets Microcontrollers
-Dino gives you a high-level Ruby interface to low-level hardware, without writing microcontroller code. Use LEDs, buttons, sensors and more, just as easily as any Ruby object:
+Denko gives you a high-level Ruby interface to low-level hardware, without writing microcontroller code. Use LEDs, buttons, sensors and more, just as easily as any Ruby object:
 
 ````ruby
 led.blink 0.5
@@ -14,7 +14,7 @@ button.down do
 end
 ````
 
-Dino doesn't run Ruby on the microcontroller (see the [mruby-dino](#mruby) project). It runs a C++ firmware that exposes as much low-level I/O as possible, so we can use it in Ruby. It becomes a peripheral for your computer.
+Denko doesn't run Ruby on the microcontroller (see the [mruby-denko](#mruby) project). It runs a C++ firmware that exposes as much low-level I/O as possible, so we can use it in Ruby. It becomes a peripheral for your computer.
 
 High-level abstraction in Ruby makes hardware classes easy to implement, with intuitive interfaces. They multitask a single core microcontroller, with thread-safe state, and callbacks for inputs, but no "task" priority. If you need more I/O, integration is seamless. Connect another board and instantiate it in Ruby.
 
@@ -30,10 +30,10 @@ See a full list of supported mircocontroller platforms, interfaces, and peripher
 
 #### 1) Install the Gem
 ```shell
-gem install dino
+gem install denko
 ```
 
-Before using the microcontroller in Ruby, we need to flash it with the dino firmware (or "sketch" in Arduino lingo). This is needed **once** for each board, but future dino versions may need reflashing to add functionality.
+Before using the microcontroller in Ruby, we need to flash it with the denko firmware (or "sketch" in Arduino lingo). This is needed **once** for each board, but future denko versions may need reflashing to add functionality.
 
 #### 2) Install the Arduino IDE OR CLI
 
@@ -46,27 +46,27 @@ brew install arduino-cli
 ````
 
 #### 3) Install Arduino Dependencies
-Dino uses Arduino cores, which add support for microcontrollers, and a few libraries. Install only the ones for your microcontroller, or install everything. There are no conflcits. Instructions for supported microcontrollers:
+Denko uses Arduino cores, which add support for microcontrollers, and a few libraries. Install only the ones for your microcontroller, or install everything. There are no conflcits. Instructions for supported microcontrollers:
   * [Install Dependencies in IDE](DEPS_IDE.md) 
   * [Install Dependencies in CLI](DEPS_CLI.md) 
 
 #### 4) Generate the Arduino Sketch
-The `dino` command is included with the gem. It will make the Arduino sketch folder for you, and configure it.
+The `denko` command is included with the gem. It will make the Arduino sketch folder for you, and configure it.
 
 **For ATmega boards, Serial over USB:** (Arduino Uno, Nano, Mega, Leonardo, Micro)
 ```shell
-dino sketch serial
+denko sketch serial
 ````
 
 **For ESP8266, Serial over USB:**
 ```shell
-dino sketch serial --target esp8266
+denko sketch serial --target esp8266
 ````
 
 **For ESP8266 or ESP32 over WiFi (2.4Ghz and DHCP Only):**
 ```shell
-dino sketch wifi --target esp8266 --ssid YOUR_SSID --password YOUR_PASSWORD
-dino sketch wifi --target esp32 --ssid YOUR_SSID --password YOUR_PASSWORD
+denko sketch wifi --target esp8266 --ssid YOUR_SSID --password YOUR_PASSWORD
+denko sketch wifi --target esp32 --ssid YOUR_SSID --password YOUR_PASSWORD
 ````
 **Note:** [This example](examples/connection/tcp.rb) shows how to connect to a board with a TCP socket, but the WiFi & Ethernet sketches fall back to the serial interface when no TCP client is connected.
 
@@ -83,7 +83,7 @@ dino sketch wifi --target esp32 --ssid YOUR_SSID --password YOUR_PASSWORD
 
 #### 5b) CLI Flashing
 
-* The path output by `dino sketch` earlier is your sketch folder. Keep it handy.
+* The path output by `denko sketch` earlier is your sketch folder. Keep it handy.
 * Connect the board to your computer with a USB cable.
 * Check if the CLI recognizes it:
 
@@ -130,9 +130,9 @@ Most boards have a regular LED on-board. Test it with the [blink](examples/led/b
 
 ####  More Examples
 
-* Try [Getting Started with Arduino and Dino](http://tutorials.jumpstartlab.com/projects/arduino/introducing_arduino.html) from [Jumpstart Lab](http://jumpstartlab.com) (_ignore old install instructions_).
-* An example [rails app](https://github.com/austinbv/dino_rails_example)  using Dino and Pusher.
-* For a Sinatra example, look at the [site](https://github.com/austinbv/dino_cannon) used to shoot the cannon at RubyConf2012.
+* Try [Getting Started with Arduino and Denko](http://tutorials.jumpstartlab.com/projects/arduino/introducing_arduino.html) from [Jumpstart Lab](http://jumpstartlab.com) (_ignore old install instructions_).
+* An example [rails app](https://github.com/austinbv/denko_rails_example)  using Denko and Pusher.
+* For a Sinatra example, look at the [site](https://github.com/austinbv/denko_cannon) used to shoot the cannon at RubyConf2012.
 
 ## Explanatory Talks
 
@@ -142,10 +142,10 @@ Most boards have a regular LED on-board. Test it with the [blink](examples/led/b
   
 ## mruby Port
 
-A single-board computer plus microcontroller can be a great standalone solution, especially if your project needs the computer anyway. For example, a Raspberry Pi Zero and Arduino Nano combo, running CRuby, Dino and other software.
+A single-board computer plus microcontroller can be a great standalone solution, especially if your project needs the computer anyway. For example, a Raspberry Pi Zero and Arduino Nano combo, running CRuby, Denko and other software.
 
-But what if you want to be _really_ small? Building on the [mruby-esp32](https://github.com/mruby-esp32/mruby-esp32) project, Dino is being ported to run directly on the ESP32 here: [mruby-dino-template](https://github.com/dino-rb/mruby-dino-template).
+But what if you want to be _really_ small? Building on the [mruby-esp32](https://github.com/mruby-esp32/mruby-esp32) project, Denko is being ported to run directly on the ESP32 here: [mruby-denko-template](https://github.com/denko-rb/mruby-denko-template).
 
-## dino-piboard
+## denko-piboard
 
-There's an add-on for this gem, [dino-piboard](https://github.com/dino-rb/dino-piboard), in early development, which adds support for the Raspberry Pi's built in GPIO interface as a class-compatible "board". This allows you to connect peripherals directly to the Pi, without a microcontroller, and use the dino peripherals classes as-is.
+There's an add-on for this gem, [denko-piboard](https://github.com/denko-rb/denko-piboard), in early development, which adds support for the Raspberry Pi's built in GPIO interface as a class-compatible "board". This allows you to connect peripherals directly to the Pi, without a microcontroller, and use the denko peripherals classes as-is.

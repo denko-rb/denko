@@ -6,7 +6,7 @@ class BuzzerTest < MiniTest::Test
   end
 
   def part
-    @part ||= Dino::PulseIO::Buzzer.new(board: board, pin:8)
+    @part ||= Denko::PulseIO::Buzzer.new(board: board, pin:8)
   end
 
   def test_low_on_initialize

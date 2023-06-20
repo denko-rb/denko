@@ -6,7 +6,7 @@ class AnalogIOInputTest < Minitest::Test
   end
 
   def part
-    @part ||= Dino::AnalogIO::Input.new(board: board, pin: 14)
+    @part ||= Denko::AnalogIO::Input.new(board: board, pin: 14)
   end
 
   def test__read

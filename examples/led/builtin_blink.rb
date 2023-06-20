@@ -2,10 +2,10 @@
 # Blink example for standard built-in LEDs named :LED_BUILTIN
 #
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
-board = Dino::Board.new(Dino::Connection::Serial.new)
-led = Dino::LED.new(board: board, pin: :LED_BUILTIN)
+board = Denko::Board.new(Denko::Connection::Serial.new)
+led = Denko::LED.new(board: board, pin: :LED_BUILTIN)
 
 led.blink 0.5
 

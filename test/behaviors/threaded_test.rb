@@ -1,8 +1,8 @@
 require_relative '../test_helper'
 
 class ThreadedComponent
-  include Dino::Behaviors::Component
-  include Dino::Behaviors::Threaded
+  include Denko::Behaviors::Component
+  include Denko::Behaviors::Threaded
   def foo(str="test")
     @bar = str
   end
@@ -81,10 +81,10 @@ class ThreadedTest < Minitest::Test
   end
 
   def test_original_method_called_when_interrupts_enabled
-    mock = MiniTest::Mock.new.expect(:call, nil, ["dino"])
+    mock = MiniTest::Mock.new.expect(:call, nil, ["denko"])
     part.stub(:foo, mock) do
       part.enable_interrupts
-      part.foo("dino")
+      part.foo("denko")
     end
     mock.verify
   end

@@ -23,7 +23,7 @@ class SubcomponentsTest < Minitest::Test
   end
 
   def board
-    @board ||= Dino::Board.new(connection)
+    @board ||= Denko::Board.new(connection)
   end
 
   def test_add_remove_pinless

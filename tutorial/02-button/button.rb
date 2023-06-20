@@ -2,10 +2,10 @@
 # Example 2: Using a Button
 #
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
 # Set up the board, connecting with serial over USB.
-board = Dino::Board.new(Dino::Connection::Serial.new)
+board = Denko::Board.new(Denko::Connection::Serial.new)
 
 #
 # Create an object for a momentary button, giving the board, and the pin that
@@ -18,7 +18,7 @@ board = Dino::Board.new(Dino::Connection::Serial.new)
 #
 # See button.pdf in this folder for a hook-up diagram.
 #
-button = Dino::DigitalIO::Button.new(board: board, pin: 7, pullup: true)
+button = Denko::DigitalIO::Button.new(board: board, pin: 7, pullup: true)
 
 #
 # As soon as a Button (or any DigitalInput) is created, the board starts
@@ -54,7 +54,7 @@ button.remove_callbacks
 #
 # We can use them to control the internal LED from example 1.
 #
-led = Dino::LED.new(board: board, pin: 13)
+led = Denko::LED.new(board: board, pin: 13)
 
 button.up   { led.off } 
 button.down { led.on }

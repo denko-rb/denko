@@ -11,13 +11,13 @@ class SevenSegmentLEDTest < MiniTest::Test
   end
 
   def part
-    @part ||= Dino::LED::SevenSegment.new(options)
+    @part ||= Denko::LED::SevenSegment.new(options)
   end
 
   def test_proxies
     segments = [:a, :b, :c, :d, :e, :f, :g]
     segments.each do |segment|
-      assert_equal Dino::DigitalIO::Output, part.proxies[segment].class
+      assert_equal Denko::DigitalIO::Output, part.proxies[segment].class
     end
   end
 

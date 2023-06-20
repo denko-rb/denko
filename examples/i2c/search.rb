@@ -3,7 +3,7 @@
 # devices connected to the bus.
 #
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
 # Method to let the user set I2C pins.
 def enter_pins
@@ -14,7 +14,7 @@ def enter_pins
   [sda.to_i, scl.to_i]
 end
 
-board = Dino::Board.new(Dino::Connection::Serial.new)
+board = Denko::Board.new(Denko::Connection::Serial.new)
 
 # If no board map, ask user to set pins manually.
 unless board.map
@@ -36,7 +36,7 @@ end
 puts "Using I2C interface on pins #{sda} (SDA) and #{scl} (SCL)"
 puts
 
-bus = Dino::I2C::Bus.new(board: board, pin: sda)
+bus = Denko::I2C::Bus.new(board: board, pin: sda)
 bus.search
 
 if bus.found_devices.empty?

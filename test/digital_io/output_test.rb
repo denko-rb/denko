@@ -6,7 +6,7 @@ class DigitalIOOutputTest < Minitest::Test
   end
 
   def part
-    @part ||= Dino::DigitalIO::Output.new(board: board, pin: 14)
+    @part ||= Denko::DigitalIO::Output.new(board: board, pin: 14)
   end
 
   def test_read_state_on_initialize

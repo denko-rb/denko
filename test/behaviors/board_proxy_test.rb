@@ -1,8 +1,8 @@
 require_relative '../test_helper'
 
 class ProxiedComponent
-  include Dino::Behaviors::Component
-  include Dino::Behaviors::BoardProxy
+  include Denko::Behaviors::Component
+  include Denko::Behaviors::BoardProxy
 end
 
 class BoardProxyTest < Minitest::Test

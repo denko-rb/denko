@@ -8,12 +8,12 @@ class APIOneWireTest < Minitest::Test
   end
 
   def board
-    @board ||= Dino::Board.new(connection)
+    @board ||= Denko::Board.new(connection)
   end
   
   def test_one_wire_reset
     board
-    message = Dino::Message.encode command: 41, pin: 1, value: 255
+    message = Denko::Message.encode command: 41, pin: 1, value: 255
     
     mock = MiniTest::Mock.new.expect :call, nil, [message]
     connection.stub(:write, mock) do
@@ -24,7 +24,7 @@ class APIOneWireTest < Minitest::Test
   
   def test_one_wire_search
     board
-    message = Dino::Message.encode command: 42, pin: 1, aux_message: pack(:uint64, 128, max:8)
+    message = Denko::Message.encode command: 42, pin: 1, aux_message: pack(:uint64, 128, max:8)
     
     mock = MiniTest::Mock.new.expect :call, nil, [message]
     connection.stub(:write, mock) do
@@ -37,8 +37,8 @@ class APIOneWireTest < Minitest::Test
     board
     
     # Calculate length and parasite power properly.
-    message1 = Dino::Message.encode command: 43, pin: 1, value: 0b10000000 | 3, aux_message: pack(:uint8, [1,2,3])
-    message2 = Dino::Message.encode command: 43, pin: 1, value: 4, aux_message: pack(:uint8, [1,2,3,4])
+    message1 = Denko::Message.encode command: 43, pin: 1, value: 0b10000000 | 3, aux_message: pack(:uint8, [1,2,3])
+    message2 = Denko::Message.encode command: 43, pin: 1, value: 4, aux_message: pack(:uint8, [1,2,3,4])
     
     mock = MiniTest::Mock.new
     mock.expect :call, nil, [message1]
@@ -58,7 +58,7 @@ class APIOneWireTest < Minitest::Test
   
   def test_one_wire_read
     board
-    message = Dino::Message.encode command: 44, pin: 1, value: 9
+    message = Denko::Message.encode command: 44, pin: 1, value: 9
         
     mock = MiniTest::Mock.new.expect :call, nil, [message]
     connection.stub(:write, mock) do

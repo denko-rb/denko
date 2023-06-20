@@ -1,8 +1,8 @@
 require_relative '../test_helper'
 
 class ReaderComponent
-  include Dino::Behaviors::Component
-  include Dino::Behaviors::Reader
+  include Denko::Behaviors::Component
+  include Denko::Behaviors::Reader
   def _read; end
 end
 
@@ -33,7 +33,7 @@ class ReaderTest < Minitest::Test
 
   def test_include_callbacks
     assert_includes ReaderComponent.ancestors,
-                    Dino::Behaviors::Callbacks
+                    Denko::Behaviors::Callbacks
   end
 
   def test_read_once

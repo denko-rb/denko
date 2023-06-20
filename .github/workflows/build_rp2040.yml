@@ -28,7 +28,7 @@ jobs:
             
         board:
           - fqbn: rp2040:rp2040:rpipicow
-            dino-target: rp2040
+            denko-target: rp2040
             platforms: |
               - name: rp2040:rp2040
                 source-url: https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
@@ -48,7 +48,7 @@ jobs:
       
       - name: Generate
         id: generate
-        run: echo "path=$(./bin/dino sketch ${{ matrix.sketches.name }} --target ${{ matrix.board.dino-target }})" >> $GITHUB_OUTPUT
+        run: echo "path=$(./bin/denko sketch ${{ matrix.sketches.name }} --target ${{ matrix.board.denko-target }})" >> $GITHUB_OUTPUT
 
       - name: Compile Arduino Sketches
         uses: arduino/compile-sketches@v1.0.1

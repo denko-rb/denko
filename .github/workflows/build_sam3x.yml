@@ -28,7 +28,7 @@ jobs:
             
         board:
           - fqbn: arduino:sam:arduino_due_x
-            dino-target: sam3x
+            denko-target: sam3x
             platforms: |
               - name: arduino:sam
             libraries: |
@@ -46,7 +46,7 @@ jobs:
       
       - name: Generate
         id: generate
-        run: echo "path=$(./bin/dino sketch ${{ matrix.sketches.name }} --target ${{ matrix.board.dino-target }})" >> $GITHUB_OUTPUT
+        run: echo "path=$(./bin/denko sketch ${{ matrix.sketches.name }} --target ${{ matrix.board.denko-target }})" >> $GITHUB_OUTPUT
 
       - name: Compile Arduino Sketches
         uses: arduino/compile-sketches@v1.0.1

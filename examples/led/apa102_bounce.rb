@@ -3,7 +3,7 @@
 # changing color each time it returns to position 0.
 #
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
 RED    = [255, 0, 0]
 GREEN  = [0, 255, 0]
@@ -15,11 +15,11 @@ PIXELS = 8
 # Move along the strip and back, one pixel at a time.
 positions = (0..PIXELS-1).to_a + (1..PIXELS-2).to_a.reverse
 
-board = Dino::Board.new(Dino::Connection::Serial.new)
+board = Denko::Board.new(Denko::Connection::Serial.new)
 
 # Use the default hardware SPI bus.
-bus = Dino::SPI::Bus.new(board: board)
-strip = Dino::LED::APA102.new(bus: bus, length: PIXELS)
+bus = Denko::SPI::Bus.new(board: board)
+strip = Denko::LED::APA102.new(bus: bus, length: PIXELS)
 
 loop do
   COLORS.each do |color|

@@ -2,10 +2,10 @@
 # This is an example of how to use the servo class
 #
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
-board = Dino::Board.new(Dino::Connection::Serial.new)
-servo = Dino::Motor::Servo.new(pin: 9, board: board)
+board = Denko::Board.new(Denko::Connection::Serial.new)
+servo = Denko::Motor::Servo.new(pin: 9, board: board)
 
 # Add different angles (in degrees) to the array below to try out your servo.
 # Note: Some servos may not have a full 180 degree sweep.

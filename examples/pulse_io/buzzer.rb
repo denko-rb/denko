@@ -2,10 +2,10 @@
 # Example of playing a melody on a piezoelectric buzzer.
 #
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
-board = Dino::Board.new(Dino::Connection::Serial.new)
-buzzer = Dino::PulseIO::Buzzer.new(board: board, pin: 9)
+board = Denko::Board.new(Denko::Connection::Serial.new)
+buzzer = Denko::PulseIO::Buzzer.new(board: board, pin: 9)
 
 C4 = 262
 D4 = 294

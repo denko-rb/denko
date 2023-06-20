@@ -3,11 +3,11 @@
 :green_heart: Full support :yellow_heart: Partial support :heart: Planned. No support yet :question: Works in theory. Untested in real hardware.
 
 ### Microchip/Atmel Chips in Arduino Products (and Compatibles)
-[![AVR Build Status](https://github.com/austinbv/dino/actions/workflows/build_avr.yml/badge.svg)](https://github.com/austinbv/dino/actions/workflows/build_avr.yml) [![MegaAVR Build Status](https://github.com/austinbv/dino/actions/workflows/build_megaavr.yml/badge.svg)](https://github.com/austinbv/dino/actions/workflows/build_megaavr.yml) [![SAM3X Build Satus](https://github.com/austinbv/dino/actions/workflows/build_sam3x.yml/badge.svg)](https://github.com/austinbv/dino/actions/workflows/build_sam3x.yml) [![SAMD Build Satus](https://github.com/austinbv/dino/actions/workflows/build_samd.yml/badge.svg)](https://github.com/austinbv/dino/actions/workflows/build_samd.yml)
+[![AVR Build Status](https://github.com/austinbv/denko/actions/workflows/build_avr.yml/badge.svg)](https://github.com/austinbv/denko/actions/workflows/build_avr.yml) [![MegaAVR Build Status](https://github.com/austinbv/denko/actions/workflows/build_megaavr.yml/badge.svg)](https://github.com/austinbv/denko/actions/workflows/build_megaavr.yml) [![SAM3X Build Satus](https://github.com/austinbv/denko/actions/workflows/build_sam3x.yml/badge.svg)](https://github.com/austinbv/denko/actions/workflows/build_sam3x.yml) [![SAMD Build Satus](https://github.com/austinbv/denko/actions/workflows/build_samd.yml/badge.svg)](https://github.com/austinbv/denko/actions/workflows/build_samd.yml)
 
 |    Chip        | Status          | Products         | Notes |
 | :--------      | :------:        | :--------------- |------ |
-| ATmega168      | :green_heart:   | Duemilanove, Diecimila, Pro | Features omitted to save memory. `dino targets` for more info.
+| ATmega168      | :green_heart:   | Duemilanove, Diecimila, Pro | Features omitted to save memory. `denko targets` for more info.
 | ATmega328      | :green_heart:   | Uno, Nano, Fio, Pro  |
 | ATmega32u4     | :green_heart:   | Leonardo, Micro, Leonardo ETH, Esplora, LilyPad USB |
 | ATmega1280     | :green_heart:   | Mega |
@@ -27,7 +27,7 @@
 | ATWINC1500            | :question:      | WiFi Shield 101  | Same as above, high memory use, Mega only
 
 ### Espressif Chips with Built-In WiFi
-[![ESP8266 Build Status](https://github.com/austinbv/dino/actions/workflows/build_esp8266.yml/badge.svg)](https://github.com/austinbv/dino/actions/workflows/build_esp8266.yml) [![ESP32 Build Status](https://github.com/austinbv/dino/actions/workflows/build_esp32.yml/badge.svg)](https://github.com/austinbv/dino/actions/workflows/build_esp32.yml)
+[![ESP8266 Build Status](https://github.com/austinbv/denko/actions/workflows/build_esp8266.yml/badge.svg)](https://github.com/austinbv/denko/actions/workflows/build_esp8266.yml) [![ESP32 Build Status](https://github.com/austinbv/denko/actions/workflows/build_esp32.yml/badge.svg)](https://github.com/austinbv/denko/actions/workflows/build_esp32.yml)
 
 |    Chip        | Status          | Board Tested         | Notes |
 | :--------      | :------:        | :---------------     |------ |
@@ -41,7 +41,7 @@
 **Note:** For ESP32 chips using native USB, make sure `USB CDC On Boot` is `Enabled` in the IDE's `Tools` menu. Flashing from the CLI doesn't automatically enable this, so the IDE is recommended for now.
 
 ### Raspberry Pi Microcontrollers
-[![RP2040 Build Status](https://github.com/austinbv/dino/actions/workflows/build_rp2040.yml/badge.svg)](https://github.com/austinbv/dino/actions/workflows/build_rp2040.yml)
+[![RP2040 Build Status](https://github.com/austinbv/denko/actions/workflows/build_rp2040.yml/badge.svg)](https://github.com/austinbv/denko/actions/workflows/build_rp2040.yml)
 
 |    Chip        | Status          | Board Tested          | Notes |
 | :--------      | :------:        | :---------------      |------ |
@@ -50,7 +50,7 @@
 # Single Board Computers
 
 ### Raspberry Pi Single Board Computers
-**Note:** See the [dino-piboard](https://github.com/dino-rb/dino-piboard) extension to this gem. It uses the peripheral classes from this gem, but swaps out `Board` for `PiBoard`, which uses the Raspberry Pi's built-in GPIPO interface. This is still a work-in-progress.
+**Note:** See the [denko-piboard](https://github.com/denko-rb/denko-piboard) extension to this gem. It uses the peripheral classes from this gem, but swaps out `Board` for `PiBoard`, which uses the Raspberry Pi's built-in GPIPO interface. This is still a work-in-progress.
 
 |    Chip        | Status          | Products              | Notes |
 | :--------      | :------:        | :---------------      |------ |

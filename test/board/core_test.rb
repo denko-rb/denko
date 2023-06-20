@@ -8,18 +8,18 @@ class BoardCoreTest < Minitest::Test
   end
 
   def board
-    @board ||= Dino::Board.new(connection)
+    @board ||= Denko::Board.new(connection)
   end
 
   def test_set_pin_mode
     mock = MiniTest::Mock.new
-    mock.expect(:call, nil, [Dino::Message.encode(command: 0, pin: 1, value: 0b000)])
-    mock.expect(:call, nil, [Dino::Message.encode(command: 0, pin: 1, value: 0b010)])
-    mock.expect(:call, nil, [Dino::Message.encode(command: 0, pin: 1, value: 0b100)])
-    mock.expect(:call, nil, [Dino::Message.encode(command: 0, pin: 1, value: 0b001)])
-    mock.expect(:call, nil, [Dino::Message.encode(command: 0, pin: 1, value: 0b011)])
-    mock.expect(:call, nil, [Dino::Message.encode(command: 0, pin: 1, value: 0b101)])
-    mock.expect(:call, nil, [Dino::Message.encode(command: 0, pin: 1, value: 0b111)])  
+    mock.expect(:call, nil, [Denko::Message.encode(command: 0, pin: 1, value: 0b000)])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 0, pin: 1, value: 0b010)])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 0, pin: 1, value: 0b100)])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 0, pin: 1, value: 0b001)])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 0, pin: 1, value: 0b011)])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 0, pin: 1, value: 0b101)])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 0, pin: 1, value: 0b111)])  
 
     board.stub(:write, mock) do
       board.set_pin_mode 1, :output
@@ -37,8 +37,8 @@ class BoardCoreTest < Minitest::Test
 
   def test_digital_write
     mock = MiniTest::Mock.new
-    mock.expect(:call, nil, [Dino::Message.encode(command: 1, pin: 1, value: board.low)])
-    mock.expect(:call, nil, [Dino::Message.encode(command: 1, pin: 1, value: board.high)])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 1, pin: 1, value: board.low)])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 1, pin: 1, value: board.high)])
 
     board.stub(:write, mock) do
       board.digital_write 1, board.low
@@ -51,7 +51,7 @@ class BoardCoreTest < Minitest::Test
 
   def test_digital_read
     mock = MiniTest::Mock.new
-    mock.expect(:call, nil, [Dino::Message.encode(command: 2, pin: 1)])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 2, pin: 1)])
 
     board.stub(:write, mock) do
       board.digital_read 1
@@ -61,9 +61,9 @@ class BoardCoreTest < Minitest::Test
 
   def test_pwm_write
     mock = MiniTest::Mock.new
-    mock.expect(:call, nil, [Dino::Message.encode(command: 3, pin: 1, value: board.low)])
-    mock.expect(:call, nil, [Dino::Message.encode(command: 3, pin: 1, value: board.pwm_high)])
-    mock.expect(:call, nil, [Dino::Message.encode(command: 3, pin: 1, value: 128)])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 3, pin: 1, value: board.low)])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 3, pin: 1, value: board.pwm_high)])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 3, pin: 1, value: 128)])
 
     board.stub(:write, mock) do
       board.pwm_write 1, board.low
@@ -77,9 +77,9 @@ class BoardCoreTest < Minitest::Test
   
   def test_dac_write
     mock = MiniTest::Mock.new
-    mock.expect(:call, nil, [Dino::Message.encode(command: 4, pin: 1, value: board.low)])
-    mock.expect(:call, nil, [Dino::Message.encode(command: 4, pin: 1, value: board.dac_high)])
-    mock.expect(:call, nil, [Dino::Message.encode(command: 4, pin: 1, value: 128)])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 4, pin: 1, value: board.low)])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 4, pin: 1, value: board.dac_high)])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 4, pin: 1, value: 128)])
 
     board.stub(:write, mock) do
       board.dac_write 1, board.low
@@ -93,7 +93,7 @@ class BoardCoreTest < Minitest::Test
 
   def test_analog_read
     mock = MiniTest::Mock.new
-    mock.expect(:call, nil, [Dino::Message.encode(command: 5, pin: 1)])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 5, pin: 1)])
 
     board.stub(:write, mock) do
       board.analog_read 1
@@ -106,10 +106,10 @@ class BoardCoreTest < Minitest::Test
 
     # \x00\x02 corresponds to the default digital divider of 4 (2^2).
     # \x00\x04 corresponds to the default analog divider of 16 (2^4).
-    mock.expect(:call, nil, [Dino::Message.encode(command: 6, pin: 1, value: 0, aux_message: "\x00\x02")])
-    mock.expect(:call, nil, [Dino::Message.encode(command: 6, pin: 1, value: 0, aux_message: "\x01\x04")])
-    mock.expect(:call, nil, [Dino::Message.encode(command: 6, pin: 1, value: 1, aux_message: "\x01\x04")])
-    mock.expect(:call, nil, [Dino::Message.encode(command: 6, pin: 1, value: 1, aux_message: "\x01\x00")])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 6, pin: 1, value: 0, aux_message: "\x00\x02")])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 6, pin: 1, value: 0, aux_message: "\x01\x04")])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 6, pin: 1, value: 1, aux_message: "\x01\x04")])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 6, pin: 1, value: 1, aux_message: "\x01\x00")])
 
     board.stub(:write, mock) do
       board.set_listener(1, :off)
@@ -152,8 +152,8 @@ class BoardCoreTest < Minitest::Test
 
   def test_analog_resolution
     mock = MiniTest::Mock.new
-    mock.expect(:call, nil, [Dino::Message.encode(command: 96, value: 10)])
-    mock.expect(:call, nil, [Dino::Message.encode(command: 97, value: 10)])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 96, value: 10)])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 97, value: 10)])
 
     board.stub(:write, mock) do
       board.analog_write_resolution = 10
@@ -169,7 +169,7 @@ class BoardCoreTest < Minitest::Test
 
   def micro_delay   
     aux = pack(:uint16, [1000])
-    message = Dino::Message.encode command: 99, aux_message: aux
+    message = Denko::Message.encode command: 99, aux_message: aux
     mock = MiniTest::Mock.new.expect :call, nil, [message]
     
     board.stub(:write, mock) do

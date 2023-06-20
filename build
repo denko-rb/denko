@@ -12,7 +12,7 @@ target_file =  build_file.to_s.chomp("build") + "target.yml"
 target = YAML.load_file(target_file)
 
 # Generate sketch.
-bin_file = build_file.to_s.chomp("build") + "bin/dino"
+bin_file = build_file.to_s.chomp("build") + "bin/denko"
 sketch_folder = `#{bin_file} sketch serial --target #{target["name"]}`
 
 # Compile it.

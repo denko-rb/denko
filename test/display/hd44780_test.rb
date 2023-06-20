@@ -6,7 +6,7 @@ class HD44780Test < MiniTest::Test
   end
 
   def part
-    @part ||= Dino::Display::HD44780.new cols: 16, rows: 2,
+    @part ||= Denko::Display::HD44780.new cols: 16, rows: 2,
                                             board: board,
                                             pins: { rs: 8, enable: 9,
                                                     d4: 4, d5: 5, d6: 6, d7: 7 }
@@ -15,7 +15,7 @@ class HD44780Test < MiniTest::Test
   def test_pin_validation
     # Only given one pin out of d0-d3.
     assert_raises do
-      Dino::Display::HD44780.new board: board, pins: { rs: 12, enable: 11,
+      Denko::Display::HD44780.new board: board, pins: { rs: 12, enable: 11,
                                                       d4: 5, d5: 4, d6: 3, d7: 2, d3: 1 }
     
     end 

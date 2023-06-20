@@ -6,7 +6,7 @@ class InputRegisterTest < Minitest::Test
   end
 
   def bus
-    @bus ||= Dino::SPI::Bus.new(board: board)
+    @bus ||= Denko::SPI::Bus.new(board: board)
   end
 
   def options
@@ -14,11 +14,11 @@ class InputRegisterTest < Minitest::Test
   end
 
   def part
-    @part ||= Dino::SPI::InputRegister.new(options)
+    @part ||= Denko::SPI::InputRegister.new(options)
   end
   
   def button
-    @button ||= Dino::DigitalIO::Button.new(board: part, pin: 0)
+    @button ||= Denko::DigitalIO::Button.new(board: part, pin: 0)
   end
 
   def test_state_setup
@@ -63,7 +63,7 @@ class InputRegisterTest < Minitest::Test
     part.update("127")
     assert_equal [1,1,1,1,1,1,1,0], part.state
 
-    new_part = Dino::SPI::InputRegister.new(options.merge(bytes: 2, pin: 10))
+    new_part = Denko::SPI::InputRegister.new(options.merge(bytes: 2, pin: 10))
     new_part.update("127,128")
     assert_equal [1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1], new_part.state
   end
@@ -103,7 +103,7 @@ class InputRegisterTest < Minitest::Test
       button
       
       # Should not make a second listen call to the board.
-      Dino::DigitalIO::Button.new(board: part, pin: 1)
+      Denko::DigitalIO::Button.new(board: part, pin: 1)
     end
     mock.verify
     

@@ -2,10 +2,10 @@
 # This is an example of how to use the ssd class
 #
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
-board = Dino::Board.new(Dino::Connection::Serial.new)
-ssd   = Dino::LED::SevenSegment.new board: board,
+board = Denko::Board.new(Denko::Connection::Serial.new)
+ssd   = Denko::LED::SevenSegment.new board: board,
                                     pins:  { cathode: 10, a: 3, b: 4, c: 5, d: 6, e: 7, f: 8, g: 9 }
 
 # Turn off the ssd on exit

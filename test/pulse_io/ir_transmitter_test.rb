@@ -6,7 +6,7 @@ class IRTransmitterTest < MiniTest::Test
   end
 
   def part
-    @part ||= Dino::PulseIO::IRTransmitter.new(board: board, pin:1)
+    @part ||= Denko::PulseIO::IRTransmitter.new(board: board, pin:1)
   end
   
   def test_pulse_count_validation

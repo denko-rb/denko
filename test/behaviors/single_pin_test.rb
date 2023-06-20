@@ -1,7 +1,7 @@
 require_relative '../test_helper'
 
 class SinglePinComponent
-  include Dino::Behaviors::SinglePin
+  include Denko::Behaviors::SinglePin
 end
 
 class SinglePinTest < Minitest::Test

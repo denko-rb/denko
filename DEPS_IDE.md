@@ -1,4 +1,4 @@
-### Install Arduino Dependencies for Dino (IDE)
+### Install Arduino Dependencies for Denko (IDE)
 
 ### Installing Cores
 

@@ -6,13 +6,13 @@ class ServoMotorTest < MiniTest::Test
   end
 
   def part
-    @part ||= Dino::Motor::Servo.new(board: board, pin:1, min: 0, max: 360)
+    @part ||= Denko::Motor::Servo.new(board: board, pin:1, min: 0, max: 360)
   end
 
   def test_toggle_on_initialize
     mock = MiniTest::Mock.new.expect(:call, nil, [1, :on], min: 544, max: 2400)
     board.stub(:servo_toggle, mock) do
-      Dino::Motor::Servo.new(board: board, pin:1)
+      Denko::Motor::Servo.new(board: board, pin:1)
     end
     mock.verify
   end

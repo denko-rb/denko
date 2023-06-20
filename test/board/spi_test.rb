@@ -11,7 +11,7 @@ class APISPITest < Minitest::Test
   end
 
   def board
-    @board ||= Dino::Board.new(connection)
+    @board ||= Denko::Board.new(connection)
   end
   
   def test_spi_modes
@@ -65,7 +65,7 @@ class APISPITest < Minitest::Test
     header = board.spi_header(bytes, 4, 8000000, 2, :lsbfirst)
     aux = header + pack(:uint8, bytes)
     mock = MiniTest::Mock.new.expect  :call, nil,
-                                      [Dino::Message.encode(command: 26, pin: 3, aux_message: aux)]
+                                      [Denko::Message.encode(command: 26, pin: 3, aux_message: aux)]
     
     board.stub(:write, mock) do
       args = { write: [1,2,3,4], read: 4, bit_order: :lsbfirst, frequency: 8000000, mode: 2 }
@@ -78,7 +78,7 @@ class APISPITest < Minitest::Test
     board
     header = board.spi_header([], 8, 1000000, 0, :lsbfirst)
     mock = MiniTest::Mock.new.expect  :call, nil,
-                                      [Dino::Message.encode(command: 27, pin: 3, aux_message: header)]
+                                      [Denko::Message.encode(command: 27, pin: 3, aux_message: header)]
     
     board.stub(:write, mock) do
       board.spi_listen(3, read: 8, bit_order: :lsbfirst)
@@ -88,7 +88,7 @@ class APISPITest < Minitest::Test
   
   def test_spi_stop
     board
-    mock = MiniTest::Mock.new.expect :call, nil, [Dino::Message.encode(command: 28, pin: 3)]
+    mock = MiniTest::Mock.new.expect :call, nil, [Denko::Message.encode(command: 28, pin: 3)]
     board.stub(:write, mock) do
       board.spi_stop(3)
     end

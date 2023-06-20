@@ -27,7 +27,7 @@ jobs:
             
         board:
           - fqbn: esp32:esp32:esp32doit-devkit-v1
-            dino-target: esp32
+            denko-target: esp32
             platforms: |
               - name: esp32:esp32
                 source-url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
@@ -45,7 +45,7 @@ jobs:
       
       - name: Generate
         id: generate
-        run: echo "path=$(./bin/dino sketch ${{ matrix.sketches.name }} --target ${{ matrix.board.dino-target }})" >> $GITHUB_OUTPUT
+        run: echo "path=$(./bin/denko sketch ${{ matrix.sketches.name }} --target ${{ matrix.board.denko-target }})" >> $GITHUB_OUTPUT
 
       - name: Compile Arduino Sketches
         uses: arduino/compile-sketches@v1.0.1

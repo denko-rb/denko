@@ -2,7 +2,7 @@
 # Example looping the Arduino Zero's DAC back into one of its ADC pins.
 #
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
 #
 # For the Arduino Zero: 'DAC0' = 'A0' = GPIO14.
@@ -13,9 +13,9 @@ require 'dino'
 DAC_PIN = 'DAC0'
 ADC_PIN = 'A5'
 
-board = Dino::Board.new(Dino::Connection::Serial.new)
-dac = Dino::AnalogIO::Output.new(pin: DAC_PIN, board: board)
-adc = Dino::AnalogIO::Input.new(pin: ADC_PIN, board: board)
+board = Denko::Board.new(Denko::Connection::Serial.new)
+dac = Denko::AnalogIO::Output.new(pin: DAC_PIN, board: board)
+adc = Denko::AnalogIO::Input.new(pin: ADC_PIN, board: board)
 
 #
 # Read values should be approximately 4x the written values, since Board#new tries to

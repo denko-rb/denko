@@ -1,8 +1,8 @@
 require_relative '../test_helper'
 
 class PollerComponent
-  include Dino::Behaviors::Component
-  include Dino::Behaviors::Poller
+  include Denko::Behaviors::Component
+  include Denko::Behaviors::Poller
   def _read; end
 end
 
@@ -30,10 +30,10 @@ class PollerTest < Minitest::Test
 
   def test_include_callbacks_and_threaded
     assert_includes PollerComponent.ancestors,
-                    Dino::Behaviors::Callbacks
+                    Denko::Behaviors::Callbacks
 
     assert_includes PollerComponent.ancestors,
-                    Dino::Behaviors::Threaded
+                    Denko::Behaviors::Threaded
   end
 
   def test_call_stop_before_polling

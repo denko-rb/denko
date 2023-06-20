@@ -1,8 +1,8 @@
 #
-# Example using one board's UART as the transport for a second board, also running Dino.
+# Example using one board's UART as the transport for a second board, also running Denko.
 #
 # For this example, board1 (direct) is an Arduino Mega. board2 (passthrough) is an Uno,
-# running Dino, with its UART pins (0, 1) connected to the Mega's UART1 pins (18, 19)
+# running Denko, with its UART pins (0, 1) connected to the Mega's UART1 pins (18, 19)
 #
 # This isn't 100% reliable. The Rx buffer on the direct board is periodically read, so
 # it can potentially overflow, causing data sent from the passthrough board to be lost.
@@ -15,20 +15,20 @@
 #     the direct board's Rx buffer takes 6x the time to fill, compared to 115200 baud.
 #
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
-board1 = Dino::Board.new(Dino::Connection::Serial.new)
+board1 = Denko::Board.new(Denko::Connection::Serial.new)
 
-uart = Dino::UART::Hardware.new(board: board1, index: 1)
-board2 = Dino::Board.new(Dino::Connection::BoardUART.new(uart, baud: 19200))
+uart = Denko::UART::Hardware.new(board: board1, index: 1)
+board2 = Denko::Board.new(Denko::Connection::BoardUART.new(uart, baud: 19200))
 
-led1 = Dino::LED.new(board: board1, pin: 13)
+led1 = Denko::LED.new(board: board1, pin: 13)
 led1.blink(0.02)
 
-led2 = Dino::LED.new(board: board2, pin: 13)
+led2 = Denko::LED.new(board: board2, pin: 13)
 led2.blink(0.02)
 
-sensor = Dino::AnalogIO::Input.new(board: board1, pin: :A0)
+sensor = Denko::AnalogIO::Input.new(board: board1, pin: :A0)
 sensor.listen(4)
 
 sleep

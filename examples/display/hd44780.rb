@@ -2,10 +2,10 @@
 # This example writes "Hello World!" in the display
 #
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
-board = Dino::Board.new(Dino::Connection::Serial.new)
-lcd = Dino::Display::HD44780.new  board: board,
+board = Denko::Board.new(Denko::Connection::Serial.new)
+lcd = Denko::Display::HD44780.new  board: board,
                                   pins: { rs: 8, enable: 9, d4: 4, d5: 5, d6: 6, d7: 7 },
                                   cols: 16,
                                   rows: 2

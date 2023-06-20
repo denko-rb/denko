@@ -2,9 +2,9 @@
 # Example using a BME280 sensor over I2C, for temperature, pressure and humidity.
 #
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
-board = Dino::Board.new(Dino::Connection::Serial.new)
+board = Denko::Board.new(Denko::Connection::Serial.new)
 
 #
 # Default pins for the I2C0 (first) interface on most chips:
@@ -21,12 +21,12 @@ board = Dino::Board.new(Dino::Connection::Serial.new)
 # Only give the SDA pin of the I2C bus. SCL (clock) pin must be 
 # connected for it to work, but we don't need to control it.
 #
-bus = Dino::I2C::Bus.new(board: board, pin: :SDA)
+bus = Denko::I2C::Bus.new(board: board, pin: :SDA)
 
-sensor = Dino::Sensor::BME280.new(bus: bus, address: 0x76)
+sensor = Denko::Sensor::BME280.new(bus: bus, address: 0x76)
 
 # Use A BMP280 with no humidity instead.
-# sensor = Dino::Sensor::BMP280.new(bus: bus, address: 0x76)
+# sensor = Denko::Sensor::BMP280.new(bus: bus, address: 0x76)
 
 # Default reading mode is oneshot ("forced" in datasheet).
 # sensor.oneshot_mode

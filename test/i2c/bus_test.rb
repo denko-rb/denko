@@ -1,7 +1,7 @@
 require_relative '../test_helper'
 
 class I2CPeripheralBase
-  include Dino::I2C::Peripheral
+  include Denko::I2C::Peripheral
 end
 
 class I2CBusTest < MiniTest::Test
@@ -11,7 +11,7 @@ class I2CBusTest < MiniTest::Test
 
   def part
     return @part if @part
-    @part = Dino::I2C::Bus.new(board: board, pin:5)
+    @part = Denko::I2C::Bus.new(board: board, pin:5)
     @part
   end
   

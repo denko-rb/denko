@@ -3,9 +3,9 @@
 # back every 5 seconds.
 #
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
-board = Dino::Board.new(Dino::Connection::Serial.new)
+board = Denko::Board.new(Denko::Connection::Serial.new)
 
 #
 # Default pins for the I2C0 (first) interface on most chips:
@@ -22,7 +22,7 @@ board = Dino::Board.new(Dino::Connection::Serial.new)
 # Only give the SDA pin of the I2C bus. SCL (clock) pin must be 
 # connected for it to work, but we don't need to control it.
 #
-bus = Dino::I2C::Bus.new(board: board, pin: 'A4')
+bus = Denko::I2C::Bus.new(board: board, pin: 'A4')
 
 # Tell the bus to search for devices.
 bus.search
@@ -38,7 +38,7 @@ unless (bus.found_devices.include? 0x68)
   puts "No real time clock found!" unless bus.found_devices.empty?
 else
   puts; puts "Using real time clock at address 0x68"; puts
-  rtc = Dino::RTC::DS3231.new(bus: bus, address: 0x68)
+  rtc = Denko::RTC::DS3231.new(bus: bus, address: 0x68)
   rtc.time = Time.now
 
   5.times do

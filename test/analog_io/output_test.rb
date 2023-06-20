@@ -6,7 +6,7 @@ class AnalogIOOutputTest < Minitest::Test
   end
 
   def part
-    @part ||= Dino::AnalogIO::Output.new(board: board, pin: 14)
+    @part ||= Denko::AnalogIO::Output.new(board: board, pin: 14)
   end
   
   def test_mode_set

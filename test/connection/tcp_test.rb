@@ -2,12 +2,12 @@ require_relative '../test_helper'
 
 class TCPConnectionTest < Minitest::Test
   # Force autoload.
-  Dino::Connection::TCP
+  Denko::Connection::TCP
 
   def test_connect_raises_if_server_unavailable
-    assert_raises(Dino::Connection::TCPConnectError) do
+    assert_raises(Denko::Connection::TCPConnectError) do
       suppress_output do
-        io = Dino::Connection::TCP.new("127.0.0.1", 3466).send(:io)
+        io = Denko::Connection::TCP.new("127.0.0.1", 3466).send(:io)
       end
     end
   end
@@ -16,7 +16,7 @@ class TCPConnectionTest < Minitest::Test
     server = TCPServer.new("127.0.0.1", 3467)
     io = nil
     suppress_output do
-      io = Dino::Connection::TCP.new("127.0.0.1", 3467).send(:io)
+      io = Denko::Connection::TCP.new("127.0.0.1", 3467).send(:io)
     end
     assert_equal TCPSocket, io.class
     server.close
@@ -27,7 +27,7 @@ class TCPConnectionTest < Minitest::Test
     connection = nil
     io = nil
     suppress_output do
-      connection = Dino::Connection::TCP.new("127.0.0.1", 3468)
+      connection = Denko::Connection::TCP.new("127.0.0.1", 3468)
       io = connection.send(:io)
     end
     socket = io

@@ -2,12 +2,12 @@
 # Example showing how to load, modify and save the board's EEPROM.
 #
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
-board = Dino::Board.new(Dino::Connection::Serial.new)
+board = Denko::Board.new(Denko::Connection::Serial.new)
 
 # Initialization automatically gets all EEPROM data from the board.
-# eeprom = Dino::EEPROM::BuiltIn(board: board)
+# eeprom = Denko::EEPROM::BuiltIn(board: board)
 eeprom = board.eeprom
 
 # EEPROM size reported by the board.

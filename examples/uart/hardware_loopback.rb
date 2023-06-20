@@ -2,11 +2,11 @@
 # Example that writes to TX pin of hardware UART1 and reads back on RX pin of same UART.
 #
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
-board = Dino::Board.new(Dino::Connection::Serial.new)
+board = Denko::Board.new(Denko::Connection::Serial.new)
 
-uart = Dino::UART::Hardware.new(board: board, index: 1, baud: 31250)
+uart = Denko::UART::Hardware.new(board: board, index: 1, baud: 31250)
 
 uart.write("Hello World!\nBye World!\n")
 

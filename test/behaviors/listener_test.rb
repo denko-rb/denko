@@ -1,8 +1,8 @@
 require_relative '../test_helper'
 
 class ListenerComponent
-  include Dino::Behaviors::Component
-  include Dino::Behaviors::Listener
+  include Denko::Behaviors::Component
+  include Denko::Behaviors::Listener
 
   def _listen(divider=nil); end
   def _stop_listener; end
@@ -19,7 +19,7 @@ class ListenerTest < Minitest::Test
 
   def test_include_callbacks
     assert_includes ListenerComponent.ancestors,
-                    Dino::Behaviors::Callbacks
+                    Denko::Behaviors::Callbacks
   end
   
   def test_divider_save_and_read

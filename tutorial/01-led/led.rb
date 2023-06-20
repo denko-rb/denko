@@ -2,13 +2,13 @@
 # Example 1: Controlling an LED
 #
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
 # If the board is plugged into a USB port, we can connect with serial over USB.
-connection = Dino::Connection::Serial.new
+connection = Denko::Connection::Serial.new
 
 # Create a new board object, giving the connection.
-board = Dino::Board.new(connection)
+board = Denko::Board.new(connection)
 
 #
 # Create an LED object, giving the board, and the pin that the positive
@@ -24,7 +24,7 @@ board = Dino::Board.new(connection)
 # Note: Some boards use an addressable LED on-board. In those cases, connect an external
 # LED and use its pin for this example instead.
 #
-led = Dino::LED.new(board: board, pin: :LED_BUILTIN)
+led = Denko::LED.new(board: board, pin: :LED_BUILTIN)
 
 # Now we can make it blink.
 puts "Blinking every half second..."

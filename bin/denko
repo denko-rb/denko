@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+# encoding: UTF-8
+
+# Find myself
+require "pathname"
+bin_file = Pathname.new(__FILE__).realpath
+
+# Find everything else
+src_dir = bin_file.to_s.chomp("/bin/denko") + "/src"
+lib_dir = bin_file.to_s.chomp("/bin/denko") + "/lib"
+cli_dir = bin_file.to_s.chomp("/bin/denko") + "/lib/denko_cli"
+working_dir = Dir.pwd
+
+# Make sure denko is in the load path
+$:.unshift lib_dir
+
+# Start the CLI
+require "denko_cli"
+DenkoCLI.start working_dir: working_dir,
+              src_dir: src_dir,
+              cli_dir: cli_dir,
+              args: ARGV

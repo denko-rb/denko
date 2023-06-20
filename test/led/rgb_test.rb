@@ -10,13 +10,13 @@ class RGBLEDTest < MiniTest::Test
   end
 
   def part
-    @part ||= Dino::LED::RGB.new(options)
+    @part ||= Denko::LED::RGB.new(options)
   end
 
   def test_proxies
-    assert_equal Dino::LED::Base, part.red.class
-    assert_equal Dino::LED::Base, part.green.class
-    assert_equal Dino::LED::Base, part.blue.class
+    assert_equal Denko::LED::Base, part.red.class
+    assert_equal Denko::LED::Base, part.green.class
+    assert_equal Denko::LED::Base, part.blue.class
   end
 
   def test_write
@@ -45,7 +45,7 @@ class RGBLEDTest < MiniTest::Test
   end
 
   def test_color_names
-    colors = Dino::LED::RGB::COLORS
+    colors = Denko::LED::RGB::COLORS
 
     mock = MiniTest::Mock.new
     colors.each_value do |color|

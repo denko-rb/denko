@@ -5,93 +5,93 @@ if RUBY_ENGINE == "ruby"
   SimpleCov.start do
     track_files "lib/**/*.rb"
     add_filter "test"
-    add_filter "lib/dino_cli"
+    add_filter "lib/denko_cli"
   end
 end
 
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
 # Touch each class to trigger auto load for simplecov.
 # Analog IO
-Dino::AnalogIO::ADS1118
-Dino::AnalogIO::Input
-Dino::AnalogIO::Output
-Dino::AnalogIO::Potentiometer
-Dino::AnalogIO::Sensor
+Denko::AnalogIO::ADS1118
+Denko::AnalogIO::Input
+Denko::AnalogIO::Output
+Denko::AnalogIO::Potentiometer
+Denko::AnalogIO::Sensor
 
 # Behaviors
 # Not needed, since every behavior will be included by at least one class.
 
 # Board
-# BoardMock inherits from Dino::Board
+# BoardMock inherits from Denko::Board
 
 # Connection
-Dino::Connection::Serial
-Dino::Connection::TCP
+Denko::Connection::Serial
+Denko::Connection::TCP
 
 # Digital IO
-Dino::DigitalIO::Button
-Dino::DigitalIO::Input
-Dino::DigitalIO::Output
-Dino::DigitalIO::Relay
-Dino::DigitalIO::RotaryEncoder
+Denko::DigitalIO::Button
+Denko::DigitalIO::Input
+Denko::DigitalIO::Output
+Denko::DigitalIO::Relay
+Denko::DigitalIO::RotaryEncoder
 
 # Display
-Dino::Display::Canvas
-Dino::Display::HD44780
-Dino::Display::SSD1306
+Denko::Display::Canvas
+Denko::Display::HD44780
+Denko::Display::SSD1306
 
 # EEPROM
-Dino::EEPROM::BuiltIn
+Denko::EEPROM::BuiltIn
 
 # I2C
-Dino::I2C::Bus
-Dino::I2C::Peripheral
+Denko::I2C::Bus
+Denko::I2C::Peripheral
 
 # LED
-Dino::LED::APA102
-Dino::LED::Base
-Dino::LED::RGB
-Dino::LED::SevenSegment
-Dino::LED::WS2812
+Denko::LED::APA102
+Denko::LED::Base
+Denko::LED::RGB
+Denko::LED::SevenSegment
+Denko::LED::WS2812
 
 # Motor
-Dino::Motor::L298
-Dino::Motor::Servo
-Dino::Motor::Stepper
+Denko::Motor::L298
+Denko::Motor::Servo
+Denko::Motor::Stepper
 
 # OneWire
-Dino::OneWire::Bus
-Dino::OneWire::Peripheral
-Dino::OneWire::Helper
+Denko::OneWire::Bus
+Denko::OneWire::Peripheral
+Denko::OneWire::Helper
 
 # Pulse IO
-Dino::PulseIO::Buzzer
-Dino::PulseIO::IRTransmitter
-Dino::PulseIO::PWMOutput
+Denko::PulseIO::Buzzer
+Denko::PulseIO::IRTransmitter
+Denko::PulseIO::PWMOutput
 
 # RTC
-Dino::RTC::DS3231
+Denko::RTC::DS3231
 
 # Sensor
-Dino::Sensor::Temperature
-Dino::Sensor::Humidity
-Dino::Sensor::BME280
-Dino::Sensor::BMP280
-Dino::Sensor::DHT
-Dino::Sensor::DS18B20
-Dino::Sensor::HTU21D
+Denko::Sensor::Temperature
+Denko::Sensor::Humidity
+Denko::Sensor::BME280
+Denko::Sensor::BMP280
+Denko::Sensor::DHT
+Denko::Sensor::DS18B20
+Denko::Sensor::HTU21D
 
 # SPI
-Dino::SPI::BaseRegister
-Dino::SPI::BitBang
-Dino::SPI::Bus
-Dino::SPI::InputRegister
-Dino::SPI::OutputRegister
+Denko::SPI::BaseRegister
+Denko::SPI::BitBang
+Denko::SPI::Bus
+Denko::SPI::InputRegister
+Denko::SPI::OutputRegister
 
 # UART
-Dino::UART::BitBang
+Denko::UART::BitBang
 
 # Helper module to redefine constants quietly.
 module Constants
@@ -139,7 +139,7 @@ class ConnectionMock
   end
 end
 
-class BoardMock < Dino::Board
+class BoardMock < Denko::Board
   def initialize
     super(ConnectionMock.new)
     @read_injection_mutex = Mutex.new
@@ -207,12 +207,12 @@ end
 
 module TestPacker
   def pack(*args, **kwargs)
-    Dino::Message.pack(*args, **kwargs)
+    Denko::Message.pack(*args, **kwargs)
   end
 end
 
 # Speed up one wire tests.
-module Dino
+module Denko
   module OneWire
     class Bus
       def sleep(time)

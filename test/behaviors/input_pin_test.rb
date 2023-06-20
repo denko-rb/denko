@@ -1,7 +1,7 @@
 require_relative '../test_helper'
 
 class InputComponent
-  include Dino::Behaviors::InputPin
+  include Denko::Behaviors::InputPin
 end
 
 class InputPinTest < Minitest::Test

@@ -1,12 +1,12 @@
 require_relative '../test_helper'
 
 class MultiPinComponent
-  include Dino::Behaviors::MultiPin
+  include Denko::Behaviors::MultiPin
   
   def initialize_pins(options={})
     require_pin :one
-    proxy_pin   :two,   Dino::DigitalIO::Output
-    proxy_pin   :maybe, Dino::DigitalIO::Input, optional: true
+    proxy_pin   :two,   Denko::DigitalIO::Output
+    proxy_pin   :maybe, Denko::DigitalIO::Input, optional: true
   end
 end
 
@@ -35,8 +35,8 @@ class MultiPinTest < Minitest::Test
   end
 
   def test_build_proxies
-    assert_equal Dino::DigitalIO::Output, part.proxies[:two].class
-    assert_equal Dino::DigitalIO::Input, part.proxies[:maybe].class
+    assert_equal Denko::DigitalIO::Output, part.proxies[:two].class
+    assert_equal Denko::DigitalIO::Input, part.proxies[:maybe].class
   end
   
   def attr_reader_exists_for_optional_pins

@@ -9,15 +9,15 @@ class OneWirePeripheralTest < MiniTest::Test
     return @bus if @bus
     # Respond with disabled parasite power.
     board.inject_read_for_pin(1, "1")
-    @bus ||= Dino::OneWire::Bus.new(board: board, pin: 1)
+    @bus ||= Denko::OneWire::Bus.new(board: board, pin: 1)
   end
 
   def part
-    @part ||= Dino::OneWire::Peripheral.new(bus: bus, address: 0xFFFFFFFFFFFFFFFF)
+    @part ||= Denko::OneWire::Peripheral.new(bus: bus, address: 0xFFFFFFFFFFFFFFFF)
   end
 
   def test_requires_address
-    assert_raises(ArgumentError) { Dino::OneWire::Peripheral.new(bus: bus) }
+    assert_raises(ArgumentError) { Denko::OneWire::Peripheral.new(bus: bus) }
   end
 
   def test_atomically_locks_the_bus_mutex

@@ -3,13 +3,13 @@
 # :LED_BUILTIN is the data pin for a single on-board WS2812.
 #
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
 WHITE = [255, 255, 255]
 OFF = [0, 0, 0]
 
-board = Dino::Board.new(Dino::Connection::Serial.new)
-strip = Dino::LED::WS2812.new(board: board, pin: :LED_BUILTIN, length: 1)
+board = Denko::Board.new(Denko::Connection::Serial.new)
+strip = Denko::LED::WS2812.new(board: board, pin: :LED_BUILTIN, length: 1)
 
 loop do
   strip[0] = WHITE

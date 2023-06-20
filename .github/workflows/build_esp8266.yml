@@ -27,7 +27,7 @@ jobs:
             
         board:
           - fqbn: esp8266:esp8266:nodemcuv2
-            dino-target: esp8266
+            denko-target: esp8266
             platforms: |
               - name: esp8266:esp8266
                 source-url: https://arduino.esp8266.com/stable/package_esp8266com_index.json
@@ -44,7 +44,7 @@ jobs:
       
       - name: Generate
         id: generate
-        run: echo "path=$(./bin/dino sketch ${{ matrix.sketches.name }} --target ${{ matrix.board.dino-target }})" >> $GITHUB_OUTPUT
+        run: echo "path=$(./bin/denko sketch ${{ matrix.sketches.name }} --target ${{ matrix.board.denko-target }})" >> $GITHUB_OUTPUT
 
       - name: Compile Arduino Sketches
         uses: arduino/compile-sketches@v1.0.1

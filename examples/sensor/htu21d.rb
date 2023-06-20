@@ -2,11 +2,11 @@
 # Example using HTU21D sensor over I2C, for temperature and humidity.
 #
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
-board = Dino::Board.new(Dino::Connection::Serial.new)
-bus = Dino::I2C::Bus.new(board: board, pin: :SDA)
-htu21d = Dino::Sensor::HTU21D.new(bus: bus)
+board = Denko::Board.new(Denko::Connection::Serial.new)
+bus = Denko::I2C::Bus.new(board: board, pin: :SDA)
+htu21d = Denko::Sensor::HTU21D.new(bus: bus)
 
 # Get and set heater state.
 htu21d.heater_on

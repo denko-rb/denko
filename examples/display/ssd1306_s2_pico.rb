@@ -2,16 +2,16 @@
 # Example using the SSD1306 OLED built into the LOLIN ES32-S2 PICO
 #
 require 'bundler/setup'
-require 'dino'
+require 'denko'
 
-board = Dino::Board.new(Dino::Connection::Serial.new)
+board = Denko::Board.new(Denko::Connection::Serial.new)
 
 # The OLED's reset pin on this board isn't tied high. Do it manually.
-reset = Dino::DigitalIO::Output.new(board: board, pin: 18)
+reset = Denko::DigitalIO::Output.new(board: board, pin: 18)
 reset.high
 
-bus = Dino::I2C::Bus.new(board: board, pin: :SDA)
-oled = Dino::Display::SSD1306.new(bus: bus, width: 128, height: 32)
+bus = Denko::I2C::Bus.new(board: board, pin: :SDA)
+oled = Denko::Display::SSD1306.new(bus: bus, width: 128, height: 32)
 canvas = oled.canvas
 
 # Draw some text on the OLED's canvas (a Ruby memory buffer).

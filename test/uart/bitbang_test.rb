@@ -8,7 +8,7 @@ class UARTBitBangTest < MiniTest::Test
   end
 
   def part
-    @part ||= Dino::UART::BitBang.new board: board, pins: { rx: 10, tx: 11 }, baud: 4800
+    @part ||= Denko::UART::BitBang.new board: board, pins: { rx: 10, tx: 11 }, baud: 4800
   end
 
   def test_initialize

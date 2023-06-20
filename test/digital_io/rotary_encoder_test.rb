@@ -6,7 +6,7 @@ class RotaryEncoderTest < MiniTest::Test
   end
 
   def part
-    @part ||= Dino::DigitalIO::RotaryEncoder.new board: board, pins: {data:3, clock: 4}
+    @part ||= Denko::DigitalIO::RotaryEncoder.new board: board, pins: {data:3, clock: 4}
   end
 
   def test_sets_steps_per_revolution
@@ -43,7 +43,7 @@ class RotaryEncoderTest < MiniTest::Test
     refute_empty part.clock.callbacks
     assert_empty part.data.callbacks
         
-    part2 = Dino::DigitalIO::RotaryEncoder.new board: board, pins: {data:6, clock: 5}
+    part2 = Denko::DigitalIO::RotaryEncoder.new board: board, pins: {data:6, clock: 5}
     
     refute_empty part2.data.callbacks
     assert_empty part2.clock.callbacks
@@ -71,7 +71,7 @@ class RotaryEncoderTest < MiniTest::Test
   end
 
   def test_swapped_pins
-    part2 = Dino::DigitalIO::RotaryEncoder.new board: board, pins: {data:4, clock: 3}
+    part2 = Denko::DigitalIO::RotaryEncoder.new board: board, pins: {data:4, clock: 3}
 
     part2.clock.send(:update, 1)
     part2.data.send(:update, 1)

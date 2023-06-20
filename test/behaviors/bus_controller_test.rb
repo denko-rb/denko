@@ -1,8 +1,8 @@
 require_relative '../test_helper'
 
 class NoAddressController
-  include Dino::Behaviors::Component
-  include Dino::Behaviors::BusController
+  include Denko::Behaviors::Component
+  include Denko::Behaviors::BusController
 end
 
 class BusControllerTest < Minitest::Test

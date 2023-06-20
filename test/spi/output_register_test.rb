@@ -6,7 +6,7 @@ class OutputRegisterTest < Minitest::Test
   end
 
   def bus
-    @bus ||= Dino::SPI::Bus.new(board: board)
+    @bus ||= Denko::SPI::Bus.new(board: board)
   end
 
   def options
@@ -14,11 +14,11 @@ class OutputRegisterTest < Minitest::Test
   end
 
   def part
-    @part ||= Dino::SPI::OutputRegister.new(options)
+    @part ||= Denko::SPI::OutputRegister.new(options)
   end
   
   def led
-    @led ||= Dino::LED.new(board: part, pin: 0)
+    @led ||= Denko::LED.new(board: part, pin: 0)
   end
 
   def test_write
@@ -38,7 +38,7 @@ class OutputRegisterTest < Minitest::Test
   end
   
   def test_write_buffering_control
-    new_part = Dino::SPI::OutputRegister.new(options.merge(buffer_writes: false, write_delay: 0.5))
+    new_part = Denko::SPI::OutputRegister.new(options.merge(buffer_writes: false, write_delay: 0.5))
     assert_equal new_part.instance_variable_get(:@write_delay), 0.5
     assert_equal new_part.instance_variable_get(:@buffer_writes), false
   end

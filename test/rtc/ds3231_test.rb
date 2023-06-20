@@ -7,12 +7,12 @@ class DS3231Test < MiniTest::Test
 
   def bus
     return @bus if @bus
-    @bus = Dino::I2C::Bus.new(board: board, pin:5)
+    @bus = Denko::I2C::Bus.new(board: board, pin:5)
     @bus
   end
   
   def part
-    @part ||= Dino::RTC::DS3231.new(bus: bus, address: 0x68)
+    @part ||= Denko::RTC::DS3231.new(bus: bus, address: 0x68)
   end
   
   def test_time_to_bcd

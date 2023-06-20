@@ -9,11 +9,11 @@ class DS18B20Test < MiniTest::Test
     return @bus if @bus
     # Respond with disabled parasite power.
     board.inject_read_for_pin(1, "1")
-    @bus ||= Dino::OneWire::Bus.new(board: board, pin: 1)
+    @bus ||= Denko::OneWire::Bus.new(board: board, pin: 1)
   end
 
   def part
-    @part ||= Dino::Sensor::DS18B20.new(bus: bus, address: 0xFFFFFFFFFFFFFFFF)
+    @part ||= Denko::Sensor::DS18B20.new(bus: bus, address: 0xFFFFFFFFFFFFFFFF)
   end
 
   def test_decode_temperatures

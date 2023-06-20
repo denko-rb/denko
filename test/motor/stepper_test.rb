@@ -6,13 +6,13 @@ class StepperMotorTest < MiniTest::Test
   end
 
   def part
-    @part ||= Dino::Motor::Stepper.new board: board,
+    @part ||= Denko::Motor::Stepper.new board: board,
                                             pins: {step: 9, direction: 10}
   end
 
   def test_initialize
-    assert_equal Dino::DigitalIO::Output, part.step.class
-    assert_equal Dino::DigitalIO::Output, part.direction.class
+    assert_equal Denko::DigitalIO::Output, part.step.class
+    assert_equal Denko::DigitalIO::Output, part.direction.class
   end
 
   def test_step_cw

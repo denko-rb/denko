@@ -6,7 +6,7 @@ class AnalogIOPotentiometerTest < MiniTest::Test
   end
 
   def part
-    @part ||= Dino::AnalogIO::Potentiometer.new(board: board, pin:14)
+    @part ||= Denko::AnalogIO::Potentiometer.new(board: board, pin:14)
   end
 
   def test_setup

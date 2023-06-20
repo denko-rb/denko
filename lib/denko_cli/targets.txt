@@ -1,0 +1,113 @@
+
+  Valid targets:
+
+    mega (default)
+
+      Covers the Atmel/Microchip AVR 8-bit chips and associated Arduino boards.
+      This is the default target. All component features are included.
+
+      Chips:  ATmega328p, ATmega32u4, ATmega1280, ATmega2560
+              Atmega4809 (unconfirmed)
+      Boards: Arduino Uno, Nano, Mini, Ethernet, Pro (some), Pro Mini (some)
+              Leonardo, Micro, Esplora, Leonardo ETH, Lilypad USB
+              Mega 1280, Mega 2560, Mega ADK
+              Nano Every, Uno WiFi Rev2 (unconfirmed)
+
+
+    esp32
+
+      For the the ESP32 chip by Espressif, with integrated 2.4Ghz WiFi.
+      No WiFi OTA updates yet.
+      This option includes all component features EXCEPT:
+          SoftwareSerial
+
+      Chips:  ESP32, ESP32-S2, ESP32-S3
+      Boards: ESP32 DevKit, LOLIN D32 / D32 Pro, LOLIN S2 Pico / Mini,
+              LOLIN S3 Pico / Mini
+         
+
+    esp8266
+
+      For the ESP8266 chip by Espressif, with integrated 2.4Ghz WiFi.
+      WiFi over-the-air updates are enabled by default.
+      This option includes all component features EXCEPT:
+          SoftwareSerial
+
+      Chips:  ES8266, ESP8285
+      Boards: WeMos D1, Node MCU, Bare Modules
+
+      Note: Building the (default) serial sketch will only allow connections via
+            serial. Build the WiFi sketch to connect via the integrated WiFi.
+
+      Note: After the initial upload via serial, the WiFi sketch for this target
+            supports over-the-air updates from the Arduino IDE using ArduinoOTA.
+            
+            
+   rp2040
+
+     For the Raspberry Pi RP2040 microcontroller.
+     Software Serial doesn't work. WiFi available only on the W version.
+     This option includes all component features EXCEPT:
+         SoftwareSerial, LEDArray
+
+     Chips:  RP2040
+     Boards: Raspberry Pi Pico, Raspberry Pi Pico W, and many others
+     
+
+   samd
+
+     For the ATSAMD21G18, with native USB and no EEPROM.
+     Similar to the mega option, but Software Serial doesn't work.
+     This option includes all component features EXCEPT:
+         EEPROM, SoftwareSerial
+
+     Chips:  ATSAMD21G18
+     Boards: Arduino Zero, M0, M0 Pro
+
+
+    sam3x
+
+      Fpr the ATSAM3X8E, with native USB and no EEPROM.
+      Similar to the mega option, but some features don't work.
+      This option includes all component features EXCEPT:
+          EEPROM, SoftwareSerial, Tone, IR Out
+
+      Chips:  ATSAM3X8E
+      Boards: Arduino Due
+      
+      
+    core
+
+      This includes only the core component feature set of denko:
+        Set Pin Mode
+        Digital Read/Write/Listen
+        Analog Read/Write/Listen
+
+      This is mostly useful for testing, or if severely limited on memory, as it
+      is the smallest sketch possible, and should be universally compatible.
+
+
+    mega168
+
+      This targets the older ATmega168 chip used in early Arduinos.
+      With half the RAM and flash available, we need to cut the sketch down.
+      This option includes all component features EXCEPT:
+          SoftwareSerial, IR Out 
+
+      Chips:  ATmega168
+      Boards: Duemilanove, Diecimila, Pro (some), Pro Mini (some)
+              (Later versions of these may carry an ATmega328)
+
+      Note: While you can generate this sketch using any connection type,
+            only the serial version actually fits on the ATmega168.
+            There is not enough memory available for Wi-Fi or Ethernet.
+            Try the core target instead to tradeoff features for networking.
+
+      Note: Aux message is always limited to 264 bytes or less for the ATmega168.
+            Servo count is always limited to 6 (normally 12) for the ATmega168 chip.
+            These limits apply as long as an Atmega168 is selected in the
+            Arduino IDE, regardless of the options passed to this sketch generator.
+
+
+  NOTE: You can manually control which features are enabled before compiling, by editing
+  by editing DenkoDefines.h. (Un)comment #define lines there to toggle features as needed.

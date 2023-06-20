@@ -1,4 +1,4 @@
-## Install Arduino Dependencies for Dino (CLI)
+## Install Arduino Dependencies for Denko (CLI)
 
 Once `arduino-cli` is installed, you can copy and paste into your shell for easy installation.
 

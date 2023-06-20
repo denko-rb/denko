@@ -1,13 +1,13 @@
 require_relative '../test_helper'
 
 class AddressedBus
-  include Dino::Behaviors::Component
-  include Dino::Behaviors::BusControllerAddressed
+  include Denko::Behaviors::Component
+  include Denko::Behaviors::BusControllerAddressed
 end
 
 class AddressedPeripheral
-  include Dino::Behaviors::Component
-  include Dino::Behaviors::BusPeripheralAddressed
+  include Denko::Behaviors::Component
+  include Denko::Behaviors::BusPeripheralAddressed
 end
 
 class BusPeripheralAddressedTest < Minitest::Test
