@@ -5,7 +5,7 @@ module Denko
         [address].pack('Q<').split("").map(&:ord)
       end
 
-      def self.crc_check(data)
+      def self.crc(data)
         calculated, received = self.calculate_crc(data)
         calculated == received
       end

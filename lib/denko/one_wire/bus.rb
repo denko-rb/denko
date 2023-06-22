@@ -4,7 +4,7 @@ module Denko
       include Behaviors::SinglePin
       include Behaviors::BusControllerAddressed
       include Behaviors::Reader
-      include BusEnumeration
+      include BusEnumerator
       include Constants
 
       attr_reader :parasite_power

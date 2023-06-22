@@ -1,6 +1,8 @@
 module Denko
   module OneWire
-    module BusEnumeration
+    module BusEnumerator
+      include Constants
+
       def _search(branch_mask)
         reset
         write(SEARCH_ROM)
@@ -42,11 +44,11 @@ module Denko
       def parse_search_result(result)
         address, complement = split_search_result(result)
 
-        raise "CRC error during OneWire search" unless Helper.crc_check(address)
-
         if (address & complement) > 0
           raise "OneWire device not connected or disconnected during search"
         end
+
+        raise "CRC error during OneWire search" unless Helper.crc(address)
 
         # Gives 0 at every discrepancy we didn't write 1 for on this search.
         new_discrepancies = address ^ complement
@@ -73,12 +75,18 @@ module Denko
         [address, complement]
       end
 
-      # Set FAMILY_CODE in peripheral class to get it identified during search.
+      # 
+      # Set FAMILY_CODE in peripheral class, and add the class to this array
+      # for the class to be identified during search.
+      #
+      PERIPHERAL_CLASSES = [
+        Sensor::DS18B20,
+      ]
+
       def family_lookup(family_code)
-        OneWire.constants.each do |const|
-          obj = OneWire.const_get(const)
-          if (obj.is_a? Class) && (obj.const_defined? "FAMILY_CODE")
-            return obj if obj::FAMILY_CODE == family_code
+        PERIPHERAL_CLASSES.each do |klass|
+          if (klass.const_defined? "FAMILY_CODE")
+            return klass if klass::FAMILY_CODE == family_code
           end
         end
         return nil

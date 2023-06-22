@@ -131,4 +131,8 @@ class OneWireEnumeratorTest < Minitest::Test
     found_addresses = bus.found_devices.map { |d| d[:address] }
     assert_equal found_addresses.sort, bus_sim.addresses.sort
   end
+
+  def test_includes_constants
+    assert Denko::OneWire::BusEnumerator.ancestors.include?(Denko::OneWire::Constants)
+  end
 end

@@ -43,6 +43,16 @@ class DS18B20Test < MiniTest::Test
     assert_equal 0.75, part.instance_variable_get(:@convert_time)
   end
 
+  def test_pre_callback_filter_does_crc_and_returns_error_on_fail
+    raw_bytes = [239, 1, 75, 70, 127, 255, 1, 16, 245]
+    mock = MiniTest::Mock.new.expect(:call, false, [raw_bytes])
+
+    Denko::OneWire::Helper.stub(:crc, mock) do
+      assert_equal({crc_error: true}, part.pre_callback_filter(raw_bytes))
+    end
+    mock.verify
+  end
+
   # test resolution=
 
   def test_convert_is_atomic

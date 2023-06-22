@@ -47,7 +47,7 @@ module Denko
       end
 
       def pre_callback_filter(bytes)
-        return { crc_error: true } unless Helper.crc_check(bytes)
+        return { crc_error: true } unless OneWire::Helper.crc(bytes)
         @resolution = decode_resolution(bytes)
 
         decode_temperature(bytes).merge(raw: bytes)
