@@ -2,21 +2,28 @@
 
 :green_heart: Full support :yellow_heart: Partial support :heart: Planned. No support yet :question: Works in theory. Untested in real hardware.
 
-### Microchip/Atmel Chips in Arduino Products (and Compatibles)
-[![AVR Build Status](https://github.com/denko-rb/denko/actions/workflows/build_avr.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_avr.yml) [![MegaAVR Build Status](https://github.com/denko-rb/denko/actions/workflows/build_megaavr.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_megaavr.yml) [![SAM3X Build Satus](https://github.com/denko-rb/denko/actions/workflows/build_sam3x.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_sam3x.yml) [![SAMD Build Satus](https://github.com/denko-rb/denko/actions/workflows/build_samd.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_samd.yml)
+### AVR/MegaAVR Based in Arduino Products (and Clones)
+[![AVR Build Status](https://github.com/denko-rb/denko/actions/workflows/build_avr.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_avr.yml) [![MegaAVR Build Status](https://github.com/denko-rb/denko/actions/workflows/build_megaavr.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_megaavr.yml)
 
 |    Chip        | Status          | Products         | Notes |
 | :--------      | :------:        | :--------------- |------ |
 | ATmega168      | :green_heart:   | Duemilanove, Diecimila, Pro | Features omitted to save memory. `denko targets` for more info.
-| ATmega328      | :green_heart:   | Uno, Nano, Fio, Pro  |
+| ATmega328      | :green_heart:   | Uno R3, Uno WiFi, Nano, Fio, Pro  |
 | ATmega32u4     | :green_heart:   | Leonardo, Micro, Leonardo ETH, Esplora, LilyPad USB |
 | ATmega1280     | :green_heart:   | Mega |
 | ATmega2560     | :green_heart:   | Mega2560, Arduino Mega ADK |
 | ATmega4809     | :question:      | Nano Every, Uno WiFi Rev2 | No hardware to test, but should work
-| ATSAM3X8E      | :yellow_heart:  | Due | Native USB port. Tone, and IR Out don't work.
-| ATSAMD21       | :green_heart:   | Zero, M0, M0 Pro | Native USB port. I2C seems stuck on 100 kHz.
 
 **Note:** Only USB boards listed. Any board with a supported chip should work, once you can flash it and connect to serial.
+
+### ARM Based Arduino Products (and Clones)
+[![SAM3X Build Satus](https://github.com/denko-rb/denko/actions/workflows/build_sam3x.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_sam3x.yml) [![SAMD Build Satus](https://github.com/denko-rb/denko/actions/workflows/build_samd.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_samd.yml)
+
+|    Chip        | Status          | Products         | Notes |
+| :--------      | :------:        | :--------------- |------ |
+| ATSAM3X8E      | :yellow_heart:  | Due | Native USB port. Tone, and IR Out don't work.
+| ATSAMD21       | :green_heart:   | Zero, M0, M0 Pro | Native USB port. I2C seems stuck on 100 kHz.
+| RA4M1          | :heart:         | Uno R4 Minima, Uno R4 WiFi |
 
 ### Arduino Accessories
 
