@@ -2,6 +2,7 @@ module Denko
   module Behaviors
     module State
       def initialize(options={})
+        # Component includes State, so no need to call super here.
         @state_mutex = Mutex.new
         @state = nil
       end

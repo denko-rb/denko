@@ -4,7 +4,7 @@ module Denko
       include Denko::Behaviors::BusPeripheral
 
       def before_initialize(options={})
-        # Aallow @address override in options, even if peripheral sets default.
+        # Allow @address override in options, even if peripheral sets a default.
         @address = options[:address] if options[:address]
 
         raise ArgumentError, "missing address for #{self}. Try Bus#search first" unless @address

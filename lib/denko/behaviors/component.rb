@@ -33,7 +33,7 @@ module Denko
         board.remove_component(self)
       end
 
-      # Setup::Base only requires a board.
+      # Behaviors::Component only requires a board.
       # Include modules from Setup or override this to use pins.
       #
       def before_initialize(options={}); end
