@@ -2,7 +2,7 @@
 ### Ruby Meets Microcontrollers
 Denko gives you a high-level Ruby interface to low-level hardware, without writing microcontroller code. Use LEDs, buttons, sensors and more, just as easily as any Ruby object:
 
-````ruby
+```ruby
 led.blink 0.5
 
 lcd.print "Hello World!"
@@ -12,9 +12,9 @@ reading = sensor.read
 button.down do
   puts "Button pressed!"
 end
-````
+```
 
-Denko doesn't run Ruby on the microcontroller (see the [mruby-dino](#mruby) project). It runs a C++ firmware that exposes as much low-level I/O as possible, so we can use it in Ruby. It becomes a peripheral for your computer.
+Denko doesn't run Ruby on the microcontroller (see [mruby-denko](#mruby-denko) for that). It runs C++ firmware that exposes as much low-level I/O as possible, so we can use it in Ruby. It becomes a peripheral for your computer.
 
 High-level abstraction in Ruby makes hardware classes easy to implement, with intuitive interfaces. They multitask a single core microcontroller, with thread-safe state, and callbacks for inputs, but no "task" priority. If you need more I/O, integration is seamless. Connect another board and instantiate it in Ruby.
 
@@ -22,7 +22,15 @@ Each peripheral connected to your microcontroller(s) maps to a Ruby object you c
 
 ### Supported Hardware
 
-See a full list of supported mircocontroller platforms, interfaces, and peripherals [here](HARDWARE.md).
+Full list of supported mircocontroller platforms, interfaces, and peripherals is located [here](HARDWARE.md).
+
+##### denko-piboard
+There's an add-on for this gem  in development, [denko-piboard](https://github.com/denko-rb/denko-piboard), which supports the Raspberry Pi's built in GPIO pins, as `Denko::PiBoard`, class-compatible with `Denko::Board`. Connect peripherals directly to the Pi, with no microcontroller between, then use the same peripheral classes from this gem.
+
+##### mruby-denko
+A solo Raspberry Pi (or other small SBC + microcontroller) is a great standalone setup if your project needs the compute power anyway, but what if you don't? Why not run Ruby on the microcontroller itself? 
+
+That's the goal of [mruby-denko](https://github.com/denko-rb/mruby-denko). Write mruby on the ESP32, using peripheral classes as close to this gem as possible. Still early in development, and limited features, but already working.
 
 ## Getting Started
 
@@ -33,17 +41,17 @@ See a full list of supported mircocontroller platforms, interfaces, and peripher
 gem install denko
 ```
 
-Before using the microcontroller in Ruby, we need to flash it with the denko firmware (or "sketch" in Arduino lingo). This is needed **once** for each board, but future denko versions may need reflashing to add functionality.
+Before using the microcontroller in Ruby, we need to flash it with the denko firmware (or "sketch" in Arduino lingo). This is needed **once** for each board, but future versions may need reflashing to add functionality.
 
 #### 2. Install the Arduino IDE OR CLI
 
 Get the Arduino IDE [here](http://arduino.cc/en/Main/Software) for a graphical interface (recommended for Windows), or use the command line interface from [here](https://github.com/arduino/arduino-cli/releases), or Homebrew.
 
 **CLI Installation with Homebrew on Mac or Linux:**
-````shell
+```shell
 brew update
 brew install arduino-cli
-````
+```
 
 #### 3. Install Arduino Dependencies
 Denko uses Arduino cores, which add support for microcontrollers, and a few libraries. Install only the ones for your microcontroller, or install everything. There are no conflcits. Instructions for supported microcontrollers:
@@ -56,22 +64,22 @@ The `denko` command is included with the gem. It will make the Arduino sketch fo
 **For ATmega boards, Serial over USB:** (Arduino Uno, Nano, Mega, Leonardo, Micro)
 ```shell
 denko sketch serial
-````
+```
 
 **For ESP8266, Serial over USB:**
 ```shell
 denko sketch serial --target esp8266
-````
+```
 
 **For ESP8266 or ESP32 over WiFi (2.4Ghz and DHCP Only):**
 ```shell
 denko sketch wifi --target esp8266 --ssid YOUR_SSID --password YOUR_PASSWORD
 denko sketch wifi --target esp32 --ssid YOUR_SSID --password YOUR_PASSWORD
-````
+```
 
-**Note:** [This example](examples/connection/tcp.rb) shows how to connect to a board with a TCP socket, but the WiFi & Ethernet sketches fall back to the serial interface when no TCP client is connected.
+**Note:** [This example](examples/connection/tcp.rb) shows how to connect to a board with a TCP socket, but the WiFi & Ethernet sketches fall back to the Serial interface when no TCP client is connected.
 
-#### 5a) IDE Flashing
+#### 5a. IDE Flashing
 
 * Connect the board to your computer with a USB cable.
 * Open the .ino file inside your sketch folder with the IDE.
@@ -82,45 +90,45 @@ denko sketch wifi --target esp32 --ssid YOUR_SSID --password YOUR_PASSWORD
 * If your serial port is in the list, but the board is wrong, select the serial port anyway, then you will be asked to manually select a board.
 * If your board doesn't show up at all, make sure it is connected properly. Try disconnecting and reconnecting, use a different USB port or cable, or press the reset button after plugging it in.
 
-#### 5b) CLI Flashing
+#### 5b. CLI Flashing
 
 * The path output by `denko sketch` earlier is your sketch folder. Keep it handy.
 * Connect the board to your computer with a USB cable.
 * Check if the CLI recognizes it:
 
-````shell
+```shell
 arduino-cli board list
-````
+```
   
 * Using the Port and FQBN (Fully Qualified Board Name) shown, compile and upload the sketch:
-````shell
+```shell
 arduino-cli compile -b YOUR_FQBN YOUR_SKETCH_FOLDER
 arduino-cli upload -v -p YOUR_PORT -b YOUR_FQBN YOUR_SKETCH_FOLDER
-````
+```
 
 **Troubleshooting:**
 * Follow the same steps as the IDE method above. List all FQBNs using:
-````shell
+```shell
 arduino-cli board listall
-````
+```
 
-#### 6)  Test It
+#### 6. Test It
 
-Most boards have a regular LED on-board. Test it with the [blink](examples/led/builtin_blink.rb) example. If you have an on-board WS2812 LED, use the [WS2812 blink](examples/led/ws2812_builtin_blink.rb) example instead. If it starts blinking, you're ready for Ruby!
+Most boards have a regular LED on-board. Test it with the [blink](examples/led/builtin_blink.rb) example. If you have an on-board WS2812 LED (Neopixel), use the [WS2812 blink](examples/led/ws2812_builtin_blink.rb) example instead. If it starts blinking, you're ready for Ruby!
 
 ## Examples and Tutorials
 
 #### Tutorial
 
 - [Here](tutorial) you will find a beginner-friendly tutorial, that goes through the basics, using commented examples and diagrams. Read the comments and try modifying the code. You will need the following:
-  * 1 compatible microcontroller (see [supported hardware](HARDWARE.md))
-  * 1 button or momentary switch
-  * 1 potentiometer (any value)
-  * 1 external RGB LED (4 legs common cathode, not a Neopixel or individually addressable)
-  * 1 external LED (any color, or use one color from the RGB LED)
-  * Current limiting resistors for LEDs
-  * Breadboard
-  * Jumper wires
+  - 1 compatible microcontroller (see [supported hardware](HARDWARE.md))
+  - 1 button or momentary switch
+  - 1 potentiometer (any value)
+  - 1 external RGB LED (4 legs common cathode, not a Neopixel or individually addressable)
+  - 1 external LED (any color, or use one color from the RGB LED)
+  - Current limiting resistors for LEDs
+  - Breadboard
+  - Jumper wires
   
   **Tip:** Kits are a cost-effective way to get started. They will almost certainly include these parts, plus more, getting you well beyond the tutorial.
 
@@ -140,13 +148,3 @@ Most boards have a regular LED on-board. Test it with the [blink](examples/led/b
 - "Arduino the Ruby Way" at RubyConf 2012
   - [Video by ConFreaks](https://www.youtube.com/watch?v=oUIor6GK-qA)
   - [Slides on SpeakerDeck](https://speakerdeck.com/austinbv/arduino-the-ruby-way)
-  
-## mruby Port
-
-A single-board computer plus microcontroller can be a great standalone solution, especially if your project needs the computer anyway. For example, a Raspberry Pi Zero and Arduino Nano combo, running CRuby, Denko and other software.
-
-But what if you want to be _really_ small? Building on the [mruby-esp32](https://github.com/mruby-esp32/mruby-esp32) project, Denko is being ported to run directly on the ESP32 here: [mruby-dino-template](https://github.com/denko-rb/mruby-dino-template).
-
-## denko-piboard
-
-There's an add-on for this gem, [denko-piboard](https://github.com/denko-rb/denko-piboard), in early development, which adds support for the Raspberry Pi's built in GPIO interface as a class-compatible "board". This allows you to connect peripherals directly to the Pi, without a microcontroller, and use the denko peripherals classes as-is.
