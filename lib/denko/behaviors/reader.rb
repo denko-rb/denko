@@ -12,28 +12,29 @@ module Denko
       end
 
       #
-      # Delegate reading to another method that sends a command to the board. 
-      # Accepts blocks as one-time callbacks stored in the :read key.
-      # Blocks until a value is recieved from the board.
-      # Returns the value after #pre_callback_filter runs on it.
+      # Take a proc/lambda/method as the first agrument and use it to read.
+      # Arguments are passed through, allowing dynamic read methods to be defined.
+      # Eg. send commands (in args) to a bus, then wait for data read back.
+      # 
+      # Block given is added as a one-time callback in the :read key, and 
+      # the curent thread waits until data is received. Returns the result of
+      # calling #pre_callback_filter with the data.
       #
-      # Give procs as methods to build more complex functionality for buses.
-      #
-      def read_using(method, *args, **kwargs, &block)
+      def read_using(reader, *args, **kwargs, &block)
         add_callback(:read, &block) if block_given?
 
-        value = nil
+        return_value = nil
         add_callback(:read) do |filtered_data|
-          value = filtered_data
+          return_value = filtered_data
         end
         
-        method.call(*args, **kwargs)
-        block_until_read
+        reader.call(*args, **kwargs)
+        wait_for_read
 
-        value
+        return_value
       end
       
-      def block_until_read
+      def wait_for_read
         loop do
           break if !callbacks[:read]
           sleep 0.001
