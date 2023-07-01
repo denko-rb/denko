@@ -139,9 +139,11 @@ Most boards have a regular LED on-board. Test it with the [blink](examples/led/b
 
 ####  More Examples
 
-- Try [Getting Started with Arduino and Denko](http://tutorials.jumpstartlab.com/projects/arduino/introducing_arduino.html) from [Jumpstart Lab](http://jumpstartlab.com) (_ignore old install instructions_).
-- An example [rails app](https://github.com/denko-rb/denko_rails_example)  using Denko and Pusher.
-- For a Sinatra example, look at the [site](https://github.com/denko-rb/denko_cannon) used to shoot the cannon at RubyConf2012.
+**Note:** This gem was renamed from `dino` to `denko`. Some of these examples use the old name.
+
+- Try [Getting Started with Arduino and Dino](http://tutorials.jumpstartlab.com/projects/arduino/introducing_arduino.html) from [Jumpstart Lab](http://jumpstartlab.com) (_ignore old install instructions_).
+- An example [rails app](https://github.com/austinbv/dino_rails_example) using Dino and Pusher.
+- For a Sinatra example, look at the [site](https://github.com/austinbv/dino_cannon) used to shoot the cannon at RubyConf2012.
 
 ## Explanatory Talks
 
