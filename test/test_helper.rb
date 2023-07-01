@@ -211,10 +211,17 @@ module TestPacker
   end
 end
 
-# Speed up one wire tests.
+# Speed up tests which use long delays.
 module Denko
   module OneWire
     class Bus
+      def sleep(time)
+        super(0.001)
+      end
+    end
+  end
+  module LED
+    class SevenSegment
       def sleep(time)
         super(0.001)
       end

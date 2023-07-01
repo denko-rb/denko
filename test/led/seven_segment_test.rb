@@ -60,14 +60,17 @@ class SevenSegmentLEDTest < MiniTest::Test
   end
 
   def test_scroll
-    mock = MiniTest::Mock.new.expect :call, nil, ['foo']
-    part.stub(:scroll, mock) do
-      part.display('foo')
+    mock = MiniTest::Mock.new
+    mock.expect :call, nil, ['H']
+    mock.expect :call, nil, ['I']
+    part.stub(:write, mock) do
+      part.display('hi')
     end
     mock.verify
   end
 
   def test_display_ensures_on
+    part.off
     mock = MiniTest::Mock.new.expect :call, nil
     part.stub(:on, mock) do
       part.display(1)
@@ -75,12 +78,31 @@ class SevenSegmentLEDTest < MiniTest::Test
     mock.verify
   end
 
-  def test_display_clears_if_unknown_char
-    mock = MiniTest::Mock.new.expect :call, nil
-    part.stub(:clear, mock) do
-      part.display('+')
+  def test_write_clears_if_unknown_char
+    # Turn all the segments on.
+    part.display('8')
+
+    # Expect every segment to get #write(1). Inverted logic because anode.
+    mocks = []
+    part.segments.each do 
+      mocks << MiniTest::Mock.new.expect(:call, nil, [1])
     end
-    mock.verify
+    part.segments[0].stub(:write, mocks[0]) do
+      part.segments[1].stub(:write, mocks[1]) do
+        part.segments[2].stub(:write, mocks[2]) do
+          part.segments[3].stub(:write, mocks[3]) do
+            part.segments[4].stub(:write, mocks[4]) do
+              part.segments[5].stub(:write, mocks[5]) do
+                part.segments[6].stub(:write, mocks[6]) do
+                  part.display('+')
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+    mocks.each { |mock| mock.verify}
   end
   # Test with cathode
 end

@@ -3,6 +3,9 @@ module Denko
     class SevenSegment
       include Behaviors::MultiPin
       
+      ALL_OFF = [0,0,0,0,0,0,0]
+      BLANK = " "
+
       def initialize_pins(options={})
         [:a, :b, :c, :d, :e, :f, :g].each do |symbol|
           proxy_pin(symbol, DigitalIO::Output)
@@ -20,28 +23,30 @@ module Denko
       attr_reader :segments
 
       def clear
-        segments.each do |pin|
-          pin.low if cathode
-          pin.high if anode
-        end
+        write(BLANK)
       end
 
-      def display(char)
-        char = char.to_s
-        return scroll(char) if char.length > 1
-        off; write(char); on
+      def display(string)
+        on unless on?
+        string = string.to_s.upcase
+        (string.length > 1) ? scroll(string) : write(string)
       end
 
       def on
         anode.high if anode
         cathode.low if cathode
+        @on = true
       end
 
       def off
         anode.low if anode
         cathode.high if cathode
+        @on = false
       end
 
+      def on?;   @on; end
+      def off?; !@on; end
+      
       CHARACTERS = {
         '0' => [1,1,1,1,1,1,0],
         '1' => [0,1,1,0,0,0,0],
@@ -87,22 +92,16 @@ module Denko
       private
 
       def write(char)
-        bits = CHARACTERS[char.to_s.upcase]
-        unless bits
-          clear
-        else
-          bits.each_with_index do |bit, index|
-            if anode
-              bit == 0 ? bit = 1 : bit = 0
-            end
-            segments[index].write(bit) unless (segments[index].state == bit)
-          end
+        bits = CHARACTERS[char] || ALL_OFF
+        bits.each_with_index do |bit, index|
+          bit = 1^bit if anode
+          segments[index].write(bit) unless (segments[index].state == bit)
         end
       end
 
       def scroll(string)
         string.chars.each do |char|
-          display(char)
+          write(char)
           sleep(0.5)
         end
       end
