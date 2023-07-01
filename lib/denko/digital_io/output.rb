@@ -16,7 +16,7 @@ module Denko
       end
 
       def digital_write(value)
-        board.digital_write(pin, value)
+        @board.digital_write(@pin, value)
         self.state = value
       end
       
