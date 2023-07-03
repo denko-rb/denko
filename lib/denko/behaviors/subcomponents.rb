@@ -10,8 +10,6 @@ module Denko
       end
 
       def add_component(component)
-        components << component
-
         if component.respond_to?(:pin) && component.pin.class == Integer
           unless single_pin_components[component.pin]
             single_pin_components[component.pin] = component
@@ -20,6 +18,8 @@ module Denko
                                   "already in use by: #{single_pin_components[component.pin]}"
           end
         end
+
+        components << component
       end
 
       def remove_component(component)
