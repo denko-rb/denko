@@ -1,8 +1,10 @@
 
   Usage:
+
     denko task [options]
 
   Tasks:
+
     sketch SKETCH [options]
     help
     targets
@@ -12,23 +14,25 @@
     --target TARGET    (default: mega. Run 'denko targets' for more info)
     --debug            (default: off)
 
-  Available sketches and sketch for each sketch:
+  Available sketches and options specific to each sketch:
 
     serial
-      --baud BAUD    (default: 115200)
+      --baud BAUD                (default: 115200)
 
     ethernet
       --mac XX:XX:XX:XX:XX:XX    (required)
       --ip XXX.XXX.XXX.XXX       (required, no DHCP)
       --port PORT                (default: 3466)
+      --baud BAUD                (default: 115200, serial fallback)
 
     wifi
       --ssid SSID            (required)
       --password PASSWORD    (required)
       --port PORT            (default: 3466)
+      --baud BAUD            (default: 115200, serial fallback)
 
   Examples:
 
     denko sketch ethernet --mac 12:34:56:78:90:12 --ip 192.168.1.2
-    denko sketch serial --baud 57600
-    denko sketch serial --baud 9600 -target core
+    denko sketch serial   --baud 57600 --target esp32
+    denko sketch serial   --baud 9600  --target core
