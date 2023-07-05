@@ -22,7 +22,7 @@
 |    Chip        | Status          | Products         | Notes |
 | :--------      | :------:        | :--------------- |------ |
 | ATSAM3X8E      | :yellow_heart:  | Due | Native USB port. Tone, and IR Out don't work.
-| ATSAMD21       | :green_heart:   | Zero, M0, M0 Pro | Native USB port. I2C seems stuck on 100 kHz.
+| ATSAMD21       | :green_heart:   | Zero, M0, M0 Pro | Native USB port
 | RA4M1          | :heart:         | Uno R4 Minima, Uno R4 WiFi |
 
 ### Arduino Accessories
