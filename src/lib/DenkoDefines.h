@@ -115,18 +115,34 @@
   #define AUX_SIZE 272
 #endif
 
+// Define 'DENKO_SERIAL_IF' as the serial interface to use.
+// Uses SerialUSB (left port), which is native USB, on Arduino Due & Zero, or Serial otherwise.
+// On many boards, eg. Arduino Leonardo, RP2040, ESP32-S3, Serial is native USB regardless.
+#if defined(__SAM3X8E__) || defined(__SAMD21G18A__)
+  #define DENKO_SERIAL_IF SerialUSB
+  #define DENKO_USB_CDC
+  // To use programming USB (right) on Due and Zero, comment 2 lines above, uncomment 1 line below.
+  // #define DENKO_SERIAL_IF Serial
+#else
+  #define DENKO_SERIAL_IF Serial
+#endif
+
 // Figure out how much serial buffer we have, tell the computer, and set the ack interval.
 // Best performance acknowledging at 64 bytes, or 32 if buffer is only 64.
 //
-// 32u4 is odd. Size is 63 instead of 64. Interval has to be 31. 32 doesn't work at all. Off by 1 errors?
-#if defined(__AVR_ATmega32U4__)
-  #define DENKO_SERIAL_BUFFER_SIZE 63
-  #define DENKO_RX_ACK_INTERVAL 31
-// Many of these are native USB, but these values work even when using a converter.
-#elif defined(ARDUINO_ARCH_RP2040) || defined(__SAMD21G18A__) || defined(ESP32) || defined(ESP8266) || defined(__SAM3X8E__)
+// These are 256/64 regardless of whether native USB CDC or UART bridge.
+#if defined(ARDUINO_ARCH_RP2040) ||  defined(ESP32) || defined(ESP8266) || defined(__SAM3X8E__)
   #define DENKO_SERIAL_BUFFER_SIZE 256
   #define DENKO_RX_ACK_INTERVAL 64
-// Safe defaults
+// SAMD21 is 256/64 in native USB mode ONLY. Must use defaults on programming port to avoid data loss.
+#elif defined(__SAMD21G18A__) && defined(DENKO_USB_CDC)
+  #define DENKO_SERIAL_BUFFER_SIZE 256
+  #define DENKO_RX_ACK_INTERVAL 64
+// 32u4 is odd. Size is 63 instead of 64. Interval must be 31. 32 doesn't work at all. Off by 1 errors?
+#elif defined(__AVR_ATmega32U4__)
+  #define DENKO_SERIAL_BUFFER_SIZE 63
+  #define DENKO_RX_ACK_INTERVAL 31
+// Defaults
 #else
   #define DENKO_SERIAL_BUFFER_SIZE 64
   #define DENKO_RX_ACK_INTERVAL 32

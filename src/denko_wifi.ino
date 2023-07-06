@@ -17,18 +17,6 @@
   #define WIFI_STATUS_LED 13
 #endif
 
-
-// Define 'serial' as the serial interface to use.
-// Uses SerialUSB (left port), which is native USB, on Arduino Due and Zero, or Serial otherwise.
-// On many boards, eg. Arduino Due, RP2040, Serial may be native USB anyway.
-#if defined(__SAM3X8E__) || defined(__SAMD21G18A__)
-  #define serial SerialUSB
-  // Use this for Programming USB port (right) on Due and Zero.
-  // #define serial Serial
-#else
-  #define serial Serial
-#endif
-
 // Configure your WiFi options here. IP address is not configurable. Uses DHCP.
 int port = 3466;
 char* ssid = "yourNetwork";
@@ -50,16 +38,16 @@ void indicateWiFi(byte value) {
 }
 
 void printWifiStatus() {
-  serial.println("WiFi Connected");
-  serial.print("SSID: ");
-  serial.println(WiFi.SSID());
-  serial.print("Signal Strength (RSSI):");
-  serial.print(WiFi.RSSI());
-  serial.println(" dBm");
-  serial.print("IP Address: ");
-  serial.println(WiFi.localIP());
-  serial.print("Denko TCP Port: ");
-  serial.println(port);
+  DENKO_SERIAL_IF.println("WiFi Connected");
+  DENKO_SERIAL_IF.print("SSID: ");
+  DENKO_SERIAL_IF.println(WiFi.SSID());
+  DENKO_SERIAL_IF.print("Signal Strength (RSSI):");
+  DENKO_SERIAL_IF.print(WiFi.RSSI());
+  DENKO_SERIAL_IF.println(" dBm");
+  DENKO_SERIAL_IF.print("IP Address: ");
+  DENKO_SERIAL_IF.println(WiFi.localIP());
+  DENKO_SERIAL_IF.print("Denko TCP Port: ");
+  DENKO_SERIAL_IF.println(port);
   indicateWiFi(true);
 }
 
@@ -70,13 +58,13 @@ void connect(){
   #endif
 
   // Try to connect.
-  serial.print("Connecting to WiFi ");
+  DENKO_SERIAL_IF.print("Connecting to WiFi ");
   WiFi.begin(ssid, pass);
 
   // Delay until connected.
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
-    serial.print(".");
+    DENKO_SERIAL_IF.print(".");
   }
   connected = true;
 }
@@ -99,8 +87,8 @@ void maintainWiFi(){
 
 void setup() {
   // Wait for serial ready.
-  serial.begin(115200);
-  while(!serial);
+  DENKO_SERIAL_IF.begin(115200);
+  while(!DENKO_SERIAL_IF);
 
   // Enable over the air updates on the ESP8266.
   #if defined(ESP8266)
@@ -117,8 +105,8 @@ void setup() {
   denko.digitalListenCallback = onDigitalListen;
   denko.analogListenCallback = onAnalogListen;
 
-  // Use serial as the denko IO stream until we get a TCP connection.
-  denko.stream = &serial;
+  // Use DENKO_SERIAL_IF as the denko IO stream until we get a TCP connection.
+  denko.stream = &DENKO_SERIAL_IF;
 }
 
 void loop() {
@@ -137,7 +125,7 @@ void loop() {
   // End the connection when client disconnects and revert to serial IO.
   if (client && !client.connected()){
     client.stop();
-    denko.stream = &serial;
+    denko.stream = &DENKO_SERIAL_IF;
   }
 
   // Handle OTA updates.
