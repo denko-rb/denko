@@ -119,7 +119,7 @@ module Denko
     # CMD = 95
     def set_register_divider(value)
       unless DIVIDERS.include?(value)
-        raise ArgumentError, "error in divider: #{options[:divider]}. Should be one of: #{DIVIDERS.inspect}"
+        raise ArgumentError, "error in divider: #{value}. Should be one of: #{DIVIDERS.inspect}"
       end
       write Message.encode(command: 95, value: value)
     end
