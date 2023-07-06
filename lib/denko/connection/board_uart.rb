@@ -1,11 +1,11 @@
 module Denko
   module Connection
     class BoardUART < Base
-      BAUD = 115200
+      DEFAULT_BAUD = 115200
 
-      def initialize(uart, options={})
+      def initialize(uart, baud: DEFAULT_BAUD)
         @uart = uart
-        @uart.start(options[:baud] || BAUD)
+        @uart.start(baud)
       end
 
       def baud
