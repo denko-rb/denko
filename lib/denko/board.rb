@@ -1,50 +1,54 @@
 # Require all files in board folder relative to this file.
-Dir["#{Denko.root}/lib/denko/board/*.rb"].each {|file| require file }
+Dir["#{Denko.root}/lib/denko/board/*.rb"].each { |file| require file }
 
 module Denko
   class Board
-    attr_reader :board_name, :version, :aux_limit, :eeprom_length
+    attr_reader :name, :version, :serial_buffer_size, :aux_limit, :eeprom_length
     attr_reader :low, :high, :analog_write_high, :analog_read_high
 
-    def initialize(io, options={})
-      # Connect the IO, and get the ACK.
-      @io = io
-      ack = io.handshake
+    def initialize(transport, options={})
+      # Shake hands
+      @transport = transport
+      ack = transport.handshake
 
-      # Get settings from handshake ACK.
+      # Split handshake acknowledgement into separate values.
       @name, @version, @serial_buffer_size, @aux_limit, @eeprom_length, @i2c_limit = ack.split(",")
 
-      # Tell the transport how much serial buffer the board has.
+      # Tell transport how much serial buffer the board has, for flow control.
       @serial_buffer_size = @serial_buffer_size.to_i
-      raise StandardError, "board did not give a serial buffer size in handshake" unless @serial_buffer_size
-      @io.remote_buffer_size = @serial_buffer_size
+      raise StandardError, "no serial buffer size given in handshake" if @serial_buffer_size < 1
+      @transport.remote_buffer_size = @serial_buffer_size
 
-      # Parse other settings into their types.
-      @name          = nil if @name.empty?
-      @version       = nil if @version.empty?
-      @eeprom_length = @eeprom_length.to_i
-      @i2c_limit     = @i2c_limit.to_i
+      # Load board map by name.
+      @name = nil if @name.empty?
+      @map  = load_map(@name)
 
       # Leave room for null termination of aux messages.
       @aux_limit = @aux_limit.to_i - 1
 
-      # Load the board map.
-      @map = load_map(@name)
+      # Set I2C transaction size limit. Safe minimum is 32.
+      # This makes I2C fail silently if board does not implement.
+      @i2c_limit = @i2c_limit.to_i
+      @i2c_limit = 32 if @i2c_limit == 0
 
-      # Allow the IO to call #update on the board when messages received.
-      io.add_observer(self)
+      # Remaining settings
+      @version       = nil if @version.empty?
+      @eeprom_length = @eeprom_length.to_i
+
+      # Transport calls #update on board when data is received.
+      transport.add_observer(self)
       
       # Set digital and analog IO levels.
       @low  = 0
       @high = 1
       self.analog_write_resolution = options[:write_bits] || 8
-      self.analog_read_resolution = options[:read_bits] || 10
+      self.analog_read_resolution  = options[:read_bits]  || 10
     end
     
     def finish_write
-      sleep 0.001 while @io.writing?
+      sleep 0.001 while @transport.writing?
       write "\n91\n"
-      sleep 0.001 while @io.writing?
+      sleep 0.001 while @transport.writing?
     end
           
     def analog_write_resolution=(value)
@@ -72,7 +76,7 @@ module Denko
     alias :adc_high :analog_read_high
     
     def write(msg)
-      @io.write(msg)
+      @transport.write(msg)
     end
 
     #
@@ -86,7 +90,7 @@ module Denko
     # signal is read by the TxRx, telling it to resume transmisison.
     #
     def write_and_halt(msg)
-      @io.write(msg, true)
+      @transport.write(msg, true)
     end
 
     #
