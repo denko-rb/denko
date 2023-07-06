@@ -57,7 +57,7 @@ module Denko
       message = "#{command}#{message}\n"
     end
 
-    def self.pack(type, data, options={})
+    def self.pack(type, data, min: nil, max: nil)
       # Always pack as little endian.
       template =  case type
                   when :uint64  then 'Q<*'
@@ -70,13 +70,12 @@ module Denko
       # Can pass a single integer to get packed if we always [] then flatten.
       str = [data].flatten.pack(template)
 
-      if options[:min] && str.length < options[:min]
-        raise ArgumentError, "too few bytes given (expected at least #{options[:min]})"
+      # Enforce min and max.
+      if min && str.length < min
+        raise ArgumentError, "too few bytes given (expected at least #{min})"
       end
-
-      # Max should probably always be set to avoid overruning aux message RAM.
-      if options[:max] && str.length > options[:max]
-        raise ArgumentError, "too many bytes given (expected at most #{options[:max]})"
+      if max && str.length > max
+        raise ArgumentError, "too many bytes given (expected at most #{max})"
       end
 
       str
