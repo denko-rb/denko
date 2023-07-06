@@ -14,9 +14,9 @@ button.down do
 end
 ```
 
-Denko doesn't run Ruby on the microcontroller (see [mruby-denko](#mruby-denko)). It runs custom Arduino firmware that exposes its I/O interfaces to Ruby running on your computer. Your microcontroller, and anything you connect to it, map directly to Ruby objects, so you can think about your hardware and appplication logic, not everything in between.
+Denko doesn't run Ruby on the microcontroller (see [mruby-denko](#mruby-denko)). It runs custom Arduino firmware to expose its I/O interfaces over a socket. You run Ruby on your computer and talk to it. The microcontroller, and anything connected to it, map directly to Ruby objects. You get to think about your hardware and appplication logic, not everything in between.
 
-High-level abstraction in Ruby makes hardware classes easy to implement, with intuitive interfaces. They multitask a single core microcontroller, with thread-safe state, and callbacks for inputsy. If you need more I/O, integration is seamless; connect another board and instantiate it in Ruby.
+High-level abstraction in Ruby makes hardware classes easy to implement, with intuitive interfaces. They multitask a single core microcontroller, with thread-safe state, and callbacks for inputs. If you need more I/O, integration is seamless; connect another board and instantiate it in Ruby.
 
 ### Supported Hardware
 
