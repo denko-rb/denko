@@ -2,23 +2,49 @@
 # Repeatedly writes filled and empty frames to the OLED
 # Calculates frames per second. Higher is better.
 #
+# RESULTS:
+# July 6 2023 | i7 8700k CPU | CRuby 3.2.1 | 100 frames | 1 Mhz I2C frequency | Average of 3 runs
+#
+#   Arduino Uno V3      :  5.3 fps (ATmega16u2 UART bridge @ 115200, no I2C level shifter)
+#   Arduino Uno V3      :  7.1 fps (ATmega16u2 UART bridge @ 230400, no I2C level shifter)
+#   Arduino Leonardo    : 12.9 fps (native USB, no I2C level shifter)
+#   Arduino Due         : 43.0 fps (native USB)
+#   Arduino Due         :  7.9 fps (programming USB @ 115200)
+#   Arduino Zero        : 28.6 fps (native USB)
+#   Arduino Zero        :  9.4 fps (programming USB @ 115200)
+#   Arduino Zero        : 13.6 fps (programming USB @ 230400)
+#   ESP8266 (Node MCU)  :  9.9 fps (Silicon Labs UART bridge @ 115200)
+#   ESP8266 (Node MCU)  : 19.7 fps (Silicon Labs UART bridge @ 230400)
+#   ESP32 V1            :  9.8 fps (Silicon Labs UART bridge @ 115200)
+#   ESP32 V1            : 19.4 fps (Silicon Labs UART bridge @ 230400)
+#   ESP32-S3            : 58.8 fps (native USB)
+#   Raspberry Pi Pico W : 36.4 fps (native USB)
+#
 require 'bundler/setup'
 require 'denko'
 
-board = Denko::Board.new(Denko::Connection::Serial.new)
-bus = Denko::I2C::Bus.new(board: board, pin: :SDA)
+# Settings
+# Must match speed in the sketch for UART briges. Doesn't matter for native USB.
+BAUD_RATE = 230400
+FRAME_COUNT = 100
+I2C_FREQUENCY = 1_000_000
+# Use :SDA0 for RP2040
+I2C_PIN = :SDA
 
-oled = Denko::Display::SSD1306.new(bus: bus, rotate: true)
+# Setup
+board = Denko::Board.new(Denko::Connection::Serial.new(baud: BAUD_RATE))
+bus = Denko::I2C::Bus.new(board: board, pin: I2C_PIN)
+oled = Denko::Display::SSD1306.new(bus: bus, rotate: true, i2c_frequency: I2C_FREQUENCY)
 canvas = oled.canvas
 
+# Intro
 canvas.print "SSD1306 Benchmark"
 oled.draw
 sleep 1
 
-frame_count = 100
-
+# Run
 start = Time.now
-(frame_count / 2).times do
+(FRAME_COUNT / 2).times do
   canvas.fill
   oled.draw
   canvas.clear
@@ -27,5 +53,16 @@ end
 board.finish_write
 finish = Time.now
 
-puts "SSD1306 FPS: #{frame_count / (finish - start)}"
+# Calculate results
+fps = FRAME_COUNT / (finish - start)
+
+# Print to terminal
+puts "SSD1306 benchmark result: #{fps.round(2)} fps"
 puts
+
+# Print to screen
+canvas.clear
+canvas.text_cursor = [0,0]
+canvas.print "#{fps.round(2)} fps"
+oled.draw
+board.finish_write
