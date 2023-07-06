@@ -12,9 +12,14 @@ module Denko
       ack = io.handshake
 
       # Get settings from handshake ACK.
-      @name, @version, @aux_limit, @eeprom_length, @i2c_limit = ack.split(",")
+      @name, @version, @serial_buffer_size, @aux_limit, @eeprom_length, @i2c_limit = ack.split(",")
 
-      # Parse settings into different types.
+      # Tell the transport how much serial buffer the board has.
+      @serial_buffer_size = @serial_buffer_size.to_i
+      raise StandardError, "board did not give a serial buffer size in handshake" unless @serial_buffer_size
+      @io.remote_buffer_size = @serial_buffer_size
+
+      # Parse other settings into their types.
       @name          = nil if @name.empty?
       @version       = nil if @version.empty?
       @eeprom_length = @eeprom_length.to_i

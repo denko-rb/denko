@@ -115,6 +115,24 @@
   #define AUX_SIZE 272
 #endif
 
+// Figure out how much serial buffer we have, tell the computer, and set the ack interval.
+// Best performance acknowledging at 64 bytes, or 32 if buffer is only 64.
+//
+// 32u4 is odd. Size is 63 instead of 64. Interval has to be 31. 32 doesn't work at all. Off by 1 errors?
+#if defined(__AVR_ATmega32U4__)
+  #define DENKO_SERIAL_BUFFER_SIZE 63
+  #define DENKO_RX_ACK_INTERVAL 31
+// Many of these are native USB, but these values work even when using a converter.
+#elif defined(ARDUINO_ARCH_RP2040) || defined(__SAMD21G18A__) || defined(ESP32) || defined(ESP8266)
+  #define DENKO_SERIAL_BUFFER_SIZE 256
+  #define DENKO_RX_ACK_INTERVAL 64
+// Safe defaults
+#else
+  #define DENKO_SERIAL_BUFFER_SIZE 64
+  #define DENKO_RX_ACK_INTERVAL 32
+#endif
+
+// Figure out how big the buffer is on the built-in Wire / I2C library.
 #ifdef DENKO_I2C
   // RP2040 and SAMD21 can do up to 256, but 255 since 1 byte for length.
   #if defined(ARDUINO_ARCH_RP2040) || defined(__SAMD21G18A__)

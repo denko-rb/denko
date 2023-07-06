@@ -207,30 +207,17 @@ class Denko {
     //
     // Flow control stuff.
     //
-    // Notify the computer when the board has received half a serial buffer of bytes.
-    //
+    // Notify computer that board has received bytes.
     void rxNotify();
     uint8_t rxBytes  = 0;
     //
-    // ESP32 uses a 128 byte FIFO buffer for UART Rx. Notify every 63 bytes instead of 32
-    // so serial over native USB performs better.
-    //
-    // Using 63 instead of 64 since the ATmega32u4 (Leonardo) is limited to 63.
-    //
-    #ifdef ESP32
-      uint8_t rxNotifyLimit = 63;
-    #else
-      uint8_t rxNotifyLimit = 32;
-    #endif
-
-    //
     // Tell the computer to halt or resume sending data to the board.
     //
-    // Only use these if running a function on the board that disables interrupts for
+    // Use these if running a function on the board that disables interrupts for
     // longer than a single serial character (~85us at 115,200 baud).
     //
     // If the function was initiated by the computer (eg. writing to a WS2812 strip), do
-    // not call sendHalt(). The computer should have halted transmission itself after sending
+    // not call sendHalt(). The computer should halt transmission itself after sending
     // the WS2812 command. Only call sendReady() after data is written out to the strip.
     //
     // If the function was initiated on the board (eg. New IR input triggered by an interrupt),

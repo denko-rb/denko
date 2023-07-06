@@ -1,11 +1,19 @@
 module Denko
   module Connection
     module FlowControl
-      BOARD_BUFFER = 63
       SLEEP_TIME = 0.001
+
+      # Let Board object tell us the remote buffer size after parsing handshake.
+      def remote_buffer_size=(size)
+        @transit_mutex.synchronize { @remote_buffer_size = size }
+      end
 
       def initialize(*args)
         super(*args)
+        # Start with minimum known buffer size. Board will update after handshake.
+        # WARNING: If not updated, and ack threshold on the board is > minimum,
+        # FlowControl will stop sending data, and appear to hang. Fix this.
+        @remote_buffer_size = 63
         reset_flow_control
         tx_resume
       end
@@ -93,7 +101,7 @@ module Denko
       # Keep transit mutex as short as possible, by only reserving bytes, and writing outside.
       def reserve_bytes(length)
         @transit_mutex.synchronize do
-          available = BOARD_BUFFER - @transit_bytes
+          available = @remote_buffer_size - @transit_bytes
           reserved = (length > available) ? available : length
           @transit_bytes += reserved
           reserved

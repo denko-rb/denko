@@ -36,7 +36,7 @@ void Denko::run(){
     parse(stream->read());
     rxBytes ++;
     // Acknowledge when we've received half as many bytes as the serial buffer.
-    if (rxBytes >= rxNotifyLimit) rxNotify();
+    if (rxBytes >= DENKO_RX_ACK_INTERVAL) rxNotify();
   }
 
   #ifdef DENKO_UARTS
@@ -262,22 +262,24 @@ void Denko::handshake() {
   #ifdef DENKO_VERSION
     stream->print(DENKO_VERSION);
   #endif
+  
+  // Third is serial buffer size.
+  stream->print(',');
+  stream->print(DENKO_SERIAL_BUFFER_SIZE);
 
-  // Third is AUX_SIZE.
+  // Fourth is AUX_SIZE.
   stream->print(',');
   stream->print(AUX_SIZE);
   
-  // Fourth is EEPROM size in bytes. None on Due or Zero.
+  // Fifth is EEPROM size. None on Due or Zero.
   stream->print(',');
   #if defined(EEPROM_EMULATED)
   	stream->print(EMULATED_EEPROM_LENGTH);
   #elif defined(EEPROM_PRESENT)
 	  stream->print(EEPROM.length());
-  #else
-    stream->print('0');
   #endif
 
-  // Fifth is I2C buffer size.
+  // Sixth is I2C buffer size.
   stream->print(',');
   #ifdef DENKO_I2C
   	stream->print(DENKO_I2C_BUFFER_SIZE);

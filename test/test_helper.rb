@@ -100,7 +100,12 @@ module Constants
     opts[:on].send(:remove_const, const) if self.class.const_defined?(const)
     opts[:on].const_set(const, value)
   end
-  ACK = "SAMD_ZERO,0.13.0,528,1024,32"
+  # Imaginary handshake ack from the board. Not a real SAMD_ZERO device.
+  # Serial buffer = 256
+  # Aux size = 528
+  # EEPROM size = 1024
+  # I2C buffer = 32
+  ACK = "SAMD_ZERO,0.13.0,256,528,1024,32"
 
   # Some test redefine RUBY_PLATFORM. Save the original to reset it.
   ORIGINAL_RUBY_PLATFORM = RUBY_PLATFORM
@@ -136,6 +141,9 @@ class ConnectionMock
   def write(str); true; end
   def handshake
     Constants::ACK
+  end
+  def remote_buffer_size=(size)
+    @remote_buffer_size = size
   end
 end
 
