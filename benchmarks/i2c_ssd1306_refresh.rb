@@ -25,8 +25,9 @@ require 'denko'
 
 # Settings
 # Must match speed in the sketch for UART briges. Doesn't matter for native USB.
-BAUD_RATE = 230400
+BAUD_RATE = 115_200
 FRAME_COUNT = 100
+# Request 1 Mhz I2C frequency. Wire libraries will fall back to fastest available speed.
 I2C_FREQUENCY = 1_000_000
 # Use :SDA0 for RP2040
 I2C_PIN = :SDA
