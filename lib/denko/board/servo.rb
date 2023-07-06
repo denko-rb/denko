@@ -1,15 +1,11 @@
 module Denko
   class Board
     # CMD = 10
-    def servo_toggle(pin, value=:off, options={})
-      options[:min] ||= 544
-      options[:max] ||= 2400
-      aux = pack :uint16, [options[:min], options[:max]]
-
+    def servo_toggle(pin, value=:off, min: 544, max: 2400)
       write Message.encode  command: 10,
                             pin: pin,
                             value: (value == :off) ? 0 : 1,
-                            aux_message: aux
+                            aux_message: pack(:uint16, [min, max])
     end
 
     # CMD = 11
