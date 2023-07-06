@@ -70,13 +70,6 @@ module Denko
       # Can pass a single integer to get packed if we always [] then flatten.
       str = [data].flatten.pack(template)
 
-      # Pad right with null bytes if asked.
-      if options[:pad] && options[:pad] > str.length
-        (options[:pad] - str.length).times do
-          str = str + "\x00"
-        end
-      end
-
       if options[:min] && str.length < options[:min]
         raise ArgumentError, "too few bytes given (expected at least #{options[:min]})"
       end

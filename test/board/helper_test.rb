@@ -20,10 +20,6 @@ class APIHelperTest < Minitest::Test
     assert_equal pack(:uint8, [25,26]), "\x19\x1A"
   end
   
-  def test_padding
-    assert_equal pack(:uint8, 25, pad: 2), "\x19\x00"
-  end
-  
   def test_min
     assert_raises(ArgumentError) { pack(:uint8, 25, min: 2) }
   end
