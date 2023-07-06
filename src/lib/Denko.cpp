@@ -276,6 +276,12 @@ void Denko::handshake() {
   #else
     stream->print('0');
   #endif
+
+  // Fifth is I2C buffer size.
+  stream->print(',');
+  #ifdef DENKO_I2C
+  	stream->print(DENKO_I2C_BUFFER_SIZE);
+  #endif
   
   // End
   stream->print('\n');

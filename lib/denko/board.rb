@@ -10,12 +10,15 @@ module Denko
       # Connect the IO, and get the ACK.
       @io = io
       ack = io.handshake
-      @name, @version, @aux_limit, @eeprom_length = ack.split(",")
 
-      # Parse map, version and eeprom_legnth.
+      # Get settings from handshake ACK.
+      @name, @version, @aux_limit, @eeprom_length, @i2c_limit = ack.split(",")
+
+      # Parse settings into different types.
       @name          = nil if @name.empty?
       @version       = nil if @version.empty?
       @eeprom_length = @eeprom_length.to_i
+      @i2c_limit     = @i2c_limit.to_i
 
       # Leave room for null termination of aux messages.
       @aux_limit = @aux_limit.to_i - 1

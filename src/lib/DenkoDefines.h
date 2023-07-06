@@ -114,3 +114,19 @@
 #else
   #define AUX_SIZE 272
 #endif
+
+#ifdef DENKO_I2C
+  // RP2040 and SAMD21 can do up to 256, but 255 since 1 byte for length.
+  #if defined(ARDUINO_ARCH_RP2040) || defined(__SAMD21G18A__)
+    #define DENKO_I2C_BUFFER_SIZE 255
+  // ESP32 and ESP8266 can do up to 128.
+  #elif defined(ESP32) || defined(ESP8266)
+    #define DENKO_I2C_BUFFER_SIZE 128
+  // Arduino megaAVR can do up to 128.
+  #elif defined(__AVR_ATmega4809__)
+    #define DENKO_I2C_BUFFER_SIZE 128
+  // Fall back to 32 bytes.
+  #else
+    #define DENKO_I2C_BUFFER_SIZE 32
+  #endif
+#endif

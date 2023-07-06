@@ -100,7 +100,7 @@ module Constants
     opts[:on].send(:remove_const, const) if self.class.const_defined?(const)
     opts[:on].const_set(const, value)
   end
-  ACK = "SAMD_ZERO,0.13.0,528,1024"
+  ACK = "SAMD_ZERO,0.13.0,528,1024,32"
 
   # Some test redefine RUBY_PLATFORM. Save the original to reset it.
   ORIGINAL_RUBY_PLATFORM = RUBY_PLATFORM

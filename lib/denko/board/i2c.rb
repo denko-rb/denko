@@ -7,10 +7,7 @@ module Denko
       3400000 => 0x03,
     }
 
-    # Might make this bigger based on board maps later, but stick with the lowest limit of the AVR boards for now.
-    def i2c_limit
-      32
-    end
+    attr_reader :i2c_limit
 
     def i2c_convert_frequency(freq)
       # Default to 100 kHz.

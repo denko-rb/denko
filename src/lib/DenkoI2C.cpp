@@ -79,7 +79,7 @@ void Denko::i2cWrite() {
   uint8_t dataLength  =  (uint8_t)val;
 
   // Limit to 32 bytes.
-  if (dataLength > 32) dataLength = 32;
+  if (dataLength > DENKO_I2C_BUFFER_SIZE) dataLength = DENKO_I2C_BUFFER_SIZE;
 
   if (!i2cStarted)            i2cBegin();
   if (i2cSpeed != auxMsg[0])  i2cSetSpeed(auxMsg[0]);
@@ -118,7 +118,7 @@ void Denko::i2cRead() {
   uint8_t dataLength      = (uint8_t)val;
 
   // Limit to 32 bytes.
-  if (dataLength > 32) dataLength = 32;
+  if (dataLength > DENKO_I2C_BUFFER_SIZE) dataLength = DENKO_I2C_BUFFER_SIZE;
 
   if (!i2cStarted)            i2cBegin();
   if (i2cSpeed != auxMsg[0])  i2cSetSpeed(auxMsg[0]);
