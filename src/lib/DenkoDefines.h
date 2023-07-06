@@ -123,7 +123,7 @@
   #define DENKO_SERIAL_BUFFER_SIZE 63
   #define DENKO_RX_ACK_INTERVAL 31
 // Many of these are native USB, but these values work even when using a converter.
-#elif defined(ARDUINO_ARCH_RP2040) || defined(__SAMD21G18A__) || defined(ESP32) || defined(ESP8266)
+#elif defined(ARDUINO_ARCH_RP2040) || defined(__SAMD21G18A__) || defined(ESP32) || defined(ESP8266) || defined(__SAM3X8E__)
   #define DENKO_SERIAL_BUFFER_SIZE 256
   #define DENKO_RX_ACK_INTERVAL 64
 // Safe defaults
