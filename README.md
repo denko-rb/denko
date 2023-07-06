@@ -1,4 +1,4 @@
-# Denko 0.13.0 [![Test Status](https://github.com/denko-rb/denko/actions/workflows/ruby.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/ruby.yml)
+# Denko 0.13.1 [![Test Status](https://github.com/denko-rb/denko/actions/workflows/ruby.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/ruby.yml)
 ### Ruby Meets Microcontrollers
 Denko gives you a high-level Ruby interface to low-level hardware, without writing microcontroller code. Use LEDs, buttons, sensors and more, just as easily as any Ruby object:
 
@@ -14,23 +14,21 @@ button.down do
 end
 ```
 
-Denko doesn't run Ruby on the microcontroller (see [mruby-denko](#mruby-denko) for that). It runs C++ firmware that exposes as much low-level I/O as possible, so we can use it in Ruby. It becomes a peripheral for your computer.
+Denko doesn't run Ruby on the microcontroller (see [mruby-denko](#mruby-denko)). It runs custom Arduino firmware that exposes its I/O interfaces to Ruby running on your computer. Your microcontroller, and anything you connect to it, map directly to Ruby objects, so you can think about your hardware and appplication logic, not everything in between.
 
-High-level abstraction in Ruby makes hardware classes easy to implement, with intuitive interfaces. They multitask a single core microcontroller, with thread-safe state, and callbacks for inputs, but no "task" priority. If you need more I/O, integration is seamless. Connect another board and instantiate it in Ruby.
-
-Each peripheral connected to your microcontroller(s) maps to a Ruby object you can use directly. You get to think about your hardware and appplication logic, not everything in between.
+High-level abstraction in Ruby makes hardware classes easy to implement, with intuitive interfaces. They multitask a single core microcontroller, with thread-safe state, and callbacks for inputsy. If you need more I/O, integration is seamless; connect another board and instantiate it in Ruby.
 
 ### Supported Hardware
 
 Full list of supported mircocontroller platforms, interfaces, and peripherals is located [here](HARDWARE.md).
 
 ##### denko-piboard
-There's an add-on for this gem  in development, [denko-piboard](https://github.com/denko-rb/denko-piboard), which supports the Raspberry Pi's built in GPIO pins, as `Denko::PiBoard`, class-compatible with `Denko::Board`. Connect peripherals directly to the Pi, with no microcontroller between, then use the same peripheral classes from this gem.
+There's an add-on  in development, [denko-piboard](https://github.com/denko-rb/denko-piboard), which supports the Raspberry Pi's built in GPIO pins, as `Denko::PiBoard`, class-compatible with `Denko::Board`. Connect peripherals directly to the Pi, with no microcontroller between, then use the peripheral classes from this gem.
 
 ##### mruby-denko
 A solo Raspberry Pi (or other small SBC + microcontroller) is a great standalone setup if your project needs the compute power anyway, but what if you don't? Why not run Ruby on the microcontroller itself? 
 
-That's the goal of [mruby-denko](https://github.com/denko-rb/mruby-denko). Write mruby on the ESP32, using peripheral classes as close to this gem as possible. Still early in development, and limited features, but already working.
+That's the goal of [mruby-denko](https://github.com/denko-rb/mruby-denko): write mruby on the ESP32, using peripheral classes as close to this gem as possible. Still early in development, so limited features, but already usable.
 
 ## Getting Started
 
@@ -61,23 +59,15 @@ Denko uses Arduino cores, which add support for microcontrollers, and a few libr
 #### 4. Generate the Arduino Sketch
 The `denko` command is included with the gem. It will make the Arduino sketch folder for you, and configure it.
 
-**For ATmega boards, Serial over USB:** (Arduino Uno, Nano, Mega, Leonardo, Micro)
+**Example for ESP32 target on both serial and Wi-Fi:**
 ```shell
-denko sketch serial
-```
-
-**For ESP8266, Serial over USB:**
-```shell
-denko sketch serial --target esp8266
-```
-
-**For ESP8266 or ESP32 over WiFi (2.4Ghz and DHCP Only):**
-```shell
-denko sketch wifi --target esp8266 --ssid YOUR_SSID --password YOUR_PASSWORD
+denko sketch serial --target esp32
 denko sketch wifi --target esp32 --ssid YOUR_SSID --password YOUR_PASSWORD
-```
 
-**Note:** [This example](examples/connection/tcp.rb) shows how to connect to a board with a TCP socket, but the WiFi & Ethernet sketches fall back to the Serial interface when no TCP client is connected.
+# For more options
+denko targets
+```
+**Note:** Boards flashed with a Wi-Fi or Ethernet sketch will [listen for a TCP connection](examples/connection/tcp.rb), but fall back to Serial when there is none active.
 
 #### 5a. IDE Flashing
 
@@ -89,6 +79,7 @@ denko sketch wifi --target esp32 --ssid YOUR_SSID --password YOUR_PASSWORD
 **Troubleshooting:**
 * If your serial port is in the list, but the board is wrong, select the serial port anyway, then you will be asked to manually select a board.
 * If your board doesn't show up at all, make sure it is connected properly. Try disconnecting and reconnecting, use a different USB port or cable, or press the reset button after plugging it in.
+* Some boards may be in a state where you have to hold their "boot" button while cycling power (reconnect or reset) for them to enter firmware update mode. Eg. Raspberry Pi Pico, ESP32-S2/S3.
 
 #### 5b. CLI Flashing
 
