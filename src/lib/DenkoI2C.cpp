@@ -6,20 +6,20 @@
 
 #include <Wire.h>
 
-bool i2cStarted = false;
-
 // Only start the I2C interface if not already started.
 // Lazy initialization in case user wants to use I2C pins for something else.
 void Denko::i2cBegin() {
   if (!i2cStarted) {
     Wire.begin();
     i2cStarted = true;
+    i2cSetSpeed(0);
   }
 }
 
 // End the I2C interface.
 // This is mostly used as a Reset in Denko::handshake.
 void Denko::i2cEnd(){
+  i2cSetSpeed(0);
   // ESP8266 core does not define Wire.end()
   #ifndef ESP8266
     Wire.end();
@@ -36,6 +36,7 @@ void Denko::i2cSetSpeed(uint8_t code) {
     case 3:  Wire.setClock(3400000); break;
     default: Wire.setClock(100000);  break;
   }
+  i2cSpeed = code;
 }
 
 // CMD = 33
@@ -43,7 +44,8 @@ void Denko::i2cSetSpeed(uint8_t code) {
 void Denko::i2cSearch() {
   byte error;
   uint8_t addr;
-  i2cBegin();
+  if (!i2cStarted) i2cBegin();
+  i2cSetSpeed(0);
   stream->print(SDA);
 
   // Only addresses from 0x08 to 0x77 are usable (8 to 127).
@@ -79,8 +81,8 @@ void Denko::i2cWrite() {
   // Limit to 32 bytes.
   if (dataLength > 32) dataLength = 32;
 
-  i2cBegin();
-  i2cSetSpeed(auxMsg[0]);
+  if (!i2cStarted)            i2cBegin();
+  if (i2cSpeed != auxMsg[0])  i2cSetSpeed(auxMsg[0]);
 
   Wire.beginTransmission(address);
   Wire.write(&auxMsg[1], dataLength);
@@ -118,8 +120,8 @@ void Denko::i2cRead() {
   // Limit to 32 bytes.
   if (dataLength > 32) dataLength = 32;
 
-  i2cBegin();
-  i2cSetSpeed(auxMsg[0]);
+  if (!i2cStarted)            i2cBegin();
+  if (i2cSpeed != auxMsg[0])  i2cSetSpeed(auxMsg[0]);
   
   // Optionally write up to a 4 byte register address before reading.
   if ((auxMsg[1] > 0) && (auxMsg[1] < 5)) {

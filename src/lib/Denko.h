@@ -154,6 +154,8 @@ class Denko {
     void spiClearListeners     ();
 
     // I2C
+    bool i2cStarted = false;
+    byte i2cSpeed   = 0;
     void i2cBegin              ();
     void i2cEnd                ();
     void i2cSetSpeed           (uint8_t code);
