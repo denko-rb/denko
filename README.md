@@ -32,14 +32,12 @@ That's the goal of [mruby-denko](https://github.com/denko-rb/mruby-denko): write
 
 ## Getting Started
 
-**Note:** If using Ruby in WSL on Windows, you can follow the Mac/Linux instructions, but it is not recommended. Serial (COM port) forwarding isn't currently working on WSL2, which would make it impossible to communicate with the microcontroller. There are workarounds, and you might get it working by switching to WSL1, but the [RubyInstaller for Windows](https://rubyinstaller.org/) and Arduino IDE are recommended instead.
+**Note:** If using Windows, you can follow the Mac/Linux instructions in WSL, but it is not recommended. Serial (COM port) forwarding isn't working on WSL2, which means you can't communicate with the board. There are workarounds, and it might work on WSL1, but the [RubyInstaller for Windows](https://rubyinstaller.org/) and Arduino IDE are recommended instead. A Linux virtual machine with USB passthrough works too.
 
 #### 1. Install the Gem
 ```shell
 gem install denko
 ```
-
-Before using the microcontroller in Ruby, we need to flash it with the denko firmware (or "sketch" in Arduino lingo). This is needed **once** for each board, but future versions may need reflashing to add functionality.
 
 #### 2. Install the Arduino IDE OR CLI
 
@@ -52,7 +50,7 @@ brew install arduino-cli
 ```
 
 #### 3. Install Arduino Dependencies
-Denko uses Arduino cores, which add support for microcontrollers, and a few libraries. Install only the ones for your microcontroller, or install everything. There are no conflcits. Instructions for supported microcontrollers:
+Denko uses Arduino cores, which support different microcontrollers, and a few libraries. Install only the ones for your microcontroller, or install everything. There are no conflcits. Instructions:
   * [Install Dependencies in IDE](DEPS_IDE.md) 
   * [Install Dependencies in CLI](DEPS_CLI.md) 
 
