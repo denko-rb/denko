@@ -5,13 +5,15 @@ require 'bundler/setup'
 require 'denko'
 
 #
-# For the Arduino Zero: 'DAC0' = 'A0' = GPIO14.
-# For the ESP32 V1:     'DAC0' = GPIO25, 'DAC1' = GPIO26, `ADC1_4` = 32
+# Arduino Zero:   :DAC0 is :A0 is GPIO14
+# Arduino UNO R4: :DAC  is :A0 is GPIO14
+# ESP32 V1:       :DAC0 is GPIO25, :DAC1 is GPIO26, :A4 is GPIO32
+# ESP32-S2:       :DAC0 is GPIO17, :DAC1 is GPIO18, :A4 is GPIO5
 #
 # Connect DAC_PIN TO ADC_PIN with a jumper to test.
 #
-DAC_PIN = 'DAC0'
-ADC_PIN = 'A5'
+DAC_PIN = :DAC0
+ADC_PIN = :A4
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
 dac = Denko::AnalogIO::Output.new(pin: DAC_PIN, board: board)

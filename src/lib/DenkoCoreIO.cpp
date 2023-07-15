@@ -27,8 +27,8 @@ void Denko::setMode(byte p, byte m) {
     if (m != 0b100) dacDisable(p);
   #endif
       
-  // On the SAMD21, mode needs to be INPUT when using the DAC.
-  #ifdef __SAMD21G18A__
+  // On the SAMD21 and RA4M1, mode needs to be INPUT when using the DAC.
+  #if defined(__SAMD21G18A__) || defined(_RENESAS_RA_)
     if (m == 0b100){
       pinMode(p, INPUT);
       return;
@@ -196,7 +196,7 @@ void Denko::dacWrite(byte p, int v, boolean echo) {
     ::dacWrite(p, v);
   #endif
     
-  #if defined(__SAM3X8E__) || defined(__SAMD21G18A__)
+  #if defined(__SAM3X8E__) || defined(__SAMD21G18A__) || defined(_RENESAS_RA_)
     analogWrite(p, v);
   #endif
 }
