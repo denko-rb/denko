@@ -26,7 +26,7 @@
 | :--------      | :------:        | :--------------- |------ |
 | ATSAM3X8E      | :yellow_heart:  | Due | Native USB port. Tone, and IR Out don't work.
 | ATSAMD21       | :green_heart:   | Zero, M0, M0 Pro | Native USB port
-| RA4M1          | :heart:         | Uno R4 Minima, Uno R4 WiFi | No IR Out. Untested
+| RA4M1          | :yellow_heart:  | Uno R4 Minima, Uno R4 WiFi | IR Out and WS2812 unsupported. UART & Wi-Fi untested
 
 ### Arduino Accessories
 
@@ -82,7 +82,7 @@
 | Digital Out           | :green_heart:   | `DigitalIO::Output`  | -     |
 | Digital In            | :green_heart:   | `DigitalIO::Input`   | 1ms - 128ms (4ms default) listen, poll, or read
 | PWM Out               | :green_heart:   | `PulseIO::PWMOutput` |
-| Analog Out (DAC)      | :green_heart:   | `AnalogIO::Output`   | On SAM3X, SAMD21 and some ESP32
+| Analog Out (DAC)      | :green_heart:   | `AnalogIO::Output`   | SAM3X, SAMD21, RA4M1, ESP32, ESP32-S2
 | Analog In (ADC)       | :green_heart:   | `AnalogIO::Input`    | 1ms - 128ms (16ms default) listen, poll, or read
 | Tone Out (Square Wave)| :green_heart:   | `PulseIO::Buzzer`    | Doesn't work on Due (SAM3X)
 

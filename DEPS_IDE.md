@@ -31,6 +31,7 @@ All platforms will require libraries to be installed. To install a library do th
     Arduino megaAVR Boards
     Arduino SAM Boards (32-bits ARM Cortex-M3)
     Arduino SAMD Boards (32-bits ARM Cortex-M0+)
+    Arduino UNO R4 Boards
     ESP8266 Boards
     ESP32 Boards    
     ````    
@@ -64,6 +65,7 @@ All platforms will require libraries to be installed. To install a library do th
     ````
     Arduino SAM Boards (32-bits ARM Cortex-M3)
     Arduino SAMD Boards (32-bits ARM Cortex-M0+)
+    Arduino UNO R4 Boards
     ````    
   * Libraries:
     ````
