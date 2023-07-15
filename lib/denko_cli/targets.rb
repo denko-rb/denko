@@ -20,8 +20,8 @@ class DenkoCLI::Generator
     # No EEPROM on SAMD / Zero.
     samd: STANDARD_PACKAGES - [:eeprom],
 
-    # Everything except infrared compiles on UNO R4.
-    ra4m1: STANDARD_PACKAGES - [:ir_out],
+    # No IR out and WS2812 on the UNO R4. WS2812 compiles but doesn't work.
+    ra4m1: STANDARD_PACKAGES - [:ir_out, :led_array],
 
     # ESP8266 + ESP32 use a different IR library.
     esp8266: STANDARD_PACKAGES - [:ir_out] + [:ir_out_esp],
