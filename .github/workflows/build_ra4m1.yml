@@ -1,4 +1,4 @@
-name: Build / SAMD
+name: Build / RA4M1
 
 on:
   workflow_dispatch:
@@ -33,7 +33,6 @@ jobs:
               - name: arduino:renesas_uno
             libraries: |
               - name: Servo
-              - name: LiquidCrystal
               - name: Ethernet
               - name: WiFi
               - name: Adafruit NeoPixel

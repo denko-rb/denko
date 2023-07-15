@@ -34,9 +34,8 @@ jobs:
                 source-url: https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
             libraries: |
               - name: Servo
-              - name: LiquidCrystal
               - name: IRremote
-                version: 4.0.0
+                version: 4.1.2
               - name: Ethernet
               - name: WiFi
                 
@@ -51,11 +50,10 @@ jobs:
         run: echo "path=$(./bin/denko sketch ${{ matrix.sketches.name }} --target ${{ matrix.board.denko-target }})" >> $GITHUB_OUTPUT
 
       - name: Compile Arduino Sketches
-        uses: arduino/compile-sketches@v1.0.1
+        uses: arduino/compile-sketches@v1.1.0
         with:
           platforms: ${{ matrix.board.platforms }}
           fqbn: ${{ matrix.board.fqbn }}
           libraries: ${{ matrix.board.libraries }}
           sketch-paths: |
             - ${{ steps.generate.outputs.path }}
-            

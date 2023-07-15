@@ -3,7 +3,8 @@
 :green_heart: Full support :yellow_heart: Partial support :heart: Planned. No support yet :question: Works in theory. Untested in real hardware.
 
 ### AVR/MegaAVR Based in Arduino Products (and Clones)
-[![AVR Build Status](https://github.com/denko-rb/denko/actions/workflows/build_avr.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_avr.yml) [![MegaAVR Build Status](https://github.com/denko-rb/denko/actions/workflows/build_megaavr.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_megaavr.yml)
+[![AVR Build Status](https://github.com/denko-rb/denko/actions/workflows/build_avr.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_avr.yml)
+[![MegaAVR Build Status](https://github.com/denko-rb/denko/actions/workflows/build_megaavr.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_megaavr.yml)
 
 |    Chip        | Status          | Products         | Notes |
 | :--------      | :------:        | :--------------- |------ |
@@ -17,13 +18,15 @@
 **Note:** Only USB boards listed. Any board with a supported chip should work, once you can flash it and connect to serial.
 
 ### ARM Based Arduino Products (and Clones)
-[![SAM3X Build Satus](https://github.com/denko-rb/denko/actions/workflows/build_sam3x.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_sam3x.yml) [![SAMD Build Satus](https://github.com/denko-rb/denko/actions/workflows/build_samd.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_samd.yml)
+[![SAM3X Build Satus](https://github.com/denko-rb/denko/actions/workflows/build_sam3x.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_sam3x.yml)
+[![SAMD Build Satus](https://github.com/denko-rb/denko/actions/workflows/build_samd.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_samd.yml)
+[![RA4M1 Build Satus](https://github.com/denko-rb/denko/actions/workflows/build_ra4m1.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_ra4m1.yml)
 
 |    Chip        | Status          | Products         | Notes |
 | :--------      | :------:        | :--------------- |------ |
 | ATSAM3X8E      | :yellow_heart:  | Due | Native USB port. Tone, and IR Out don't work.
 | ATSAMD21       | :green_heart:   | Zero, M0, M0 Pro | Native USB port
-| RA4M1          | :heart:         | Uno R4 Minima, Uno R4 WiFi |
+| RA4M1          | :heart:         | Uno R4 Minima, Uno R4 WiFi | No IR Out. Untested
 
 ### Arduino Accessories
 
@@ -33,8 +36,9 @@
 | HDG204 + AT32UC3      | :question:      | WiFi Shield      | WiFi for Uno. No hardware to test, but compiles
 | ATWINC1500            | :question:      | WiFi Shield 101  | Same as above, high memory use, Mega only
 
-### Espressif Chips with Built-In WiFi
-[![ESP8266 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp8266.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp8266.yml) [![ESP32 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32.yml)
+### Espressif Chips with Built-In Wi-Fi
+[![ESP8266 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp8266.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp8266.yml)
+[![ESP32 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32.yml)
 
 |    Chip        | Status          | Board Tested         | Notes |
 | :--------      | :------:        | :---------------     |------ |
@@ -57,7 +61,7 @@
 # Single Board Computers
 
 ### Raspberry Pi Single Board Computers
-**Note:** See the [denko-piboard](https://github.com/denko-rb/denko-piboard) extension to this gem. It uses the peripheral classes from this gem, but swaps out `Board` for `PiBoard`, which uses the Raspberry Pi's built-in GPIPO interface. This is still a work-in-progress.
+**Note:** See the [denko-piboard](https://github.com/denko-rb/denko-piboard) extension to this gem. It uses the peripheral classes from this gem, but swaps out `Board` for `PiBoard`, which uses the Raspberry Pi's built-in GPIO interface. This is still a work-in-progress.
 
 |    Chip        | Status          | Products              | Notes |
 | :--------      | :------:        | :---------------      |------ |
