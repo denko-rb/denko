@@ -229,27 +229,27 @@ module Denko
       end
       
       def write4(bits)
-        d4.write bits[4]
-        d5.write bits[5]
-        d6.write bits[6]
-        d7.write bits[7]
+        d4.write bits[4].to_i
+        d5.write bits[5].to_i
+        d6.write bits[6].to_i
+        d7.write bits[7].to_i
         pulse_enable
-        d4.write bits[0]
-        d5.write bits[1]
-        d6.write bits[2]
-        d7.write bits[3]
+        d4.write bits[0].to_i
+        d5.write bits[1].to_i
+        d6.write bits[2].to_i
+        d7.write bits[3].to_i
         pulse_enable
       end
 
       def write8(bits)
-        d0.write bits[0]
-        d1.write bits[1]
-        d2.write bits[2]
-        d3.write bits[3]
-        d4.write bits[4]
-        d5.write bits[5]
-        d6.write bits[6]
-        d7.write bits[7]
+        d0.write bits[0].to_i
+        d1.write bits[1].to_i
+        d2.write bits[2].to_i
+        d3.write bits[3].to_i
+        d4.write bits[4].to_i
+        d5.write bits[5].to_i
+        d6.write bits[6].to_i
+        d7.write bits[7].to_i
         pulse_enable
       end
 

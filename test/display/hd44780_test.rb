@@ -20,4 +20,14 @@ class HD44780Test < MiniTest::Test
     
     end 
   end
+
+  def test_write4
+    part.write4 "10100101"
+
+    # Pin states should match lower 4 bits, since they are sent last.
+    assert_equal 1, part.d4.state
+    assert_equal 0, part.d5.state
+    assert_equal 1, part.d6.state
+    assert_equal 0, part.d7.state
+  end
 end

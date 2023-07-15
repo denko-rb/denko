@@ -6,9 +6,9 @@ require 'denko'
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
 lcd = Denko::Display::HD44780.new  board: board,
-                                  pins: { rs: 8, enable: 9, d4: 4, d5: 5, d6: 6, d7: 7 },
-                                  cols: 16,
-                                  rows: 2
+                                   pins: { rs: 8, enable: 9, d4: 4, d5: 5, d6: 6, d7: 7 },
+                                   cols: 16,
+                                   rows: 2
 
 # Bitmap for a custom character. 5 bits wide x 8 high.
 # Useful for generating these: https://omerk.github.io/lcdchargen/
