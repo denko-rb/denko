@@ -113,7 +113,7 @@ void Denko::process() {
     case 6:  setListener         (pin, val, auxMsg[0], auxMsg[1], false); break;
 
     // Implemented in DenkoEEPROM.cpp
-    #ifdef EEPROM_PRESENT
+    #ifdef DENKO_EEPROM
     case 7:  eepromRead           (); break;
     case 8:  eepromWrite          (); break;
     #endif

@@ -11,14 +11,14 @@ class DenkoCLI::Generator
     mega168: [:core, :one_wire, :tone, :i2c, :spi, :servo],
 
     # Other ATmega chips do everything.
-    # Add bit bang serial for 328p / UNO since ith as no extra hardware UART.
+    # Add bit bang serial for 328p / UNO since it has no extra hardware UART.
     mega: STANDARD_PACKAGES + [:uart_bb],
 
-    # No tone or IR support on SAM3X / Due.
-    sam3x: STANDARD_PACKAGES - [:tone, :ir_out],
+    # No tone, infrared or EEPROM on SAM3X / Due.
+    sam3x: STANDARD_PACKAGES - [:tone, :ir_out, :eeprom],
     
-    # SAMD includes all standard packages.
-    samd: STANDARD_PACKAGES,
+    # No EEPROM on SAMD / Zero.
+    samd: STANDARD_PACKAGES - [:eeprom],
 
     # ESP8266 + ESP32 use a different IR library.
     esp8266: STANDARD_PACKAGES - [:ir_out] + [:ir_out_esp],

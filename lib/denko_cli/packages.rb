@@ -12,8 +12,14 @@ PACKAGES = {
       "Denko.cpp",
       "DenkoCoreIO.cpp",
       "DenkoPulseInput.cpp",
-      "DenkoEEPROM.cpp",
       "../../vendor/board-maps/BoardMap.h",
+    ]
+  },
+  eeprom: {
+    description: "Built-in EEPROM support",
+    directive: "DENKO_EEPROM",
+    files: [
+      "DenkoEEPROM.cpp",
     ]
   },
   one_wire: {

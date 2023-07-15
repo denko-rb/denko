@@ -3,7 +3,15 @@
 //
 #include "Denko.h"
 
-#ifdef EEPROM_PRESENT
+#ifdef DENKO_EEPROM
+#include <EEPROM.h>
+
+// Emulate 512 bytes of EEPROM on ESP chips and the RP2040.
+#if defined(ESP8266) || defined(ESP32) || defined(ARDUINO_ARCH_RP2040)
+  #define EEPROM_EMULATED
+  #define EMULATED_EEPROM_LENGTH 512
+#endif
+
 // CMD = 6
 // Read from the microcontroller's EEPROM.
 //

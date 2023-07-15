@@ -8,6 +8,7 @@
 #define DENKO_VERSION __VERSION__
 
 // Uncomment these to include features beyond core features.
+// #define DENKO_EEPROM
 // #define DENKO_ONE_WIRE
 // #define DENKO_TONE
 // #define DENKO_SPI_BB
@@ -37,18 +38,6 @@
   #define PIN_COUNT 26
 #else
   #define PIN_COUNT 22
-#endif
-
-// No EEPROM on the Due or Zero.
-#if !defined(__SAM3X8E__) && !defined(__SAMD21G18A__)
-  #define EEPROM_PRESENT
-  #include <EEPROM.h>
-#endif
-
-// Emulate 512 bytes of EEPROM on ESP chips and the RP2040.
-#if defined(ESP8266) || defined(ESP32) || defined(ARDUINO_ARCH_RP2040)
-#  define EEPROM_EMULATED
-#  define EMULATED_EEPROM_LENGTH 512
 #endif
 
 // Figure out how many LEDC channels are available on ESP32 boards.
