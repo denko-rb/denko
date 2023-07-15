@@ -123,6 +123,10 @@
 #if defined(ARDUINO_ARCH_RP2040) ||  defined(ESP32) || defined(ESP8266) || defined(__SAM3X8E__)
   #define DENKO_SERIAL_BUFFER_SIZE 256
   #define DENKO_RX_ACK_INTERVAL 64
+// RA4M1 has a 512 Serial buffer.
+#elif defined(_RENESAS_RA_)
+  #define DENKO_SERIAL_BUFFER_SIZE 512
+  #define DENKO_RX_ACK_INTERVAL 64
 // SAMD21 is 256/64 in native USB mode ONLY. Must use defaults on programming port to avoid data loss.
 #elif defined(__SAMD21G18A__) && defined(DENKO_USB_CDC)
   #define DENKO_SERIAL_BUFFER_SIZE 256
@@ -142,11 +146,8 @@
   // RP2040 and SAMD21 can do up to 256, but 255 since 1 byte for length.
   #if defined(ARDUINO_ARCH_RP2040) || defined(__SAMD21G18A__)
     #define DENKO_I2C_BUFFER_SIZE 255
-  // ESP32 and ESP8266 can do up to 128.
-  #elif defined(ESP32) || defined(ESP8266)
-    #define DENKO_I2C_BUFFER_SIZE 128
-  // Arduino megaAVR can do up to 128.
-  #elif defined(__AVR_ATmega4809__)
+  // ESP32, ESP8266 and megaAVR can do up to 128.
+  #elif defined(ESP32) || defined(ESP8266) || defined(__AVR_ATmega4809__)
     #define DENKO_I2C_BUFFER_SIZE 128
   // Fall back to 32 bytes.
   #else

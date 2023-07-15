@@ -5,8 +5,8 @@
 # RESULTS:
 # July 6 2023 | i7 8700k CPU | CRuby 3.2.1 | 100 frames | 1 Mhz I2C frequency | Average of 3 runs
 #
-#   Arduino Uno V3      :  5.3 fps (ATmega16u2 UART bridge @ 115200, no I2C level shifter)
-#   Arduino Uno V3      :  7.1 fps (ATmega16u2 UART bridge @ 230400, no I2C level shifter)
+#   Arduino Uno R3      :  5.3 fps (ATmega16u2 UART bridge @ 115200, no I2C level shifter)
+#   Arduino Uno R3      :  7.1 fps (ATmega16u2 UART bridge @ 230400, no I2C level shifter)
 #   Arduino Leonardo    : 12.9 fps (native USB, no I2C level shifter)
 #   Arduino Due         : 43.0 fps (native USB)
 #   Arduino Due         :  7.9 fps (programming USB @ 115200)
@@ -19,6 +19,11 @@
 #   ESP32 V1            : 19.4 fps (Silicon Labs UART bridge @ 230400)
 #   ESP32-S3            : 58.8 fps (native USB)
 #   Raspberry Pi Pico W : 36.4 fps (native USB)
+#
+# July 15 2023 | i7 8700k CPU | CRuby 3.2.1 | 100 frames | 1 Mhz I2C frequency | Average of 3 runs
+#
+#   Arduino Uno R4      :  7.5 fps (native USB @ 115200, 32-byte I2C limit, no I2C level shifter)
+#   Arduino Uno R4      :  7.8 fps (native USB @ 230400, 32-byte I2C limit, no I2C level shifter)
 #
 require 'bundler/setup'
 require 'denko'
