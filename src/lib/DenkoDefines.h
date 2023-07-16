@@ -52,12 +52,12 @@
 #endif
 
 // Filter for boards that can set their analog write resolution.
-#if defined(__SAM3X8E__) || defined(__SAMD21G18A__) || defined(ESP32) || defined(ARDUINO_ARCH_RP2040) || defined(ESP8266)
+#if defined(__SAM3X8E__) || defined(__SAMD21G18A__) || defined(_RENESAS_RA_) || defined(ESP32) || defined(ARDUINO_ARCH_RP2040) || defined(ESP8266)
   #define WRITE_RESOLUTION_SETTER
 #endif
 
 // Filter for boards that can set their analog read resolution.
-#if defined(__SAM3X8E__) || defined(__SAMD21G18A__) || defined(ESP32) || defined(ARDUINO_ARCH_RP2040)
+#if defined(__SAM3X8E__) || defined(__SAMD21G18A__) || defined(_RENESAS_RA_) || defined(ESP32) || defined(ARDUINO_ARCH_RP2040)
   #define READ_RESOLUTION_SETTER
 #endif
 
@@ -83,7 +83,7 @@
   #elif defined(ESP8266) && defined(SERIAL_PORT_HARDWARE_OPEN)
     #define DENKO_UARTS 1
 
-  // This works for all the Atmel cores.
+  // This works for all the Atmel cores except RA4M1.
   #else
     #if defined(SERIAL_PORT_HARDWARE3)
       #define DENKO_UARTS 3
