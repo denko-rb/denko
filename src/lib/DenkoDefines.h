@@ -42,7 +42,13 @@
 
 // Figure out how many LEDC channels are available on ESP32 boards.
 #ifdef ESP32
-  #define LEDC_CHANNEL_COUNT 16
+  #if CONFIG_IDF_TARGET_ESP32
+    #define LEDC_CHANNEL_COUNT 16
+  #elif CONFIG_IDF_TARGET_ESP32S2 || CONFIG_IDF_TARGET_ESP32S3
+    #define LEDC_CHANNEL_COUNT 8
+  #elif CONFIG_IDF_TARGET_ESP32C3
+    #define LEDC_CHANNEL_COUNT 6
+  #endif
 #endif
 
 // Filter for boards that can set their analog write resolution.
