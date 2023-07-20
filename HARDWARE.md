@@ -113,7 +113,6 @@ Polling and reading follow a call and response pattern.
 | 7 Segment Display| :yellow_heart: | Digital Out  | `LED::SevenSegment`        | No decimal point
 | Button           | :green_heart:  | Digital In   | `DigitalIO::Button`        |
 | Rotary Encoder   | :green_heart:  | Digital In   | `DigitalIO::RotaryEncoder` | Listens every 1ms
-| PIR Sensor       | :yellow_heart: | Digital In   | `DigitalIO::Input`         | Needs class. HC-SR501 
 | Analog Sensor    | :green_heart:  | Analog In    | `AnalogIO::Sensor`         |
 | Potentiometer    | :green_heart:  | Analog In    | `AnalogIO::Potentiometer`  | Smoothing on by default
 | Piezo Buzzer     | :green_heart:  | Tone Out     | `PulseIO::Buzzer`          | Frequency > 30Hz
@@ -121,6 +120,21 @@ Polling and reading follow a call and response pattern.
 | Output Register  | :green_heart:  | SPI          | `SPI::OutputRegister`      | Tested on 74HC595
 
 **Note:** Most Digital In and Out peripherals can be used seamlessley through Input and Output Registers respectively.
+
+###  LEDs
+
+| Name               | Status             | Interface         | Component Class    | Notes |
+| :---------------   | :------:           | :--------         | :---------------   |------ |
+| TM1637             | :heart:            | BitBang SPI       | `LED::TM1637`      | 4 Seven Segment + Colon
+| Neopixel / WS2812B | :yellow_heart:     | Adafruit Library  | `LED::WS2812`      | Not working on RP2040 |
+| Dotstar / APA102   | :green_heart:      | SPI               | `LED::APA102`      |
+
+### Displays
+
+| Name                     | Status         | Interface                    | Component Class     | Notes |
+| :---------------         | :------:       | :--------                    | :---------------    |------ |
+| HD44780 LCD              | :green_heart:  | Digital Out, Output Register | `Display::HD44780`  |
+| SSD1306 OLED             | :yellow_heart: | I2C                          | `Display::SSD1306`  | 1 font, some graphics
 
 ### Motors / Motor Drivers
 
@@ -131,58 +145,53 @@ Polling and reading follow a call and response pattern.
 | A3967                | :green_heart:  | Digital Out    | `Motor::Stepper`   | 1ch microstepper (EasyDriver)
 | PCA9685              | :heart:        | I2C            | `PulseIO::PCA9685` | 16ch 12-bit PWM for servo or LED
 
-### Displays
-
-| Name                     | Status         | Interface                    | Component Class     | Notes |
-| :---------------         | :------:       | :--------                    | :---------------    |------ |
-| HD44780 LCD              | :green_heart:  | Digital Out, Output Register | `Display::HD44780`  | 
-| SSD1306 OLED             | :yellow_heart: | I2C                          | `Display::SSD1306`  | 1 font, some graphics
-
-### Addressable LEDs
-
-| Name               | Status             | Interface         | Component Class    | Notes |
-| :---------------   | :------:           | :--------         | :---------------   |------ |
-| Neopixel / WS2812B | :yellow_heart:     | Adafruit Library  | `LED::WS2812`      | Not working on RP2040 |
-| Dotstar / APA102   | :green_heart:      | SPI               | `LED::APA102`      |
-
 ### I/O Expansion
 
 | Name             | Status         | Interface  | Component Class      | Notes |
 | :--------------- | :------:       | :--------  | :---------------     |------ |
 | PCF8574 Expander | :heart:        | I2C        | `DigitalIO::PCF8574` | 8ch bi-directional digital I/O
+| ADS1100 ADC      | :heart:        | I2C        | `AnalogIO::ADS1100`  | 15-bit +/- 1ch ADC
 | ADS1115 ADC      | :heart:        | I2C        | `AnalogIO::ADS1115`  | 15-bit +/- 4ch ADC
 | ADS1118 ADC      | :green_heart:  | SPI        | `AnalogIO::ADS1118`  | 15-bit +/- 4ch ADC, and temperature
 | PCF8591 ADC/DAC  | :heart:        | I2C        | `AnalogIO::PCF8591`  | 4ch ADC + 1ch DAC, 8-bit resolution
+| MCP4725 DAC      | :heart:        | I2C        | `AnalogIO::MCP4275`  | 1ch 12-bit DAC
 
 ### Environmental Sensors
 
 | Name             | Status         | Interface   | Component Class    | Notes |
 | :--------------- | :------:       | :--------   | :---------------   |------ |
-| DHT 11/21/22     | :green_heart:  | Digi In/Out | `Sensor::DHT`      | Temp/RH
 | DS18B20          | :green_heart:  | OneWire     | `Sensor::DS18B20`  | Temp
+| DHT 11/21/22     | :green_heart:  | Digi In/Out | `Sensor::DHT`      | Temp/RH
+| SHT30            | :heart:        | I2C         | `Sensor::SHT30`    | Temp/RH
+| QMP6988          | :heart:        | I2C         | `Sensor::QMP6988`  | Pressure
 | BME280           | :green_heart:  | I2C         | `Sensor::BME280`   | Temp/RH/Press
 | BMP280           | :green_heart:  | I2C         | `Sensor::BMP280`   | Temp/Press
 | HTU21D           | :green_heart:  | I2C         | `Sensor::HTU21D`   | Temp/RH. Locks I2C bus during read. No user register read.
 | HTU31D           | :yellow_heart: | I2C         | `Sensor::HTU31D`   | Temp/RH. No diagnostic read yet.
 | AHT10/15         | :green_heart:  | I2C         | `Sensor::AHT10`    | Temp/RH. Always uses calibrated mode.
 | AHT20/21/25      | :green_heart:  | I2C         | `Sensor::AHT20`    | Temp/RH. Always uses calibrated mode and CRC.
-| MAX31850         | :heart:        | OneWire     | `Sensor::MAX31850` | Thermocouple Amplifier
 | ENS160           | :heart:        | I2C         | `Sensor::ENS160`   | CO2e/TVOC/AQI
 | AGS02MA          | :heart:        | I2C         | `Sensor::AGS02MA`  | TVOC
+| MAX31850         | :heart:        | OneWire     | `Sensor::MAX31850` | Thermocouple Amplifier
 
-### Light Sensors
+### Light / Motion Sensors
 
-| Name             | Status         | Interface | Component Class   | Notes |
-| :--------------- | :------:       | :-------- | :---------------  |------ |
-| APDS9960         | :heart:        | I2C       | `Sensor::APDS9960`| Proximity, RGB, Gesture
+| Name             | Status         | Interface    | Component Class    | Notes |
+| :--------------- | :------:       | :--------    | :---------------   |------ |
+| BH1750           | :heart:        | Digital In   | `Sensor::BH1750`   | Ambient Light
+| HC-SR501         | :yellow_heart: | Digital In   | `DigitalIO::Input` | PIR. Needs class: `Sensor::HC-SR501`
+| AS312            | :heart:        | I2C          | `Sensor::AS312`    | PIR
+| APDS9960         | :heart:        | I2C          | `Sensor::APDS9960` | Proximity, RGB, Gesture
+
 
 ### Distance Sensors
 
-| Name             | Status         | Interface | Component Class    | Notes |
-| :--------------- | :------:       | :-------- | :---------------   |------ |
-| HC-SR04          | :heart:        | Direct    | `Sensor::HCSR04`   | Ultrasonic, 20-4000mm
-| VL53L0X          | :heart:        | I2C       | `Sensor::VL53L0X`  | Laser, 30 - 1000mm
-| GP2Y0E03         | :heart:        | I2C       | `Sensor::GP2Y0E03` | Infrared, 40 - 500mm
+| Name             | Status         | Interface    | Component Class    | Notes |
+| :--------------- | :------:       | :--------    | :---------------   |------ |
+| HC-SR04          | :heart:        | Digi In/Out  | `Sensor::HCSR04`   | Ultrasonic, 20-4000mm
+| RCWL-9620        | :heart:        | I2C          | `Sensor::RCWL9260` | Ultrasonic, 20-4500mm
+| VL53L0X          | :heart:        | I2C          | `Sensor::VL53L0X`  | Laser, 30 - 1000mm
+| GP2Y0E03         | :heart:        | I2C          | `Sensor::GP2Y0E03` | Infrared, 40 - 500mm
 
 ### Motion Sensors
 
