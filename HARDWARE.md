@@ -75,59 +75,52 @@
 
 :green_heart: Full support :yellow_heart: Partial support :heart: Planned. No support yet
 
-### Basic GPIO Interface
+### Interfaces
 
-| Name                  | Status          | Component Class      | Notes |
-| :---------------      | :------:        | :------              | :---- |
-| Digital Out           | :green_heart:   | `DigitalIO::Output`  | -     |
-| Digital In            | :green_heart:   | `DigitalIO::Input`   | 1ms - 128ms (4ms default) listen, poll, or read
-| PWM Out               | :green_heart:   | `PulseIO::PWMOutput` |
-| Analog Out (DAC)      | :green_heart:   | `AnalogIO::Output`   | SAM3X, SAMD21, RA4M1, ESP32, ESP32-S2
-| Analog In (ADC)       | :green_heart:   | `AnalogIO::Input`    | 1ms - 128ms (16ms default) listen, poll, or read
-| Tone Out (Square Wave)| :green_heart:   | `PulseIO::Buzzer`    | Doesn't work on Due (SAM3X)
+| Name                  | Status          | HW/SW | Component Class          | Notes |
+| :---------------      | :------:        | :---  | :--------------          | :---- |
+| Digital In            | :green_heart:   | H     | `DigitalIO::Input`       | 1ms - 128ms (4ms default) listen, poll, or read
+| Analog In (ADC)       | :green_heart:   | H     | `AnalogIO::Input`        | 1ms - 128ms (16ms default) listen, poll, or read
+| Digital Out           | :green_heart:   | H     | `DigitalIO::Output`      |
+| Analog Out (DAC)      | :green_heart:   | H     | `AnalogIO::Output`       | Only SAM3X, SAMD21, RA4M1, ESP32, ESP32-S2
+| PWM Out               | :green_heart:   | H     | `PulseIO::PWMOutput`     |
+| Servo/ESC PWM         | :green_heart:   | H     | See Motor table          | Uses PWM
+| Tone Out (Square Wave)| :green_heart:   | H     | `PulseIO::Buzzer`        | Uses PWM. Not available on SAM3X
+| I2C                   | :green_heart:   | H     | `I2C::Bus`               | Arduino predefined pins
+| I2C Bit Bang          | :heart:         | S     | `I2C::BitBang`           | Any pins
+| SPI                   | :green_heart:   | H     | `SPI::Bus`               | Arduino predefined pins
+| SPI Bit Bang          | :green_heart:   | S     | `SPI::BitBang`           | Any pins
+| UART                  | :green_heart:   | H     | `UART::Hardware`         | Passthrough for UART1..3 once available
+| UART Bit Bang         | :green_heart:   | S     | `UART::BitBang`          | Only ATmega328, ATmega168
+| Maxim OneWire         | :green_heart:   | S     | `OneWire::Bus`           | No overdrive
+| Infrared Emitter      | :green_heart:   | S     | `PulseIO::IRTransmitter` | Uses Arduino-IRremote library, or ESP fork
+| Infrared Receiver     | :heart:         | S     | `PulseIO::IRReceiver`    | Doable with existing library
+| WS2812                | :green_heart:   | S     | See LED table            | Uses Adafruit library. Not on RP2040
+| ESP32-PCNT            | :heart:         | H     | -                        | ESP32-specific pulse counter (for encoders)
+| ESP32-MCPWM           | :heart:         | H     | -                        | ESP32-specific motor control PWM
 
 **Note:** When listening, the board checks the pin's value every **_2^n_** milliseconds (**_n_** from **_0_** to **_7_**), without further commands.
 Polling and reading follow a call and response pattern.
 
-### Advanced Interfaces
-
-| Name             | Status         | SW/HW     | Component Class          | Notes |
-| :--------------- | :------:       | :-------- | :---------------         |------ |
-| I2C              | :green_heart:  | Hardware  | `I2C::Bus`               | Hardware I2C on predefined pins
-| SPI              | :green_heart:  | Hardware  | `SPI::Bus`               | Hardware SPI on prefedined pins
-| SPI Bit Bang     | :green_heart:  | Software  | `SPI::BitBang`           | Bit Bang SPI on any pins
-| UART             | :green_heart:  | Hardware  | `UART::Hardware`         | R/W support for UART1..3 when available
-| UART Bit Bang    | :green_heart:  | Software  | `UART::BitBang`          | R/W support for a single UART. Only ATmega chips
-| Maxim OneWire    | :green_heart:  | Software  | `OneWire::Bus`           | No overdrive support
-| Infrared Emitter | :green_heart:  | Software  | `PulseIO::IRTransmitter` | Library on Board
-| Infrared Receiver| :heart:        | Software  | `PulseIO::IRReceiver`    | Doable with existing library
-
-### Generic Peripherals
+### Basic Input/Output
 
 | Name             | Status         | Interface    | Component Class            | Notes |
 | :--------------- | :------:       | :--------    | :---------------           |------ |
-| Board EEPROM     | :green_heart:  | Built-In     | `EEPROM::BuiltIn`          | Not all boards have EEPROM
-| Led              | :green_heart:  | Digi/Ana Out | `LED::Base`                |
-| RGBLed           | :green_heart:  | Digi/Ana Out | `LED::RGB`                 |
-| Relay            | :green_heart:  | Digital Out  | `DigitalIO::Relay`         |
-| 7 Segment Display| :yellow_heart: | Digital Out  | `LED::SevenSegment`        | No decimal point
 | Button           | :green_heart:  | Digital In   | `DigitalIO::Button`        |
 | Rotary Encoder   | :green_heart:  | Digital In   | `DigitalIO::RotaryEncoder` | Listens every 1ms
-| Analog Sensor    | :green_heart:  | Analog In    | `AnalogIO::Sensor`         |
 | Potentiometer    | :green_heart:  | Analog In    | `AnalogIO::Potentiometer`  | Smoothing on by default
-| Piezo Buzzer     | :green_heart:  | Tone Out     | `PulseIO::Buzzer`          | Frequency > 30Hz
-| Input Register   | :green_heart:  | SPI          | `SPI::InputRegister`       | Tested on CD4021B
-| Output Register  | :green_heart:  | SPI          | `SPI::OutputRegister`      | Tested on 74HC595
+| Relay            | :green_heart:  | Digital Out  | `DigitalIO::Relay`         |
 
-**Note:** Most Digital In and Out peripherals can be used seamlessley through Input and Output Registers respectively.
+### LEDs
 
-###  LEDs
-
-| Name               | Status             | Interface         | Component Class    | Notes |
-| :---------------   | :------:           | :--------         | :---------------   |------ |
-| TM1637             | :heart:            | BitBang SPI       | `LED::TM1637`      | 4 Seven Segment + Colon
-| Neopixel / WS2812B | :yellow_heart:     | Adafruit Library  | `LED::WS2812`      | Not working on RP2040 |
-| Dotstar / APA102   | :green_heart:      | SPI               | `LED::APA102`      |
+| Name               | Status             | Interface         | Component Class       | Notes |
+| :---------------   | :------:           | :--------         | :---------------      |------ |
+| LED                | :green_heart:      | Digi/Ana Out      | `LED::Base`           |
+| RGB LED            | :green_heart:      | Digi/Ana Out      | `LED::RGB`            |
+| 7 Segment Display  | :yellow_heart:     | Digital Out       | `LED::SevenSegment`   | No decimal point
+| TM1637             | :heart:            | BitBang SPI       | `LED::TM1637`         | 4x 7 Segment + Colon
+| Neopixel / WS2812B | :yellow_heart:     | Adafruit Library  | `LED::WS2812`         | Not working on RP2040
+| Dotstar / APA102   | :green_heart:      | SPI               | `LED::APA102`         |
 
 ### Displays
 
@@ -136,11 +129,18 @@ Polling and reading follow a call and response pattern.
 | HD44780 LCD              | :green_heart:  | Digital Out, Output Register | `Display::HD44780`  |
 | SSD1306 OLED             | :yellow_heart: | I2C                          | `Display::SSD1306`  | 1 font, some graphics
 
+### Sound
+
+| Name             | Status         | Interface    | Component Class            | Notes |
+| :--------------- | :------:       | :--------    | :---------------           |------ |
+| Piezo Buzzer     | :green_heart:  | Tone Out     | `PulseIO::Buzzer`          | Frequency > 30Hz
+
 ### Motors / Motor Drivers
 
 | Name                 | Status         | Interface      | Component Class    | Notes |
 | :---------------     | :------:       | :--------      | :---------------   |------ |
-| Servo                | :green_heart:  | PWM + Library  | `Motor::Servo`     | Maximum of 6 on ATmega168, 16 on ESP32 and 12 otherwise
+| Generic Hobby Servo  | :green_heart:  | Servo/ESC PWM  | `Motor::Servo`     | Max depends on PWM channel count
+| Generic ESC          | :yellow_heart: | Servo/ESC PWM  | `Motor::Servo`     | Works. Needs its own class.
 | L298N                | :green_heart:  | Digi + PWM Out | `Motor::L298`      | H-Bridge DC motor driver
 | A3967                | :green_heart:  | Digital Out    | `Motor::Stepper`   | 1ch microstepper (EasyDriver)
 | PCA9685              | :heart:        | I2C            | `PulseIO::PCA9685` | 16ch 12-bit PWM for servo or LED
@@ -149,6 +149,8 @@ Polling and reading follow a call and response pattern.
 
 | Name             | Status         | Interface  | Component Class      | Notes |
 | :--------------- | :------:       | :--------  | :---------------     |------ |
+| Input Register   | :green_heart:  | SPI        | `SPI::InputRegister` | Tested on CD4021B
+| Output Register  | :green_heart:  | SPI        | `SPI::OutputRegister`| Tested on 74HC595
 | PCF8574 Expander | :heart:        | I2C        | `DigitalIO::PCF8574` | 8ch bi-directional digital I/O
 | ADS1100 ADC      | :heart:        | I2C        | `AnalogIO::ADS1100`  | 15-bit +/- 1ch ADC
 | ADS1115 ADC      | :heart:        | I2C        | `AnalogIO::ADS1115`  | 15-bit +/- 4ch ADC
@@ -183,7 +185,6 @@ Polling and reading follow a call and response pattern.
 | AS312            | :heart:        | I2C          | `Sensor::AS312`    | PIR
 | APDS9960         | :heart:        | I2C          | `Sensor::APDS9960` | Proximity, RGB, Gesture
 
-
 ### Distance Sensors
 
 | Name             | Status         | Interface    | Component Class    | Notes |
@@ -212,4 +213,5 @@ Polling and reading follow a call and response pattern.
 
 | Name             | Status         | Interface  | Component Class      | Notes |
 | :--------------- | :------:       | :--------  | :---------------     |------ |
+| Board EEPROM     | :green_heart:  | Built-In   | `EEPROM::BuiltIn`    | Not all boards have EEPROM
 | MFRC522          | :heart:        | SPI/I2C    | `DigitalIO::MFRC522` | RFID tag reader / writer
