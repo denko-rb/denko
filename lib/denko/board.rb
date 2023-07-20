@@ -21,7 +21,7 @@ module Denko
 
       # Load board map by name.
       @name = nil if @name.empty?
-      @map  = load_map(@name)
+      load_map(@name)
 
       # Leave room for null termination of aux messages.
       @aux_limit = @aux_limit.to_i - 1

@@ -6,10 +6,19 @@ module Denko
 
     attr_reader :map
     
+    def substitute_zero_pins
+      ["SDA", "SCL", "MOSI", "MISO", "SCK", "SS"].each do |name|
+        symbol      = name.to_sym
+        zero_symbol = (name + "0").to_sym
+        @map[symbol] = @map[zero_symbol] if (@map[zero_symbol] && !@map[symbol])
+      end
+    end
+
     def load_map(board_name)
       if board_name
         map_path = File.join(MAPS_FOLDER, "#{board_name}.yml")
         @map = YAML.load_file(map_path)
+        substitute_zero_pins
       else
         @map = nil
       end

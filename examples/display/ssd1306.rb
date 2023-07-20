@@ -21,7 +21,7 @@ board = Denko::Board.new(Denko::Connection::Serial.new)
 # Only give the SDA pin of the I2C bus. SCL (clock) pin must be 
 # connected for it to work, but we don't need to control it.
 #
-bus = Denko::I2C::Bus.new(board: board, pin: 'A4')
+bus = Denko::I2C::Bus.new(board: board, pin: :SDA)
 oled = Denko::Display::SSD1306.new(bus: bus, rotate: true)
 canvas = oled.canvas
 
