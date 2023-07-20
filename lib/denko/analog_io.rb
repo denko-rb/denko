@@ -4,6 +4,7 @@ module Denko
     autoload :Output,         "#{__dir__}/analog_io/output"
     autoload :Potentiometer,  "#{__dir__}/analog_io/potentiometer"
     autoload :Sensor,         "#{__dir__}/analog_io/sensor"
+    autoload :ADS111X,        "#{__dir__}/analog_io/ads111x"
     autoload :ADS1118,        "#{__dir__}/analog_io/ads1118"
   end
 end
