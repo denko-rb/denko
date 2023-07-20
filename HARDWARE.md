@@ -153,8 +153,8 @@ Polling and reading follow a call and response pattern.
 | Output Register  | :green_heart:  | SPI        | `SPI::OutputRegister`| Tested on 74HC595
 | PCF8574 Expander | :heart:        | I2C        | `DigitalIO::PCF8574` | 8ch bi-directional digital I/O
 | ADS1100 ADC      | :heart:        | I2C        | `AnalogIO::ADS1100`  | 15-bit +/- 1ch ADC
-| ADS1115 ADC      | :heart:        | I2C        | `AnalogIO::ADS1115`  | 15-bit +/- 4ch ADC
-| ADS1118 ADC      | :green_heart:  | SPI        | `AnalogIO::ADS1118`  | 15-bit +/- 4ch ADC, and temperature
+| ADS1115 ADC      | :green_heart:  | I2C        | `AnalogIO::ADS1115`  | 15-bit +/- 4ch ADC. Comparator not implemented.
+| ADS1118 ADC      | :green_heart:  | SPI        | `AnalogIO::ADS1118`  | 15-bit +/- 4ch ADC + temperature
 | PCF8591 ADC/DAC  | :heart:        | I2C        | `AnalogIO::PCF8591`  | 4ch ADC + 1ch DAC, 8-bit resolution
 | MCP4725 DAC      | :heart:        | I2C        | `AnalogIO::MCP4275`  | 1ch 12-bit DAC
 
@@ -176,7 +176,7 @@ Polling and reading follow a call and response pattern.
 | AGS02MA          | :heart:        | I2C         | `Sensor::AGS02MA`  | TVOC
 | MAX31850         | :heart:        | OneWire     | `Sensor::MAX31850` | Thermocouple Amplifier
 
-### Light / Motion Sensors
+### Light Sensors
 
 | Name             | Status         | Interface    | Component Class    | Notes |
 | :--------------- | :------:       | :--------    | :---------------   |------ |
@@ -201,8 +201,9 @@ Polling and reading follow a call and response pattern.
 | ADXL345          | :heart:        | I2C       | `Sensor::ADXL345`  | 3-axis Accelerometer
 | IT3205           | :heart:        | I2C       | `Sensor::IT3205`   | 3-axis Gyroscope
 | HMC5883L         | :heart:        | I2C       | `Sensor::HMC5883L` | 3-axis Compass
+| MPU6886          | :heart:        | I2C       | `Sensor::MPU6886`  | 3-axis Gyro + Accel
 
-### Real Time Clock
+### Real Time Clocks
 
 | Name             | Status         | Interface | Component Class   | Notes |
 | :--------------- | :------:       | :-------- | :---------------  |------ |
