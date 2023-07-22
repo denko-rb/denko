@@ -8,7 +8,7 @@
 // WS2812 / NeoPixel support using Adafruit library from:
 // https://github.com/adafruit/Adafruit_NeoPixel
 //
-# ifdef DENKO_LED_WS2812
+#ifdef DENKO_LED_WS2812
   #include <Adafruit_NeoPixel.h>
 #endif
 

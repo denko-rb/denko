@@ -56,7 +56,7 @@
 
 |    Chip        | Status          | Board Tested          | Notes |
 | :--------      | :------:        | :---------------      |------ |
-| RO2040         | :green_heart:   | Raspberry Pi Pico (W) | WiFi only on W version. No WS1812 LED support.
+| RP2040         | :green_heart:   | Raspberry Pi Pico (W) | WiFi only on W version. No WS1812 LED support.
 
 # Single Board Computers
 
@@ -85,19 +85,19 @@
 | Analog Out (DAC)      | :green_heart:   | H     | `AnalogIO::Output`       | Only SAM3X, SAMD21, RA4M1, ESP32, ESP32-S2
 | PWM Out               | :green_heart:   | H     | `PulseIO::PWMOutput`     |
 | Servo/ESC PWM         | :green_heart:   | H     | See Motor table          | Uses PWM
-| Tone Out (Square Wave)| :green_heart:   | H     | `PulseIO::Buzzer`        | Uses PWM. Not available on SAM3X
-| I2C                   | :green_heart:   | H     | `I2C::Bus`               | Arduino predefined pins
+| Tone Out (Square Wave)| :green_heart:   | H     | `PulseIO::Buzzer`        | Except SAM3X. Uses PWM
+| I2C                   | :green_heart:   | H     | `I2C::Bus`               | Predetermined pins from IDE
 | I2C Bit Bang          | :heart:         | S     | `I2C::BitBang`           | Any pins
-| SPI                   | :green_heart:   | H     | `SPI::Bus`               | Arduino predefined pins
+| SPI                   | :green_heart:   | H     | `SPI::Bus`               | Predetermined pins from IDE
 | SPI Bit Bang          | :green_heart:   | S     | `SPI::BitBang`           | Any pins
-| UART                  | :green_heart:   | H     | `UART::Hardware`         | Passthrough for UART1..3 once available
+| UART                  | :green_heart:   | H     | `UART::Hardware`         | Except Atmega328, ATmega168, RA4M1
 | UART Bit Bang         | :green_heart:   | S     | `UART::BitBang`          | Only ATmega328, ATmega168
 | Maxim OneWire         | :green_heart:   | S     | `OneWire::Bus`           | No overdrive
-| Infrared Emitter      | :green_heart:   | S     | `PulseIO::IRTransmitter` | Uses Arduino-IRremote library, or ESP fork
+| Infrared Emitter      | :green_heart:   | S     | `PulseIO::IRTransmitter` | Except RA4M1
 | Infrared Receiver     | :heart:         | S     | `PulseIO::IRReceiver`    | Doable with existing library
-| WS2812                | :green_heart:   | S     | See LED table            | Uses Adafruit library. Not on RP2040
-| ESP32-PCNT            | :heart:         | H     | -                        | ESP32-specific pulse counter (for encoders)
-| ESP32-MCPWM           | :heart:         | H     | -                        | ESP32-specific motor control PWM
+| WS2812                | :green_heart:   | S     | See LED table            | Except RP2040
+| ESP32-PCNT            | :heart:         | H     | -                        | Only ESP32. Pulse counter (for encoders)
+| ESP32-MCPWM           | :heart:         | H     | -                        | Only ESP32. Motor control PWM
 
 **Note:** When listening, the board checks the pin's value every **_2^n_** milliseconds (**_n_** from **_0_** to **_7_**), without further commands.
 Polling and reading follow a call and response pattern.
@@ -168,10 +168,10 @@ Polling and reading follow a call and response pattern.
 | QMP6988          | :heart:        | I2C         | `Sensor::QMP6988`  | Pressure
 | BME280           | :green_heart:  | I2C         | `Sensor::BME280`   | Temp/RH/Press
 | BMP280           | :green_heart:  | I2C         | `Sensor::BMP280`   | Temp/Press
-| HTU21D           | :green_heart:  | I2C         | `Sensor::HTU21D`   | Temp/RH. Locks I2C bus during read. No user register read.
-| HTU31D           | :yellow_heart: | I2C         | `Sensor::HTU31D`   | Temp/RH. No diagnostic read yet.
+| HTU21D           | :green_heart:  | I2C         | `Sensor::HTU21D`   | Temp/RH. User register read not implemented.
+| HTU31D           | :green_heart:  | I2C         | `Sensor::HTU31D`   | Temp/RH. Diagnostic read not implemented.
 | AHT10/15         | :green_heart:  | I2C         | `Sensor::AHT10`    | Temp/RH. Always uses calibrated mode.
-| AHT20/21/25      | :green_heart:  | I2C         | `Sensor::AHT20`    | Temp/RH. Always uses calibrated mode and CRC.
+| AHT20/21/25      | :green_heart:  | I2C         | `Sensor::AHT20`    | Temp/RH. Always uses calibrated mode + CRC.
 | ENS160           | :heart:        | I2C         | `Sensor::ENS160`   | CO2e/TVOC/AQI
 | AGS02MA          | :heart:        | I2C         | `Sensor::AGS02MA`  | TVOC
 | MAX31850         | :heart:        | OneWire     | `Sensor::MAX31850` | Thermocouple Amplifier
@@ -208,11 +208,11 @@ Polling and reading follow a call and response pattern.
 | Name             | Status         | Interface | Component Class   | Notes |
 | :--------------- | :------:       | :-------- | :---------------  |------ |
 | DS1302           | :heart:        | I2C       | `RTC::DS1302`     |
-| DS3221           | :yellow_heart: | I2C       | `RTC::DS3231`     | Only set and get time implemented
+| DS3231           | :green_heart:  | I2C       | `RTC::DS3231`     | Alarms not implemented
 
 ### Miscellaneous
 
 | Name             | Status         | Interface  | Component Class      | Notes |
 | :--------------- | :------:       | :--------  | :---------------     |------ |
-| Board EEPROM     | :green_heart:  | Built-In   | `EEPROM::BuiltIn`    | Not all boards have EEPROM
+| Board EEPROM     | :green_heart:  | Built-In   | `EEPROM::BuiltIn`    | Arduino ARM boards have no EEPROM
 | MFRC522          | :heart:        | SPI/I2C    | `DigitalIO::MFRC522` | RFID tag reader / writer
