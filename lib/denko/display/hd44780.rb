@@ -63,7 +63,7 @@ module Denko
       end
 
       def after_initialize(options={})
-        super(options) if defined?(super)
+        super(options)
         
         # Default to 16x2 display if no options given.
         @columns = options[:columns] || 16
@@ -212,7 +212,7 @@ module Denko
         send(byte, board.low)
       end
       
-      def write(byte);
+      def write(byte)
         send(byte, board.high)
       end
 
