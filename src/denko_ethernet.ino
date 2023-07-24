@@ -30,9 +30,7 @@ void setup() {
   // Start up the network connection and server.
   Ethernet.begin(mac, ip);
   server.begin();
-  #ifdef debug
-    printEthernetStatus();
-  #endif
+  printEthernetStatus();
 
   // Add listener callbacks for local logic.
   denko.digitalListenCallback = onDigitalListen;

@@ -67,21 +67,13 @@ void connect(){
     DENKO_SERIAL_IF.print(".");
   }
   connected = true;
+  printWifiStatus();
 }
 
 void maintainWiFi(){
-  if (connected == true){
-    if (WiFi.status() == WL_CONNECTED) return;
+  if (WiFi.status() != WL_CONNECTED) {
     connected = false;
     connect();
-  }
-  if (connected == false){
-    if (WiFi.status() != WL_CONNECTED) {
-      connect();
-      return;
-    }
-    connected = true;
-    printWifiStatus();
   }
 }
 
