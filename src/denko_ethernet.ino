@@ -40,20 +40,25 @@ void setup() {
 }
 
 void loop() {
+  // End connection if client disconnects.
+  if (client && !client.connected()) {
+    client.stop();
+  }
+
   // Allow one client at a time to be connected. Set it as the denko IO stream.
   if (!client){
     client = server.available();
-    if (client) denko.stream = &client;
+    if (client) {
+      // TCP Client
+      denko.stream = &client;
+    } else {
+      // Serial fallback
+      denko.stream = &DENKO_SERIAL_IF;
+    }
   }
 
   // Main loop of the denko library.
   denko.run();
-
-  // End the connection when client disconnects and revert to serial IF.
-  if (client && !client.connected()){
-    client.stop();
-    denko.stream = &DENKO_SERIAL_IF;
-  }
 }
 
 // This runs every time a digital pin that denko is listening to changes value.

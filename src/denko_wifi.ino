@@ -113,25 +113,30 @@ void loop() {
   // Reconnect if we've lost WiFi.
   maintainWiFi();
 
-  // Allow one client at a time to be connected. Set it as the denko IO stream.
-  if (!client){
-    client = server.available();
-    if (client) denko.stream = &client;
-  }
-
-  // Main loop of the denko library.
-  denko.run();
-
-  // End the connection when client disconnects and revert to serial IO.
-  if (client && !client.connected()){
-    client.stop();
-    denko.stream = &DENKO_SERIAL_IF;
-  }
-
   // Handle OTA updates.
   #if defined(ESP8266)
     ArduinoOTA.handle();
   #endif
+
+  // End connection if client disconnects.
+  if (client && !client.connected()) {
+    client.stop();
+  }
+
+  // Allow one client at a time to be connected. Set it as the denko IO stream.
+  if (!client){
+    client = server.available();
+    if (client) {
+      // TCP Client
+      denko.stream = &client;
+    } else {
+      // Serial fallback
+      denko.stream = &DENKO_SERIAL_IF;
+    }
+  }
+
+  // Main loop of the denko library.
+  denko.run();
 }
 
 // This runs every time a digital pin that denko is listening to changes value.

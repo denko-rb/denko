@@ -11,7 +11,7 @@ connection = Denko::Connection::TCP.new("192.168.0.77", 3466)
 # connection =  Denko::Connection::TCP.new("192.168.1.2", 3466)
 #
 board = Denko::Board.new(connection)
-led = Denko::Led.new(pin: 13, board: board)
+led = Denko::LED.new(board: board, pin: :LED_BUILTIN)
 
 [:on, :off].cycle do |switch|
   led.send(switch)
