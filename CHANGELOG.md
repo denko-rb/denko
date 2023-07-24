@@ -1,5 +1,65 @@
 # Changelog
 
+## 0.13.2
+
+### New Boards
+
+- Arduino UNO R4 Minima & Wi-Fi (`--target ra4m1`):
+  - Mostly working
+  - IR-remote and WS2812 libraries do not support this chip. Disabled temporarily.
+  - Hardware serial disabled until further testing.
+  - Wi-Fi still untested.
+
+### New Components
+
+- ADS1115 Analog-to-Digital Converter:
+  - Class: `Denko::AnalogIO::ADS1115`.
+  - Connects via I2C bus. Driver written in Ruby.
+  - Can be used directly by calling `ADS1115#read` with the 2 config register bytes.
+  - `#read` automatically waits for conversion before reading result.
+  - Implements `BoardProxy` interface, so `AnalogIO::Input` can use it in place of `Board`.
+  - For each `AnalogIO::Input` subcomponent:
+    - Negative pin (1 or 3) of differential pair can be set with the keyword argument `negative_pin:`
+    - Gain can be set with the keyword argument `gain:`
+    - Sample rate can be set with the keyword argument `sample_rate:`
+    - Sample rate doesn't affect update rate. Higher sample rates oversample for a single reading, increasing resolution.
+    - `ADS1115` sets `@volts_per_bit` in the subcomponent, so exact voltages can be calculated.
+    - There is no listening interface for subcomponents.
+  - Built in comparator not implemented.
+  - Basically an I2C version of ADS1118 with the temperature sensor swapped for comparator.
+
+### Optimizations
+
+- Boards now declare their serial RX buffer size and maximum I2C transaction size in handshake. This makes it possible to send data as fast as possible without data loss.
+- Added `benchmarks` folder and a simple SSD1306 screen redrawing benchmark, with results for many chips.
+- Changed many instance methods to use keyword args instead of options hash pattern. Better performance everywhere, but will matter most in mruby.
+- Many small performance improvemnts taken from mruby implementation to keep code as similar as possible across both.
+
+### Minor Changes
+
+- Improved detection of default serial interface and EEPROM availability at the sketch level.
+- Pins defined as any of `:SDA0, :SCL0, :MISO0, :MOSI0, :SCK0, :SS0` in a loaded board map are automatically copied to the key without the trailing 0, i.e. `:SDA` and so forth. This is convenient for chips like the RP2040 which don't define the "non-zero" pins at all.
+- Simplified handling of Wi-Fi reconnection in that sketch.
+- Wi-Fi sketch now prints its connection details to serial on each reconnect, as well as startup.
+- Updated both IR libraries to latest version.
+
+### Bug Fixes
+
+- Display::HD44780 was trying to write 1 and 0 as String instead of Integer to digital output pins.
+- Wi-Fi and Ethernet sketches could get stuck in an endless loop when switching between a TCP client and the Serial interface fallback.
+- SAMD21 could hang on I2C when writing lots of data. This has to do with its serial buffer not being saturated somehow? Fixed though.
+- Board#set_register_divider wouldn't raise the correct ArgumentError if the divider given was out of range.
+- Updated the arduino-yaml-board-maps project to prevent ESP32 chips from wrongly map many of their ADC pins.
+- ESP32 variants, other than the original V1, could try to assign more LEDC (PWM) channels than they actually have.
+
+### Removed
+
+- Removed the `:pad` option from Message::pack. Nothing was using it and padding bytes should be handled in the component class anyway.
+
+## 0.13.1
+
+Fixes critical 1-Wire bugs introduced when namespace was reorganized for 0.13.0.
+
 ## 0.13.0
 
 ### New Features
