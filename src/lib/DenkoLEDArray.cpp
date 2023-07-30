@@ -30,16 +30,6 @@ void Denko::showLEDArray() {
   // NOTE: val * 3 will have to change to val * 4 for RGBW leds.
   memcpy(ledArray.getPixels(), &auxMsg[4], val * 3);
 
-  // I have NO idea what causes the first green LED to stay stuck on.
-  // A small delay here seems like a consistent fix. ESP32 doesn't need it.
-  // AVR can get away with 32us, but others need 64.
-  #if defined(ESP8266) || defined(__SAMD21G18A__) || defined(__SAM3X8E__)
-    delayMicroseconds(64);
-  #endif
-  #ifdef __AVR__
-    delayMicroseconds(32);
-  #endif
-
   // Write the pixel buffer to the array.
   ledArray.show();
 
