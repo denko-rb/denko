@@ -10,7 +10,7 @@ class DigitalIOOutputTest < Minitest::Test
   end
 
   def test_read_state_on_initialize
-    mock = MiniTest::Mock.new.expect :call, nil, [14]
+    mock = Minitest::Mock.new.expect :call, nil, [14]
     board.stub(:digital_read, mock) do
       part
     end
@@ -19,7 +19,7 @@ class DigitalIOOutputTest < Minitest::Test
 
   def test_digital_write
     part
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect :call, nil, [14, board.high]
     mock.expect :call, nil, [14, board.low]
     mock.expect :call, nil, [14, board.low]
@@ -36,7 +36,7 @@ class DigitalIOOutputTest < Minitest::Test
 
   def test_high_and_low
     part
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect :call, nil, [board.high]
     mock.expect :call, nil, [board.low]
     part.stub(:digital_write, mock) do
@@ -48,14 +48,14 @@ class DigitalIOOutputTest < Minitest::Test
 
   def test_toggle
     part.low
-    mock = MiniTest::Mock.new.expect :call, nil
+    mock = Minitest::Mock.new.expect :call, nil
     part.stub(:high, mock) do
       part.toggle
     end
     mock.verify
 
     part.high
-    mock = MiniTest::Mock.new.expect :call, nil
+    mock = Minitest::Mock.new.expect :call, nil
     part.stub(:low, mock) do
       part.toggle
     end

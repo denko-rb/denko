@@ -14,7 +14,7 @@ class AnalogIOOutputTest < Minitest::Test
   end
   
   def test_dac_write
-    mock = MiniTest::Mock.new.expect :call, nil, [14, 128]
+    mock = Minitest::Mock.new.expect :call, nil, [14, 128]
 
     board.stub(:dac_write, mock) do
       part.write 128

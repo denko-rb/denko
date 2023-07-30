@@ -37,7 +37,7 @@ class ReaderTest < Minitest::Test
   end
 
   def test_read_once
-    mock = MiniTest::Mock.new.expect :call, nil
+    mock = Minitest::Mock.new.expect :call, nil
     inject(1)
     
     part.stub(:_read, mock) do
@@ -53,20 +53,20 @@ class ReaderTest < Minitest::Test
   
   def test_read_using_with_lambda
     inject(1)
-    reader = MiniTest::Mock.new.expect :call, nil
+    reader = Minitest::Mock.new.expect :call, nil
     part.read_using -> { reader.call }
     reader.verify
   end
 
   def test_read_using_with_method_and_args
     inject(1)
-    reader = MiniTest::Mock.new.expect :call, nil, [10, 20], test_arg: 2
+    reader = Minitest::Mock.new.expect :call, nil, [10, 20], test_arg: 2
     part.read_using reader, 10, 20, test_arg: 2
     reader.verify
   end
 
   def test_add_run_remove_callback
-    cb = MiniTest::Mock.new.expect :call, nil
+    cb = Minitest::Mock.new.expect :call, nil
     inject(1)
     part.read { cb.call }
     assert_nil part.callbacks[:read]

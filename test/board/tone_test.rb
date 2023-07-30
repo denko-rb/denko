@@ -12,7 +12,7 @@ class APIToneTest < Minitest::Test
   end
 
   def test_tone
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     aux1 = pack(:uint16, 150) + pack(:uint16, 2000)
     aux2 = pack(:uint16, 300)
     
@@ -31,7 +31,7 @@ class APIToneTest < Minitest::Test
   end
 
   def test_no_tone
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect :call, nil, [Denko::Message.encode(command: 18, pin: 10)]
 
     board.stub(:write, mock) do

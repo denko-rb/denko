@@ -24,19 +24,19 @@ class ThreadedTest < Minitest::Test
   end
 
   def test_threaded_stops_threads
-    mock = MiniTest::Mock.new.expect :call, nil
+    mock = Minitest::Mock.new.expect :call, nil
     part.stub(:stop_thread, mock) { part.threaded {} }
     mock.verify
   end
 
   def test_threaded_enables_interrupts
-    mock = MiniTest::Mock.new.expect :call, nil
+    mock = Minitest::Mock.new.expect :call, nil
     part.stub(:enable_interrupts, mock) { part.threaded {} }
     mock.verify
   end
 
   def test_threaded_calls_block_given
-    mock = MiniTest::Mock.new.expect :call, nil
+    mock = Minitest::Mock.new.expect :call, nil
     part.threaded { mock.call }
     sleep 0.1 # Should find a better way to do this.
     mock.verify
@@ -49,7 +49,7 @@ class ThreadedTest < Minitest::Test
   end
 
   def test_threaded_loop_calls_block_repeatedly
-    mock = MiniTest::Mock.new.expect(:call, nil).expect(:call, nil)
+    mock = Minitest::Mock.new.expect(:call, nil).expect(:call, nil)
     part.stub(:foo, mock) do
       part.threaded_loop do
         part.foo
@@ -61,7 +61,7 @@ class ThreadedTest < Minitest::Test
   end
 
   def test_stop_thread_kills_thread
-    mock = MiniTest::Mock.new.expect(:kill, nil)
+    mock = Minitest::Mock.new.expect(:kill, nil)
     part.instance_variable_set(:@thread, mock)
     part.stop_thread
     mock.verify
@@ -81,7 +81,7 @@ class ThreadedTest < Minitest::Test
   end
 
   def test_original_method_called_when_interrupts_enabled
-    mock = MiniTest::Mock.new.expect(:call, nil, ["denko"])
+    mock = Minitest::Mock.new.expect(:call, nil, ["denko"])
     part.stub(:foo, mock) do
       part.enable_interrupts
       part.foo("denko")
@@ -91,7 +91,7 @@ class ThreadedTest < Minitest::Test
 
   def test_interrupt_stops_thread
     part.enable_interrupts
-    mock = MiniTest::Mock.new.expect :call, nil
+    mock = Minitest::Mock.new.expect :call, nil
     part.stub(:stop_thread, mock) { part. foo }
     mock.verify
   end

@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-class RGBLEDTest < MiniTest::Test
+class RGBLEDTest < Minitest::Test
   def board
     @board ||= BoardMock.new
   end
@@ -20,9 +20,9 @@ class RGBLEDTest < MiniTest::Test
   end
 
   def test_write
-    red_mock = MiniTest::Mock.new.expect :write, nil, [0]
-    green_mock = MiniTest::Mock.new.expect :write, nil, [128]
-    blue_mock = MiniTest::Mock.new.expect :write, nil, [0]
+    red_mock = Minitest::Mock.new.expect :write, nil, [0]
+    green_mock = Minitest::Mock.new.expect :write, nil, [128]
+    blue_mock = Minitest::Mock.new.expect :write, nil, [0]
 
     part.stub(:red, red_mock) do
       part.stub(:green, green_mock) do
@@ -37,7 +37,7 @@ class RGBLEDTest < MiniTest::Test
   end
 
   def test_color_array
-    mock = MiniTest::Mock.new.expect :call, nil, [[128,0,0]]
+    mock = Minitest::Mock.new.expect :call, nil, [[128,0,0]]
     part.stub(:write, mock) do
       part.color = [128,0,0]
     end
@@ -47,7 +47,7 @@ class RGBLEDTest < MiniTest::Test
   def test_color_names
     colors = Denko::LED::RGB::COLORS
 
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     colors.each_value do |color|
       mock.expect :call, nil, [color]
       mock.expect :call, nil, [color]

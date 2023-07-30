@@ -4,7 +4,7 @@ class I2CPeripheralBase
   include Denko::I2C::Peripheral
 end
 
-class I2CBusTest < MiniTest::Test
+class I2CBusTest < Minitest::Test
   def board
     @board ||= BoardMock.new
   end
@@ -27,7 +27,7 @@ class I2CBusTest < MiniTest::Test
   def test_search
     board.inject_read_for_pin(5, "48:50")
 
-    mock = MiniTest::Mock.new.expect :call, nil
+    mock = Minitest::Mock.new.expect :call, nil
     board.stub(:i2c_search, mock) do
       part.search
     end
@@ -37,7 +37,7 @@ class I2CBusTest < MiniTest::Test
   end
 
   def test_write
-    mock = MiniTest::Mock.new.expect :call, nil, [0x30, [0x01, 0x02], 100000, false]
+    mock = Minitest::Mock.new.expect :call, nil, [0x30, [0x01, 0x02], 100000, false]
     board.stub(:i2c_write, mock) do
       part.write 0x30, [0x01, 0x02]
     end
@@ -47,7 +47,7 @@ class I2CBusTest < MiniTest::Test
   def test__read
     board.inject_read_for_pin(5, "48-255,0,255,0,255,0")
     
-    mock = MiniTest::Mock.new.expect :call, nil, [0x32, 0x03, 6, 100000, false]
+    mock = Minitest::Mock.new.expect :call, nil, [0x32, 0x03, 6, 100000, false]
     board.stub(:i2c_read, mock) do
       part.read 0x32, 0x03, 6
     end
@@ -55,7 +55,7 @@ class I2CBusTest < MiniTest::Test
   end
   
   def test_updates_peripherals
-    mock = MiniTest::Mock.new.expect :call, nil, [[255, 127]]
+    mock = Minitest::Mock.new.expect :call, nil, [[255, 127]]
     
     peripheral.stub(:update, mock) do
       part.send(:update, "48-255,127")

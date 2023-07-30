@@ -15,7 +15,7 @@ class APIOneWireTest < Minitest::Test
     board
     message = Denko::Message.encode command: 41, pin: 1, value: 255
     
-    mock = MiniTest::Mock.new.expect :call, nil, [message]
+    mock = Minitest::Mock.new.expect :call, nil, [message]
     connection.stub(:write, mock) do
       board.one_wire_reset(1, 255)
     end
@@ -26,7 +26,7 @@ class APIOneWireTest < Minitest::Test
     board
     message = Denko::Message.encode command: 42, pin: 1, aux_message: pack(:uint64, 128, max:8)
     
-    mock = MiniTest::Mock.new.expect :call, nil, [message]
+    mock = Minitest::Mock.new.expect :call, nil, [message]
     connection.stub(:write, mock) do
       board.one_wire_search(1, 128)
     end
@@ -40,7 +40,7 @@ class APIOneWireTest < Minitest::Test
     message1 = Denko::Message.encode command: 43, pin: 1, value: 0b10000000 | 3, aux_message: pack(:uint8, [1,2,3])
     message2 = Denko::Message.encode command: 43, pin: 1, value: 4, aux_message: pack(:uint8, [1,2,3,4])
     
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect :call, nil, [message1]
     mock.expect :call, nil, [message2]
     connection.stub(:write, mock) do
@@ -60,7 +60,7 @@ class APIOneWireTest < Minitest::Test
     board
     message = Denko::Message.encode command: 44, pin: 1, value: 9
         
-    mock = MiniTest::Mock.new.expect :call, nil, [message]
+    mock = Minitest::Mock.new.expect :call, nil, [message]
     connection.stub(:write, mock) do
       board.one_wire_read(1, 9)
     end

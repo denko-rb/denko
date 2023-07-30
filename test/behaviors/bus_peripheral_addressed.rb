@@ -33,7 +33,7 @@ class BusPeripheralAddressedTest < Minitest::Test
   end
   
   def test_can_use_bus_atomically   
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     1.times {mock.expect(:call, nil)}
     
     bus.mutex.stub(:synchronize, mock) do

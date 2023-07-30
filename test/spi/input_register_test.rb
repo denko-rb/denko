@@ -28,7 +28,7 @@ class InputRegisterTest < Minitest::Test
   end
 
   def test_read
-    mock = MiniTest::Mock.new.expect :call, nil, [9], read: 2, frequency: 800000, mode: 2, bit_order: :lsbfirst
+    mock = Minitest::Mock.new.expect :call, nil, [9], read: 2, frequency: 800000, mode: 2, bit_order: :lsbfirst
     bus.stub(:transfer, mock) do
       part.read
     end
@@ -36,7 +36,7 @@ class InputRegisterTest < Minitest::Test
   end
   
   def test_listen
-    mock = MiniTest::Mock.new.expect :call, nil, [9], read: 2, frequency: 800000, mode: 2, bit_order: :lsbfirst
+    mock = Minitest::Mock.new.expect :call, nil, [9], read: 2, frequency: 800000, mode: 2, bit_order: :lsbfirst
     bus.stub(:listen, mock) do
       part.listen
     end
@@ -44,7 +44,7 @@ class InputRegisterTest < Minitest::Test
   end
   
   def test_stop
-    mock = MiniTest::Mock.new.expect :call, nil, [9]
+    mock = Minitest::Mock.new.expect :call, nil, [9]
     bus.stub(:stop, mock) do
       part.stop
     end
@@ -69,7 +69,7 @@ class InputRegisterTest < Minitest::Test
   end
   
   def test_callbacks_get_bit_array
-    mock = MiniTest::Mock.new.expect :call, nil, [[1,1,1,1,1,1,1,0]]
+    mock = Minitest::Mock.new.expect :call, nil, [[1,1,1,1,1,1,1,0]]
     part.add_callback do |data|
       mock.call(data)
     end
@@ -87,7 +87,7 @@ class InputRegisterTest < Minitest::Test
       part.update("255")
     end
 
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect :call, nil
     part.stub(:read, mock) do
       button.read
@@ -96,7 +96,7 @@ class InputRegisterTest < Minitest::Test
   end
 
   def test_listener_proxy
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect :call, nil
     part.stub(:listen, mock) do
       # Tells the register to start listening when it initializees.
@@ -119,7 +119,7 @@ class InputRegisterTest < Minitest::Test
     button
     
     # Calling stop on a child part, when only it is listening, should call stop on the register too.
-    mock = MiniTest::Mock.new.expect :call, nil
+    mock = Minitest::Mock.new.expect :call, nil
     part.stub(:stop, mock) do
       button.stop
     end
@@ -131,7 +131,7 @@ class InputRegisterTest < Minitest::Test
   end
 
   def test_gets_reads_through_pin
-    mock = MiniTest::Mock.new.expect :call, nil, ["127,255"]
+    mock = Minitest::Mock.new.expect :call, nil, ["127,255"]
     part.stub(:update, mock) do
       board.update("#{part.pin}:127,255")
     end

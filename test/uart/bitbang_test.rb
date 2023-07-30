@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-class UARTBitBangTest < MiniTest::Test
+class UARTBitBangTest < Minitest::Test
   include TestPacker
 
   def board
@@ -12,7 +12,7 @@ class UARTBitBangTest < MiniTest::Test
   end
 
   def test_initialize
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     # Set RX to input
     mock.expect :call, nil, ["0.10.1\n"]
     # Start BB UART
@@ -27,7 +27,7 @@ class UARTBitBangTest < MiniTest::Test
 
   def test_write
     part
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect :call, nil, ["13..8.Testing\\\n\n"]
     board.stub(:write, mock) do
       part.write("Testing\n")

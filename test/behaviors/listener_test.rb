@@ -28,13 +28,13 @@ class ListenerTest < Minitest::Test
   end
 
   def test_call_stop_before_listening
-    mock = MiniTest::Mock.new.expect :call, nil
+    mock = Minitest::Mock.new.expect :call, nil
     part.stub(:stop, mock) { part.listen }
     mock.verify
   end
 
   def test_call__listen
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect :call, nil, [nil]
     mock.expect :call, nil, [32]
     part.stub(:_listen, mock) do
@@ -45,7 +45,7 @@ class ListenerTest < Minitest::Test
   end
 
   def test_call__stop_listener
-    mock = MiniTest::Mock.new.expect :call, nil
+    mock = Minitest::Mock.new.expect :call, nil
     part.stub(:_stop_listener, mock) { part.stop }
     mock.verify
   end

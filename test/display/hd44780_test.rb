@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-class HD44780Test < MiniTest::Test
+class HD44780Test < Minitest::Test
   def board
     @board ||= BoardMock.new
   end

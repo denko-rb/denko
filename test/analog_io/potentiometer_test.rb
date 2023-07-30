@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-class AnalogIOPotentiometerTest < MiniTest::Test
+class AnalogIOPotentiometerTest < Minitest::Test
   def board
     @board ||= BoardMock.new
   end
@@ -10,7 +10,7 @@ class AnalogIOPotentiometerTest < MiniTest::Test
   end
 
   def test_setup
-    mock = MiniTest::Mock.new.expect(:call, nil, [14,8])
+    mock = Minitest::Mock.new.expect(:call, nil, [14,8])
     board.stub(:analog_listen, mock) do
       part
     end

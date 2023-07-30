@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-class BaseLEDTest < MiniTest::Test
+class BaseLEDTest < Minitest::Test
   def board
     @board ||= BoardMock.new
   end
@@ -15,7 +15,7 @@ class BaseLEDTest < MiniTest::Test
   end
 
   def test_blink_runs_in_thread
-    mock = MiniTest::Mock.new.expect :call, nil
+    mock = Minitest::Mock.new.expect :call, nil
     part.stub(:threaded_loop, mock) do
       part.blink(0.5)
     end

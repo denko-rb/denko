@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-class IRTransmitterTest < MiniTest::Test
+class IRTransmitterTest < Minitest::Test
   def board
     @board ||= BoardMock.new
   end
@@ -29,7 +29,7 @@ class IRTransmitterTest < MiniTest::Test
   
   def test_emits
     part
-    mock = MiniTest::Mock.new.expect(:call, nil, [1, 38, [127,0]])
+    mock = Minitest::Mock.new.expect(:call, nil, [1, 38, [127,0]])
     board.stub(:infrared_emit, mock) do
       part.emit([127,0])
     end

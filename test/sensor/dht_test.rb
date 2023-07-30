@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-class DHTTest < MiniTest::Test
+class DHTTest < Minitest::Test
   PIN = 1
   
   # Actual raw data from a sensor
@@ -26,7 +26,7 @@ class DHTTest < MiniTest::Test
   # It should tell the board to do a #pulse_read
   def test__read
     part
-    mock = MiniTest::Mock.new.expect(:call, nil, [PIN], reset: board.low, reset_time: 20000, pulse_limit: 84, timeout: 100)
+    mock = Minitest::Mock.new.expect(:call, nil, [PIN], reset: board.low, reset_time: 20000, pulse_limit: 84, timeout: 100)
     board.stub(:pulse_read, mock) do
       part._read
     end
@@ -36,7 +36,7 @@ class DHTTest < MiniTest::Test
   # Callback pre filter should convert string of bytes to array and call #decode with it.
   def test_pre_callback_filter
     part
-    mock = MiniTest::Mock.new.expect(:call, nil, [GOOD_ARRAY])
+    mock = Minitest::Mock.new.expect(:call, nil, [GOOD_ARRAY])
     part.stub(:decode, mock) do
       part.update(GOOD_STRING)
     end

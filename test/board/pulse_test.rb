@@ -13,7 +13,7 @@ class BoardPulseTest < Minitest::Test
 
   def test_pulse_read
     # Default settings
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     aux = pack(:uint16, [0, 200]) << pack(:uint8, 100)
     message = Denko::Message.encode command: 9, pin: 4, value: 0b00, aux_message: aux
     
@@ -24,7 +24,7 @@ class BoardPulseTest < Minitest::Test
     mock.verify
     
     # Good options
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     aux = pack(:uint16, [1000, 200]) << pack(:uint8, 160)
     message1 = Denko::Message.encode command: 9, pin: 4, value: 0b01, aux_message: aux
     message2 = Denko::Message.encode command: 9, pin: 4, value: 0b11, aux_message: aux

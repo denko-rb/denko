@@ -65,7 +65,7 @@ class SubcomponentsTest < Minitest::Test
     pinless = PinlessComponentMock.new
     board.add_component(pinless)
 
-    mock = MiniTest::Mock.new.expect(:call, nil)
+    mock = Minitest::Mock.new.expect(:call, nil)
     pinless.stub(:stop, mock) do
       board.remove_component(pinless)
     end

@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-class OneWireBusTest < MiniTest::Test
+class OneWireBusTest < Minitest::Test
   def board
     @board ||= BoardMock.new
   end
@@ -19,7 +19,7 @@ class OneWireBusTest < MiniTest::Test
   end
 
   def test_read_power_supply_locks_mutex
-    mock = MiniTest::Mock.new.expect(:call, nil)
+    mock = Minitest::Mock.new.expect(:call, nil)
     part.mutex.stub(:synchronize, mock) do
       part.read_power_supply
     end
@@ -39,7 +39,7 @@ class OneWireBusTest < MiniTest::Test
   end
 
   def test_read_power_supply_sends_board_commands
-    board_mock = MiniTest::Mock.new
+    board_mock = Minitest::Mock.new
     board_mock.expect(:set_pin_mode, nil, [part.pin, :output])
     board_mock.expect(:low, 0)
     board_mock.expect(:digital_write,  nil, [part.pin, 0])
@@ -47,7 +47,7 @@ class OneWireBusTest < MiniTest::Test
     board_mock.expect(:one_wire_write, nil, [part.pin, false, [0xCC, 0xB4]])
 
     # Stub the parasite power response from the board.
-    read_mock = MiniTest::Mock.new
+    read_mock = Minitest::Mock.new
     read_mock.expect(:call, 0, [1])
 
     part.stub(:board, board_mock) do
@@ -65,7 +65,7 @@ class OneWireBusTest < MiniTest::Test
     # part.device_present calls #reset which expects a response. 
     board.inject_read_for_component(part, 1, "1")
 
-    mock = MiniTest::Mock.new.expect(:call, nil)
+    mock = Minitest::Mock.new.expect(:call, nil)
     part.mutex.stub(:synchronize, mock) do
       part.device_present
     end
@@ -73,7 +73,7 @@ class OneWireBusTest < MiniTest::Test
   end
 
   def test_set_device_present
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect(:call, nil, [1])
     mock.expect(:call, nil, [1])
     
@@ -96,7 +96,7 @@ class OneWireBusTest < MiniTest::Test
 
   def test_reset
     part
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect :call, nil, [1, 1]
     mock.expect :call, nil, [1, 0]
 
@@ -109,7 +109,7 @@ class OneWireBusTest < MiniTest::Test
   
   def test__read
     part
-    mock = MiniTest::Mock.new.expect :call, nil, [1, 4]
+    mock = Minitest::Mock.new.expect :call, nil, [1, 4]
     board.stub(:one_wire_read, mock) do
       part._read(4)
     end
@@ -118,7 +118,7 @@ class OneWireBusTest < MiniTest::Test
 
   def test_write
     part
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect :call, nil, [1, true,  [255, 177, 0x44]]
     mock.expect :call, nil, [1, true,  [255, 177, 0x48]]
     mock.expect :call, nil, [1, false, [255, 177, 0x55]]

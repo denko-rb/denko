@@ -37,13 +37,13 @@ class PollerTest < Minitest::Test
   end
 
   def test_call_stop_before_polling
-    mock = MiniTest::Mock.new.expect :call, nil
+    mock = Minitest::Mock.new.expect :call, nil
     part.stub(:stop, mock) { part.poll(1) }
     mock.verify
   end
 
   def test_uses_threaded_loop
-    mock = MiniTest::Mock.new.expect :call, nil
+    mock = Minitest::Mock.new.expect :call, nil
     part.stub(:threaded_loop, mock) { part.poll(1) }
     mock.verify
   end
@@ -57,7 +57,7 @@ class PollerTest < Minitest::Test
   end
 
   def test_stop_kills_thread
-    mock = MiniTest::Mock.new.expect :call, nil
+    mock = Minitest::Mock.new.expect :call, nil
     part.stub(:stop_thread, mock) { part.stop }
     mock.verify
   end

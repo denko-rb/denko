@@ -21,7 +21,7 @@ class SPIBusTest < Minitest::Test
   OPTIONS = { read: 2, frequency: 800000, mode: 2, bit_order: :lsbfirst }
 
   def test_transfer
-    mock = MiniTest::Mock.new.expect :call, nil, [PIN], **OPTIONS
+    mock = Minitest::Mock.new.expect :call, nil, [PIN], **OPTIONS
     board.stub(:spi_transfer, mock) do
       part.transfer(PIN, **OPTIONS)
     end
@@ -29,7 +29,7 @@ class SPIBusTest < Minitest::Test
   end
   
   def test_listen
-    mock = MiniTest::Mock.new.expect :call, nil, [PIN], **OPTIONS
+    mock = Minitest::Mock.new.expect :call, nil, [PIN], **OPTIONS
     board.stub(:spi_listen, mock) do
       part.listen(PIN, **OPTIONS)
     end
@@ -37,7 +37,7 @@ class SPIBusTest < Minitest::Test
   end
   
   def test_stop
-    mock = MiniTest::Mock.new.expect :call, nil, [PIN]
+    mock = Minitest::Mock.new.expect :call, nil, [PIN]
     board.stub(:spi_stop, mock) do
       part.stop(PIN)
     end
@@ -54,7 +54,7 @@ class SPIBusTest < Minitest::Test
   end
 
   def test_set_pin_mode
-    mock = MiniTest::Mock.new.expect :call, nil, [9, :output]
+    mock = Minitest::Mock.new.expect :call, nil, [9, :output]
     board.stub(:set_pin_mode, mock) do
       part.set_pin_mode(9, :output)
     end

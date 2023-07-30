@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-class BuzzerTest < MiniTest::Test
+class BuzzerTest < Minitest::Test
   def board
     @board ||= BoardMock.new
   end
@@ -14,7 +14,7 @@ class BuzzerTest < MiniTest::Test
   end
   
   def test_tone
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect :call, nil, [part.pin, 60, nil]
     mock.expect :call, nil, [part.pin, 120, 2000]
     board.stub(:tone, mock) do
@@ -26,7 +26,7 @@ class BuzzerTest < MiniTest::Test
   
   def test_no_tone
     part
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect :call, nil, [part.pin]
     board.stub(:no_tone, mock) do
       part.no_tone
@@ -35,7 +35,7 @@ class BuzzerTest < MiniTest::Test
   end
   
   def stop
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect :call, nil
     mock.expect :call, nil
     part.stub(:kill_thread, mock) do

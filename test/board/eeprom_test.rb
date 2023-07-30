@@ -12,7 +12,7 @@ class BoardEEPROMTest < Minitest::Test
   end
 
   def test_eeprom_read
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect :call, nil, [(Denko::Message.encode command: 7, value: 16, aux_message: pack(:uint16, 15))]
 
     board.stub(:write, mock) do
@@ -23,7 +23,7 @@ class BoardEEPROMTest < Minitest::Test
 
   def test_eeprom_write
     data = (1..16).to_a
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect :call, nil, [(Denko::Message.encode command: 8, value: data.length, aux_message: pack(:uint16, 15) + pack(:uint8, data))]
 
     board.stub(:write, mock) do

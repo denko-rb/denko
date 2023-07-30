@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-class SevenSegmentLEDTest < MiniTest::Test
+class SevenSegmentLEDTest < Minitest::Test
   def board
     @board ||= BoardMock.new
   end
@@ -25,7 +25,7 @@ class SevenSegmentLEDTest < MiniTest::Test
     # Avoid reusing pins which would raise a Board error.
     def part.initialize_pins(options={}); end
 
-    mock = MiniTest::Mock.new.expect :call, nil
+    mock = Minitest::Mock.new.expect :call, nil
     part.stub(:clear, mock) do
       part.send(:initialize, options)
     end
@@ -36,7 +36,7 @@ class SevenSegmentLEDTest < MiniTest::Test
     # Avoid reusing pins which would raise a Board error.
     def part.initialize_pins(options={}); end
 
-    mock = MiniTest::Mock.new.expect :call, nil
+    mock = Minitest::Mock.new.expect :call, nil
     part.stub(:on, mock) do
       part.send(:initialize, options)
     end
@@ -44,7 +44,7 @@ class SevenSegmentLEDTest < MiniTest::Test
   end
 
   def test_on
-    mock = MiniTest::Mock.new.expect :high, nil
+    mock = Minitest::Mock.new.expect :high, nil
     part.stub(:anode, mock) do
       part.on
     end
@@ -52,7 +52,7 @@ class SevenSegmentLEDTest < MiniTest::Test
   end
 
   def test_off
-    mock = MiniTest::Mock.new.expect :low, nil
+    mock = Minitest::Mock.new.expect :low, nil
     part.stub(:anode, mock) do
       part.off
     end
@@ -60,7 +60,7 @@ class SevenSegmentLEDTest < MiniTest::Test
   end
 
   def test_scroll
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect :call, nil, ['H']
     mock.expect :call, nil, ['I']
     part.stub(:write, mock) do
@@ -71,7 +71,7 @@ class SevenSegmentLEDTest < MiniTest::Test
 
   def test_display_ensures_on
     part.off
-    mock = MiniTest::Mock.new.expect :call, nil
+    mock = Minitest::Mock.new.expect :call, nil
     part.stub(:on, mock) do
       part.display(1)
     end
@@ -85,7 +85,7 @@ class SevenSegmentLEDTest < MiniTest::Test
     # Expect every segment to get #write(1). Inverted logic because anode.
     mocks = []
     part.segments.each do 
-      mocks << MiniTest::Mock.new.expect(:call, nil, [1])
+      mocks << Minitest::Mock.new.expect(:call, nil, [1])
     end
     part.segments[0].stub(:write, mocks[0]) do
       part.segments[1].stub(:write, mocks[1]) do

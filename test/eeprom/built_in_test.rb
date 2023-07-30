@@ -37,7 +37,7 @@ class BuiltInEEPROMTest < Minitest::Test
   end
   
   def test_delegates_to_state_array
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect(:[], 255, [0])
     mock.expect(:[]=, 128, [1, 128])
     mock.expect(:each, nil)

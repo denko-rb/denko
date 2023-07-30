@@ -36,7 +36,7 @@ class ComponentTest < Minitest::Test
   end
   
   def test_state_through_mutex
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     2.times {mock.expect(:call, nil)}
     
     part.instance_variable_get(:@state_mutex).stub(:synchronize, mock) do
@@ -47,7 +47,7 @@ class ComponentTest < Minitest::Test
   end
   
   def test_micro_delay
-    mock = MiniTest::Mock.new.expect :call, nil, [1000]
+    mock = Minitest::Mock.new.expect :call, nil, [1000]
     
     board.stub(:micro_delay, mock) do
       part.micro_delay(1000)

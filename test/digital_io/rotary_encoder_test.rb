@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-class RotaryEncoderTest < MiniTest::Test
+class RotaryEncoderTest < Minitest::Test
   def board
     @board ||= BoardMock.new
   end
@@ -19,9 +19,9 @@ class RotaryEncoderTest < MiniTest::Test
   end
   
   def test_calls_listen_on_both_pins_with_given_divider
-    clock_mock = MiniTest::Mock.new.expect(:call, nil, [1])
+    clock_mock = Minitest::Mock.new.expect(:call, nil, [1])
     clock_mock.expect(:call, nil, [2])
-    data_mock = MiniTest::Mock.new.expect(:call, nil, [1])
+    data_mock = Minitest::Mock.new.expect(:call, nil, [1])
     data_mock.expect(:call, nil, [2])
     
     part.clock.stub(:listen, clock_mock) do
@@ -33,7 +33,7 @@ class RotaryEncoderTest < MiniTest::Test
   end
   
   def test_observes_on_initialize
-    mock = MiniTest::Mock.new.expect(:call, nil)
+    mock = Minitest::Mock.new.expect(:call, nil)
     part.stub(:observe_pins, mock) do
       part.send(:after_initialize)
     end

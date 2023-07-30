@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-class StepperMotorTest < MiniTest::Test
+class StepperMotorTest < Minitest::Test
   def board
     @board ||= BoardMock.new
   end
@@ -16,10 +16,10 @@ class StepperMotorTest < MiniTest::Test
   end
 
   def test_step_cw
-    dir_mock = MiniTest::Mock.new
+    dir_mock = Minitest::Mock.new
     dir_mock.expect :low?, false
     dir_mock.expect :low, nil
-    step_mock = MiniTest::Mock.new
+    step_mock = Minitest::Mock.new
     step_mock.expect :high, nil
     step_mock.expect :low, nil
 
@@ -33,10 +33,10 @@ class StepperMotorTest < MiniTest::Test
   end
 
   def test_step_cc
-    dir_mock = MiniTest::Mock.new
+    dir_mock = Minitest::Mock.new
     dir_mock.expect :high?, false
     dir_mock.expect :high, nil
-    step_mock = MiniTest::Mock.new
+    step_mock = Minitest::Mock.new
     step_mock.expect :high, nil
     step_mock.expect :low, nil
 

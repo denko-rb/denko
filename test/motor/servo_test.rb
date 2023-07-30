@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-class ServoMotorTest < MiniTest::Test
+class ServoMotorTest < Minitest::Test
   def board
     @board ||= BoardMock.new
   end
@@ -10,7 +10,7 @@ class ServoMotorTest < MiniTest::Test
   end
 
   def test_toggle_on_initialize
-    mock = MiniTest::Mock.new.expect(:call, nil, [1, :on], min: 544, max: 2400)
+    mock = Minitest::Mock.new.expect(:call, nil, [1, :on], min: 544, max: 2400)
     board.stub(:servo_toggle, mock) do
       Denko::Motor::Servo.new(board: board, pin:1)
     end
@@ -19,14 +19,14 @@ class ServoMotorTest < MiniTest::Test
 
   def test_attach
     part
-    mock = MiniTest::Mock.new.expect(:call, nil, [1, :on], min: 0, max: 360)
+    mock = Minitest::Mock.new.expect(:call, nil, [1, :on], min: 0, max: 360)
     board.stub(:servo_toggle, mock) { part.attach }
     mock.verify
   end
 
   def test_detach
     part
-    mock = MiniTest::Mock.new.expect(:call, nil, [1, :off])
+    mock = Minitest::Mock.new.expect(:call, nil, [1, :off])
     board.stub(:servo_toggle, mock) { part.detach }
     mock.verify
   end
@@ -44,7 +44,7 @@ class ServoMotorTest < MiniTest::Test
 
   def test_position_writes_mapped_microseconds_to_board
     part
-    mock = MiniTest::Mock.new.expect(:call, nil, [1, 20])
+    mock = Minitest::Mock.new.expect(:call, nil, [1, 20])
     board.stub(:servo_write, mock) do
       part.position = 10
     end
@@ -53,7 +53,7 @@ class ServoMotorTest < MiniTest::Test
 
   def test_speed_writes_mapped_microseconds_to_board
     part
-    mock = MiniTest::Mock.new.expect(:call, nil, [1, 180])
+    mock = Minitest::Mock.new.expect(:call, nil, [1, 180])
     board.stub(:servo_write, mock) do
       part.speed = 0
     end

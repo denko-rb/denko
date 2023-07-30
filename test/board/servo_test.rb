@@ -12,7 +12,7 @@ class APIServoTest < Minitest::Test
   end
 
   def test_on_off
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     aux = pack :uint16, [544, 2400]
     mock.expect :call, nil, [Denko::Message.encode(command: 10, pin: 9, value: 1, aux_message: aux)]
     mock.expect :call, nil, [Denko::Message.encode(command: 10, pin: 9, value: 0, aux_message: aux)]
@@ -25,7 +25,7 @@ class APIServoTest < Minitest::Test
   end
 
   def test_min_max
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     aux = pack :uint16, [360, 2100]
     mock.expect :call, nil, [Denko::Message.encode(command: 10, pin: 9, value: 1, aux_message: aux)]
 
@@ -36,7 +36,7 @@ class APIServoTest < Minitest::Test
   end
   
   def test_write
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect :call, nil, [Denko::Message.encode(command: 11, pin: 9, aux_message: pack(:uint16, 180))]
 
     board.stub(:write, mock) do

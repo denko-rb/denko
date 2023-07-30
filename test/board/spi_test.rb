@@ -64,7 +64,7 @@ class APISPITest < Minitest::Test
     bytes = [1,2,3,4]
     header = board.spi_header(bytes, 4, 8000000, 2, :lsbfirst)
     aux = header + pack(:uint8, bytes)
-    mock = MiniTest::Mock.new.expect  :call, nil,
+    mock = Minitest::Mock.new.expect  :call, nil,
                                       [Denko::Message.encode(command: 26, pin: 3, aux_message: aux)]
     
     board.stub(:write, mock) do
@@ -77,7 +77,7 @@ class APISPITest < Minitest::Test
   def test_spi_listen
     board
     header = board.spi_header([], 8, 1000000, 0, :lsbfirst)
-    mock = MiniTest::Mock.new.expect  :call, nil,
+    mock = Minitest::Mock.new.expect  :call, nil,
                                       [Denko::Message.encode(command: 27, pin: 3, aux_message: header)]
     
     board.stub(:write, mock) do
@@ -88,7 +88,7 @@ class APISPITest < Minitest::Test
   
   def test_spi_stop
     board
-    mock = MiniTest::Mock.new.expect :call, nil, [Denko::Message.encode(command: 28, pin: 3)]
+    mock = Minitest::Mock.new.expect :call, nil, [Denko::Message.encode(command: 28, pin: 3)]
     board.stub(:write, mock) do
       board.spi_stop(3)
     end

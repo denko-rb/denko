@@ -15,7 +15,7 @@ class APII2CTest < Minitest::Test
     board
     message = Denko::Message.encode command: 33
     
-    mock = MiniTest::Mock.new.expect :call, nil, [message]
+    mock = Minitest::Mock.new.expect :call, nil, [message]
     connection.stub(:write, mock) do
       board.i2c_search
     end
@@ -32,7 +32,7 @@ class APII2CTest < Minitest::Test
     # Repeated start
     message2 = Denko::Message.encode command: 34, pin: address | (0 << 7), value: 4, aux_message: aux
 
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect :call, nil, [message1]
     mock.expect :call, nil, [message2]
     
@@ -56,7 +56,7 @@ class APII2CTest < Minitest::Test
     # Repeated start
     message2 = Denko::Message.encode command: 35, pin: 0x30 | (0 << 7), value: 4, aux_message: aux
 
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect :call, nil, [message1]
     mock.expect :call, nil, [message2]
     
@@ -72,7 +72,7 @@ class APII2CTest < Minitest::Test
     aux = pack(:uint8, 0x00) + pack(:uint8, [0])
     message = Denko::Message.encode command: 35, pin: 0x30 | (1 << 7), value: 4, aux_message: aux
 
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect :call, nil, [message]
     
     connection.stub(:write, mock) do
@@ -97,7 +97,7 @@ class APII2CTest < Minitest::Test
       messages << Denko::Message.encode(command: 34, pin: 0x30 | (1 << 7), value: 4, aux_message: pack(:uint8, code) + pack(:uint8, data))
     end
 
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     messages.each do |message|
       mock.expect :call, nil, [message]
     end

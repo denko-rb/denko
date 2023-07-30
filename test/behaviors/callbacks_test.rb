@@ -29,7 +29,7 @@ class CallbacksTest < Minitest::Test
 
   def test_callback_mutex
     callback = Proc.new{}
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     3.times {mock.expect(:call, nil)}
     
     part.callback_mutex.stub(:synchronize, mock) do
@@ -73,8 +73,8 @@ class CallbacksTest < Minitest::Test
   end
 
   def test_update_runs_callbacks_and_removes_read_callbacks
-    cb1 = MiniTest::Mock.new.expect :call, nil
-    cb2 = MiniTest::Mock.new.expect :call, nil
+    cb1 = Minitest::Mock.new.expect :call, nil
+    cb2 = Minitest::Mock.new.expect :call, nil
     part.add_callback        { cb1.call }
     part.add_callback(:read) { cb2.call }
     part.update("data")
@@ -84,7 +84,7 @@ class CallbacksTest < Minitest::Test
   end
 
   def test_pre_callback_filter_modifies_data
-    cb = MiniTest::Mock.new.expect :call, nil, ["denko: value"]
+    cb = Minitest::Mock.new.expect :call, nil, ["denko: value"]
     part.add_callback { |x| cb.call(x) }
     part.update("value")
     cb.verify

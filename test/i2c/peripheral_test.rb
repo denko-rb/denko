@@ -4,7 +4,7 @@ class I2CPeripheralBase
   include Denko::I2C::Peripheral
 end
 
-class I2CPeripheralTest < MiniTest::Test
+class I2CPeripheralTest < Minitest::Test
   def board
     @board ||= BoardMock.new
   end
@@ -22,7 +22,7 @@ class I2CPeripheralTest < MiniTest::Test
   def test_write_and_repeated_start
     part.i2c_repeated_start = true
     
-    mock = MiniTest::Mock.new.expect :call, nil, [0x30, [1,2], 100000, true]
+    mock = Minitest::Mock.new.expect :call, nil, [0x30, [1,2], 100000, true]
     bus.stub(:write, mock) do
       part.i2c_write [1,2]
     end
@@ -31,7 +31,7 @@ class I2CPeripheralTest < MiniTest::Test
   def test_frequency
     part.i2c_frequency = 400000
     
-    mock = MiniTest::Mock.new.expect :call, nil, [0x30, [1,2], 400000, false]
+    mock = Minitest::Mock.new.expect :call, nil, [0x30, [1,2], 400000, false]
     bus.stub(:write, mock) do
       part.i2c_write [1,2]
     end
@@ -42,7 +42,7 @@ class I2CPeripheralTest < MiniTest::Test
     
     board.inject_read_for_component(part, 5, "48-127,127,127,127,127,127")
     
-    mock = MiniTest::Mock.new.expect :call, nil, [0x30, 0x03, 6, 100000, true]
+    mock = Minitest::Mock.new.expect :call, nil, [0x30, 0x03, 6, 100000, true]
     bus.stub(:read, mock) do
       part.i2c_read(0x03, 6)
     end

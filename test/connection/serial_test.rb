@@ -18,7 +18,7 @@ class SerialConnectionTest < Minitest::Test
   end
   
   def test_connect_with_device_specified
-    mock = MiniTest::Mock.new.expect(:call, "SerialMock", ["/dev/ttyACM0", 9600])
+    mock = Minitest::Mock.new.expect(:call, "SerialMock", ["/dev/ttyACM0", 9600])
     ::Serial.stub(:new, mock) do
       connection = Denko::Connection::Serial.new(device: "/dev/ttyACM0", baud: 9600)
       assert_equal "SerialMock", suppress_output { connection.send(:io) }
@@ -34,7 +34,7 @@ class SerialConnectionTest < Minitest::Test
 
   def test_connect_on_unix
     connection.stub(:tty_devices, ['/dev/ttyACM0', '/dev/tty.usbmodem1']) do
-      mock =  MiniTest::Mock.new
+      mock =  Minitest::Mock.new
       # Raise error for first device
       mock.expect(:call, nil) { raise RubySerial::Error }
       mock.expect :call, "serial-obj", ['/dev/tty.usbmodem1', Denko::Connection::Serial::BAUD]
@@ -50,7 +50,7 @@ class SerialConnectionTest < Minitest::Test
     # Simulate being on Windows
     Constants.redefine(:RUBY_PLATFORM, "mswin", :on => Object)
 
-    mock =  MiniTest::Mock.new
+    mock =  Minitest::Mock.new
     # Raise error for COM1
     mock.expect(:call, nil) { raise RubySerial::Error }
     mock.expect :call, "serial-obj", ["COM2", Denko::Connection::Serial::BAUD]
@@ -65,11 +65,11 @@ class SerialConnectionTest < Minitest::Test
   end
 
   def test_io_reset
-    flush_mock = MiniTest::Mock.new.expect :call, true
-    r_stop_mock = MiniTest::Mock.new.expect :call, true
-    r_start_mock = MiniTest::Mock.new.expect :call, true
-    w_stop_mock = MiniTest::Mock.new.expect :call, true
-    w_start_mock = MiniTest::Mock.new.expect :call, true
+    flush_mock = Minitest::Mock.new.expect :call, true
+    r_stop_mock = Minitest::Mock.new.expect :call, true
+    r_start_mock = Minitest::Mock.new.expect :call, true
+    w_stop_mock = Minitest::Mock.new.expect :call, true
+    w_start_mock = Minitest::Mock.new.expect :call, true
 
     connection.stub(:flush_read, flush_mock) do
       connection.stub(:stop_read, r_stop_mock) do
@@ -98,7 +98,7 @@ class SerialConnectionTest < Minitest::Test
   end
   
   def test_parse
-    mock = MiniTest::Mock.new.expect :call, nil, ['02:00:00']
+    mock = Minitest::Mock.new.expect :call, nil, ['02:00:00']
     connection.stub(:changed, true) do
       connection.stub(:notify_observers, mock) do
         connection.send(:parse, '02:00:00')
@@ -132,7 +132,7 @@ class SerialConnectionTest < Minitest::Test
     connection.write('message')
 
     # Message is written from buffer when we start the write thread.
-    mock = MiniTest::Mock.new.expect :call, nil, ['message']
+    mock = Minitest::Mock.new.expect :call, nil, ['message']
     connection.stub(:_write, mock) do
       # Start the write thread and wait for the buffer to empty.
       connection.send(:start_write)  
@@ -144,7 +144,7 @@ class SerialConnectionTest < Minitest::Test
   end
 
   def test_io_read_single_chars_until_newline_and_strips_it
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect :read, "line\n", [64]
     connection.stub(:io, mock) do
       assert_equal "line", connection.send(:read)
@@ -153,7 +153,7 @@ class SerialConnectionTest < Minitest::Test
   end
 
   def test_io_read_handles_escaped_newlines_and_backslashes
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect :read, "l1\\\nl2\\\\\n", [64]
     connection.stub(:io, mock) do
       assert_equal "l1\nl2\\", connection.send(:read)
@@ -162,7 +162,7 @@ class SerialConnectionTest < Minitest::Test
   end
 
   def test_io_read_returns_empty_string_if_just_newline
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect :read, "\n", [64]
     connection.stub(:io, mock) do
       assert_equal "", connection.send(:read)

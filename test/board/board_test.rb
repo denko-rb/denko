@@ -15,7 +15,7 @@ class BoardTest < Minitest::Test
 
   def test_starts_observing_connection
     io = ConnectionMock.new
-    mock = MiniTest::Mock.new.expect(:call, nil, [Denko::Board])
+    mock = Minitest::Mock.new.expect(:call, nil, [Denko::Board])
     io.stub(:add_observer, mock) do
       Denko::Board.new(io)
     end
@@ -23,7 +23,7 @@ class BoardTest < Minitest::Test
   end
 
   def test_calls_handshake_on_connection
-    mock = MiniTest::Mock.new.expect(:call, Constants::ACK)
+    mock = Minitest::Mock.new.expect(:call, Constants::ACK)
     connection.stub(:handshake, mock) do
       Denko::Board.new(connection)
     end
@@ -49,7 +49,7 @@ class BoardTest < Minitest::Test
     assert_equal 1023, board.analog_read_high
     assert_equal 10,   board.analog_read_resolution
     
-    mock = MiniTest::Mock.new
+    mock = Minitest::Mock.new
     mock.expect(:call, nil, [Denko::Message.encode(command:96, value:12)])
     mock.expect(:call, nil, [Denko::Message.encode(command:97, value:12)])
     board.stub(:write, mock) do
@@ -66,7 +66,7 @@ class BoardTest < Minitest::Test
   end
   
   def test_eeprom
-    mock = MiniTest::Mock.new.expect(:call, "test eeprom", [], board: board)
+    mock = Minitest::Mock.new.expect(:call, "test eeprom", [], board: board)
     Denko::EEPROM::BuiltIn.stub(:new, mock) do
       board.eeprom
     end
@@ -75,7 +75,7 @@ class BoardTest < Minitest::Test
 
   def test_write
     board
-    mock = MiniTest::Mock.new.expect(:call, nil, ["message"])
+    mock = Minitest::Mock.new.expect(:call, nil, ["message"])
     connection.stub(:write, mock) do
       board.write("message")
     end
@@ -83,16 +83,16 @@ class BoardTest < Minitest::Test
   end
 
   def test_update_passes_messages_to_correct_components
-    mock1 = MiniTest::Mock.new.expect(:update, nil, ["data"])
+    mock1 = Minitest::Mock.new.expect(:update, nil, ["data"])
     3.times { mock1.expect(:pin, 1) }
     
     # Make sure lines are split only on the first colon.
     # Tests for string based pine names too.
-    mock2 = MiniTest::Mock.new.expect(:update, nil, ["with:colon"])
+    mock2 = Minitest::Mock.new.expect(:update, nil, ["with:colon"])
     3.times { mock2.expect(:pin, 14) }
     
     # Special EEPROM mock.
-    mock3 = MiniTest::Mock.new.expect(:update, nil, ["bytes"])
+    mock3 = Minitest::Mock.new.expect(:update, nil, ["bytes"])
     3.times { mock3.expect(:pin, 254) }
      
     board.add_component(mock1)

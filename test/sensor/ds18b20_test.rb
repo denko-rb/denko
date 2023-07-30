@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-class DS18B20Test < MiniTest::Test
+class DS18B20Test < Minitest::Test
   def board
     @board ||= BoardMock.new
   end
@@ -45,7 +45,7 @@ class DS18B20Test < MiniTest::Test
 
   def test_pre_callback_filter_does_crc_and_returns_error_on_fail
     raw_bytes = [239, 1, 75, 70, 127, 255, 1, 16, 245]
-    mock = MiniTest::Mock.new.expect(:call, false, [raw_bytes])
+    mock = Minitest::Mock.new.expect(:call, false, [raw_bytes])
 
     Denko::OneWire::Helper.stub(:crc, mock) do
       assert_equal({crc_error: true}, part.pre_callback_filter(raw_bytes))
@@ -56,7 +56,7 @@ class DS18B20Test < MiniTest::Test
   # test resolution=
 
   def test_convert_is_atomic
-    mock = MiniTest::Mock.new.expect(:call, nil)
+    mock = Minitest::Mock.new.expect(:call, nil)
     part.stub(:atomically, mock) do
       part.convert
     end
@@ -64,8 +64,8 @@ class DS18B20Test < MiniTest::Test
   end
 
   def test_convert_matches_first
-    match_mock = MiniTest::Mock.new.expect(:call, nil)
-    sleep_mock = MiniTest::Mock.new.expect(:call, nil, [0.75])
+    match_mock = Minitest::Mock.new.expect(:call, nil)
+    sleep_mock = Minitest::Mock.new.expect(:call, nil, [0.75])
     
     part.stub(:match, match_mock) do
       part.stub(:sleep, sleep_mock) do
@@ -76,10 +76,10 @@ class DS18B20Test < MiniTest::Test
   end
 
   def test_convert_sends_the_command
-    write_mock = MiniTest::Mock.new
+    write_mock = Minitest::Mock.new
     write_mock.expect(:call, nil, [0xCC])
     write_mock.expect(:call, nil, [0x44])
-    sleep_mock = MiniTest::Mock.new.expect(:call, nil, [0.75])
+    sleep_mock = Minitest::Mock.new.expect(:call, nil, [0.75])
 
     bus.stub(:write, write_mock) do
       part.stub(:sleep, sleep_mock) do
@@ -90,7 +90,7 @@ class DS18B20Test < MiniTest::Test
   end
 
   def test_convert_sets_max_convert_time_first
-    sleep_mock = MiniTest::Mock.new.expect(:call, nil, [0.75])
+    sleep_mock = Minitest::Mock.new.expect(:call, nil, [0.75])
     part.stub(:sleep, sleep_mock) do 
       part.convert
     end
@@ -99,7 +99,7 @@ class DS18B20Test < MiniTest::Test
   end
 
   def test_convert_sleeps_for_convert_time
-    mock = MiniTest::Mock.new.expect(:call, nil, [0.75])
+    mock = Minitest::Mock.new.expect(:call, nil, [0.75])
     part.stub(:sleep, mock) do
       part.convert
     end

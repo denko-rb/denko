@@ -1,6 +1,6 @@
 require_relative '../test_helper'
 
-class DS3231Test < MiniTest::Test
+class DS3231Test < Minitest::Test
   def board
     @board ||= BoardMock.new
   end
@@ -28,7 +28,7 @@ class DS3231Test < MiniTest::Test
   end
   
   def test_time=
-    mock = MiniTest::Mock.new.expect :call, nil, [[0, [0, 0, 0, 6, 1, 1, 48]]]
+    mock = Minitest::Mock.new.expect :call, nil, [[0, [0, 0, 0, 6, 1, 1, 48]]]
     part.stub(:i2c_write, mock) do
       part.time = Time.new(2000, 1, 1, 0, 0, 0.0)
     end
@@ -38,7 +38,7 @@ class DS3231Test < MiniTest::Test
   def test_read
     board.inject_read_for_component(part, 5, "104-0,0,0,6,1,1,48")
     
-    mock = MiniTest::Mock.new.expect :call, nil, [part.address, 0x00, 7, 100000, false]
+    mock = Minitest::Mock.new.expect :call, nil, [part.address, 0x00, 7, 100000, false]
     bus.stub(:_read, mock) do
       part.time
     end
@@ -46,7 +46,7 @@ class DS3231Test < MiniTest::Test
   end
   
   def test_pre_callback_filter
-    mock = MiniTest::Mock.new.expect :call, nil, [Time.new(2000, 1, 1, 0, 0, 0.0)]
+    mock = Minitest::Mock.new.expect :call, nil, [Time.new(2000, 1, 1, 0, 0, 0.0)]
     part.stub(:update_state, mock) do
       bus.send(:update, "104-0,0,0,6,1,1,48")
     end
