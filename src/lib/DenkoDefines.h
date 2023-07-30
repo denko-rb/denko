@@ -133,10 +133,10 @@
 #elif defined(_RENESAS_RA_)
   #define DENKO_SERIAL_BUFFER_SIZE 512
   #define DENKO_RX_ACK_INTERVAL 64
-// SAMD21 is 256/64 in native USB mode ONLY. Must use defaults on programming port to avoid data loss.
+// SAMD21 is 256/128 in native USB mode ONLY. Must use defaults on programming port to avoid data loss.
 #elif defined(__SAMD21G18A__) && defined(DENKO_USB_CDC)
   #define DENKO_SERIAL_BUFFER_SIZE 256
-  #define DENKO_RX_ACK_INTERVAL 64
+  #define DENKO_RX_ACK_INTERVAL 128
 // 32u4 is odd. Size is 63 instead of 64. Interval must be 31. 32 doesn't work at all. Off by 1 errors?
 #elif defined(__AVR_ATmega32U4__)
   #define DENKO_SERIAL_BUFFER_SIZE 63
