@@ -102,9 +102,9 @@
 // If no high usage features (core sketch), 32 + 16.
 #if !defined(DENKO_SHIFT) && !defined (DENKO_I2C) && !defined(DENKO_SPI) && !defined(DENKO_UARTS) && !defined(DENKO_UART_BB) && !defined(DENKO_IR_OUT) && !defined(DENKO_LED_ARRAY)
   #define AUX_SIZE 48
-// If using IR_OUT or LED_ARRAY, and not on the ATmega168, 512 + 16.
+// If using IR_OUT or LED_ARRAY, and not on the ATmega168, 768 + 16.
 #elif (defined(DENKO_IR_OUT) || defined(DENKO_LED_ARRAY)) && !defined(__AVR_ATmega168__)
-  #define AUX_SIZE 528
+  #define AUX_SIZE 784
 // Default aux message size to 256 + 16 bytes.
 #else
   #define AUX_SIZE 272

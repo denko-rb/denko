@@ -11,7 +11,7 @@ module Denko
         aux_message = aux_message.to_s
 
         # Validate aux_message before escaping characters.
-        raise ArgumentError, 'aux_message is limited to 528 characters' if aux_message.length > 528
+        raise ArgumentError, 'aux_message is limited to 528 characters' if aux_message.length > 784
 
         # Escape \ and \n.
         aux_message = aux_message.gsub("\\","\\\\\\\\").gsub("\n", "\\\n")
