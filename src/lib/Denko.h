@@ -201,7 +201,7 @@ class Denko {
     // Parsed message storage.
     byte cmdStr[4]; byte cmd;
     byte pinStr[4]; byte pin;
-    byte valStr[4]; byte val;
+    byte valStr[4]; uint16_t val;
     byte auxMsg[AUX_SIZE];
 
     //
