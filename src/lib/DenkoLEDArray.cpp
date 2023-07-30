@@ -17,7 +17,7 @@
 // Write data to a WS2812 LED array. Will generalize to other types later.
 //
 // pin          = Microcontroller pin connected to Data In pin of the LED array.
-// val          = Number of RGB or RGBW LEDS (aka pixels) in the array.
+// val          = Number of raw pixel data bytes to expect. Max 9999.
 // auxMsg[0..3] = Reserved for future settings.
 // auxMsg[4+]   = Raw pixel data, already in correct byte order (GRB, RGB, etc.).
 //
@@ -27,8 +27,7 @@ void Denko::showLEDArray() {
   ledArray.begin();
 
   // Copy LED data into the pixel buffer.
-  // NOTE: val * 3 will have to change to val * 4 for RGBW leds.
-  memcpy(ledArray.getPixels(), &auxMsg[4], val * 3);
+  memcpy(ledArray.getPixels(), &auxMsg[4], val);
 
   // Write the pixel buffer to the array.
   ledArray.show();

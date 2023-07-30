@@ -41,7 +41,7 @@ module Denko
       end
 
       def show
-        board.show_ws2812(self.pin, self.length, self.buffer)
+        board.show_ws2812(self.pin, self.buffer)
       end
     end
   end
