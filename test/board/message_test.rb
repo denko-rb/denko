@@ -25,7 +25,7 @@ class MessageTest < Minitest::Test
   end
 
   def test_validates_aux_message_length
-    too_big_message = Array.new(785) { "a" }.join 
+    too_big_message = Array.new(785) { "a" }.join
     assert_raises(ArgumentError) { Denko::Message.encode command: 0, value: 0, aux_message: too_big_message }
   end
 
