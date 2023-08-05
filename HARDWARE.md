@@ -25,7 +25,7 @@
 |    Chip        | Status          | Products         | Notes |
 | :--------      | :------:        | :--------------- |------ |
 | ATSAM3X8E      | :yellow_heart:  | Due | Native USB port. Tone, and IR Out don't work.
-| ATSAMD21       | :green_heart:   | Zero, M Series, MKR Series | Native USB
+| ATSAMD21       | :green_heart:   | Zero, M0 Series, Some MKR & Nano | Native USB
 | RA4M1          | :yellow_heart:  | Uno R4 Minima, Uno R4 WiFi | IR Out and WS2812 unsupported. UART & Wi-Fi untested
 
 ### Arduino Networking
@@ -33,9 +33,9 @@
 |    Chip               | Status          | Products         | Notes |
 | :--------             | :------:        | :--------------- |------ |
 | Wiznet W5100/5500     | :green_heart:   | Ethernet Shield  | Wired Ethernet for Uno/Mega pin-compatibles
-| HDG204 + AT32UC3      | :question:      | WiFi Shield      | WiFi for Uno. Compiles. No hardware
-| ATWINC1500            | :green_heart:   | MKR1000, WiFi Shield 101 | High memory use. Must #define WIFI_101 in sketch (automatic for MKR1000)
-| u-blox NINA-W102      | :question:      | Uno WiFi Rev 2, Some MKR & Nano Series | Should be API compatible Wifi.h. No hardware
+| HDG204 + AT32UC3      | :question:      | WiFi Shield      | Compiles, but no hardware
+| ATWINC1500            | :green_heart:   | MKR1000, WiFi Shield 101 | #define WIFI_101 in sketch (automatic for MKR1000)
+| u-blox NINA-W102      | :question:      | Uno WiFi Rev 2, Some MKR & Nano | Should use standard API. No hardware
 
 ### Espressif Chips with Built-In Wi-Fi
 [![ESP8266 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp8266.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp8266.yml)
