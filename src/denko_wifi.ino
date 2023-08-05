@@ -1,3 +1,13 @@
+// NOTE: Make sure to define WIFI_101 if using the WiFi Shield 101, or any
+// unknown board that uses the ATWINC1500 for Wi-Fi. <WiFi.h> will not work.
+//
+// #define WIFI_101
+
+// Handle known boards that need the Wifi101 library.
+#ifdef ARDUINO_SAMD_MKR1000
+  #define WIFI_101
+#endif
+
 #include "Denko.h"
 #if defined(ESP8266)
   #include <ESP8266WiFi.h>
@@ -13,8 +23,12 @@
   #define WIFI_STATUS_LED 2
 #else
   #include <SPI.h>
-  #include <WiFi.h>
   #define WIFI_STATUS_LED 13
+  #ifdef WIFI_101
+    #include <WiFi101.h>
+  #else
+    #include <WiFi.h>
+  #endif
 #endif
 
 // Configure your WiFi options here. IP address is not configurable. Uses DHCP.
@@ -45,7 +59,12 @@ void printWifiStatus() {
   DENKO_SERIAL_IF.print(WiFi.RSSI());
   DENKO_SERIAL_IF.println(" dBm");
   DENKO_SERIAL_IF.print("IP Address: ");
-  DENKO_SERIAL_IF.println(WiFi.localIP());
+  #ifdef WIFI_101
+    IPAddress ip = WiFi.localIP();
+    DENKO_SERIAL_IF.println(ip);
+  #else
+    DENKO_SERIAL_IF.println(WiFi.localIP());
+  #endif
   DENKO_SERIAL_IF.print("Denko TCP Port: ");
   DENKO_SERIAL_IF.println(port);
   indicateWiFi(true);
