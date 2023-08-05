@@ -141,9 +141,10 @@ Polling and reading follow a call and response pattern.
 | :---------------     | :------:       | :--------      | :---------------   |------ |
 | Generic Hobby Servo  | :green_heart:  | Servo/ESC PWM  | `Motor::Servo`     | Max depends on PWM channel count
 | Generic ESC          | :yellow_heart: | Servo/ESC PWM  | `Motor::Servo`     | Works. Needs its own class.
+| PCA9685              | :heart:        | I2C            | `PulseIO::PCA9685` | 16ch 12-bit PWM for servo or LED
 | L298N                | :green_heart:  | Digi + PWM Out | `Motor::L298`      | H-Bridge DC motor driver
 | A3967                | :green_heart:  | Digital Out    | `Motor::Stepper`   | 1ch microstepper (EasyDriver)
-| PCA9685              | :heart:        | I2C            | `PulseIO::PCA9685` | 16ch 12-bit PWM for servo or LED
+| TMC2209              | :heart:        | -              | -                  | 1ch silent stepper driver
 
 ### I/O Expansion
 
@@ -209,6 +210,12 @@ Polling and reading follow a call and response pattern.
 | :--------------- | :------:       | :-------- | :---------------  |------ |
 | DS1302           | :heart:        | I2C       | `RTC::DS1302`     |
 | DS3231           | :green_heart:  | I2C       | `RTC::DS3231`     | Alarms not implemented
+
+### GPS
+
+| Name             | Status         | Interface | Component Class   | Notes |
+| :--------------- | :------:       | :-------- | :---------------  |------ |
+| GT-U7            | :heart:        | UART      | -                 |
 
 ### Miscellaneous
 
