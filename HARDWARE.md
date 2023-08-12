@@ -26,7 +26,7 @@
 | :--------      | :------:        | :--------------- |------ |
 | ATSAM3X8E      | :yellow_heart:  | Due | Native USB port. Tone, and IR Out don't work.
 | ATSAMD21       | :green_heart:   | Zero, M0 Series, Some MKR & Nano | Native USB
-| RA4M1          | :yellow_heart:  | Uno R4 Minima, Uno R4 WiFi | IR Out and WS2812 unsupported. UART untested
+| RA4M1          | :yellow_heart:  | Uno R4 Minima, Uno R4 WiFi | IR and WS2812 libraries don't support this yet
 
 ### Arduino Networking
 
@@ -91,12 +91,12 @@
 | I2C Bit Bang          | :heart:         | S     | `I2C::BitBang`           | Any pins
 | SPI                   | :green_heart:   | H     | `SPI::Bus`               | Predetermined pins from IDE
 | SPI Bit Bang          | :green_heart:   | S     | `SPI::BitBang`           | Any pins
-| UART                  | :green_heart:   | H     | `UART::Hardware`         | Except Atmega328, ATmega168, RA4M1
+| UART                  | :green_heart:   | H     | `UART::Hardware`         | Except Atmega328, ATmega168
 | UART Bit Bang         | :green_heart:   | S     | `UART::BitBang`          | Only ATmega328, ATmega168
 | Maxim OneWire         | :green_heart:   | S     | `OneWire::Bus`           | No overdrive
-| Infrared Emitter      | :green_heart:   | S     | `PulseIO::IRTransmitter` | Except RA4M1
+| Infrared Emitter      | :green_heart:   | S     | `PulseIO::IRTransmitter` | Except SAM3X, RA4M1
 | Infrared Receiver     | :heart:         | S     | `PulseIO::IRReceiver`    | Doable with existing library
-| WS2812                | :green_heart:   | S     | See LED table            | Except RP2040
+| WS2812                | :green_heart:   | S     | See LED table            | Except RP2040, RA4M1
 | ESP32-PCNT            | :heart:         | H     | -                        | Only ESP32. Pulse counter (for encoders)
 | ESP32-MCPWM           | :heart:         | H     | -                        | Only ESP32. Motor control PWM
 

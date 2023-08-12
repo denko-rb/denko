@@ -83,6 +83,10 @@
   #elif defined(ESP8266) && defined(SERIAL_PORT_HARDWARE_OPEN)
     #define DENKO_UARTS 1
 
+  // Define 1 UART for UNO R4 boards. Always use Serial1.
+  #elif defined(_RENESAS_RA_)
+    #define DENKO_UARTS 1
+
   // This works for all the Atmel cores except RA4M1.
   #else
     #if defined(SERIAL_PORT_HARDWARE3)
