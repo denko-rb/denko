@@ -22,11 +22,13 @@
   // #include <ArduinoOTA.h>
   #define WIFI_STATUS_LED 2
 #else
-  #include <SPI.h>
   #define WIFI_STATUS_LED 13
   #ifdef WIFI_101
     #include <WiFi101.h>
+  #elif defined(ARDUINO_UNOWIFIR4)
+    #include <WiFiS3.h>
   #else
+    #include <SPI.h>
     #include <WiFi.h>
   #endif
 #endif

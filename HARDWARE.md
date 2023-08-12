@@ -26,7 +26,7 @@
 | :--------      | :------:        | :--------------- |------ |
 | ATSAM3X8E      | :yellow_heart:  | Due | Native USB port. Tone, and IR Out don't work.
 | ATSAMD21       | :green_heart:   | Zero, M0 Series, Some MKR & Nano | Native USB
-| RA4M1          | :yellow_heart:  | Uno R4 Minima, Uno R4 WiFi | IR Out and WS2812 unsupported. UART & Wi-Fi untested
+| RA4M1          | :yellow_heart:  | Uno R4 Minima, Uno R4 WiFi | IR Out and WS2812 unsupported. UART untested
 
 ### Arduino Networking
 
