@@ -40,6 +40,8 @@ All platforms will require libraries to be installed. To install a library do th
     Servo                      by Michael Margolis, Arduino
     Ethernet                   by Various
     WiFi                       by Arduino
+    WiFi101                    by Arduino
+    WiFiNINA                   by Arduino
     IRremote         @ v4.1.2  by shirriff, z3to, ArminJo
     IRremoteESP82666 @ v2.8.5  by David Conran, Sebastien Warin
     ESP32Servo                 by Kevin Harrington, John K. Bennett
@@ -56,6 +58,7 @@ All platforms will require libraries to be installed. To install a library do th
     Servo                      by Michael Margolis, Arduino
     Ethernet                   by Various
     WiFi                       by Arduino
+    WiFiNINA                   by Arduino
     IRremote         @ v4.1.2  by shirriff, z3to, ArminJo
     Adafruit NeoPixel          by Adafruit
     ````
@@ -72,6 +75,8 @@ All platforms will require libraries to be installed. To install a library do th
     Servo                      by Michael Margolis, Arduino
     Ethernet                   by Various
     WiFi                       by Arduino
+    WiFi101                    by Arduino
+    WiFiNINA                   by Arduino
     IRremote         @ v4.1.2  by shirriff, z3to, ArminJo
     Adafruit NeoPixel          by Adafruit
     ````

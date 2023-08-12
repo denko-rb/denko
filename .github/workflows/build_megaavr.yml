@@ -36,7 +36,7 @@ jobs:
               - name: IRremote
                 version: 4.1.2
               - name: Ethernet
-              - name: WiFi
+              - name: WiFiNINA
               - name: Adafruit NeoPixel
                 
     steps:

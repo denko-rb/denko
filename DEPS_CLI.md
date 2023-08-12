@@ -21,6 +21,8 @@ arduino-cli core install rp2040:rp2040
 arduino-cli lib install Servo
 arduino-cli lib install Ethernet
 arduino-cli lib install WiFi
+arduino-cli lib install WiFi101
+arduino-cli lib install WiFiNINA
 arduino-cli lib install IRremote@4.1.2
 arduino-cli lib install IRremoteESP8266@2.8.4
 arduino-cli lib install ESP32Servo
@@ -34,6 +36,7 @@ arduino-cli core install arduino:megaavr
 arduino-cli lib install Servo
 arduino-cli lib install Ethernet
 arduino-cli lib install WiFi
+arduino-cli lib install WiFiNINA
 arduino-cli lib install IRremote@4.1.2
 arduino-cli lib install "Adafruit NeoPixel"
 ````
@@ -47,6 +50,8 @@ arduino-cli core install arduino:renesas_uno
 arduino-cli lib install Servo
 arduino-cli lib install Ethernet
 arduino-cli lib install WiFi
+arduino-cli lib install WiFi101
+arduino-cli lib install WiFiNINA
 arduino-cli lib install IRremote@4.1.2
 arduino-cli lib install "Adafruit NeoPixel"
 ````
