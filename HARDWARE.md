@@ -34,7 +34,7 @@
 | :--------             | :------:        | :--------------- |------ |
 | Wiznet W5100/5500     | :green_heart:   | Ethernet Shield  | Wired Ethernet for Uno/Mega pin-compatibles
 | HDG204 + AT32UC3      | :question:      | WiFi Shield      | Compiles, but no hardware
-| ATWINC1500            | :green_heart:   | MKR1000, WiFi Shield 101 | #define WIFI_101 in sketch for shield. Automatic for MKR1000
+| ATWINC1500            | :green_heart:   | MKR1000, WiFi Shield 101 | #define WIFI_101 for shield. Automatic for MKR1000
 | u-blox NINA-W102      | :question:      | Uno WiFi Rev 2, MKR WiFi 1010, Nano 33 IOT | Should work. No hardware
 
 ### Espressif Chips with Built-In Wi-Fi
