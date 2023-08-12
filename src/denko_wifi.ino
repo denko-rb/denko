@@ -1,11 +1,23 @@
-// NOTE: Make sure to define WIFI_101 if using the WiFi Shield 101, or any
-// unknown board that uses the ATWINC1500 for Wi-Fi. <WiFi.h> will not work.
+// NOTE!!!
+// For some boards the standard <WiFi.h> header file does not work.
+//
+// Make sure to define:
+// WIFI_101 if using the WiFi Shield 101, or any board that uses the ATWINC1500 for Wi-Fi.
+// WIFI_NINA if using any board with the NINA-W102 WiFi chip.
+//
+// Some known boards are handled automatically.
 //
 // #define WIFI_101
+// #define WIFI_NINA
 
-// Handle known boards that need the Wifi101 library.
+// WiFi101 Boards
 #ifdef ARDUINO_SAMD_MKR1000
   #define WIFI_101
+#endif
+
+// Nina WiFi Boards
+#if defined(ARDUINO_SAMD_MKRWIFI1010) || defined(ARDUINO_AVR_UNO_WIFI_REV2) || defined(ARDUINO_SAMD_NANO_33_IOT)
+  #define WIFI_NINA
 #endif
 
 #include "Denko.h"
@@ -23,8 +35,10 @@
   #define WIFI_STATUS_LED 2
 #else
   #define WIFI_STATUS_LED 13
-  #ifdef WIFI_101
+  #if defined(WIFI_101)
     #include <WiFi101.h>
+  #elif defined(WIFI_NINA)
+    #include <WiFiNINA.h>
   #elif defined(ARDUINO_UNOWIFIR4)
     #include <WiFiS3.h>
   #else
