@@ -13,7 +13,7 @@
 | ATmega32u4     | :green_heart:   | Leonardo, Micro, Leonardo ETH, Esplora, LilyPad USB |
 | ATmega1280     | :green_heart:   | Mega |
 | ATmega2560     | :green_heart:   | Mega2560, Arduino Mega ADK |
-| ATmega4809     | :question:      | Nano Every, Uno WiFi Rev2 | No hardware to test, but should work
+| ATmega4809     | :yellow_heart:  | Nano Every, Uno WiFi Rev2 |
 
 **Note:** Only USB boards listed. Any board with a supported chip should work, once you can flash it and connect to serial.
 

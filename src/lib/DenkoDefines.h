@@ -65,7 +65,7 @@
 #ifdef DENKO_UART
   // Look for TX pin definitions on RP2040.
   #if defined(RP2040)
-    #if   defined(PIN_SERIAL2_TX)
+    #if defined(PIN_SERIAL2_TX)
       #define DENKO_UARTS 2
     #elif defined(PIN_SERIAL_1_TX)
       #define DENKO_UARTS 1
@@ -87,7 +87,11 @@
   #elif defined(_RENESAS_RA_)
     #define DENKO_UARTS 1
 
-  // This works for all the Atmel cores except RA4M1.
+  // Define 1 UART for ATmega4809.
+  #elif defined(__AVR_ATmega4809__) && defined(SERIAL_PORT_HARDWARE)
+    #define DENKO_UARTS 1
+
+  // This works for all the Atmel cores exept ATmega4809.
   #else
     #if defined(SERIAL_PORT_HARDWARE3)
       #define DENKO_UARTS 3

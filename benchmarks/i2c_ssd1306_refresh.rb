@@ -25,6 +25,11 @@
 #   Arduino Uno R4      :  7.5 fps (native USB @ 115200, 32-byte I2C limit, no I2C level shifter)
 #   Arduino Uno R4      :  7.8 fps (native USB @ 230400, 32-byte I2C limit, no I2C level shifter)
 #
+# August 13 2023 | i7 8700k CPU | CRuby 3.2.1 | 100 frames | 1 Mhz I2C frequency | Average of 3 runs
+#
+#   Arduino Nano Every  :  9.2 fps (USB through ATSAMD11 @ 115200, 128-byte I2C limit, no I2C level shifter)
+#   Arduino Nano Every  : 13.0 fps (USB through ATSAMD11 @ 230400, 128-byte I2C limit, no I2C level shifter)
+#
 require 'bundler/setup'
 require 'denko'
 
