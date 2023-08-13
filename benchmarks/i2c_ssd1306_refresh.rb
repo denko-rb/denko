@@ -22,8 +22,8 @@
 #
 # July 15 2023 | i7 8700k CPU | CRuby 3.2.1 | 100 frames | 1 Mhz I2C frequency | Average of 3 runs
 #
-#   Arduino Uno R4      :  7.5 fps (native USB @ 115200, 32-byte I2C limit, no I2C level shifter)
-#   Arduino Uno R4      :  7.8 fps (native USB @ 230400, 32-byte I2C limit, no I2C level shifter)
+#   Arduino Uno R4 WiFi :  7.5 fps (USB through ESP32-S3 @ 115200, 32-byte I2C limit, no I2C level shifter)
+#   Arduino Uno R4 WiFi :  7.8 fps (USB through ESP32-S3 @ 230400, 32-byte I2C limit, no I2C level shifter)
 #
 # August 13 2023 | i7 8700k CPU | CRuby 3.2.1 | 100 frames | 1 Mhz I2C frequency | Average of 3 runs
 #
