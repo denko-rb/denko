@@ -1,5 +1,45 @@
 # Changelog
 
+## 0.13.3
+
+### Board Updates / Fixes
+
+- Arduino UNO R4 Minima & Wi-Fi (`--target ra4m1`):
+  - RA4M1 fully tested
+  - Only IR-remote and WS2812 libraries not working. Disabled temporarily.
+
+- Arduino Nano Every
+  - ATmega4809 fully tested and issues fixed
+  - Works similarly to the regular AVR chips
+
+- SAMD21
+  - Changed serial acknowledgement threshold to 128 instead of 64. More stable, but might be slightly slower performing.
+
+### Network Chip Updates / Fixes
+
+- WINC1500
+  - Added support for WiFi101 library
+  - Tested on Arduino MKR 1000
+
+- NINA-W102
+  - Added conditions to select the WiFiNINA library on appropriate hardware.
+  - Untested in hardware
+
+### API Changes
+
+- Default aux message size is now  784 bytes (768 + 16) instead of (512 + 16)
+
+### Component Changes
+
+- WS2812
+  - Larger aux message size now allows up to 256 pixels (3 bytes per pixel) on a strip
+  
+### Bug Fixes
+
+- Fixed a bug with WS2812 strips where it would try to memcpy 3x the number of necessary bytes. Fixed this by just sending the total number of bytes to write to the strip, rather than number of pixels * bytes per pxiel.
+- The `val` variable in Arduino is now 16-bit instead of 8-bit.
+- Fixed instances where `Minitest` was referred to as `MiniTest`, causing tests to fail.
+
 ## 0.13.2
 
 ### New Boards

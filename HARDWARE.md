@@ -2,7 +2,7 @@
 
 :green_heart: Full support :yellow_heart: Partial support :heart: Planned. No support yet :question: Works in theory. Untested in real hardware.
 
-### AVR/MegaAVR Based in Arduino Products (and Clones)
+### AVR/MegaAVR Based Arduino Products (and Clones)
 [![AVR Build Status](https://github.com/denko-rb/denko/actions/workflows/build_avr.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_avr.yml)
 [![MegaAVR Build Status](https://github.com/denko-rb/denko/actions/workflows/build_megaavr.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_megaavr.yml)
 
@@ -13,7 +13,7 @@
 | ATmega32u4     | :green_heart:   | Leonardo, Micro, Leonardo ETH, Esplora, LilyPad USB |
 | ATmega1280     | :green_heart:   | Mega |
 | ATmega2560     | :green_heart:   | Mega2560, Arduino Mega ADK |
-| ATmega4809     | :green_heart:  | Nano Every, Uno WiFi Rev2 |
+| ATmega4809     | :green_heart:   | Nano Every, Uno WiFi Rev2 |
 
 **Note:** Only USB boards listed. Any board with a supported chip should work, once you can flash it and connect to serial.
 
