@@ -37,6 +37,12 @@
 | ATWINC1500            | :green_heart:   | MKR1000, WiFi Shield 101 | #define WIFI_101 for shield. Automatic for MKR1000
 | u-blox NINA-W102      | :question:      | Uno WiFi Rev 2, MKR WiFi 1010, Nano 33 IOT | Should work. No hardware
 
+### AVR Chips from [MightyCore](https://github.com/MCUdude/MightyCore)
+
+|    Chip        | Status          | Products         | Notes |
+| :--------      | :------:        | :--------------- |------ |
+| ATmega1284     | :heart:         | Used in many 8-bit 3D printer boards. | 
+
 ### Espressif Chips with Built-In Wi-Fi
 [![ESP8266 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp8266.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp8266.yml)
 [![ESP32 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32.yml)
@@ -150,7 +156,9 @@ Polling and reading follow a call and response pattern.
 | Generic ESC          | :yellow_heart: | Servo/ESC PWM  | `Motor::Servo`     | Works. Needs its own class.
 | PCA9685              | :heart:        | I2C            | `PulseIO::PCA9685` | 16ch 12-bit PWM for servo or LED
 | L298N                | :green_heart:  | Digi + PWM Out | `Motor::L298`      | H-Bridge DC motor driver
+| DRV8833              | :heart:        | Digi + PWM Out | `Motor::DRV8833`   | H-Bridge DC motor driver
 | A3967                | :green_heart:  | Digital Out    | `Motor::Stepper`   | 1ch microstepper (EasyDriver)
+| A4988                | :yellow_heart: | DigitalOut     | `Motor::Stepper`   | 1-ch microstepper
 | TMC2209              | :heart:        | -              | -                  | 1ch silent stepper driver
 
 ### I/O Expansion
