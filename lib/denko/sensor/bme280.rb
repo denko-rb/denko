@@ -28,7 +28,7 @@ module Denko
       # be skipped, since the other 2 calculations depend on it.
       #
       # General formula:
-      #   2 ^ (n-1), where n is the decimal value of the bits, up to 16x max oversampling.
+      #   2 ** (n-1), where n is the decimal value of the bits, up to 16x max oversampling.
       #
       OVERSAMPLE_FACTORS = {
                               0  =>  0b000, # Sensor skipped. Value will be 0x800000.
