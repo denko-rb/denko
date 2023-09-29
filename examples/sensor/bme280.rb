@@ -24,7 +24,6 @@ board = Denko::Board.new(Denko::Connection::Serial.new)
 bus = Denko::I2C::Bus.new(board: board, pin: :SDA)
 
 sensor = Denko::Sensor::BME280.new(bus: bus, address: 0x76)
-
 # Use A BMP280 with no humidity instead.
 # sensor = Denko::Sensor::BMP280.new(bus: bus, address: 0x76)
 
