@@ -119,6 +119,7 @@ Polling and reading follow a call and response pattern.
 | LED                | :green_heart:      | Digi/Ana Out      | `LED::Base`           |
 | RGB LED            | :green_heart:      | Digi/Ana Out      | `LED::RGB`            |
 | 7 Segment Display  | :yellow_heart:     | Digital Out       | `LED::SevenSegment`   | No decimal point
+| 8x8 LED (MAX7219)  | :heart:            | SPI               | `LED::MAX7219`        |
 | TM1637             | :heart:            | BitBang SPI       | `LED::TM1637`         | 4x 7 Segment + Colon
 | Neopixel / WS2812B | :yellow_heart:     | Adafruit Library  | `LED::WS2812`         | Not working on RP2040
 | Dotstar / APA102   | :green_heart:      | SPI               | `LED::APA102`         |
@@ -129,6 +130,11 @@ Polling and reading follow a call and response pattern.
 | :---------------         | :------:       | :--------                    | :---------------    |------ |
 | HD44780 LCD              | :green_heart:  | Digital Out, Output Register | `Display::HD44780`  |
 | SSD1306 OLED             | :yellow_heart: | I2C                          | `Display::SSD1306`  | 1 font, some graphics
+| ST7565R (128x64 Mono)    | :heart:        | SPI                          | `Display::ST7565R`  |
+| ST7735S (160x128 RGB)    | :heart:        | SPI                          | `Display::ST7735S`  |
+| ILI9341 (240x320 RGB)    | :heart:        | SPI                          | `Display::ILI9341`  |
+| GC9A01 (240x240 Round)   | :heart:        | SPI                          | `Display::GCA9A01`  |
+| IL0373 (212x104 E-Paper) | :heart:        | SPI                          | `Display::IL0373`   |
 
 ### Sound
 
@@ -164,10 +170,13 @@ Polling and reading follow a call and response pattern.
 
 | Name             | Status         | Interface   | Component Class    | Notes |
 | :--------------- | :------:       | :--------   | :---------------   |------ |
+| MAX31850         | :heart:        | OneWire     | `Sensor::MAX31850` | Thermocouple Amplifier
+| MAX6675          | :heart:        | SPI         | `Sensor::MAX6675`  | Thermocouple Amplifier
 | DS18B20          | :green_heart:  | OneWire     | `Sensor::DS18B20`  | Temp
 | DHT 11/21/22     | :green_heart:  | Digi In/Out | `Sensor::DHT`      | Temp/RH
 | SHT30            | :heart:        | I2C         | `Sensor::SHT30`    | Temp/RH
 | QMP6988          | :heart:        | I2C         | `Sensor::QMP6988`  | Pressure
+| BMP180           | :heart:        | I2C         | `Sensor::BMP180`   | Temp/Press
 | BME280           | :green_heart:  | I2C         | `Sensor::BME280`   | Temp/RH/Press
 | BMP280           | :green_heart:  | I2C         | `Sensor::BMP280`   | Temp/Press
 | HTU21D           | :green_heart:  | I2C         | `Sensor::HTU21D`   | Temp/RH. User register read not implemented.
@@ -176,7 +185,7 @@ Polling and reading follow a call and response pattern.
 | AHT20/21/25      | :green_heart:  | I2C         | `Sensor::AHT20`    | Temp/RH. Always uses calibrated mode + CRC.
 | ENS160           | :heart:        | I2C         | `Sensor::ENS160`   | CO2e/TVOC/AQI
 | AGS02MA          | :heart:        | I2C         | `Sensor::AGS02MA`  | TVOC
-| MAX31850         | :heart:        | OneWire     | `Sensor::MAX31850` | Thermocouple Amplifier
+| SCD40            | :heart:        | I2C         | `Sensor::SDC40`    | Temp/Pressure/CO2
 
 ### Light Sensors
 
@@ -185,6 +194,7 @@ Polling and reading follow a call and response pattern.
 | BH1750           | :heart:        | Digital In   | `Sensor::BH1750`   | Ambient Light
 | HC-SR501         | :yellow_heart: | Digital In   | `DigitalIO::Input` | PIR. Needs class: `Sensor::HC-SR501`
 | AS312            | :heart:        | I2C          | `Sensor::AS312`    | PIR
+| TCS34725         | :heart:        | I2C          | `Sensor::TCS34725` | RGB
 | APDS9960         | :heart:        | I2C          | `Sensor::APDS9960` | Proximity, RGB, Gesture
 
 ### Distance Sensors
@@ -200,17 +210,21 @@ Polling and reading follow a call and response pattern.
 
 | Name             | Status         | Interface | Component Class    | Notes |
 | :--------------- | :------:       | :-------- | :---------------   |------ |
-| ADXL345          | :heart:        | I2C       | `Sensor::ADXL345`  | 3-axis Accelerometer
-| IT3205           | :heart:        | I2C       | `Sensor::IT3205`   | 3-axis Gyroscope
-| HMC5883L         | :heart:        | I2C       | `Sensor::HMC5883L` | 3-axis Compass
-| MPU6886          | :heart:        | I2C       | `Sensor::MPU6886`  | 3-axis Gyro + Accel
+| ADXL345          | :heart:        | I2C       | `Sensor::ADXL345`  | Accelerometer
+| IT3205           | :heart:        | I2C       | `Sensor::IT3205`   | Gyroscope
+| HMC5883L         | :heart:        | I2C       | `Sensor::HMC5883L` | Compass
+| MPU6886          | :heart:        | I2C       | `Sensor::MPU6886`  | Gyro + Accelerometer
+| BMI160           | :heart:        | I2C       | `Sensor::BMI160`   | Gyro + Accelerometer
+| LSM6DS3          | :heart:        | I2C       | `Sensor:LSM6DS3`   | Gyro + Accelerometer
 
 ### Real Time Clocks
 
 | Name             | Status         | Interface | Component Class   | Notes |
 | :--------------- | :------:       | :-------- | :---------------  |------ |
 | DS1302           | :heart:        | I2C       | `RTC::DS1302`     |
+| DS1307           | :heart:        | I2C       | `RTC::DS1307`     |
 | DS3231           | :green_heart:  | I2C       | `RTC::DS3231`     | Alarms not implemented
+| PCF8563          | :heart:        | I2C       | `RTC::PCF8563`    |
 
 ### GPS
 
