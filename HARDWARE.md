@@ -184,7 +184,7 @@ Polling and reading follow a call and response pattern.
 | DHT 11/21/22     | :green_heart:  | Digi In/Out | `Sensor::DHT`      | Temp/RH
 | SHT30            | :heart:        | I2C         | `Sensor::SHT30`    | Temp/RH
 | QMP6988          | :heart:        | I2C         | `Sensor::QMP6988`  | Pressure
-| BMP180           | :heart:        | I2C         | `Sensor::BMP180`   | Temp/Press
+| BMP180           | :green_heart:  | I2C         | `Sensor::BMP180`   | Temp/Press
 | BME280           | :green_heart:  | I2C         | `Sensor::BME280`   | Temp/RH/Press
 | BMP280           | :green_heart:  | I2C         | `Sensor::BMP280`   | Temp/Press
 | HTU21D           | :green_heart:  | I2C         | `Sensor::HTU21D`   | Temp/RH. User register read not implemented.
