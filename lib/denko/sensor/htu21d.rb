@@ -128,8 +128,12 @@ module Denko
 
         # Bit 1 of LSB determines type of reading; 0 for temperature, 1 for humidity.
         if (bytes[1] & 0b00000010) > 0
+          # Calculate humidity and limit within 0-100 range.
+          humidity = (raw_value.to_f / 524.288) - 6
+          humidity = 0.0   if humidity < 0.0
+          humidity = 100.0 if humidity > 100.0
           @reading[0] = :humidity
-          @reading[1] = (raw_value.to_f / 524.288) - 6
+          @reading[1] = humidity
           @humidity.update(@reading[1])
         else
           @reading[0] = :temperature
@@ -138,7 +142,7 @@ module Denko
         end
         @reading
       end
-      
+
       def update_state(reading)
         @state_mutex.synchronize do
           @state[reading[0]] = reading[1]
