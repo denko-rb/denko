@@ -139,6 +139,7 @@ Polling and reading follow a call and response pattern.
 | ST7565R (128x64 Mono)    | :heart:        | SPI                          | `Display::ST7565R`  |
 | ST7735S (160x128 RGB)    | :heart:        | SPI                          | `Display::ST7735S`  |
 | ILI9341 (240x320 RGB)    | :heart:        | SPI                          | `Display::ILI9341`  |
+| GC9107 (128x128 RGB)     | :heart:        | SPI                          | `Display::GC9107`   |
 | GC9A01 (240x240 Round)   | :heart:        | SPI                          | `Display::GCA9A01`  |
 | IL0373 (212x104 E-Paper) | :heart:        | SPI                          | `Display::IL0373`   |
 
