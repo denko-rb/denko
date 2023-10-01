@@ -182,8 +182,8 @@ Polling and reading follow a call and response pattern.
 | MAX31850         | :heart:        | OneWire     | `Sensor::MAX31850` | Thermocouple Amplifier
 | MAX6675          | :heart:        | SPI         | `Sensor::MAX6675`  | Thermocouple Amplifier
 | DS18B20          | :green_heart:  | OneWire     | `Sensor::DS18B20`  | Temp
-| DHT 11/21/22     | :green_heart:  | Digi In/Out | `Sensor::DHT`      | Temp/RH
-| SHT30            | :heart:        | I2C         | `Sensor::SHT30`    | Temp/RH
+| DHT11/21/22      | :green_heart:  | Digi In/Out | `Sensor::DHT`      | Temp/RH
+| SHT30/31/35      | :green_heart:  | I2C         | `Sensor::SHT3X`    | Temp/RH. Only single-shot mode.
 | QMP6988          | :heart:        | I2C         | `Sensor::QMP6988`  | Pressure
 | BMP180           | :green_heart:  | I2C         | `Sensor::BMP180`   | Temp/Press
 | BME280           | :green_heart:  | I2C         | `Sensor::BME280`   | Temp/RH/Press

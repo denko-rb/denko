@@ -11,5 +11,6 @@ module Denko
     autoload :HTU31D,      "#{__dir__}/sensor/htu31d"
     autoload :AHT10,       "#{__dir__}/sensor/aht"
     autoload :AHT20,       "#{__dir__}/sensor/aht"
+    autoload :SHT3X,       "#{__dir__}/sensor/sht3x"
   end
 end
