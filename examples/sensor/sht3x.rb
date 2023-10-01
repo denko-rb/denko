@@ -23,27 +23,12 @@ puts
 # Set repeatability= :low, :medium or :high (default). See datasheet for details.
 sensor.repeatability = :high
 
-# Helper to print readings neatly.
-def display_reading(reading)
-  # Time
-  print "#{Time.now.strftime '%Y-%m-%d %H:%M:%S'} - "
-  
-  # Temperature
-  formatted_temp = reading[:temperature].round(2).to_s.ljust(5, '0')
-  print "Temperature: #{formatted_temp} \xC2\xB0C"
+# Get the shared #print_tph_rading method to print readings neatly.
+require_relative 'neat_tph_readings'
 
-  # Humidity  
-  if reading[:humidity]
-    formatted_humidity = reading[:humidity].round(2).to_s.ljust(5, '0')
-    print " | Humidity #{formatted_humidity} %"
-  end
-  
-  puts
-end
-
-# Poll the sensor and print readings.
+# Poll it and print readings.
 sensor.poll(5) do |reading|
-  display_reading(reading)
+  print_tph_reading(reading)
 end
 
 sleep

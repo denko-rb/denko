@@ -6,10 +6,14 @@ require 'denko'
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
 bus = Denko::I2C::Bus.new(board: board, pin: :SDA)
-aht20 = Denko::Sensor::AHT20.new(bus: bus)
+sensor = Denko::Sensor::AHT20.new(bus: bus) # address: 0x38 default
 
-aht20.poll(2) do |reading|
-  puts "Polled Reading: #{reading[:temperature].round(3)} \xC2\xB0C | #{reading[:humidity].round(3)} % RH"
+# Get the shared #print_tph_rading method to print readings neatly.
+require_relative 'neat_tph_readings'
+
+# Poll it and print readings.
+sensor.poll(5) do |reading|
+  print_tph_reading(reading)
 end
 
 sleep

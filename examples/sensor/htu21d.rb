@@ -6,7 +6,7 @@ require 'denko'
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
 bus = Denko::I2C::Bus.new(board: board, pin: :SDA)
-htu21d = Denko::Sensor::HTU21D.new(bus: bus)
+htu21d = Denko::Sensor::HTU21D.new(bus: bus) # address: 0x40 default
 
 # Get and set heater state.
 htu21d.heater_on

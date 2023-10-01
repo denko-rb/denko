@@ -6,31 +6,17 @@ require 'denko'
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
 bus = Denko::I2C::Bus.new(board: board, pin: :SDA)
-sensor = Denko::Sensor::BMP180.new(bus: bus, address: 0x77)
+sensor = Denko::Sensor::BMP180.new(bus: bus) # address: 0x77 default
 
 # Enable oversampling for the pressure sensor only (1,2,4, 8).
 # sensor.pressure_samples = 8
 
-def display_reading(reading)
-  # Time
-  print "#{Time.now.strftime '%Y-%m-%d %H:%M:%S'} - "
-  
-  # Temperature
-  formatted_temp = reading[:temperature].round(2).to_s.ljust(5, '0')
-  print "Temperature: #{formatted_temp} \xC2\xB0C"
-  
-  # Pressure
-  if reading[:pressure]
-    formatted_pressure = (reading[:pressure] / 101325).round(5).to_s.ljust(7, '0')
-    print " | Pressure #{formatted_pressure} atm"
-  end
+# Get the shared #print_tph_rading method to print readings neatly.
+require_relative 'neat_tph_readings'
 
-  puts
-end
-
-# Poll the sensor and print readings.
+# Poll it and print readings.
 sensor.poll(5) do |reading|
-  display_reading(reading)
+  print_tph_reading(reading)
 end
 
 sleep

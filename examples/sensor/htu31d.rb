@@ -6,26 +6,30 @@ require 'denko'
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
 bus = Denko::I2C::Bus.new(board: board, pin: :SDA)
-htu31d = Denko::Sensor::HTU31D.new(bus: bus)
+sensor = Denko::Sensor::HTU31D.new(bus: bus)
 
 # Get and set heater state.
-htu31d.heater_on
-puts "Heater on: #{htu31d.heater_on?}"
-htu31d.heater_off
-puts "Heater off: #{htu31d.heater_off?}"
+sensor.heater_on
+puts "Heater on: #{sensor.heater_on?}"
+sensor.heater_off
+puts "Heater off: #{sensor.heater_off?}"
 
 # Back to default settings, including heater off, unlike HTU21D.
-htu31d.reset
-puts "Resetting HTU31D... Heater off: #{htu31d.heater_off?}"
+sensor.reset
+puts "Resetting HTU31D..."
+puts "Heater off: #{sensor.heater_off?}"
 puts
 
 # Resolution goes from 0..3 separately for temperature and humidity. See datasheet.
-htu31d.temperature_resolution = 3
-htu31d.humidity_resolution = 3
+sensor.temperature_resolution = 3
+sensor.humidity_resolution = 3
+
+# Get the shared #print_tph_rading method to print readings neatly.
+require_relative 'neat_tph_readings'
 
 # Unlike HTU21D, HTU31D works as a regular polled sensor.
-htu31d.poll(2) do |reading|
-  puts "Polled Reading: #{reading[:temperature].round(3)} \xC2\xB0C | #{reading[:humidity].round(3)} % RH"
+sensor.poll(5) do |reading|
+  print_tph_reading(reading)
 end
 
 sleep
