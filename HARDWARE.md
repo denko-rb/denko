@@ -177,24 +177,24 @@ Polling and reading follow a call and response pattern.
 
 ### Environmental Sensors
 
-| Name             | Status         | Interface   | Component Class    | Notes |
-| :--------------- | :------:       | :--------   | :---------------   |------ |
-| MAX31850         | :heart:        | OneWire     | `Sensor::MAX31850` | Thermocouple Amplifier
-| MAX6675          | :heart:        | SPI         | `Sensor::MAX6675`  | Thermocouple Amplifier
-| DS18B20          | :green_heart:  | OneWire     | `Sensor::DS18B20`  | Temp
-| DHT11/21/22      | :green_heart:  | Digi In/Out | `Sensor::DHT`      | Temp/RH
-| SHT30/31/35      | :green_heart:  | I2C         | `Sensor::SHT3X`    | Temp/RH. Only single-shot mode.
-| QMP6988          | :heart:        | I2C         | `Sensor::QMP6988`  | Pressure
-| BMP180           | :green_heart:  | I2C         | `Sensor::BMP180`   | Temp/Press
-| BME280           | :green_heart:  | I2C         | `Sensor::BME280`   | Temp/RH/Press
-| BMP280           | :green_heart:  | I2C         | `Sensor::BMP280`   | Temp/Press
-| HTU21D           | :green_heart:  | I2C         | `Sensor::HTU21D`   | Temp/RH. User register read not implemented.
-| HTU31D           | :green_heart:  | I2C         | `Sensor::HTU31D`   | Temp/RH. Diagnostic read not implemented.
-| AHT10/15         | :green_heart:  | I2C         | `Sensor::AHT10`    | Temp/RH. Always uses calibrated mode.
-| AHT20/21/25      | :green_heart:  | I2C         | `Sensor::AHT20`    | Temp/RH. Always uses calibrated mode + CRC.
-| ENS160           | :heart:        | I2C         | `Sensor::ENS160`   | CO2e/TVOC/AQI
-| AGS02MA          | :heart:        | I2C         | `Sensor::AGS02MA`  | TVOC
-| SCD40            | :heart:        | I2C         | `Sensor::SDC40`    | Temp/Pressure/CO2
+| Name             | Status         | Interface   | Component Class    | Type               | Notes                  |
+| :--------------- | :------:       | :--------   | :---------------   |---------------     | ---------------------- |
+| MAX31850         | :heart:        | OneWire     | `Sensor::MAX31850` | Thermocouple       |
+| MAX6675          | :heart:        | SPI         | `Sensor::MAX6675`  | Thermocouple       |
+| DS18B20          | :green_heart:  | OneWire     | `Sensor::DS18B20`  | Temp               |
+| DHT11/21/22      | :green_heart:  | Digi In/Out | `Sensor::DHT`      | Temp / RH          |
+| SHT30/31/35      | :green_heart:  | I2C         | `Sensor::SHT3X`    | Temp / RH          | Single-shot only
+| QMP6988          | :heart:        | I2C         | `Sensor::QMP6988`  | Temp / Press       | Single-shot only
+| BMP180           | :green_heart:  | I2C         | `Sensor::BMP180`   | Temp / Press       |
+| BMP280           | :green_heart:  | I2C         | `Sensor::BMP280`   | Temp / Press       |
+| BME280           | :green_heart:  | I2C         | `Sensor::BME280`   | Temp / Press / RH  |
+| HTU21D           | :green_heart:  | I2C         | `Sensor::HTU21D`   | Temp / RH          | No user register read
+| HTU31D           | :green_heart:  | I2C         | `Sensor::HTU31D`   | Temp / RH          | No diagnostic read
+| AHT10/15         | :green_heart:  | I2C         | `Sensor::AHT10`    | Temp / RH          |
+| AHT20/21/25      | :green_heart:  | I2C         | `Sensor::AHT20`    | Temp / RH          |
+| ENS160           | :heart:        | I2C         | `Sensor::ENS160`   | CO2e / TVOC / AQI  |
+| AGS02MA          | :heart:        | I2C         | `Sensor::AGS02MA`  | TVOC               |
+| SCD40            | :heart:        | I2C         | `Sensor::SDC40`    | Temp / Press / CO2 |
 
 ### Light Sensors
 
