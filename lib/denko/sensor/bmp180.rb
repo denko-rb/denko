@@ -178,7 +178,7 @@ module Denko
         x3 = (x1 + x2 + 2) / 4
         b4 = (@calibration[:ac4] * ((x3+32768) & 0xFFFF_FFFF)) / 32768
         b7 = ((up & 0xFFFF_FFFF) - b3) * (50000 >> @oss)
-        if (b7 < 0x80000000)
+        if (b7 < 0x8000_0000)
           p = (b7 * 2) / b4
         else
           p = (b7 / b4) * 2

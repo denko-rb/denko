@@ -24,13 +24,7 @@ def display_reading(reading)
     formatted_pressure = (reading[:pressure].to_f / 101325).round(5).to_s.ljust(7, '0')
     print " | Pressure #{formatted_pressure} atm"
   end
-  
-  # Humidity  
-  if reading[:humidity]
-    formatted_humidity = reading[:humidity].to_f.round(2).to_s.rjust(5, '0')
-    print " | Humidity #{formatted_humidity} %"
-  end
-  
+
   puts
 end
 
