@@ -29,12 +29,12 @@ def display_reading(reading)
   print "#{Time.now.strftime '%Y-%m-%d %H:%M:%S'} - "
   
   # Temperature
-  formatted_temp = reading[:temperature].to_f.round(2).to_s.ljust(5, '0')
+  formatted_temp = reading[:temperature].round(2).to_s.ljust(5, '0')
   print "Temperature: #{formatted_temp} \xC2\xB0C"
 
   # Humidity  
   if reading[:humidity]
-    formatted_humidity = reading[:humidity].to_f.round(2).to_s.ljust(5, '0')
+    formatted_humidity = reading[:humidity].round(2).to_s.ljust(5, '0')
     print " | Humidity #{formatted_humidity} %"
   end
   

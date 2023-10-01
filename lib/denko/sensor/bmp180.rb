@@ -187,6 +187,7 @@ module Denko
         x1 = (x1 * 3038) / 65536
         x2 = (-7357 * p) / 65536
         p = p + (x1 + x2 + 3791) / 16
+        pressure = p.to_f
       end
 
       #

@@ -16,12 +16,12 @@ def display_reading(reading)
   print "#{Time.now.strftime '%Y-%m-%d %H:%M:%S'} - "
   
   # Temperature
-  formatted_temp = reading[:temperature].to_f.round(2).to_s.ljust(5, '0')
+  formatted_temp = reading[:temperature].round(2).to_s.ljust(5, '0')
   print "Temperature: #{formatted_temp} \xC2\xB0C"
   
   # Pressure
   if reading[:pressure]
-    formatted_pressure = (reading[:pressure].to_f / 101325).round(5).to_s.ljust(7, '0')
+    formatted_pressure = (reading[:pressure] / 101325).round(5).to_s.ljust(7, '0')
     print " | Pressure #{formatted_pressure} atm"
   end
 
