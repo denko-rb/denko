@@ -14,5 +14,6 @@ module Denko
     autoload :SHT3X,       "#{__dir__}/sensor/sht3x"
     autoload :QMP6988,     "#{__dir__}/sensor/qmp6988"
     autoload :RCWL9620,    "#{__dir__}/sensor/rcwl9620"
+    autoload :AS312,       "#{__dir__}/sensor/as312"
   end
 end

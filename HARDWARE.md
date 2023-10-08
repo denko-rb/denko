@@ -202,7 +202,7 @@ Polling and reading follow a call and response pattern.
 | :--------------- | :------:       | :--------    | :---------------   |------ |
 | BH1750           | :heart:        | Digital In   | `Sensor::BH1750`   | Ambient Light
 | HC-SR501         | :yellow_heart: | Digital In   | `DigitalIO::Input` | PIR. Needs class: `Sensor::HC-SR501`
-| AS312            | :heart:        | I2C          | `Sensor::AS312`    | PIR
+| AS312            | :green_heart:  | I2C          | `Sensor::AS312`    | PIR (based on `DigitalIO::Input`)
 | TCS34725         | :heart:        | I2C          | `Sensor::TCS34725` | RGB
 | APDS9960         | :heart:        | I2C          | `Sensor::APDS9960` | Proximity, RGB, Gesture
 
