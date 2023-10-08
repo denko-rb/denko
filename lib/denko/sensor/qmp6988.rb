@@ -91,6 +91,8 @@ module Denko
         # self.forced mode triggered an initial measurement so IIR works properly if enabled.
         # Wait for those values to enter the data registers, but don't read them back.
         sleep @measurement_time
+
+        get_calibration_data
       end
 
       #
@@ -155,7 +157,6 @@ module Denko
         i2c_write [CTRL_MEAS_REGISTER, @ctrl_meas_register]
         @forced_mode = true
         sleep UPDATE_TIME
-
       end
 
       def continuous_mode
@@ -176,8 +177,6 @@ module Denko
       # Reading & Processing
       #
       def _read
-        get_calibration_data unless calibration_data_loaded
-
         if @forced_mode
           # Write CTRL_MEAS register to trigger reading, then wait for measurement.
           i2c_write [CTRL_MEAS_REGISTER, @ctrl_meas_register]
