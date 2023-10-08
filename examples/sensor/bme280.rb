@@ -27,7 +27,7 @@ sensor = Denko::Sensor::BME280.new(bus: bus) # address: 0x76 default
 # Print raw config register bits.
 # print sensor.config_register_bits
 
-# Get the shared #print_tph_rading method to print readings neatly.
+# Get the shared #print_tph_reading method to print readings neatly.
 require_relative 'neat_tph_readings'
 
 # Poll it and print readings.

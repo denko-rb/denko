@@ -24,7 +24,7 @@ puts
 sensor.temperature_resolution = 3
 sensor.humidity_resolution = 3
 
-# Get the shared #print_tph_rading method to print readings neatly.
+# Get the shared #print_tph_reading method to print readings neatly.
 require_relative 'neat_tph_readings'
 
 # Unlike HTU21D, HTU31D works as a regular polled sensor.

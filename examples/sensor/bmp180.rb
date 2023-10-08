@@ -11,7 +11,7 @@ sensor = Denko::Sensor::BMP180.new(bus: bus) # address: 0x77 default
 # Enable oversampling for the pressure sensor only (1,2,4, 8).
 # sensor.pressure_samples = 8
 
-# Get the shared #print_tph_rading method to print readings neatly.
+# Get the shared #print_tph_reading method to print readings neatly.
 require_relative 'neat_tph_readings'
 
 # Poll it and print readings.
