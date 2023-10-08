@@ -28,9 +28,13 @@ sensor.temperature_samples = 2
 sensor.pressure_samples = 16
 sensor.iir_coefficient = 2
 
+#
 # Change mode (default: forced_mode)
+#
+# Buggy on ESP32S3 in forced mode. Data registers return zeroes on all but first read.
+# Can't recreate on ESP32 V1, AVR or SAMD21. Put it in contiuous mode just in case.
+sensor.continuous_mode
 # sensor.forced_mode
-# sensor.continuous_mode
 
 #
 # Set standby time (between measurements) for continuous mode only:

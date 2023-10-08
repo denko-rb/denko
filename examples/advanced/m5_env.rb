@@ -16,8 +16,12 @@ qmp.temperature_samples = 2
 qmp.pressure_samples = 16
 qmp.iir_coefficient = 2
 
+# Buggy on ESP32-S3 in forced mode. Data registers return zeroes on all but first read.
+# Can't recreate on ESP32 V1, AVR or SAMD21. Put it in contiuous mode just in case.
+qmp.continuous_mode
+
 # Get the shared #print_tph_reading method to print readings neatly.
-require_relative 'neat_tph_readings'
+require_relative '../sensor/neat_tph_readings'
 
 # How many degrees C the two temperature values can differ by before a warning.
 TOLERANCE = 0.50

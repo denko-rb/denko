@@ -103,12 +103,6 @@ module Denko
         sleep UPDATE_TIME
       end
 
-      def get_config_registers
-        i2c_read(IIR_REGISTER, 5)
-        sleep 0.001 while !@registers
-        @registers
-      end
-
       def iir_coefficient=(coeff)
         raise ArgumentError, "invalid IIR coefficient: #{coeff}" unless IIR_COEFFICIENTS.keys.include? coeff
         i2c_write [IIR_REGISTER, IIR_COEFFICIENTS[coeff]]
@@ -160,7 +154,7 @@ module Denko
       end
 
       def continuous_mode
-        @ctrl_meas_register = (@ctrl_meas_register & 0b11111100) | NORMAL_MDOE
+        @ctrl_meas_register = (@ctrl_meas_register & 0b11111100) | NORMAL_MODE
         i2c_write [CTRL_MEAS_REGISTER, @ctrl_meas_register]
         @forced_mode = false
         sleep UPDATE_TIME
@@ -231,6 +225,13 @@ module Denko
           @state[:temperature] = reading[:temperature]
           @state[:pressure]    = reading[:pressure]
         end
+      end
+
+      def get_config_registers
+        @registers = {}
+        i2c_read(IIR_REGISTER, CONFIG_LENGTH)
+        sleep 0.001 while @registers.empty?
+        @registers
       end
 
       def process_config(bytes)
