@@ -31,6 +31,9 @@ loop do
   qmp_reading = qmp.read
   sht_reading = sht.read
 
+  # Retry immediately if either failed.
+  next unless (sht_reading && qmp_reading)
+  
   # Warn if large gap between temperature readings.
   difference = (qmp_reading[:temperature] - sht_reading[:temperature]).abs
   if (difference > TOLERANCE)
