@@ -183,8 +183,8 @@ Polling and reading follow a call and response pattern.
 | MAX6675          | :heart:        | SPI         | `Sensor::MAX6675`  | Thermocouple       |
 | DS18B20          | :green_heart:  | OneWire     | `Sensor::DS18B20`  | Temp               |
 | DHT11/21/22      | :green_heart:  | Digi In/Out | `Sensor::DHT`      | Temp / RH          |
-| SHT30/31/35      | :green_heart:  | I2C         | `Sensor::SHT3X`    | Temp / RH          | Single-shot only
-| QMP6988          | :heart:        | I2C         | `Sensor::QMP6988`  | Temp / Press       | Single-shot only
+| SHT30/31/35      | :green_heart:  | I2C         | `Sensor::SHT3X`    | Temp / RH          | M5Stack ENV III, one-shot only
+| QMP6988          | :green_heart:  | I2C         | `Sensor::QMP6988`  | Temp / Press       | M5Stack ENV III
 | BMP180           | :green_heart:  | I2C         | `Sensor::BMP180`   | Temp / Press       |
 | BMP280           | :green_heart:  | I2C         | `Sensor::BMP280`   | Temp / Press       |
 | BME280           | :green_heart:  | I2C         | `Sensor::BME280`   | Temp / Press / RH  |
