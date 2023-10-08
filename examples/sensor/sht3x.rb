@@ -6,7 +6,7 @@ require 'denko'
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
 bus = Denko::I2C::Bus.new(board: board, pin: :SDA)
-sensor = Denko::Sensor::SHT3X.new(bus: bus)
+sensor = Denko::Sensor::SHT3X.new(bus: bus) # address: 0x44 default
 
 # Heater control
 sensor.heater_on
