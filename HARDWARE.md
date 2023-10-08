@@ -204,11 +204,11 @@ Polling and reading follow a call and response pattern.
 | TCS34725         | :heart:        | I2C          | `Sensor::TCS34725` | RGB
 | APDS9960         | :heart:        | I2C          | `Sensor::APDS9960` | Proximity, RGB, Gesture
 
-### PIR Sensors
-| Name             | Status         | Interface    | Component Class    | Notes |
-| :--------------- | :------:       | :--------    | :---------------   |------ |
-| HC-SR501         | :yellow_heart: | Digital In   | `DigitalIO::Input` | PIR. Needs class: `Sensor::HC-SR501`
-| AS312            | :green_heart:  | Digital In   | `Sensor::AS312`    | PIR (based on `DigitalIO::Input`)
+### PIR Motion Sensors
+| Name             | Status         | Interface    | Component Class      | Notes |
+| :--------------- | :------:       | :--------    | :---------------     |------ |
+| HC-SR501         | :green_heart:  | Digital In   | `Sensor::GenericPIR` |
+| AS312            | :green_heart:  | Digital In   | `Sensor::GenericPIR` |
 
 ### Distance Sensors
 
@@ -219,7 +219,7 @@ Polling and reading follow a call and response pattern.
 | VL53L0X          | :heart:        | I2C          | `Sensor::VL53L0X`  | Laser, 30 - 1000mm
 | GP2Y0E03         | :heart:        | I2C          | `Sensor::GP2Y0E03` | Infrared, 40 - 500mm
 
-### Motion Sensors
+### Inertial Measurement Units
 
 | Name             | Status         | Interface | Component Class    | Notes |
 | :--------------- | :------:       | :-------- | :---------------   |------ |
