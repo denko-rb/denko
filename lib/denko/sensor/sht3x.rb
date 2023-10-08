@@ -69,6 +69,13 @@ module Denko
         @reading
       end
 
+      def update_state(reading)
+        @state_mutex.synchronize do
+          @state[:temperature] = reading[:temperature]
+          @state[:humidity]    = reading[:humidity]
+        end
+      end
+
       def reset
         i2c_write [RESET]
         sleep RESET_TIME
