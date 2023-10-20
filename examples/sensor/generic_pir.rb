@@ -16,8 +16,8 @@ require 'denko'
 board = Denko::Board.new(Denko::Connection::Serial.new)
 sensor = Denko::Sensor::GenericPIR.new(board: board, pin: 8)
 
-sensor.on_motion_start { print "Motion detected!     \r" }
-sensor.on_motion_stop  { print "No motion detected...\r" }
+sensor.on_motion_start { print "Motion detected!      \r" }
+sensor.on_motion_stop  { print "No motion detected... \r" }
 
 # Read initial state.
 sensor.read

@@ -1,5 +1,44 @@
 # Changelog
 
+## 0.13.4
+
+### New Components
+
+- Generic PIR sensors:
+  - Class: `Denko::Sensor::GenericPIR`
+  - Based on `Denko::DigitalIO::Input` class.
+  - Tested with AS312 and HC-SR501 sensors. Should work with AM312 and others.
+
+- Bosch BMP 180 Temperature + Pressure Sensor:
+  - Class: `Denko::Sensor::BMP180`
+  - Connects via I2C bus. Ruby driver.
+  - Similar to BMP280, but fewer features (older version).
+  - Should work for BMP085 sensor as well.
+
+- SHT30/31/35 Temperature + Humidity Sensor:
+  - Class: `Denko::Sensor::SHTX`
+  - Connects via I2C bus. Ruby driver.
+  - One-shot reading mode only.
+
+- RCWL-9620 Ultrasonic Distance Sensor:
+  - Class: `Denko::Sensor::RCWL9620`
+  - Connects via I2C bus. Ruby driver.
+  - Very simple interface. `#read` returns a distance in mm.
+
+### Component Changes
+
+- HTU21D:
+  - Humidity values outside the 0-100% range will be clipped to those values automatically.
+
+### Example Changes
+
+- Added a simple button example, separate from tutorial.
+- Standardize temp/pressure/humidity sensor examples (except DHT, DS18B20, HTU21D) so readings display the same.
+
+### Bug Fixes
+
+- Fixed bug where `BMP280`` sensor class would not autoload.
+
 ## 0.13.3
 
 ### Board Updates / Fixes
