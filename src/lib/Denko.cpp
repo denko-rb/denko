@@ -3,6 +3,9 @@
 */
 #include "Denko.h"
 #include "BoardMap.h"
+#ifdef DENKO_EEPROM
+  #include "EEPROM.h"
+#endif
 
 Denko::Denko(){
   messageFragments[0] = cmdStr;
@@ -275,7 +278,7 @@ void Denko::handshake() {
   stream->print(',');
   #if defined(EEPROM_EMULATED)
   	stream->print(EMULATED_EEPROM_LENGTH);
-  #elif defined(EEPROM_PRESENT)
+  #elif defined(DENKO_EEPROM)
 	  stream->print(EEPROM.length());
   #endif
 
