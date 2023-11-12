@@ -23,10 +23,10 @@ High-level abstraction in Ruby makes hardware classes easy to implement, with in
 Full list of supported mircocontroller platforms, interfaces, and peripherals is located [here](HARDWARE.md).
 
 ##### denko-piboard
-The add-on gem, [denko-piboard](https://github.com/denko-rb/denko-piboard), allows you to use a Raspberry Pi's built in GPIO pins in place of an attached microcontroller. Connect things directly to the Pi, and use the same peripheral classes from this gem.
+The [denko-piboard](https://github.com/denko-rb/denko-piboard) add-on gem, uses a Raspberry Pi's built in GPIO header instead of an attached microcontroller. Connect things directly to the Pi, and use the peripheral classes from this gem.
 
 ##### mruby-denko
-A solo Raspberry Pi (or other small SBC + microcontroller) is a great standalone setup if your project needs the compute power anyway, but what if you don't? Why not run Ruby on the microcontroller itself?
+A solo Raspberry Pi (or other SBC + microcontroller) is great if you need the compute power anyway, but what if you don't? Why not run Ruby on the microcontroller itself?
 
 That's the goal of [mruby-denko](https://github.com/denko-rb/mruby-denko): write mruby on the ESP32, using peripheral classes as close to this gem as possible. Still early in development, so limited features, but already usable.
 

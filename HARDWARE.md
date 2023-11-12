@@ -55,6 +55,8 @@
 | ESP32-S2       | :green_heart:   | LOLIN S2 Pico        | Native USB
 | ESP32-S3       | :green_heart:   | LOLIN S3 V1.0.0      | Native USB
 | ESP32-C3       | :green_heart:   | LOLIN C3 Mini V2.1.0 | Native USB
+| ESP32-H2       | :heart:         | -                    | Support in Arduino ESP32 core beta
+| ESP32-C6       | :heart:         | -                    | Support in Arduino ESP32 core beta
 
 **Note:** For ESP32 chips using native USB, make sure `USB CDC On Boot` is `Enabled` in the IDE's `Tools` menu. Flashing from the CLI doesn't automatically enable this, so the IDE is recommended for now.
 
@@ -155,12 +157,13 @@ Polling and reading follow a call and response pattern.
 | :---------------     | :------:       | :--------      | :---------------   |------ |
 | Generic Hobby Servo  | :green_heart:  | Servo/ESC PWM  | `Motor::Servo`     | Max depends on PWM channel count
 | Generic ESC          | :yellow_heart: | Servo/ESC PWM  | `Motor::Servo`     | Works. Needs its own class.
-| PCA9685              | :heart:        | I2C            | `PulseIO::PCA9685` | 16ch 12-bit PWM for servo or LED
+| PCA9685              | :heart:        | I2C            | `PulseIO::PCA9685` | 16-ch, 12-bit PWM for servo or LED
 | L298N                | :green_heart:  | Digi + PWM Out | `Motor::L298`      | H-Bridge DC motor driver
 | DRV8833              | :heart:        | Digi + PWM Out | `Motor::DRV8833`   | H-Bridge DC motor driver
-| A3967                | :green_heart:  | Digital Out    | `Motor::Stepper`   | 1ch microstepper (EasyDriver)
+| TB6612               | :heart:        | Digi + PWM Out | `Motor::TB6612`    | H-Bridge DC motor driver
+| A3967                | :green_heart:  | Digital Out    | `Motor::Stepper`   | 1-ch microstepper (EasyDriver)
 | A4988                | :yellow_heart: | DigitalOut     | `Motor::Stepper`   | 1-ch microstepper
-| TMC2209              | :heart:        | -              | -                  | 1ch silent stepper driver
+| TMC2209              | :heart:        | -              | -                  | 1-ch silent stepper driver
 
 ### I/O Expansion
 
@@ -168,33 +171,38 @@ Polling and reading follow a call and response pattern.
 | :--------------- | :------:       | :--------  | :---------------     |------ |
 | Input Register   | :green_heart:  | SPI        | `SPI::InputRegister` | Tested on CD4021B
 | Output Register  | :green_heart:  | SPI        | `SPI::OutputRegister`| Tested on 74HC595
-| PCF8574 Expander | :heart:        | I2C        | `DigitalIO::PCF8574` | 8ch bi-directional digital I/O
-| ADS1100 ADC      | :heart:        | I2C        | `AnalogIO::ADS1100`  | 15-bit +/- 1ch ADC
-| ADS1115 ADC      | :green_heart:  | I2C        | `AnalogIO::ADS1115`  | 15-bit +/- 4ch ADC. Comparator not implemented.
-| ADS1118 ADC      | :green_heart:  | SPI        | `AnalogIO::ADS1118`  | 15-bit +/- 4ch ADC + temperature
-| PCF8591 ADC/DAC  | :heart:        | I2C        | `AnalogIO::PCF8591`  | 4ch ADC + 1ch DAC, 8-bit resolution
-| MCP4725 DAC      | :heart:        | I2C        | `AnalogIO::MCP4275`  | 1ch 12-bit DAC
+| PCF8574 Expander | :heart:        | I2C        | `DigitalIO::PCF8574` | 8-ch bi-directional digital I/O
+| ADS1100 ADC      | :heart:        | I2C        | `AnalogIO::ADS1100`  | 1-ch, 16-bit ADC
+| ADS1115 ADC      | :green_heart:  | I2C        | `AnalogIO::ADS1115`  | 4-ch, 16-bit ADC. Comparator not implemented.
+| ADS1118 ADC      | :green_heart:  | SPI        | `AnalogIO::ADS1118`  | 4-ch, 16-bit ADC + temperature
+| ADS1232 ADC      | :heart:        | SPI        | `AnalogIO::ADS1232`  | 2-ch, 24-bit ADC + temperature
+| PCF8591 ADC/DAC  | :heart:        | I2C        | `AnalogIO::PCF8591`  | 4-ch, 8-bit ADC + 1-chm 8-bit DAC
+| MCP4725 DAC      | :heart:        | I2C        | `AnalogIO::MCP4275`  | 1-ch, 12-bit DAC
+| PCA9548 I2C Mux  | :heart:        | I2C        | `I2C::PCA9548`       | 8-way I2C multiplexer
 
 ### Environmental Sensors
 
-| Name             | Status         | Interface   | Component Class    | Type               | Notes                  |
-| :--------------- | :------:       | :--------   | :---------------   |---------------     | ---------------------- |
-| MAX31850         | :heart:        | OneWire     | `Sensor::MAX31850` | Thermocouple       |
-| MAX6675          | :heart:        | SPI         | `Sensor::MAX6675`  | Thermocouple       |
-| DS18B20          | :green_heart:  | OneWire     | `Sensor::DS18B20`  | Temp               |
-| DHT11/21/22      | :green_heart:  | Digi In/Out | `Sensor::DHT`      | Temp / RH          |
-| SHT30/31/35      | :green_heart:  | I2C         | `Sensor::SHT3X`    | Temp / RH          | M5Stack ENV III, one-shot only
-| QMP6988          | :green_heart:  | I2C         | `Sensor::QMP6988`  | Temp / Press       | M5Stack ENV III
-| BMP180           | :green_heart:  | I2C         | `Sensor::BMP180`   | Temp / Press       |
-| BMP280           | :green_heart:  | I2C         | `Sensor::BMP280`   | Temp / Press       |
-| BME280           | :green_heart:  | I2C         | `Sensor::BME280`   | Temp / Press / RH  |
-| HTU21D           | :green_heart:  | I2C         | `Sensor::HTU21D`   | Temp / RH          | No user register read
-| HTU31D           | :green_heart:  | I2C         | `Sensor::HTU31D`   | Temp / RH          | No diagnostic read
-| AHT10/15         | :green_heart:  | I2C         | `Sensor::AHT10`    | Temp / RH          |
-| AHT20/21/25      | :green_heart:  | I2C         | `Sensor::AHT20`    | Temp / RH          |
-| ENS160           | :heart:        | I2C         | `Sensor::ENS160`   | CO2e / TVOC / AQI  |
-| AGS02MA          | :heart:        | I2C         | `Sensor::AGS02MA`  | TVOC               |
-| SCD40            | :heart:        | I2C         | `Sensor::SDC40`    | Temp / Press / CO2 |
+| Name             | Status         | Interface   | Component Class    | Type                     | Notes                  |
+| :--------------- | :------:       | :--------   | :---------------   |---------------           | ---------------------- |
+| MAX31850         | :heart:        | OneWire     | `Sensor::MAX31850` | Thermocouple             |
+| MAX6675          | :heart:        | SPI         | `Sensor::MAX6675`  | Thermocouple             |
+| DS18B20          | :green_heart:  | OneWire     | `Sensor::DS18B20`  | Temp                     |
+| DHT11/21/22      | :green_heart:  | Digi In/Out | `Sensor::DHT`      | Temp / RH                |
+| SHT30/31/35      | :green_heart:  | I2C         | `Sensor::SHT3X`    | Temp / RH                | M5Stack ENV III, one-shot only
+| SHT40/41         | :heart:        | I2C         | `Sensor::SHT4X`    | Temp / RH                | 
+| QMP6988          | :green_heart:  | I2C         | `Sensor::QMP6988`  | Temp / Press             | M5Stack ENV III
+| BMP180           | :green_heart:  | I2C         | `Sensor::BMP180`   | Temp / Press             |
+| BMP280           | :green_heart:  | I2C         | `Sensor::BMP280`   | Temp / Press             |
+| BME280           | :green_heart:  | I2C         | `Sensor::BME280`   | Temp / Press / RH        |
+| BME680           | :heart:        | I2C         | `Sensor::BME680`   | Temp / Press / RH / TVOC |
+| HTU21D           | :green_heart:  | I2C         | `Sensor::HTU21D`   | Temp / RH                | No user register read
+| HTU31D           | :green_heart:  | I2C         | `Sensor::HTU31D`   | Temp / RH                | No diagnostic read
+| AHT10/15         | :green_heart:  | I2C         | `Sensor::AHT10`    | Temp / RH                |
+| AHT20/21/25      | :green_heart:  | I2C         | `Sensor::AHT20`    | Temp / RH                |
+| ENS160           | :heart:        | I2C         | `Sensor::ENS160`   | eCO2 / TVOC / AQI        |
+| AGS02MA          | :heart:        | I2C         | `Sensor::AGS02MA`  | TVOC                     |
+| SCD40            | :heart:        | I2C         | `Sensor::SDC40`    | Temp / Press / CO2       |
+| CCS811           | :heart:        | I2C         | `Sensor::CCS811`   | eCO2                     |
 
 ### Light Sensors
 
@@ -208,7 +216,9 @@ Polling and reading follow a call and response pattern.
 | Name             | Status         | Interface    | Component Class      | Notes |
 | :--------------- | :------:       | :--------    | :---------------     |------ |
 | HC-SR501         | :green_heart:  | Digital In   | `Sensor::GenericPIR` |
+| HC-SR505         | :yellow_heart: | Digital In   | `Sensor::GenericPIR` |
 | AS312            | :green_heart:  | Digital In   | `Sensor::GenericPIR` |
+| AM312            | :yellow_heart: | Digital In   | `Sensor::GenericPIR` |
 
 ### Distance Sensors
 
@@ -226,6 +236,7 @@ Polling and reading follow a call and response pattern.
 | ADXL345          | :heart:        | I2C       | `Sensor::ADXL345`  | Accelerometer
 | IT3205           | :heart:        | I2C       | `Sensor::IT3205`   | Gyroscope
 | HMC5883L         | :heart:        | I2C       | `Sensor::HMC5883L` | Compass
+| MPU6050          | :heart:        | I2C       | `Sensor::MPU6050`  | Gyro + Accelerometer
 | MPU6886          | :heart:        | I2C       | `Sensor::MPU6886`  | Gyro + Accelerometer
 | BMI160           | :heart:        | I2C       | `Sensor::BMI160`   | Gyro + Accelerometer
 | LSM6DS3          | :heart:        | I2C       | `Sensor:LSM6DS3`   | Gyro + Accelerometer

@@ -37,7 +37,7 @@
 
 ### Bug Fixes
 
-- Fixed bug where `BMP280`` sensor class would not autoload.
+- Fixed bug where `BMP280` sensor class would not autoload.
 
 ## 0.13.3
 
