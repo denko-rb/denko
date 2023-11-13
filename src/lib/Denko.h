@@ -97,9 +97,10 @@ class Denko {
 
     // Included Libraries
     void pulseRead          (); //cmd = 9
+
+    // Servos
     void servoToggle        (); //cmd = 10
     void servoWrite         (); //cmd = 11
-    void handleSerial       (); //cmd = 12
 
     // Single Bit Bang UART
     #ifdef DENKO_UART_BB

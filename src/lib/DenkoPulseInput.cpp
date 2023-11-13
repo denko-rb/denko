@@ -27,7 +27,7 @@ void Denko::pulseRead(){
     uint16_t resetTime = (auxMsg[1] << 8) | auxMsg[0];
     pinMode(pin, OUTPUT);
     digitalWrite(pin, bitRead(val, 1));
-    delayMicroseconds(resetTime);
+    microDelay(resetTime);
   }
   pinMode(pin, INPUT);
   byte state = digitalRead(pin);

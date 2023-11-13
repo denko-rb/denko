@@ -31,7 +31,7 @@ void Denko::showLEDArray() {
 
   // ATmega4809 still needs this delay to avoid corrupt data. Not sure why.
   #if defined(__AVR_ATmega4809__)
-    delayMicroseconds(64);
+    microDelay(64);
   #endif
 
   // Write the pixel buffer to the array.
