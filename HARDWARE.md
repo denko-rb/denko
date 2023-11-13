@@ -8,7 +8,7 @@
 
 |    Chip        | Status          | Products         | Notes |
 | :--------      | :------:        | :--------------- |------ |
-| ATmega168      | :green_heart:   | Duemilanove, Diecimila, Pro | Features omitted to save memory. `denko targets` for more info.
+| ATmega168      | :green_heart:   | Duemilanove, Diecimila, Pro | Omits features. `denko targets` for info.
 | ATmega328      | :green_heart:   | Uno R3, Uno WiFi, Nano, Fio, Pro  |
 | ATmega32u4     | :green_heart:   | Leonardo, Micro, Leonardo ETH, Esplora, LilyPad USB |
 | ATmega1280     | :green_heart:   | Mega |
@@ -24,7 +24,7 @@
 
 |    Chip        | Status          | Products         | Notes |
 | :--------      | :------:        | :--------------- |------ |
-| ATSAM3X8E      | :yellow_heart:  | Due | Native USB port. Tone, and IR Out don't work.
+| ATSAM3X8E      | :yellow_heart:  | Due | Uses Native USB. Tone and IR Out don't work.
 | ATSAMD21       | :green_heart:   | Zero, M0 Series, Nano 33 IOT, MKR WiFi 1010 | Native USB
 | RA4M1          | :yellow_heart:  | Uno R4 Minima, Uno R4 WiFi | IR and WS2812 libraries don't support this yet
 
