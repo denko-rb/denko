@@ -95,8 +95,9 @@ class Denko {
     void eepromRead         (); //cmd = 7
     void eepromWrite        (); //cmd = 8
 
-    // Included Libraries
+    // Pulse inputs (DHT and HC-SR04)
     void pulseRead          (); //cmd = 9
+    void hcsr04Read         (); //cmd = 20
 
     // Servos
     void servoToggle        (); //cmd = 10

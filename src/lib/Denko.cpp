@@ -122,7 +122,8 @@ void Denko::process() {
     #endif
 
     // Implemented in DenkoPulseInput.cpp
-    case 9: pulseRead             (); break;
+    case 9:  pulseRead             (); break;
+    case 20: hcsr04Read            (); break;
 
     // Implemented in DenkoServo.cpp
     #ifdef DENKO_SERVO

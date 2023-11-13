@@ -55,3 +55,34 @@ void Denko::pulseRead(){
   }
   if (pulseCount == 0) stream->print('\n');
 }
+
+// CMD = 20
+//
+// pin                : echo pin
+// val (lower 8 bits) : trigger pin
+//
+void Denko::hcsr04Read(){
+  // Store number of microseconds to return.
+  uint32_t us;
+
+  // Ensure pins are correct direction.
+  // This is handled by modeling the sensor as a multipin component instead.
+  // pinMode(pin, INPUT);
+  // pinMode(val, OUTPUT);
+
+  // Initial pulse on the triger pin.
+  digitalWrite(val, LOW);
+  microDelay(2);
+  digitalWrite(val,HIGH);
+  microDelay(10);
+  digitalWrite(val,LOW);
+
+  // Wait for the echo, up to 25,000 microseconds.
+  us = pulseIn(pin, HIGH, 25000);
+
+  // Send value.
+  stream->print(pin);
+  stream->print(':');
+  stream->print(us);
+  stream->print('\n');
+}

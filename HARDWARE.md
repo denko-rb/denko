@@ -224,7 +224,7 @@ Polling and reading follow a call and response pattern.
 
 | Name             | Status         | Interface    | Component Class    | Notes |
 | :--------------- | :------:       | :--------    | :---------------   |------ |
-| HC-SR04          | :heart:        | Digi In/Out  | `Sensor::HCSR04`   | Ultrasonic, 20-4000mm
+| HC-SR04          | :green_heart:  | Digi In/Out  | `Sensor::HCSR04`   | Ultrasonic, 20-4000mm
 | RCWL-9620        | :green_heart:  | I2C          | `Sensor::RCWL9260` | Ultrasonic, 20-4500mm
 | VL53L0X          | :heart:        | I2C          | `Sensor::VL53L0X`  | Laser, 30 - 1000mm
 | GP2Y0E03         | :heart:        | I2C          | `Sensor::GP2Y0E03` | Infrared, 40 - 500mm

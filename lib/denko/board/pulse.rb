@@ -22,5 +22,9 @@ module Denko
                             value: settings,
                             aux_message: aux
     end
+
+    def hcsr04_read(echo_pin, trigger_pin)
+      write Message.encode(command: 20, pin: echo_pin, value: trigger_pin)
+    end
   end
 end
