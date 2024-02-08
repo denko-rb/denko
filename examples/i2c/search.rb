@@ -23,6 +23,8 @@ unless board.map
 
 # Else get defaults from map.
 else
+  puts "Detected board: #{board.name}"
+
   sda = board.map[:SDA] || board.map[:SDA0]
   scl = board.map[:SCL] || board.map[:SCL0]
 
