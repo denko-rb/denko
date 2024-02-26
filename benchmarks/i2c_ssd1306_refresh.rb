@@ -30,6 +30,11 @@
 #   Arduino Nano Every  :  9.2 fps (USB through ATSAMD11 @ 115200, 128-byte I2C limit, no I2C level shifter)
 #   Arduino Nano Every  : 13.0 fps (USB through ATSAMD11 @ 230400, 128-byte I2C limit, no I2C level shifter)
 #
+# February 25 2024 | i7 8700k CPU | CRuby 3.2.1 | 100 frames | 1 Mhz I2C frequency | Average of 3 runs
+#
+#   ESP32-S3            : 51.8 fps (native USB) - Changed from 64 to 128 serial ACK interval
+#   ESP32-C3            : 51.7 fps (native USB) - Changed from 64 to 128 serial ACK interval
+#
 require 'bundler/setup'
 require 'denko'
 

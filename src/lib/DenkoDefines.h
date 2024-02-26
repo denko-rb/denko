@@ -134,9 +134,24 @@
 // Best performance acknowledging at 64 bytes, or 32 if buffer is only 64.
 //
 // These are 256/64 regardless of whether native USB CDC or UART bridge.
-#if defined(ARDUINO_ARCH_RP2040) ||  defined(ESP32) || defined(ESP8266) || defined(__SAM3X8E__)
+#if defined(ARDUINO_ARCH_RP2040) || defined(ESP8266) || defined(__SAM3X8E__)
   #define DENKO_SERIAL_BUFFER_SIZE 256
   #define DENKO_RX_ACK_INTERVAL 64
+// ESP32 defaults to 256 buffer. Stay one under.
+#elif defined(ESP32)
+  #define DENKO_SERIAL_BUFFER_SIZE 255
+  #ifdef ARDUINO_USB_CDC_ON_BOOT
+    // S2 unreliable with acknowledgement before buffer is full.
+    #ifdef CONFIG_IDF_TARGET_ESP32S2
+      #define DENKO_RX_ACK_INTERVAL 255
+    // S3 and C3 are fine acknowledging at half buffer filled.
+    #else
+     #define DENKO_RX_ACK_INTERVAL 128
+    #endif
+  // Default to 64 if using a UART bridge.
+  #else
+    #define DENKO_RX_ACK_INTERVAL 64
+  #endif
 // RA4M1 has a 512 Serial buffer.
 #elif defined(_RENESAS_RA_)
   #define DENKO_SERIAL_BUFFER_SIZE 512
