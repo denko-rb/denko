@@ -30,8 +30,8 @@
 #elif defined(ESP32)
   #include <WiFi.h>
   #include <ESPmDNS.h>
-  // #include <WiFiUdp.h>
-  // #include <ArduinoOTA.h>
+  #include <WiFiUdp.h>
+  #include <ArduinoOTA.h>
   #define WIFI_STATUS_LED 2
 #else
   #define WIFI_STATUS_LED 13
@@ -117,14 +117,39 @@ void setup() {
   DENKO_SERIAL_IF.begin(115200);
   while(!DENKO_SERIAL_IF);
 
-  // Enable over the air updates on the ESP8266.
-  #if defined(ESP8266)
+  // Attempt initial WiFi connection.
+  connect();
+
+  // Enable over the air updates on the ESP8266 and ESP32.
+  // Taken from standard ESP8266/ESP32 OTA examples.
+  #if defined(ESP8266) || (ESP32)
+    ArduinoOTA.onStart([]() {
+      String type;
+      if (ArduinoOTA.getCommand() == U_FLASH) {
+        type = "sketch";
+      } else { // U_FS (ESP8266) or U_SPIFFS (ESP32)
+        type = "filesystem";
+      }
+      // NOTE: if updating FS or SPIFFS, this would be the place to unmount using FS.end() or SPIFFS.end()
+      Serial.println("Arduino OTA: Start updating " + type);
+    });
+    ArduinoOTA.onEnd([]() {
+      Serial.println("\nArduino OTA: End\n");
+    });
+    ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
+      Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+    });
+    ArduinoOTA.onError([](ota_error_t error) {
+      Serial.printf("Error[%u]: ", error);
+      if (error == OTA_AUTH_ERROR) Serial.println("Arduino OTA: Auth Failed");
+      else if (error == OTA_BEGIN_ERROR) Serial.println("Arduino OTA: Begin Failed");
+      else if (error == OTA_CONNECT_ERROR) Serial.println("Arduino OTA: Connect Failed");
+      else if (error == OTA_RECEIVE_ERROR) Serial.println("Arduino OTA: Receive Failed");
+      else if (error == OTA_END_ERROR) Serial.println("Arduino OTA: End Failed");
+    });
     ArduinoOTA.begin();
   #endif
 
-  // Attempt initial WiFi connection.
-  connect();
-  
   // Start the denko TCP server.
   server.begin();
 
@@ -141,7 +166,7 @@ void loop() {
   maintainWiFi();
 
   // Handle OTA updates.
-  #if defined(ESP8266)
+  #if defined(ESP8266) || (ESP32)
     ArduinoOTA.handle();
   #endif
 
