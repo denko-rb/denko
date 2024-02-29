@@ -48,13 +48,13 @@
 #endif
 
 // Configure your WiFi options here. IP address is not configurable. Uses DHCP.
-int port = 3466;
-char* ssid = "yourNetwork";
-char* pass = "yourPassword";
+#define DENKO_TCP_PORT 3466
+#define WIFI_SSID "yourNetwork"
+#define WIFI_PASSWORD "yourPassword"
 boolean connected = false;
 
 Denko denko;
-WiFiServer server(port);
+WiFiServer server(DENKO_TCP_PORT);
 WiFiClient client;
 
 // Use the built in LED to indicate WiFi status.
@@ -82,7 +82,7 @@ void printWifiStatus() {
     DENKO_SERIAL_IF.println(WiFi.localIP());
   #endif
   DENKO_SERIAL_IF.print("Denko TCP Port: ");
-  DENKO_SERIAL_IF.println(port);
+  DENKO_SERIAL_IF.println(DENKO_TCP_PORT);
   indicateWiFi(true);
 }
 
@@ -94,7 +94,7 @@ void connect(){
 
   // Try to connect.
   DENKO_SERIAL_IF.print("Connecting to WiFi ");
-  WiFi.begin(ssid, pass);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
   // Delay until connected.
   while (WiFi.status() != WL_CONNECTED) {
