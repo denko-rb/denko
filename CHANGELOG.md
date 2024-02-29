@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.13.5
+
+### New Components
+
+- HC-SR04 Ultrasonic Distance Sensor:
+  - Class: `Denko::Sensor::HCSRO4`
+  - Custom function on the board to handle ping and response.
+  - Simple interface. `#read` returns a distance in mm.
+
+### Bug Fixes
+
+- OTA updating now works on ESP32.
+- Adjust ESP32 expected serial buffer sizes and acknowledge intervals to to be more reliable.
+- Fixed a bug on Windows where submodules weren't being included in load path.
+- Fixed a bug where the board could incorrectly report EEPROM_LENGTH as 0.
+
 ## 0.13.4
 
 ### New Components
