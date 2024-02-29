@@ -27,8 +27,9 @@ module Denko
         # If using a non-default sampling rate, store it.
         @sample_rate = options[:sample_rate]
 
-        # Default to smoothing disabled.
+        # Default to smoothing disabled, with a set size of 8.
         @smoothing        = false
+        @smoothing_size   = 8
         @smoothing_set  ||= []
       end
 
@@ -57,13 +58,13 @@ module Denko
       # Smoothing features.
       # Does a moving average of the last 8 readings.
       #
-      attr_accessor :smoothing
+      attr_accessor :smoothing, :smoothing_size
 
       def smooth_input(value)
         # Add new value, but limit to the 8 latest values.
         @smoothing_set << value
-        @smoothing_set.shift if @smoothing_set.length > 8
-        
+        @smoothing_set.shift while (@smoothing_set.length > @smoothing_size)
+
         average = @smoothing_set.reduce(:+) / @smoothing_set.length.to_f
         
         # Round up or down based on previous state to reduce fluctuations.
