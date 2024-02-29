@@ -297,11 +297,11 @@ module Denko
       
       def get_calibration_data        
         # First group of calibration bytes, sent to #process_calibration_a.
-        read_using -> { i2c_read(0x88, 26) }
+        read_using -> { i2c_read(26, register: 0x88) }
 
         # Second group of calibration bytes, only on BME280, sent to #process_calibration_b.
         if humidity_available?
-          read_using -> { i2c_read 0xE1, 7 }
+          read_using -> { i2c_read(7, register: 0xE1) }
         end
 
         if (@calibration[:cal_a] && @calibration[:cal_b]) || (@calibration[:cal_a] && !humidity_available?)

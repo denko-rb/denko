@@ -93,11 +93,11 @@ module Denko
 
         _start_read_temperature
         sleep(@measurement_time)
-        i2c_read 0xF6, 2
+        i2c_read(2, register: 0xF6)
 
         _start_read_pressure
         sleep(@measurement_time)
-        i2c_read 0xF6, 3
+        i2c_read(3, register: 0xF6)
       end
 
       def pre_callback_filter(data)
@@ -197,7 +197,7 @@ module Denko
       
       def get_calibration_data        
         #  Calibration data is 22 bytes starting at address 0xAA.
-        read_using -> { i2c_read(0xAA, 22) }
+        read_using -> { i2c_read(22, register: 0xAA) }
       end
 
       def process_calibration(bytes)

@@ -130,7 +130,7 @@ module Denko
         sleep conversion_time
 
         # Write the read command and read back 6 bytes.
-        i2c_read(READ_T_AND_H, 6)
+        i2c_read(6, register: READ_T_AND_H)
       end
 
       def pre_callback_filter(bytes)

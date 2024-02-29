@@ -20,7 +20,7 @@ module Denko
       
       # Time data starts at register 0 and is 7 bytes long.
       def _read
-        i2c_read(0, 7)
+        i2c_read(7, register: 0)
       end
       
       def pre_callback_filter(bytes)

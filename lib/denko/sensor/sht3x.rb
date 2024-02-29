@@ -46,7 +46,7 @@ module Denko
       def _read
         i2c_write [0x24, @measurement_lsb]
         sleep(@measurement_time)
-        i2c_read(FETCH_DATA, 6)
+        i2c_read(6, register: FETCH_DATA)
       end
 
       def pre_callback_filter(bytes)

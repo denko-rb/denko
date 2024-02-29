@@ -162,7 +162,7 @@ module Denko
 
       def chip_id
         return @chip_id if @chip_id
-        i2c_read(CHIP_ID_REGISTER, 1)
+        i2c_read(1, register: CHIP_ID_REGISTER)
         sleep 0.001 while !@chip_id
         @chip_id
       end
@@ -178,7 +178,7 @@ module Denko
         end
         
         # Read the data bytes.
-        i2c_read(DATA_REGISTER, DATA_LENGTH)
+        i2c_read(DATA_LENGTH, register: DATA_REGISTER)
       end
 
       def pre_callback_filter(bytes)
@@ -229,7 +229,7 @@ module Denko
 
       def get_config_registers
         @registers = {}
-        i2c_read(IIR_REGISTER, CONFIG_LENGTH)
+        i2c_read(CONFIG_LENGTH, register: IIR_REGISTER)
         sleep 0.001 while @registers.empty?
         @registers
       end
@@ -260,7 +260,7 @@ module Denko
       }
 
       def get_calibration_data
-        i2c_read(CALIBRATION_REGISTER, CALIBRATION_LENGTH)
+        i2c_read(CALIBRATION_LENGTH, register: CALIBRATION_REGISTER)
       end
 
       def process_calibration(bytes)

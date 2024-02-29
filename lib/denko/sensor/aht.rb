@@ -68,14 +68,14 @@ module Denko
       end
 
       def read_status_register
-        read_using -> { i2c_read(READ_STATUS_REGISTER, 1) }
+        read_using -> { i2c_read(1, register: READ_STATUS_REGISTER) }
         sleep(COMMAND_DELAY)
       end
 
       def _read
         i2c_write(START_MEASUREMENT)
         sleep(MEASURE_DELAY)
-        i2c_read(nil, self.class::DATA_LENGTH)
+        i2c_read(self.class::DATA_LENGTH)
       end
 
       def pre_callback_filter(bytes)

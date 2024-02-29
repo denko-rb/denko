@@ -49,7 +49,7 @@ module Denko
         sleep WAIT_TIMES[config[1] >> 5]
 
         # Read the result, triggering callbacks.
-        i2c_read(CONVERSION_ADDRESS, 2)
+        i2c_read(2, register: CONVERSION_ADDRESS)
       end
 
       # Readings are 2 bytes big-endian.

@@ -44,7 +44,7 @@ class I2CPeripheralTest < Minitest::Test
     
     mock = Minitest::Mock.new.expect :call, nil, [0x30, 0x03, 6, 100000, true]
     bus.stub(:read, mock) do
-      part.i2c_read(0x03, 6)
+      part.i2c_read(6, register: 0x03)
     end
   end
 end

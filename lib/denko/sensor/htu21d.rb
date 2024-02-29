@@ -100,14 +100,14 @@ module Denko
       
       def read_temperature
         @mutex.synchronize do
-          result = read_using -> { i2c_read(READ_TEMPERATURE_BLOCKING, 3) }
+          result = read_using -> { i2c_read(3, register: READ_TEMPERATURE_BLOCKING) }
           result[1] if result
         end
       end
 
       def read_humidity
         @mutex.synchronize do
-          result = read_using -> { i2c_read(READ_HUMIDITY_BLOCKING, 3) }
+          result = read_using -> { i2c_read(3, register: READ_HUMIDITY_BLOCKING) }
           result[1] if result
         end
       end

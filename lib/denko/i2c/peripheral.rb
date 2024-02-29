@@ -30,7 +30,7 @@ module Denko
         bus.write(address, bytes, i2c_frequency, i2c_repeated_start)
       end
 
-      def i2c_read(register, num_bytes)
+      def i2c_read(num_bytes, register: nil)
         bus._read(address, register, num_bytes, i2c_frequency, i2c_repeated_start)
       end
     end

@@ -12,7 +12,7 @@ module Denko
       def _read
         i2c_write(0x01)
         sleep(0.120)
-        i2c_read(nil, 3)
+        i2c_read(3)
       end
 
       def pre_callback_filter(bytes)
