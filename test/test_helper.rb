@@ -18,7 +18,6 @@ Denko::AnalogIO::ADS1118
 Denko::AnalogIO::Input
 Denko::AnalogIO::Output
 Denko::AnalogIO::Potentiometer
-Denko::AnalogIO::Sensor
 
 # Behaviors
 # Not needed, since every behavior will be included by at least one class.
