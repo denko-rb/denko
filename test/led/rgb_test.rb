@@ -27,7 +27,7 @@ class RGBLEDTest < Minitest::Test
     part.stub(:red, red_mock) do
       part.stub(:green, green_mock) do
         part.stub(:blue, blue_mock) do
-          part.write [0, 128, 0]
+          part.write(0, 128, 0)
         end
       end
     end
@@ -36,10 +36,10 @@ class RGBLEDTest < Minitest::Test
     blue_mock.verify
   end
 
-  def test_color_array
-    mock = Minitest::Mock.new.expect :call, nil, [[128,0,0]]
+  def test_raw_rgb_values
+    mock = Minitest::Mock.new.expect :call, nil, [128,0,0]
     part.stub(:write, mock) do
-      part.color = [128,0,0]
+      part.write(128,0,0)
     end
     mock.verify
   end
@@ -49,8 +49,8 @@ class RGBLEDTest < Minitest::Test
 
     mock = Minitest::Mock.new
     colors.each_value do |color|
-      mock.expect :call, nil, [color]
-      mock.expect :call, nil, [color]
+      mock.expect :call, nil, [*color]
+      mock.expect :call, nil, [*color]
     end
 
     part.stub(:write, mock) do

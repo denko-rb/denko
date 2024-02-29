@@ -21,17 +21,15 @@ module Denko
         off:     [000, 000, 000]
       }
 
-      def write(array)
-        red.write   array[0]
-        green.write array[1]
-        blue.write  array[2]
+      def write(r, g, b)
+        red.write(r)
+        green.write(g)
+        blue.write(b)
       end
 
       def color=(color)
-        return write(color) if color.class == Array
-
         color = color.to_sym
-        write(COLORS[color]) if COLORS.include? color
+        write(*COLORS[color]) if COLORS.include? color
       end
     end
   end
