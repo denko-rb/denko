@@ -3,12 +3,10 @@ module Denko
     class DS18B20 < OneWire::Peripheral
       FAMILY_CODE = 0x28
 
+      attr_reader :resolution
+
       def scratch
         @state ? @state[:raw] : read_scratch(9)
-      end
-
-      def resolution
-        @resolution ||= decode_resolution(scratch)
       end
 
       def resolution=(bits)
@@ -16,9 +14,7 @@ module Denko
           raise ArgumentError, 'Invalid DS18B20 resolution, expected 9 to 12'
         end
 
-        return bits if decode_resolution(scratch) == bits
-
-        eeprom = scratch[2..4]
+        eeprom = read_scratch(9)[2..4]
         eeprom[2] = 0b00011111 | ((bits - 9) << 5)
         write_scratch(eeprom)
         copy_scratch
@@ -26,11 +22,10 @@ module Denko
       end
 
       def set_convert_time
-        @convert_time = 0.75 / (2 ** (12 - @resolution))
+        @convert_time = 0.75 / (2 ** (12 - (@resolution || 12)))
       end
 
       def convert
-        @resolution ||= 12
         set_convert_time
 
         atomically do
@@ -54,10 +49,9 @@ module Denko
 
       def pre_callback_filter(bytes)
         return { crc_error: true } unless OneWire::Helper.crc(bytes)
-        @resolution = decode_resolution(bytes)
 
+        @resolution ||= decode_resolution(bytes)
         @reading[:temperature] = decode_temperature(bytes)
-        @reading[:raw]         = bytes
 
         @reading
       end
