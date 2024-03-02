@@ -26,16 +26,19 @@
 #endif
 
 // Define number of pins to set up listener storage.
-#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
-  #define PIN_COUNT 70
-#elif defined(__SAM3X8E__)
-  #define PIN_COUNT 72
+#if defined(ESP32)
+  #define PIN_COUNT 45
 #elif defined(ESP8266)
   #define PIN_COUNT 18
-#elif defined(ESP32)
-  #define PIN_COUNT 40
 #elif defined(ARDUINO_ARCH_RP2040)
-  #define PIN_COUNT 26
+  #define PIN_COUNT 30
+// These may have more physical pins, but limited to 54 by the Arduino cores.
+#elif defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__) || defined(__SAM3X8E__)
+  #define PIN_COUNT 54
+// Very small optimization for the 328P/UNO.
+#elif defined(__AVR_ATmega328P__) || defined(__AVR_ATmega328__)
+  #define PIN_COUNT 20
+// This catches ATmega32u4, SAMD21, RA4M1 etc.
 #else
   #define PIN_COUNT 22
 #endif
