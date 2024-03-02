@@ -1,7 +1,7 @@
 
   Valid targets:
 
-    mega (default)
+    atmega (default)
 
       Covers the Atmel/Microchip AVR 8-bit chips and associated Arduino boards.
       This is the default target. All component features are included.
@@ -54,7 +54,7 @@
      Boards: Raspberry Pi Pico, Raspberry Pi Pico W, and many others
      
 
-   samd
+   atsamd21
 
      For the ATSAMD21G18, with native USB and no EEPROM.
      Similar to the mega option, but Software Serial doesn't work.
@@ -65,7 +65,7 @@
      Boards: Arduino Zero, M0, M0 Pro
 
 
-    sam3x
+    atsam3x
 
       Fpr the ATSAM3X8E, with native USB and no EEPROM.
       Similar to the mega option, but some features don't work.
@@ -87,7 +87,7 @@
       is the smallest sketch possible, and should be universally compatible.
 
 
-    mega168
+    atmega168
 
       This targets the older ATmega168 chip used in early Arduinos.
       With half the RAM and flash available, we need to cut the sketch down.

@@ -8,17 +8,17 @@ class DenkoCLI::Generator
     core: [:core],
 
     # Specific features for the old mega168 chips.
-    mega168: [:core, :one_wire, :tone, :i2c, :spi, :servo],
+    atmega168: [:core, :one_wire, :tone, :i2c, :spi, :servo],
 
     # Other ATmega chips do everything.
     # Add bit bang serial for 328p / UNO since it has no extra hardware UART.
-    mega: STANDARD_PACKAGES + [:uart_bb],
+    atmega: STANDARD_PACKAGES + [:uart_bb],
 
     # No tone, infrared or EEPROM on SAM3X / Due.
-    sam3x: STANDARD_PACKAGES - [:tone, :ir_out, :eeprom],
+    atsam3x: STANDARD_PACKAGES - [:tone, :ir_out, :eeprom],
     
     # No EEPROM on SAMD / Zero.
-    samd: STANDARD_PACKAGES - [:eeprom],
+    atsamd21: STANDARD_PACKAGES - [:eeprom],
 
     # No IR out and WS2812 on the UNO R4. WS2812 compiles but doesn't work.
     ra4m1: STANDARD_PACKAGES - [:ir_out, :led_array],

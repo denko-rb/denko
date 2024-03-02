@@ -15,10 +15,10 @@ class DenkoCLI::Generator
   end
 
   def append_target
-    options[:target] = :mega unless options[:target]
+    options[:target] = :atmega unless options[:target]
     # Preserve the source sketch name, since we need to copy that file.
     options[:src_sketch_name] = options[:sketch_name].dup
-    options[:sketch_name] << "_#{options[:target]}" unless options[:target] == :mega
+    options[:sketch_name] << "_#{options[:target]}"
     options[:sketch_name] << "_#{::Denko::VERSION}"
   end
 
