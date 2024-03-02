@@ -41,6 +41,12 @@ module Denko
         sleep @convert_time unless bus.parasite_power
       end
 
+      def after_initialize(options={})
+        # Avoid repeated memory allocation for callback data and state.
+        @reading   = { temperature: nil }
+        self.state = { temperature: nil }
+      end
+
       def _read
         convert
         read_scratch(9) { |data| self.update(data) }
@@ -50,7 +56,16 @@ module Denko
         return { crc_error: true } unless OneWire::Helper.crc(bytes)
         @resolution = decode_resolution(bytes)
 
-        decode_temperature(bytes).merge(raw: bytes)
+        @reading[:temperature] = decode_temperature(bytes)
+        @reading[:raw]         = bytes
+
+        @reading
+      end
+
+      def update_state(reading)
+        @state_mutex.synchronize do
+          @state[:temperature] = @reading[:temperature]
+        end
       end
 
       #
@@ -58,10 +73,7 @@ module Denko
       # It's a signed, 2's complement, little-endian decimal. LSB = 2 ^ -4.
       #
       def decode_temperature(bytes)
-        celsius = bytes[0..1].pack('C*').unpack('s<')[0] * (2.0 ** -4)
-        fahrenheit = (celsius * 1.8 + 32).round(4)
-
-        {celsius: celsius, fahrenheit: fahrenheit}
+        bytes[0..1].pack('C*').unpack('s<')[0] * (2.0 ** -4)
       end
 
       def decode_resolution(bytes)

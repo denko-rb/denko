@@ -44,8 +44,8 @@ def print_reading(reading, sensor)
   if reading[:crc_error]
     puts "CRC check failed for this reading!"
   else
-    print "#{reading[:celsius]} \xC2\xB0C | #{reading[:fahrenheit]} \xC2\xB0F | "
-    puts "Raw: #{reading[:raw].inspect}"
+    fahrenheit = (reading[:temperature] * 1.8 + 32).round(1)
+    puts "#{reading[:temperature]} \xC2\xB0C | #{fahrenheit} \xC2\xB0F"
   end
 end
 
