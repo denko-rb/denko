@@ -3,26 +3,15 @@ module Denko
     class DS18B20 < OneWire::Peripheral
       FAMILY_CODE = 0x28
 
-      attr_reader :resolution
-
-      def scratch
-        @state ? @state[:raw] : read_scratch(9)
+     def after_initialize(options={})
+        # Avoid repeated memory allocation for callback data and state.
+        @reading   = { temperature: nil }
+        self.state = { temperature: nil }
       end
 
-      def resolution=(bits)
-        unless (9..12).include?(bits)
-          raise ArgumentError, 'Invalid DS18B20 resolution, expected 9 to 12'
-        end
-
-        eeprom = read_scratch(9)[2..4]
-        eeprom[2] = 0b00011111 | ((bits - 9) << 5)
-        write_scratch(eeprom)
-        copy_scratch
-        @resolution = bits
-      end
-
-      def set_convert_time
-        @convert_time = 0.75 / (2 ** (12 - (@resolution || 12)))
+      def _read
+        convert
+        read_scratch(9) { |data| self.update(data) }
       end
 
       def convert
@@ -36,15 +25,8 @@ module Denko
         sleep @convert_time unless bus.parasite_power
       end
 
-      def after_initialize(options={})
-        # Avoid repeated memory allocation for callback data and state.
-        @reading   = { temperature: nil }
-        self.state = { temperature: nil }
-      end
-
-      def _read
-        convert
-        read_scratch(9) { |data| self.update(data) }
+      def set_convert_time
+        @convert_time = 0.75 / (2 ** (12 - (@resolution || 12)))
       end
 
       def pre_callback_filter(bytes)
@@ -62,6 +44,12 @@ module Denko
         end
       end
 
+      def decode_resolution(bytes)
+        config_byte = bytes[4]
+        offset = config_byte >> 5
+        offset + 9
+      end
+
       #
       # Temperature is the first 16 bits (2 bytes of 9 read).
       # It's a signed, 2's complement, little-endian decimal. LSB = 2 ^ -4.
@@ -70,10 +58,18 @@ module Denko
         bytes[0..1].pack('C*').unpack('s<')[0] * (2.0 ** -4)
       end
 
-      def decode_resolution(bytes)
-        config_byte = bytes[4]
-        offset = config_byte >> 5
-        offset + 9
+      attr_reader :resolution
+
+      def resolution=(bits)
+        unless (9..12).include?(bits)
+          raise ArgumentError, 'Invalid DS18B20 resolution, expected 9 to 12'
+        end
+
+        eeprom = read_scratch(9)[2..4]
+        eeprom[2] = 0b00011111 | ((bits - 9) << 5)
+        write_scratch(eeprom)
+        copy_scratch
+        @resolution = bits
       end
     end
   end
