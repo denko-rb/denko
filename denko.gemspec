@@ -38,6 +38,7 @@ Gem::Specification.new do |gem|
   gem.version       = Denko::VERSION
   gem.executables   = ["denko"]
 
+  gem.add_dependency 'observer',    '~> 0.1.2'
   gem.add_dependency 'rubyserial',  '~> 0.6'
   gem.add_dependency 'bcd',         '~> 1'
 
