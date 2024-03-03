@@ -79,26 +79,33 @@ module Denko
       #
       # Reading Methods
       #
-      def _start_read_temperature
+      def _read_temperature
         @register = 0x2E
         write_settings
+        sleep(@measurement_time)
+        i2c_read(2, register: 0xF6)
       end
 
-      def _start_read_pressure
+      def _read_pressure
         @register = 0x34 | (@oss << 6)
         write_settings
+        sleep(@measurement_time)
+        i2c_read(3, register: 0xF6)
+      end
+
+      # Workaround for :read callbacks getting automatically removed on first reading.
+      def read(*args, **kwargs, &block)
+        get_calibration_data unless calibration_data_loaded
+
+        read_using(self.method(:_read_temperature), *args, **kwargs)
+        read_using(self.method(:_read_pressure), *args, **kwargs, &block)
       end
 
       def _read
         get_calibration_data unless calibration_data_loaded
-
-        _start_read_temperature
-        sleep(@measurement_time)
-        i2c_read(2, register: 0xF6)
-
-        _start_read_pressure
-        sleep(@measurement_time)
-        i2c_read(3, register: 0xF6)
+        
+        _read_temperature
+        _read_pressure
       end
 
       def pre_callback_filter(data)
