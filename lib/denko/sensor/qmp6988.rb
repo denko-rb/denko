@@ -4,6 +4,7 @@ module Denko
       include I2C::Peripheral
       include Behaviors::Poller
       include TemperatureHelper
+      include PressureHelper
 
       UPDATE_TIME           = 0.020
       RESET_REGISTER        = 0xE0

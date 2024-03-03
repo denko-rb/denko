@@ -13,5 +13,19 @@ module Denko
         temperature + 273.15
       end
     end
+
+    module PressureHelper
+      def pressure
+        state[:pressure]
+      end
+
+      def pressure_atm
+        pressure / 101325.0
+      end
+
+      def pressure_bar
+        pressure / 100000.0
+      end
+    end
   end
 end
