@@ -13,13 +13,13 @@ def print_tph_reading(reading)
   # Pressure
   if reading[:pressure]
     formatted_pressure = (reading[:pressure] / 101325).round(5).to_s.ljust(7, '0')
-    print " | Pressure #{formatted_pressure} atm"
+    print " | Pressure: #{formatted_pressure} atm"
   end
   
   # Humidity  
   if reading[:humidity]
     formatted_humidity = reading[:humidity].round(2).to_s.ljust(5, '0')
-    print " | Humidity #{formatted_humidity} %"
+    print " | Humidity: #{formatted_humidity} %"
   end
   
   puts
