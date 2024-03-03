@@ -3,9 +3,6 @@
 # Give a hash with readings as float values and it prints them neatly.
 #
 def print_tph_reading(reading)
-  # Time
-  print "#{Time.now.strftime '%Y-%m-%d %H:%M:%S'} - "
-  
   elements = []
 
   # Temperature
@@ -25,6 +22,11 @@ def print_tph_reading(reading)
     formatted_humidity = reading[:humidity].round(2).to_s.ljust(5, '0')
     elements << "Humidity: #{formatted_humidity} %"
   end
+
+  return if elements.empty?
+  
+  # Time
+  print "#{Time.now.strftime '%Y-%m-%d %H:%M:%S'} - "
   
   puts elements.join(" | ")
 end
