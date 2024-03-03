@@ -3,6 +3,7 @@ module Denko
     class HTU31D
       include I2C::Peripheral
       include Behaviors::Poller
+      include TemperatureHelper
 
       # Commands
       RESET           = 0x1E

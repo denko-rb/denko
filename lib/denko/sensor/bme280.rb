@@ -3,6 +3,7 @@ module Denko
     class BME280
       include I2C::Peripheral
       include Behaviors::Poller
+      include TemperatureHelper
       
       # Reading Mode Settings
       SLEEP_MODE      = 0b00

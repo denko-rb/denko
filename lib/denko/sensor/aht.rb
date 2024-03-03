@@ -3,6 +3,7 @@ module Denko
     class AHT10
       include I2C::Peripheral
       include Behaviors::Poller
+      include TemperatureHelper
 
       # Commands
       INIT_AND_CALIBRATE   = [0xE1, 0x08, 0x00] 

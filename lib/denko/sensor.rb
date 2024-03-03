@@ -1,5 +1,6 @@
 module Denko
   module Sensor
+    require "#{__dir__}/sensor/helper"
     autoload :DHT,         "#{__dir__}/sensor/dht"
     autoload :DS18B20,     "#{__dir__}/sensor/ds18b20"
     autoload :BMP180,      "#{__dir__}/sensor/bmp180"

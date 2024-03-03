@@ -1,6 +1,7 @@
 module Denko
   module Sensor
     class DS18B20 < OneWire::Peripheral
+      include TemperatureHelper
       FAMILY_CODE = 0x28
 
      def after_initialize(options={})

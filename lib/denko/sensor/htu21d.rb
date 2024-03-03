@@ -3,6 +3,7 @@ module Denko
     class HTU21D
       include I2C::Peripheral
       include Behaviors::Poller
+      include TemperatureHelper
 
       # Commands
       SOFT_RESET                = 0xFE
@@ -14,8 +15,6 @@ module Denko
       CONFIG_DEFAULT            = 0b00000011
       HEATER_MASK               = 0b00000100
       RESOLUTION_MASK           = 0b10000001
-
-      attr_reader :temperature, :humidity
 
       def before_initialize(options={})
         @i2c_address = 0x40

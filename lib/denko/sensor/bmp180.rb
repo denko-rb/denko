@@ -3,6 +3,7 @@ module Denko
     class BMP180
       include I2C::Peripheral
       include Behaviors::Poller
+      include TemperatureHelper
       
       # Write this to register 0xE0 for soft reset
       SOFT_RESET = 0xB6

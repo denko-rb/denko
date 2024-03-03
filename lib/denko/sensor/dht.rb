@@ -3,6 +3,7 @@ module Denko
     class DHT
       include Behaviors::SinglePin
       include Behaviors::Poller
+      include TemperatureHelper
 
       def after_initialize(options={})
         # Avoid repeated memory allocation for callback data and state.

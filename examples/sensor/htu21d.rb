@@ -30,6 +30,10 @@ puts "Temperature resolution: #{htu21d.resolution[:temperature]} bits"
 puts "Humidity resolution:    #{htu21d.resolution[:humidity]} bits"
 puts
 
+htu21d.read
+puts "Temperature unit helpers: #{htu21d.temperature} \xC2\xB0C | #{htu21d.temperature_f} \xC2\xB0F | #{htu21d.temperature_k} K"
+puts
+
 # Get the shared #print_tph_reading method to print readings neatly.
 require_relative 'neat_tph_readings'
 

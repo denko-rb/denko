@@ -3,6 +3,7 @@ module Denko
     class SHT3X
       include I2C::Peripheral
       include Behaviors::Poller
+      include TemperatureHelper
 
       RESET                 = 0x30A2
       RESET_TIME            = 0.002

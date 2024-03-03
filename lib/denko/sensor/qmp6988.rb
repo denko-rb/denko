@@ -3,6 +3,7 @@ module Denko
     class QMP6988
       include I2C::Peripheral
       include Behaviors::Poller
+      include TemperatureHelper
 
       UPDATE_TIME           = 0.020
       RESET_REGISTER        = 0xE0
