@@ -4,6 +4,12 @@ module Denko
       include Behaviors::SinglePin
       include Behaviors::Poller
 
+      def after_initialize(options={})
+        # Avoid repeated memory allocation for callback data and state.
+        @reading   = { temperature: nil, humidity: nil }
+        self.state = { temperature: nil, humidity: nil }
+      end
+
       def _read
         board.pulse_read(pin, reset: board.low, reset_time: 20000, pulse_limit: 84, timeout: 100)
       end
@@ -28,11 +34,17 @@ module Denko
         end
         return { error: 'CRC failure' } unless crc(bytes)
 
-        celsius   = ((bytes[2] << 8) | bytes[3]).to_f / 10
-        humidity  = ((bytes[0] << 8) | bytes[1]).to_f / 10
-        fahrenheit = (celsius * 1.8 + 32).round(1)
+        @reading[:temperature] = ((bytes[2] << 8) | bytes[3]).to_f / 10
+        @reading[:humidity]    = ((bytes[0] << 8) | bytes[1]).to_f / 10
 
-        { celsius: celsius, fahrenheit: fahrenheit, humidity: humidity }
+        @reading
+      end
+
+      def update_state(reading)
+        @state_mutex.synchronize do
+          @state[:temperature] = reading[:temperature]
+          @state[:humidity]    = reading[:humidity]
+        end
       end
 
       def crc(bytes)

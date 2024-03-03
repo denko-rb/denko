@@ -5,20 +5,14 @@ require 'bundler/setup'
 require 'denko'
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
-dht = Denko::Sensor::DHT.new(pin: 5, board: board)
+sensor = Denko::Sensor::DHT.new(pin: 5, board: board)
 
-# The DHT class pre-processes raw data from the board. When it reaches callbacks
-# it's already hash of :temperature and :humidity keys, both with Float values.
-dht.add_callback do |reading|
-  print "#{Time.now.strftime '%Y-%m-%d %H:%M:%S'} | "
-  if reading[:error]
-    puts "Error: #{reading[:error]}"
-  else
-    print "#{reading[:celsius]} \xC2\xB0C | #{reading[:fahrenheit]} \xC2\xB0F | "
-    puts "#{reading[:humidity]}% relative humidity"
-  end
+# Get the shared #print_tph_reading method to print readings neatly.
+require_relative 'neat_tph_readings'
+
+# Poll it and print readings.
+sensor.poll(5) do |reading|
+  print_tph_reading(reading)
 end
 
-# Read it every 5 seconds.
-dht.poll(5)
 sleep
