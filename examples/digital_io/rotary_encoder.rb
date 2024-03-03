@@ -8,8 +8,8 @@ require 'bundler/setup'
 require 'denko'
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
-encoder = Denko::DigitalIO::RotaryEncoder.new  board: board,
-                                              pins: { clock: 4, data: 5 },
+encoder = Denko::DigitalIO::RotaryEncoder.new board: board,
+                                              pins: { a: 4, b: 5 },
                                               divider: 1,                 # default, reads each pin every 1ms
                                               steps_per_revolution: 30    # default
 

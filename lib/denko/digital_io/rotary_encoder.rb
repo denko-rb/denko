@@ -5,8 +5,20 @@ module Denko
       include Behaviors::Callbacks
 
       def initialize_pins(options={})
-        proxy_pin :clock, DigitalIO::Input
-        proxy_pin :data,  DigitalIO::Input
+        # Allow pins to be given as printed on common parts.
+        unless options[:pins][:a]
+          options[:pins][:a] = options[:pins][:clk] if options[:pins][:clk]
+          options[:pins][:a] = options[:pins][:clock] if options[:pins][:clock]
+        end
+        unless options[:pins][:b]
+          options[:pins][:b] = options[:pins][:dt] if options[:pins][:dt]
+          options[:pins][:b] = options[:pins][:data] if options[:pins][:data]
+        end
+        
+        # But always refer to them as a and b internally.
+        [:clk, :clock, :dt, :data].each { |key| options[:pins].delete(key) }
+        proxy_pin :a, DigitalIO::Input
+        proxy_pin :b, DigitalIO::Input
       end
 
       def after_initialize(options={})
@@ -20,8 +32,8 @@ module Denko
         
         # DigitalInputs listen with default divider automatically. Override here.
         @divider = options[:divider] || 1
-        clock.listen(@divider)
-        data.listen(@divider)
+        a.listen(@divider)
+        b.listen(@divider)
         
         observe_pins
         reset
@@ -61,17 +73,17 @@ module Denko
         # When observing the pins, attach a callback to the higher numbered pin (trailing),
         # then read state of the lower numbered (leading). If not, direction will be reversed.
         #
-        if clock.pin > data.pin
-          trailing = clock
-          leading = data
+        if a.pin > b.pin
+          trailing = a
+          leading = b
         else
-          trailing = data
-          leading = clock
+          trailing = b
+          leading = a
         end
         
         trailing.add_callback do |trailing_state|
           change = (trailing_state == leading.state) ? 1 : -1
-          change = -change if trailing == clock
+          change = -change if trailing == a
           self.update(change)
         end
       end
