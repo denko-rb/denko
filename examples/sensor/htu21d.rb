@@ -30,25 +30,12 @@ puts "Temperature resolution: #{htu21d.resolution[:temperature]} bits"
 puts "Humidity resolution:    #{htu21d.resolution[:humidity]} bits"
 puts
 
-# Take direct readings by calling methods on the HTU21D instance.
-#   Note: These methods do not take block callbacks like other components.
-#         The HTU21D class doesn't directly implement polling methods either.
-#
-puts "Direct Temperature: #{htu21d.read_temperature.round(3)} \xC2\xB0C"
-puts "Direct Humidity:    #{htu21d.read_humidity.round(3)} %"
-puts
+# Get the shared #print_tph_reading method to print readings neatly.
+require_relative 'neat_tph_readings'
 
-# The last read state can be accessed through sub-objects or [].
-puts "Last Temperature: #{htu21d.temperature.fahrenheit.round(3)} \xC2\xB0F" 
-puts "Last Humidity:    #{htu21d[:humidity].round(3)} %"
-puts
-
-# Poll temperature and humidity at different rates by calling methods on the sub-objects.
-htu21d.temperature.poll(2) do |value|
-  puts "Sub-Object Temperature: #{value.round(3)} \xC2\xB0C"
-end
-htu21d.humidity.poll(4) do |value|
-  puts "Sub-Object Humidity:    #{value.round(3)} %"
+# Poll it and print readings.
+htu21d.poll(5) do |reading|
+  print_tph_reading(reading)
 end
 
 sleep

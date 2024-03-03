@@ -74,8 +74,6 @@ Denko::PulseIO::PWMOutput
 Denko::RTC::DS3231
 
 # Sensor
-Denko::Sensor::Temperature
-Denko::Sensor::Humidity
 Denko::Sensor::BME280
 Denko::Sensor::BMP280
 Denko::Sensor::DHT

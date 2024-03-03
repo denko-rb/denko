@@ -2,7 +2,7 @@ module Denko
   module Sensor
     class HTU21D
       include I2C::Peripheral
-      include Behaviors::Reader
+      include Behaviors::Poller
 
       # Commands
       SOFT_RESET                = 0xFE
@@ -26,13 +26,8 @@ module Denko
         super(options)
 
         # Avoid repeated memory allocation for callback data and state.
-        @reading   = [:temperatue, 0.0]
+        @reading   = { temperature: nil, humidity: nil }
         self.state = { temperature: nil, humidity: nil }
-        @mutex     = Mutex.new
-
-        # Temperature and humidity objects, to treat this like 2 sensors.
-        @temperature = Temperature.new(self)
-        @humidity    = Humidity.new(self)
 
         @config = CONFIG_DEFAULT
         reset
@@ -45,9 +40,7 @@ module Denko
       end
 
       def write_config
-        @mutex.synchronize do
-          i2c_write [WRITE_CONFIG, @config]
-        end
+        i2c_write [WRITE_CONFIG, @config]
       end
 
       def heater_on?
@@ -92,61 +85,57 @@ module Denko
         RESOLUTIONS[resolution_bits]
       end
 
-      def [](key)
-        @state_mutex.synchronize do
-          return @state[key]
-        end
-      end
-      
-      def read_temperature
-        @mutex.synchronize do
-          result = read_using -> { i2c_read(3, register: READ_TEMPERATURE_BLOCKING) }
-          result[1] if result
-        end
+      # Workaround for :read callbacks getting automatically removed on first reading.
+      def read(*args, **kwargs, &block)
+        read_using(self.method(:_read_temperature), *args, **kwargs)
+        read_using(self.method(:_read_humidity), *args, **kwargs, &block)
       end
 
-      def read_humidity
-        @mutex.synchronize do
-          result = read_using -> { i2c_read(3, register: READ_HUMIDITY_BLOCKING) }
-          result[1] if result
-        end
+      def _read
+        _read_temperature
+        _read_humidity
+      end
+
+      def _read_temperature
+        i2c_read(3, register: READ_TEMPERATURE_BLOCKING)
+      end
+
+      def _read_humidity
+        i2c_read(3, register: READ_HUMIDITY_BLOCKING)
       end
 
       def pre_callback_filter(bytes)
         # Raw value is first 2 bytes big-endian.
         raw_value = (bytes[0] << 8) | bytes[1]
-
-        # Quietly ignore readings with bad CRC.
-        unless calculate_crc(raw_value) == bytes[2]
-          @humidity.update(nil)
-          @temperature.update(nil)
-          return nil
-        end
+        return { error: 'CRC failure' } unless calculate_crc(raw_value) == bytes[2]
 
         # Lowest 2 bits must be zeroed before conversion.
         raw_value = raw_value & 0xFFFC
 
-        # Bit 1 of LSB determines type of reading; 0 for temperature, 1 for humidity.
+        # Bit 1 of LS byte determines type of reading; 0 for temperature, 1 for humidity.
         if (bytes[1] & 0b00000010) > 0
           # Calculate humidity and limit within 0-100 range.
           humidity = (raw_value.to_f / 524.288) - 6
           humidity = 0.0   if humidity < 0.0
           humidity = 100.0 if humidity > 100.0
-          @reading[0] = :humidity
-          @reading[1] = humidity
-          @humidity.update(@reading[1])
+          @reading[:humidity] = humidity
         else
-          @reading[0] = :temperature
-          @reading[1] = (175.72 * raw_value.to_f / 65536) - 46.8
-          @temperature.update(@reading[1])
+          @reading[:temperature] = (175.72 * raw_value.to_f / 65536) - 46.8
         end
+
+        # Wait for both values to be read.
+        return nil unless (@reading[:temperature] && @reading[:humidity])
+
         @reading
       end
 
       def update_state(reading)
         @state_mutex.synchronize do
-          @state[reading[0]] = reading[1]
+          @state[:temperature] = @reading[:temperature]
+          @state[:humidity] = @reading[:humidity]
         end
+        # Reset so pre_callback_filter can check for both values.
+        @reading = {temperature: nil, humidity: nil}
       end
 
       #
