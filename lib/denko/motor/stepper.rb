@@ -53,7 +53,7 @@ module Denko
         @microsteps = steps
       end
 
-      def step_cc
+      def step_ccw
         direction.high unless direction.high?
         step.high
         step.low
@@ -64,8 +64,6 @@ module Denko
         step.high
         step.low
       end
-
-      alias :step_ccw :step_cc
     end
   end
 end

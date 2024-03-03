@@ -5,7 +5,7 @@ require 'bundler/setup'
 require 'denko'
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
-stepper = Denko::Motor::Stepper.new  board: board,
+stepper = Denko::Motor::Stepper.new board: board,
                                     pins: { slp: 6, enable: 7, direction: 8, step: 10, ms1: 11, ms2: 12 }
                                         
 # Default is 8 microsteps. Set to 2 so we can move faster.
@@ -13,7 +13,7 @@ stepper.microsteps = 2
 
 # 400 steps is now 1 revolution for a 200 step motor.
 400.times do
-  stepper.step_cc
+  stepper.step_ccw
   sleep 0.002
 end
 

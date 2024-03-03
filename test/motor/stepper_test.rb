@@ -32,7 +32,7 @@ class StepperMotorTest < Minitest::Test
     step_mock.verify
   end
 
-  def test_step_cc
+  def test_step_ccw
     dir_mock = Minitest::Mock.new
     dir_mock.expect :high?, false
     dir_mock.expect :high, nil
@@ -42,7 +42,7 @@ class StepperMotorTest < Minitest::Test
 
     part.stub(:direction, dir_mock) do
       part.stub(:step, step_mock) do
-        part.step_cc
+        part.step_ccw
       end
     end
     dir_mock.verify
