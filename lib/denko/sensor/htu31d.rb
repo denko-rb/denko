@@ -111,12 +111,6 @@ module Denko
         raise ArgumentError, "wrong resolution given: #{setting}. Must be in range 0..3" unless (0..3).include?(setting)
         @resolutions[:humidity] = setting
       end
-
-      def [](key)
-        @state_mutex.synchronize do
-          return @state[key]
-        end
-      end
       
       def _read
         # Calculate total conversion time.

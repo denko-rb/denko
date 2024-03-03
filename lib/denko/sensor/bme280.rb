@@ -205,12 +205,6 @@ module Denko
         end
       end
 
-      def [](key)
-        @state_mutex.synchronize do
-          return @state[key]
-        end
-      end
-      
       #
       # Decoding Methods
       #
