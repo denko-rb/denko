@@ -172,11 +172,11 @@ Polling and reading follow a call and response pattern.
 | Input Register   | :green_heart:  | SPI        | `SPI::InputRegister` | Tested on CD4021B
 | Output Register  | :green_heart:  | SPI        | `SPI::OutputRegister`| Tested on 74HC595
 | PCF8574 Expander | :heart:        | I2C        | `DigitalIO::PCF8574` | 8-ch bi-directional digital I/O
-| ADS1100 ADC      | :heart:        | I2C        | `AnalogIO::ADS1100`  | 1-ch, 16-bit ADC
+| ADS1100 ADC      | :green_heart:  | I2C        | `AnalogIO::ADS1100`  | 1-ch, 16-bit ADC. No continuous mode.
 | ADS1115 ADC      | :green_heart:  | I2C        | `AnalogIO::ADS1115`  | 4-ch, 16-bit ADC. Comparator not implemented.
 | ADS1118 ADC      | :green_heart:  | SPI        | `AnalogIO::ADS1118`  | 4-ch, 16-bit ADC + temperature
 | ADS1232 ADC      | :heart:        | SPI        | `AnalogIO::ADS1232`  | 2-ch, 24-bit ADC + temperature
-| PCF8591 ADC/DAC  | :heart:        | I2C        | `AnalogIO::PCF8591`  | 4-ch, 8-bit ADC + 1-chm 8-bit DAC
+| PCF8591 ADC/DAC  | :heart:        | I2C        | `AnalogIO::PCF8591`  | 4-ch, 8-bit ADC + 1-ch 8-bit DAC
 | MCP4725 DAC      | :heart:        | I2C        | `AnalogIO::MCP4275`  | 1-ch, 12-bit DAC
 | PCA9548 I2C Mux  | :heart:        | I2C        | `I2C::PCA9548`       | 8-way I2C multiplexer
 
