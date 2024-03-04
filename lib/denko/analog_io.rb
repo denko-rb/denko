@@ -1,5 +1,6 @@
 module Denko
   module AnalogIO
+    autoload :InputHelper,    "#{__dir__}/analog_io/input_helper"
     autoload :Input,          "#{__dir__}/analog_io/input"
     autoload :Output,         "#{__dir__}/analog_io/output"
     autoload :Potentiometer,  "#{__dir__}/analog_io/potentiometer"

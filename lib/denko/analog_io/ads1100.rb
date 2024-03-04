@@ -2,7 +2,8 @@ module Denko
   module AnalogIO
     class ADS1100
       include I2C::Peripheral
-      include Behaviors::Reader
+      include Behaviors::Poller
+      include InputHelper
 
       # Convert sample rates in samples-per-seconds to their bit representation.
       SAMPLE_RATES = [  # Bitmask
@@ -24,10 +25,10 @@ module Denko
       WAIT_TIMES = SAMPLE_RATES.map { |rate| (1 / rate.to_f) + 0.0005 }
 
       GAINS = [  # Bitmask   Full scale voltage
-        1,              # 0b00      Vdd
-        2,              # 0b01      Vdd / 2
-        4,              # 0b10      Vdd / 4
-        8,              # 0b11      Vdd / 8
+        1,       # 0b00      Vdd
+        2,       # 0b01      Vdd / 2
+        4,       # 0b10      Vdd / 4
+        8,       # 0b11      Vdd / 8
       ]
 
       # Default config register:
@@ -55,18 +56,16 @@ module Denko
         @full_scale_voltage = options[:full_scale_voltage]
         raise ArgumentError "full-scale voltage not given for ADS1100" unless @full_scale_voltage.is_a?(Numeric)
 
-        # Mutex and variables for BoardProxy behavior.
-        @mutex            = Mutex.new
-        @gain             = 0b00
-        @sample_rate      = 0b11
-
-        # Reset to our defaults (single conversion).
+        # Initialize the config register with our defaults (single conversion).
         @config_register = CONFIG_STARTUP.dup
+
+        # Set gain and sample rate if given.
+        self.gain         = options[:gain]        || 1
+        self.sample_rate  = options[:sample_rate] || 8
+
+        # Write initial config.
         i2c_write(@config_register)
         sleep WAIT_TIMES[@sample_rate]
-
-        # Enable BoardProxy callbacks.
-        enable_proxy
       end
 
       def _read
@@ -80,9 +79,15 @@ module Denko
         i2c_read(2)
       end
 
-      # Readings are 16-bits, signed, big-endian.
+      def listen(pin, divider=nil)
+        raise StandardError, "ADS1100 does not implement #listen. Use #read or #poll instead"
+      end
+
       def pre_callback_filter(bytes)
-        bytes.pack("C*").unpack("s>")[0]
+        # Readings are 16-bits, signed, big-endian.
+        value = bytes.pack("C*").unpack("s>")[0]
+        # Let InputHelper module handle smooothing.
+        super(value)
       end
 
       def gain=(gain)
@@ -107,39 +112,6 @@ module Denko
 
       def volts_per_bit
         @full_scale_voltage / (GAINS[@gain] * BIT_RANGES[@sample_rate]).to_f
-      end
-      
-      #
-      # BoardProxy behavior so AnalogIO classes can use this as a Board.
-      #
-      include Behaviors::BoardProxy
-
-      # Mimic Board#update, but inside a callback, wrapped by #update.
-      def enable_proxy
-        self.add_callback(:board_proxy) do |value|
-          components.each do |component|
-            if component.pin == 0
-              component.volts_per_bit = volts_per_bit
-              component.update(value) 
-            end
-          end
-        end
-      end
-
-      def analog_read(pin=0, negative_pin=nil, g=1, sr=8)
-        # Wrap in mutex so call and callback are atomic.
-        @mutex.synchronize do
-          self.gain = g
-          self.sample_rate = sr
-          read
-        end
-      end
-
-      def analog_listen(pin, divider=nil)
-        raise StandardError, "ADS1100 does not implement #listen for subcomponents. Use #read or #poll instead"
-      end
-
-      def stop_listener(pin)
       end
     end
   end

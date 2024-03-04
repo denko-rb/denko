@@ -2,9 +2,9 @@ module Denko
   module AnalogIO
     class Input
       include Behaviors::InputPin
-      include Behaviors::Reader
       include Behaviors::Poller
       include Behaviors::Listener
+      include InputHelper
       
       def before_initialize(options={})
         # Allow giving ADC unit with multiple pins as a board proxy.
@@ -30,11 +30,6 @@ module Denko
 
         # If using a non-default sampling rate, store it.
         @sample_rate = options[:sample_rate]
-
-        # Default to smoothing disabled, with a set size of 8.
-        @smoothing        = false
-        @smoothing_size   = 8
-        @smoothing_set  ||= []
       end
 
       attr_reader :negative_pin, :gain, :sample_rate
@@ -49,35 +44,6 @@ module Denko
       def _listen(divider=nil)
         @divider = divider || @divider
         board.analog_listen(pin, @divider)
-      end
-      
-      # Attach a callback that only fires when state changes.
-      def on_change(&block)
-        add_callback(:on_change) do |new_state|
-          block.call(new_state) if new_state != self.state
-        end
-      end
-
-      #
-      # Smoothing features.
-      # Does a moving average of the last 8 readings.
-      #
-      attr_accessor :smoothing, :smoothing_size
-
-      def smooth_input(value)
-        # Add new value, but limit to the 8 latest values.
-        @smoothing_set << value
-        @smoothing_set.shift while (@smoothing_set.length > @smoothing_size)
-
-        average = @smoothing_set.reduce(:+) / @smoothing_set.length.to_f
-        
-        # Round up or down based on previous state to reduce fluctuations.
-        state && (state > average) ? average.ceil : average.floor
-      end
-
-      # Convert data to integer, or pass it through smoothing if enabled.
-      def pre_callback_filter(value)
-        smoothing ? smooth_input(value.to_i) : value.to_i
       end
     end
   end
