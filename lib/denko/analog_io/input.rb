@@ -6,9 +6,13 @@ module Denko
       include Behaviors::Poller
       include Behaviors::Listener
       
-      def before_initialize(options={})        
-        options[:board] = options[:adc] if options[:adc]
-        options[:adc] = nil
+      def before_initialize(options={})
+        # Allow giving ADC unit with multiple pins as a board proxy.
+        if options[:adc]
+          options[:board] = options[:adc]
+          options.delete(:adc)
+        end
+
         super(options)
       end
 
