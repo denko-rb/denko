@@ -83,7 +83,7 @@ module Denko
           @config_register[0] = @config_register[0] | (mux_bits << 4)
 
           # Set sample rate in lower config_register.
-          raise ArgumentError "wrong sample_rate: #{sample_rate.inspect} given for ADS111X" unless SAMPLE_RATE_RANGE.include?(gain)
+          raise ArgumentError "wrong sample_rate: #{sample_rate.inspect} given for ADS111X" unless SAMPLE_RATE_RANGE.include?(sample_rate)
           @config_register[1] = self.class::BASE_LSB | (sample_rate << 5)
 
           read(@config_register)
