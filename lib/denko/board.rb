@@ -6,18 +6,18 @@ module Denko
     attr_reader :name, :version, :serial_buffer_size, :aux_limit, :eeprom_length
     attr_reader :low, :high, :analog_write_high, :analog_read_high
 
-    def initialize(transport, options={})
+    def initialize(connection, options={})
       # Shake hands
-      @transport = transport
-      ack = transport.handshake
+      @connection = connection
+      ack = connection.handshake
 
       # Split handshake acknowledgement into separate values.
       @name, @version, @serial_buffer_size, @aux_limit, @eeprom_length, @i2c_limit = ack.split(",")
 
-      # Tell transport how much serial buffer the board has, for flow control.
+      # Tell connection how much serial buffer the board has, for flow control.
       @serial_buffer_size = @serial_buffer_size.to_i
       raise StandardError, "no serial buffer size given in handshake" if @serial_buffer_size < 1
-      @transport.remote_buffer_size = @serial_buffer_size
+      @connection.remote_buffer_size = @serial_buffer_size
 
       # Load board map by name.
       @name = nil if @name.empty?
@@ -35,8 +35,8 @@ module Denko
       @version       = nil if @version.empty?
       @eeprom_length = @eeprom_length.to_i
 
-      # Transport calls #update on board when data is received.
-      transport.add_observer(self)
+      # connection calls #update on board when data is received.
+      connection.add_observer(self)
       
       # Set digital and analog IO levels.
       @low  = 0
@@ -46,9 +46,9 @@ module Denko
     end
     
     def finish_write
-      sleep 0.001 while @transport.writing?
+      sleep 0.001 while @connection.writing?
       write "\n91\n"
-      sleep 0.001 while @transport.writing?
+      sleep 0.001 while @connection.writing?
     end
           
     def analog_write_resolution=(value)
@@ -76,7 +76,7 @@ module Denko
     alias :adc_high :analog_read_high
     
     def write(msg)
-      @transport.write(msg)
+      @connection.write(msg)
     end
 
     #
@@ -90,7 +90,7 @@ module Denko
     # signal is read by the TxRx, telling it to resume transmisison.
     #
     def write_and_halt(msg)
-      @transport.write(msg, true)
+      @connection.write(msg, true)
     end
 
     #
