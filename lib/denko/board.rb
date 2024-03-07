@@ -4,7 +4,7 @@ Dir["#{Denko.root}/lib/denko/board/*.rb"].each { |file| require file }
 module Denko
   class Board
     attr_reader :name, :version, :serial_buffer_size, :aux_limit, :eeprom_length
-    attr_reader :low, :high, :analog_write_high, :analog_read_high
+    attr_reader :low, :high, :analog_write_resolution, :analog_read_resolution, :analog_write_high, :analog_read_high
 
     def initialize(connection, options={})
       # Shake hands
@@ -53,22 +53,14 @@ module Denko
           
     def analog_write_resolution=(value)
       set_analog_write_resolution(value)
-      @write_bits = value
-      @analog_write_high = (2 ** @write_bits) - 1
+      @analog_write_resolution = value
+      @analog_write_high = (2 ** @analog_write_resolution) - 1
     end
     
     def analog_read_resolution=(value)
       set_analog_read_resolution(value)
-      @read_bits = value
-      @analog_read_high = (2 ** @read_bits) - 1
-    end
-    
-    def analog_write_resolution
-      @write_bits
-    end
-
-    def analog_read_resolution
-      @read_bits
+      @analog_read_resolution = value
+      @analog_read_high = (2 ** @analog_read_resolution) - 1
     end
     
     alias :pwm_high :analog_write_high

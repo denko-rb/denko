@@ -153,11 +153,11 @@ class BoardCoreTest < Minitest::Test
   def test_analog_resolution
     mock = Minitest::Mock.new
     mock.expect(:call, nil, [Denko::Message.encode(command: 96, value: 10)])
-    mock.expect(:call, nil, [Denko::Message.encode(command: 97, value: 10)])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 97, value: 8)])
 
     board.stub(:write, mock) do
       board.analog_write_resolution = 10
-      board.analog_read_resolution = 10
+      board.analog_read_resolution = 8
     end
     mock.verify
 
