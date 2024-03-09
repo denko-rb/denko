@@ -22,7 +22,9 @@ module Denko
       HANDSHAKE_TIMEOUT = 2
 
       def handshake
+        _write Message.encode(command: 90)
         io_reset
+
         HANDSHAKE_TRIES.times do |retries|
           begin
             print "Sending handshake to: #{self.to_s}... "
