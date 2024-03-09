@@ -51,7 +51,6 @@ module Denko
         halt_after_fragment = false
 
         @write_buffer_mutex.synchronize do
-          # Nothing to write.
           break if @write_buffer.empty?
 
           # Try to send the entire buffer unless a halt point is coming up.
@@ -80,12 +79,10 @@ module Denko
           end
         end
 
-        # If no fragment, wait.
         return wait unless fragment
 
-        # If fragment, write it.
         loop do
-          # Write and end loop if the board is ready.
+          # Write fragment if @tx_ready.
           @tx_ready_mutex.synchronize do
             if @tx_ready
               _write fragment
@@ -147,10 +144,6 @@ module Denko
 
       def tx_resume
         @tx_ready_mutex.synchronize { @tx_ready = true }
-      end
-
-      def add_transit_bytes(value)
-        @transit_mutex.synchronize { @transit_bytes = @transit_bytes + value }
       end
 
       def remove_transit_bytes(value)
