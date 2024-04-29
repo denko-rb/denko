@@ -54,7 +54,7 @@ PACKAGES = {
   uart_bb: {
     description: "Bit bang serial output",
     directive: "DENKO_UART_BB",
-    only: [:mega, :mega168],
+    only: [:atmega, :atmega168],
     files: [
       "DenkoUARTBB.cpp",
     ]

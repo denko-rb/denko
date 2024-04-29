@@ -11,7 +11,7 @@
 
   Global options:
 
-    --target TARGET    (default: mega. Run 'denko targets' for more info)
+    --target TARGET    (default: atmega. Run 'denko targets' for more info)
     --debug            (default: off)
 
   Available sketches and options specific to each sketch:
