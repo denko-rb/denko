@@ -3,7 +3,7 @@ Dir["#{Denko.root}/lib/denko/board/*.rb"].each { |file| require file }
 
 module Denko
   class Board
-    attr_reader :name, :version, :serial_buffer_size, :aux_limit, :eeprom_length
+    attr_reader :name, :version, :serial_buffer_size, :aux_limit, :eeprom_length, :i2c_limit
     attr_reader :low, :high, :analog_write_resolution, :analog_read_resolution, :analog_write_high, :analog_read_high
 
     def initialize(connection, options={})
@@ -75,11 +75,11 @@ module Denko
     # Use Board#write_and_halt to call C++ board functions that disable interrupts
     # for a long time. "Long" being more than 1 serial character (~85us for 115200 baud).
     #
-    # The "halt" part tells the TxRx to halt transmission to the board after this message.
+    # The "halt" part tells the Connection to halt transmission to the board after this message.
     # Since it expects interrupts to be disabled, any data sent could be lost.
     #  
     # When the board function has re-enabled interrupts, it should call sendReady(). That
-    # signal is read by the TxRx, telling it to resume transmisison.
+    # signal is read by the Connection, telling it to resume transmisison.
     #
     def write_and_halt(msg)
       @connection.write(msg, true)
