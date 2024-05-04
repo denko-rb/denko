@@ -35,15 +35,9 @@ module Denko
             data = data.split(",").map(&:to_i)
             data = nil if data.empty?
 
-            update_component(address, data)
-          end
-        end
-      end
-
-      def update_component(address, data)
-        components.each do |component|
-          if component.address == address
-            component.update(data)
+            components.each do |component|
+              component.update(data) if component.address == address
+            end
           end
         end
       end

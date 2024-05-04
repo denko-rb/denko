@@ -8,6 +8,7 @@ module Denko
         if addresses.include? component.address
           raise ArgumentError, "duplicate peripheral address for #{component}"
         end
+        
         super(component)
       end
     end

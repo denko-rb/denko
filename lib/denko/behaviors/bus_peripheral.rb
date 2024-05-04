@@ -3,7 +3,6 @@ module Denko
     module BusPeripheral
       include Component
 
-      attr_reader :address
       alias  :bus :board
 
       def before_initialize(options={})
