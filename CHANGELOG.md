@@ -1,5 +1,54 @@
 # Changelog
 
+## 0.14.0
+
+### New Peripherals
+
+- ADS1100 Analog-to-Digital Converter:
+  - Class: `Denko::AnalogIO::ADS1100`.
+  - Connects via I2C bus. Driver written in Ruby.
+  - Modeled after `AnalogIO::Input` since it's a single channel ADC.
+  - Can be read directly with `#read` or polled with `#poll`.
+  - Full scale voltage must be givin in the initailize hash, `full_scale_voltage:`.
+  - Gain and sample rate configurable.
+  - See example for more.
+
+### Peripheral Interface Changes
+
+- `I2C::Peripheral`:
+  - `#i2c_read` arg order changed from (register, num_bytes) to (num_bytes, register: nil)
+
+- `AnalogIO::Input`:
+  - Added `#smoothing=` and `#smoothing_size=` accessors to `AnalogIO::Input` for configuring smoothing.
+  - `AnalogIO::Sensor` removed. Use this instead.
+
+- `LED::RGB`:
+  - `#write` takes 3 regular args now. Use `*array` instead to pass an array.
+  - `#color` only takes a symbol for one of the predefined colors (or :off) now.
+
+- Temperature / Humidity / Pressure Sensors:
+  - `DS18B20`, `DHT` and `HTU21D` readings now match all the others (Hash with same keys).
+  - Readings standardized to be in ºC, %RH and Pascals. Callbacks always receive hash with these.
+  - Added `#temperature_f` `#temperature_k` `#pressure_atm` `#pressure_bar` helper conversion methods.
+  - `[]` access for `@state` removed removed.
+  - `#read` methods standardized to always read ALL sub-sensors. Affects `HTU21D` and `BMP180`.
+
+- `DigitalIO::RotaryEncoder`:
+  - Pin names standardized to `a:` and `b:`, but still accept "clock", "data", "clk", "dt".
+
+- `Motor::Stepper`:
+  - Replaced `#step_cc` with `#step_ccw`.
+
+### CLI Changes
+
+- All Atmel targets now prefixed with "at". Eg. `atsamd21` now, instead of `samd21` before.
+
+### Bug Fixes
+
+- More accurate pin counts when initializing digital listener storage for different boards.
+- Fix a bug where ADS111X sensors were incorrectly validating sample rate when set.
+- Fix a bug where handshake could fail if board was left in a state where it kept transmitting data.
+
 ## 0.13.5
 
 ### New Components
