@@ -33,7 +33,7 @@ All platforms will require libraries to be installed. To install a library do th
     Arduino SAMD Boards (32-bits ARM Cortex-M0+)
     Arduino UNO R4 Boards
     ESP8266 Boards
-    ESP32 Boards
+    ESP32 Boards @ v2.0.17
     Raspberry Pi Pico/RP2040
     ````    
   * Libraries:
@@ -104,7 +104,7 @@ All platforms will require libraries to be installed. To install a library do th
     ````
   * Boards (latest version unless specified):
     ````
-    ESP32 Boards    
+    ESP32 Boards @ v2.0.17    
     ````    
   * Libraries (latest version unless specified):
     ````
