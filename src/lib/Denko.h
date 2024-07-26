@@ -66,6 +66,7 @@ class Denko {
     byte assignLEDC(byte channel, byte pin);
     void releaseLEDC(byte p);
     void clearLedcChannels();
+    uint8_t esp32AnalogWRes = 8;
     #endif
 
     //

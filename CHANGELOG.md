@@ -2,6 +2,12 @@
 
 ## 0.14.0
 
+### Board Changes
+
+- ESP32 Boards
+  - Now based on (and requires) the 3.0+ version of the ESP32 Arduino Core.
+  - Infrared output functionality temporarily disabled, until IR library is compatible with 3.0
+
 ### New Peripherals
 
 - ADS1100 Analog-to-Digital Converter:

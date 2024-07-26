@@ -319,7 +319,11 @@ void Denko::setRegisterDivider() {
 // Set the analog write resolution.
 void Denko::setAnalogWriteResolution() {
   #ifdef WRITE_RESOLUTION_SETTER
-    analogWriteResolution(val);
+    #ifdef ESP32
+      esp32AnalogWRes = val;
+    #else
+      analogWriteResolution(val);
+    #endif
   #endif
 }
 
@@ -335,7 +339,7 @@ void Denko::setAnalogReadResolution() {
 // Use a different blocking microsecond delay on different platforms.
 void Denko::microDelay(uint32_t microseconds){
   #if defined(ESP32)
-    ets_delay_us(microseconds);
+    esp_rom_delay_us(microseconds);
   #else
     delayMicroseconds(microseconds);
   #endif

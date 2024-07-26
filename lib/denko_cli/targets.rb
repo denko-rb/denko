@@ -24,8 +24,9 @@ class DenkoCLI::Generator
     ra4m1: STANDARD_PACKAGES - [:ir_out, :led_array],
 
     # ESP8266 + ESP32 use a different IR library.
+    # Temporarily disabled on ESP32 until library catches up with 3.0+ ESP32 Arduino core.
     esp8266: STANDARD_PACKAGES - [:ir_out] + [:ir_out_esp],
-    esp32:   STANDARD_PACKAGES - [:ir_out] + [:ir_out_esp],
+    esp32:   STANDARD_PACKAGES - [:ir_out],
     
     # RP2040 can't use WS2812 yet.
     rp2040: STANDARD_PACKAGES - [:led_array],
