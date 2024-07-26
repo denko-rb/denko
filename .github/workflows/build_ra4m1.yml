@@ -48,7 +48,7 @@ jobs:
         run: echo "path=$(./bin/denko sketch ${{ matrix.sketches.name }} --target ${{ matrix.board.denko-target }})" >> $GITHUB_OUTPUT
 
       - name: Compile Arduino Sketches
-        uses: arduino/compile-sketches@v1.1.0
+        uses: arduino/compile-sketches@v1.1.1
         with:
           platforms: ${{ matrix.board.platforms }}
           fqbn: ${{ matrix.board.fqbn }}
