@@ -28,7 +28,7 @@ jobs:
             
         board:
           - fqbn: arduino:sam:arduino_due_x
-            denko-target: sam3x
+            denko-target: atsam3x
             platforms: |
               - name: arduino:sam
             libraries: |

@@ -28,7 +28,7 @@ jobs:
             
         board:
           - fqbn: arduino:samd:arduino_zero_native
-            denko-target: samd
+            denko-target: atsamd
             platforms: |
               - name: arduino:samd
             libraries: |

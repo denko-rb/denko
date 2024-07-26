@@ -28,7 +28,7 @@ jobs:
             
         board:
           - fqbn: arduino:megaavr:uno2018
-            denko-target: mega
+            denko-target: atmega
             platforms: |
               - name: arduino:megaavr
             libraries: |
