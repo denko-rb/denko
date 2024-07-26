@@ -6,12 +6,12 @@ on:
   pull_request:
     paths:
       - 'src/**'
-      - '.github/workflows/build_avr.yml'
+      - '.github/workflows/build_atmega.yml'
 
   push:
     paths:
       - 'src/**'
-      - '.github/workflows/build_avr.yml'
+      - '.github/workflows/build_atmega.yml'
       
 jobs:
   avr-uno:

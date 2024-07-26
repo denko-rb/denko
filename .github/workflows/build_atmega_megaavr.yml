@@ -1,4 +1,4 @@
-name: Build / SAMD
+name: Build / MegaAVR
 
 on:
   workflow_dispatch:
@@ -6,16 +6,16 @@ on:
   pull_request:
     paths:
       - 'src/**'
-      - '.github/workflows/build_samd.yml'
+      - '.github/workflows/build_atmega_megaavr.yml'
 
   push:
     paths:
       - 'src/**'
-      - '.github/workflows/build_samd.yml'
+      - '.github/workflows/build_atmega_megaavr.yml'
       
 jobs:
-  samd-zero:
-    name: samd ${{ matrix.sketches.name }}
+  megaavr-uno2018:
+    name: megaavr ${{ matrix.sketches.name }}
     
     runs-on: ubuntu-latest
     
@@ -27,16 +27,16 @@ jobs:
           - name: wifi
             
         board:
-          - fqbn: arduino:samd:arduino_zero_native
-            denko-target: atsamd
+          - fqbn: arduino:megaavr:uno2018
+            denko-target: atmega
             platforms: |
-              - name: arduino:samd
+              - name: arduino:megaavr
             libraries: |
               - name: Servo
               - name: IRremote
                 version: 4.1.2
               - name: Ethernet
-              - name: WiFi
+              - name: WiFiNINA
               - name: Adafruit NeoPixel
                 
     steps:
