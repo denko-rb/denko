@@ -19,12 +19,14 @@ void Denko::setMode(byte p, byte m) {
   // 111 = Digital Input/Output (ESP32 Only?)
   m = m & 0b00000111;
 
-  #if defined(ESP32) && defined(SOC_DAC_SUPPORTED)
-      // Free the LEDC channel if leaving PWM mode.
+  #if defined(ESP32)
+    // Free the LEDC channel if leaving PWM mode.
     if (m != 0b010) releaseLEDC(p);
     
     // Disable attached DAC if leaving DAC mode.
-    if (m != 0b100) dacDisable(p);
+    #if defined(SOC_DAC_SUPPORTED)
+      if (m != 0b100) dacDisable(p);
+    #endif
   #endif
       
   // On the SAMD21 and RA4M1, mode needs to be INPUT when using the DAC.
