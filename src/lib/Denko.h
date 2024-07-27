@@ -183,6 +183,7 @@ class Denko {
     void setRegisterDivider             ();  //cmd = 97
     void setAnalogWriteResolution       ();  //cmd = 96
     void setAnalogReadResolution        ();  //cmd = 97
+    void binaryEcho                     ();  //cmd = 98
     void microDelay(uint32_t microseconds);  //cmd = 99, Platform specific microsecond delay
     unsigned long lastTime;
     unsigned long timeDiff;

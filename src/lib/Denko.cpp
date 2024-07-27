@@ -205,6 +205,7 @@ void Denko::process() {
     case 95: setRegisterDivider       ();  break;
     case 96: setAnalogWriteResolution ();  break;
     case 97: setAnalogReadResolution  ();  break;
+    case 98: binaryEcho               ();  break;
     case 99: microDelay(*reinterpret_cast<uint16_t*>(auxMsg)); break;
 
     // Should send a "feature not implemented" message as default.
@@ -333,6 +334,23 @@ void Denko::setAnalogReadResolution() {
   #ifdef READ_RESOLUTION_SETTER
     analogReadResolution(val);
   #endif
+}
+
+// CMD = 98
+// Test to receive binary data and echo it back (as ASCII for now).
+void Denko::binaryEcho() {
+  // Respond on whatever pin was given.
+  stream->print(pin);
+  stream->print(':');
+
+  // Echo bytes from aux back to stream. Val is data length.
+  for (uint16_t i=0; i<val; i++) {
+    stream->print(auxMsg[i]);
+    stream->print(',');
+  }
+
+  // End response.
+  stream->print('\n');
 }
 
 // CMD = 99

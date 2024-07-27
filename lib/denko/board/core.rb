@@ -140,6 +140,11 @@ module Denko
       write Message.encode(command: 97, value: value)
     end
 
+    # CMD = 98
+    def binary_echo(pin, data=[])
+      write Message.encode command: 98, pin: pin, value: data.length, aux_message: pack(:uint8, data)
+    end
+
     # CMD = 99
     def micro_delay(duration)
       if (duration < 0) || (duration > 0xFFFF)

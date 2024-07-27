@@ -37,3 +37,6 @@ require_relative 'denko/led'
 require_relative 'denko/motor'
 require_relative 'denko/rtc'
 require_relative 'denko/sensor'
+
+# Diagnostics
+require_relative 'denko/connection/binary_echo'
