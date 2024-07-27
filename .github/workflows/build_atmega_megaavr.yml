@@ -1,4 +1,4 @@
-name: Build / MegaAVR
+name: ATmega megaAVR
 
 on:
   workflow_dispatch:

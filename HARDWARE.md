@@ -5,6 +5,11 @@
 ### Espressif Chips with Built-In Wi-Fi
 [![ESP8266 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp8266.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp8266.yml)
 [![ESP32 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32.yml)
+[![ESP32-C3 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32c3.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32c3.yml)
+[![ESP32-C6 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32c6.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32c6.yml)
+[![ESP32-H2 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32h2.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32h2.yml)
+[![ESP32-S2 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32s2.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32s2.yml)
+[![ESP32-S3 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32s3.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32s3.yml)
 
 |    Chip        | Status          | Board Tested         | Notes |
 | :--------      | :------:        | :---------------     |------ |
@@ -20,8 +25,8 @@
 **Note:** For ESP32 chips using native USB, make sure `USB CDC On Boot` is `Enabled` in the IDE's `Tools` menu. Flashing from the CLI doesn't automatically enable this, so the IDE is recommended for now.
 
 ### AVR/MegaAVR Based Arduino Products (and Clones)
-[![AVR Build Status](https://github.com/denko-rb/denko/actions/workflows/build_avr.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_avr.yml)
-[![MegaAVR Build Status](https://github.com/denko-rb/denko/actions/workflows/build_megaavr.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_megaavr.yml)
+[![AVR Build Status](https://github.com/denko-rb/denko/actions/workflows/build_atmega_avr.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_atmega_avr.yml)
+[![MegaAVR Build Status](https://github.com/denko-rb/denko/actions/workflows/build_atmega_megaavr.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_atmega_megaavr.yml)
 
 |    Chip        | Status          | Products         | Notes |
 | :--------      | :------:        | :--------------- |------ |
@@ -35,8 +40,8 @@
 **Note:** Only USB boards listed. Any board with a supported chip should work, once you can flash it and connect to serial.
 
 ### ARM Based Arduino Products (and Clones)
-[![SAM3X Build Satus](https://github.com/denko-rb/denko/actions/workflows/build_sam3x.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_sam3x.yml)
-[![SAMD Build Satus](https://github.com/denko-rb/denko/actions/workflows/build_samd.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_samd.yml)
+[![SAM3X Build Satus](https://github.com/denko-rb/denko/actions/workflows/build_atsam3x.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_atsam3x.yml)
+[![SAMD Build Satus](https://github.com/denko-rb/denko/actions/workflows/build_atsamd21.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_atsamd21.yml)
 [![RA4M1 Build Satus](https://github.com/denko-rb/denko/actions/workflows/build_ra4m1.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_ra4m1.yml)
 
 |    Chip        | Status          | Products         | Notes |

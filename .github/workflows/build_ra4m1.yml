@@ -1,4 +1,4 @@
-name: Build / RA4M1
+name: RA4M1
 
 on:
   workflow_dispatch:

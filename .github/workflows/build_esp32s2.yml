@@ -1,4 +1,4 @@
-name: Build / ESP32-S2
+name: ESP32-S2
 
 on:
   workflow_dispatch:

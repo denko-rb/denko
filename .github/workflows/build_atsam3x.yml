@@ -1,4 +1,4 @@
-name: Build / SAM3X
+name: ATSAM3X
 
 on:
   workflow_dispatch:

@@ -1,4 +1,4 @@
-name: Build / ESP8266
+name: ESP8266
 
 on:
   workflow_dispatch:

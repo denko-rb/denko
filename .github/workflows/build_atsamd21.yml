@@ -1,4 +1,4 @@
-name: Build / SAMD
+name: ATSAMD21
 
 on:
   workflow_dispatch:

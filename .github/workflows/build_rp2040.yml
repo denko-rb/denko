@@ -1,4 +1,4 @@
-name: Build / RP2040
+name: RP2040
 
 on:
   workflow_dispatch:

@@ -1,4 +1,4 @@
-name: ESP32
+name: ESP32-S3
 
 on:
   workflow_dispatch:
@@ -6,12 +6,12 @@ on:
   pull_request:
     paths:
       - 'src/**'
-      - '.github/workflows/build_esp32.yml'
+      - '.github/workflows/build_esp32s3.yml'
 
   push:
     paths:
       - 'src/**'
-      - '.github/workflows/build_esp32.yml'
+      - '.github/workflows/build_esp32s3.yml'
       
 jobs:
   esp8266-nodemcuv2:
@@ -26,7 +26,7 @@ jobs:
           - name: wifi
             
         board:
-          - fqbn: esp32:esp32:esp32doit-devkit-v1
+          - fqbn: esp32:esp32:esp32s3
             denko-target: esp32
             platforms: |
               - name: esp32:esp32
