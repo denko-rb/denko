@@ -47,10 +47,8 @@
 #ifdef ESP32
   #if CONFIG_IDF_TARGET_ESP32
     #define LEDC_CHANNEL_COUNT 16
-  #elif CONFIG_IDF_TARGET_ESP32S2 || CONFIG_IDF_TARGET_ESP32S3
-    #define LEDC_CHANNEL_COUNT 8
-  #elif CONFIG_IDF_TARGET_ESP32C3
-    #define LEDC_CHANNEL_COUNT 6
+  #else
+    #define LEDC_CHANNEL_COUNT SOC_LEDC_CHANNEL_NUM
   #endif
 #endif
 
@@ -76,11 +74,7 @@
   
   // ESP32 has either 1 or 2 extra UARTS enabled, depending on chip and board.
   #elif defined(ESP32)
-    #if SOC_UART_NUM == 3
-      #define DENKO_UARTS 2
-    #elif SOC_UART_NUM == 2
-      #define DENKO_UARTS 1
-    #endif  
+    #define DENKO_UARTS (SOC_UART_NUM - 1)
 
   // ESP8266 has a single open transmit-only UART.
   #elif defined(ESP8266) && defined(SERIAL_PORT_HARDWARE_OPEN)
