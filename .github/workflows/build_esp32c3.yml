@@ -14,8 +14,8 @@ on:
       - '.github/workflows/build_esp32c3.yml'
       
 jobs:
-  esp8266-nodemcuv2:
-    name: esp32 ${{ matrix.sketches.name }}
+  esp32c3:
+    name: esp32c3 ${{ matrix.sketches.name }}
     
     runs-on: ubuntu-latest
     

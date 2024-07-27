@@ -14,8 +14,8 @@ on:
       - '.github/workflows/build_atsam3x.yml'
       
 jobs:
-  sam3x-due:
-    name: sam3x ${{ matrix.sketches.name }}
+  arduino_due_x:
+    name: atsam3x ${{ matrix.sketches.name }}
     
     runs-on: ubuntu-latest
     

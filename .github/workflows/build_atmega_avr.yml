@@ -14,8 +14,8 @@ on:
       - '.github/workflows/build_atmega_avr.yml'
       
 jobs:
-  avr-uno:
-    name: avr ${{ matrix.sketches.name }}
+  avr_uno:
+    name: atmega avr ${{ matrix.sketches.name }}
     
     runs-on: ubuntu-latest
     

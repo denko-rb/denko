@@ -14,8 +14,8 @@ on:
       - '.github/workflows/build_atmega_megaavr.yml'
       
 jobs:
-  megaavr-uno2018:
-    name: megaavr ${{ matrix.sketches.name }}
+  megaavr_uno2018:
+    name: atmega megaavr ${{ matrix.sketches.name }}
     
     runs-on: ubuntu-latest
     

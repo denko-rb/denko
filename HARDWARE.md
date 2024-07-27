@@ -2,7 +2,7 @@
 
 :green_heart: Full support :yellow_heart: Partial support :heart: Planned. No support yet :question: Works in theory. Untested in real hardware.
 
-### Espressif Chips with Built-In Wi-Fi
+### Espressif Chips with Wi-Fi (Except H2)
 [![ESP8266 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp8266.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp8266.yml)
 [![ESP32 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32.yml)
 [![ESP32-C3 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32c3.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32c3.yml)
@@ -19,7 +19,7 @@
 | ESP32-S2       | :green_heart:   | LOLIN S2 Pico        | Native USB
 | ESP32-S3       | :green_heart:   | LOLIN S3 V1.0.0      | Native USB
 | ESP32-C3       | :green_heart:   | LOLIN C3 Mini V2.1.0 | Native USB
-| ESP32-H2       | :green_heart:   | ESP32-H2-MINI-1      | Native USB
+| ESP32-H2       | :green_heart:   | ESP32-H2-MINI-1      | Native USB, No Wi-Fi
 | ESP32-C6       | :green_heart:   | ESP32-C6-WROOM-1     | Native USB
 
 **Note:** For ESP32 chips using native USB, make sure `USB CDC On Boot` is `Enabled` in the IDE's `Tools` menu. Flashing from the CLI doesn't automatically enable this, so the IDE is recommended for now.

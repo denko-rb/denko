@@ -14,7 +14,7 @@ on:
       - '.github/workflows/build_rp2040.yml'
       
 jobs:
-  rpipico:
+  rpipicow:
     name: rp2040 ${{ matrix.sketches.name }}
     
     runs-on: ubuntu-latest

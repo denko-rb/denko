@@ -14,8 +14,8 @@ on:
       - '.github/workflows/build_atsamd21.yml'
       
 jobs:
-  samd-zero:
-    name: samd ${{ matrix.sketches.name }}
+  arduino_zero_native:
+    name: atsamd21 ${{ matrix.sketches.name }}
     
     runs-on: ubuntu-latest
     

@@ -14,8 +14,8 @@ on:
       - '.github/workflows/build_ra4m1.yml'
       
 jobs:
-  samd-zero:
-    name: samd ${{ matrix.sketches.name }}
+  renesas_uno_minima:
+    name: ra4m1 ${{ matrix.sketches.name }}
     
     runs-on: ubuntu-latest
     

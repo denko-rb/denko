@@ -14,7 +14,7 @@ on:
       - '.github/workflows/build_esp32.yml'
       
 jobs:
-  esp8266-nodemcuv2:
+  esp32doit-devkit-v1:
     name: esp32 ${{ matrix.sketches.name }}
     
     runs-on: ubuntu-latest
