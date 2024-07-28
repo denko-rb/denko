@@ -19,8 +19,8 @@
 | ESP32-S2       | :green_heart:   | LOLIN S2 Pico        | Native USB
 | ESP32-S3       | :green_heart:   | LOLIN S3 V1.0.0      | Native USB
 | ESP32-C3       | :green_heart:   | LOLIN C3 Mini V2.1.0 | Native USB
-| ESP32-H2       | :green_heart:   | ESP32-H2-MINI-1      | Native USB, No Wi-Fi
-| ESP32-C6       | :green_heart:   | ESP32-C6-WROOM-1     | Native USB
+| ESP32-H2       | :yellow_heart:  | ESP32-H2-MINI-1      | Has no Wi-Fi. Native USB unreliable. Use UART bridge instead.
+| ESP32-C6       | :yellow_heart:  | ESP32-C6-WROOM-1     | Native USB unreliable. Use UART bridge instead.
 
 **Note:** For ESP32 chips using native USB, make sure `USB CDC On Boot` is `Enabled` in the IDE's `Tools` menu. Flashing from the CLI doesn't automatically enable this, so the IDE is recommended for now.
 
