@@ -10,6 +10,9 @@
 //
 #ifdef DENKO_LED_WS2812
   #include <Adafruit_NeoPixel.h>
+  #ifdef ESP32
+    #include <esp.c>
+  #endif
 #endif
 
 //
@@ -22,20 +25,27 @@
 // auxMsg[4+]   = Raw pixel data, already in correct byte order (GRB, RGB, etc.).
 //
 void Denko::showLEDArray() {
-  // Setup a new LED array object.
-  Adafruit_NeoPixel ledArray(val, pin, NEO_GRB + NEO_KHZ800);
-  ledArray.begin();
+  // Avoid memcpy on ESP32 by calling espShow() directly.
+  #ifdef ESP32
+    espShow(pin, &auxMsg[4], val, true);
 
-  // Copy LED data into the pixel buffer.
-  memcpy(ledArray.getPixels(), &auxMsg[4], val);
+  // memcpy method for everything else.
+  #else
+    // Setup a new LED array object.
+    Adafruit_NeoPixel ledArray(val, pin, NEO_GRB + NEO_KHZ800);
+    ledArray.begin();
 
-  // ATmega4809 still needs this delay to avoid corrupt data. Not sure why.
-  #if defined(__AVR_ATmega4809__)
-    microDelay(64);
+    // Copy LED data into the pixel buffer.
+    memcpy(ledArray.getPixels(), &auxMsg[4], val);
+
+    // ATmega4809 still needs this delay to avoid corrupt data. Not sure why.
+    #if defined(__AVR_ATmega4809__)
+      microDelay(64);
+    #endif
+
+    // Write the pixel buffer to the array.
+    ledArray.show();
   #endif
-
-  // Write the pixel buffer to the array.
-  ledArray.show();
 
   // Tell the computer to resume sending data.
   sendReady();
