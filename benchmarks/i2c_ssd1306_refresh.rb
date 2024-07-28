@@ -35,6 +35,13 @@
 #   ESP32-S3            : 51.8 fps (native USB) - Changed from 64 to 128 serial ACK interval
 #   ESP32-C3            : 51.7 fps (native USB) - Changed from 64 to 128 serial ACK interval
 #
+# July 27 2024 | i7 8700k CPU | CRuby 3.3.1 | 100 frames | Average of 3 runs
+#
+#   ESP32-H2            :  7.3 fps (WCH UART bridge @ 115200, I2C @ 400kHz)
+#   ESP32-H2            : 10.9 fps (WCH UART bridge @ 230400, I2C @ 400kHz)
+#   ESP32-C6            :  8.0 fps (WCH UART bridge @ 115200, I2C @ 1MHz)
+#   ESP32-C6            : 13.2 fps (WCH UART bridge @ 230400, I2C @ 1MHz)
+#
 require 'bundler/setup'
 require 'denko'
 

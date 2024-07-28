@@ -37,6 +37,14 @@ void Denko::i2cSetSpeed(uint8_t code) {
     default: Wire.setClock(100000);  break;
   }
   i2cSpeed = code;
+
+  // ESP32-H2 doesn't safely fallback if speed > 400kHz is chosen.
+  #ifdef CONFIG_IDF_TARGET_ESP32H2
+    if (i2cSpeed > 1) {
+      i2cSpeed = 1;
+      Wire.setClock(400000);
+    }
+  #endif 
 }
 
 // CMD = 33
