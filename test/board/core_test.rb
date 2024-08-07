@@ -35,6 +35,10 @@ class BoardCoreTest < Minitest::Test
     assert_raises { board.set_pin_mode 1, "wrong" }
   end
 
+  def test_set_pin_debounce
+    board.set_pin_debounce(1, 1) 
+  end
+
   def test_digital_write
     mock = Minitest::Mock.new
     mock.expect(:call, nil, [Denko::Message.encode(command: 1, pin: 1, value: board.low)])

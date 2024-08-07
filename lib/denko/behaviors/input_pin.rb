@@ -7,6 +7,10 @@ module Denko
         board.stop_listener(pin)
       end
 
+      def debounce_time=(value)
+        board.set_pin_debounce(pin, value)
+      end
+
     protected
     
       def initialize_pins(options={})

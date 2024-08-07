@@ -31,6 +31,10 @@ class InputPinTest < Minitest::Test
     assert_equal :input, part.mode
   end
 
+  def test_debounce_time=
+    part.debounce_time = 1
+  end
+
   def test_stop_listener
     mock = Minitest::Mock.new
     mock.expect :call, nil, [1]

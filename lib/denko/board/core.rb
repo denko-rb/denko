@@ -22,6 +22,9 @@ module Denko
                             value: PIN_MODES[mode]
     end
 
+    def set_pin_debounce(pin, debounce_time)
+    end
+
     # CMD = 1
     def digital_write(pin,value)
       unless (value == 1) || (value == 0)
