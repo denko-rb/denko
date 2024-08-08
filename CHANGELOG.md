@@ -2,11 +2,29 @@
 
 ## 0.14.0
 
+### New Boards
+
+- ESP32-H2 and ESP32-C6 variants (`--target esp32`):
+  - No WiFi on H2
+  - No DACs on either
+  - USB-CDC flaky on both. Use external UART for now.
+
 ### Board Changes
 
 - ESP32 Boards
   - Now based on (and requires) the 3.0+ version of the ESP32 Arduino Core.
   - Infrared output functionality temporarily disabled, until IR library is compatible with 3.0
+
+### Board Interface Changes
+
+- Added `Board#set_pin_debounce`
+  - Implemented for Linux GPIO alerts in `Denko::PiBoard` (denko-piboard gem)
+  - Sets a time (in microseconds) that level change on a pin must hold for, before an update happens.
+  - Does nothing for `Denko::Board`
+
+### Behavior Mixin Changes
+
+- Added `InputPin#debounce=(time)` which just calls `Board#set_pin_debounce` for the pin.
 
 ### New Peripherals
 
@@ -21,16 +39,26 @@
 
 ### Peripheral Interface Changes
 
-- `I2C::Peripheral`:
-  - `#i2c_read` arg order changed from (register, num_bytes) to (num_bytes, register: nil)
-
 - `AnalogIO::Input`:
   - Added `#smoothing=` and `#smoothing_size=` accessors to `AnalogIO::Input` for configuring smoothing.
   - `AnalogIO::Sensor` removed. Use this instead.
 
+- `DigitalIO::RotaryEncoder`:
+  - Pin names standardized to `a:` and `b:`, but still accept "clock", "data", "clk", "dt".
+  - `steps_per_revolution` changed to `counts_per_revolution`
+  - Every level change is counted now (full-quadrature). Was half-quadrature before.
+  - `counts_per_revolution` now defaults to 60 instead of 30 (generic 30-detent encoders).
+  - `state` and callback hash now store current count in the `:count` key instead of `:steps`.
+
+- `I2C::Peripheral`:
+  - `#i2c_read` arg order changed from `(register, num_bytes)` to `(num_bytes, register: nil)`
+
 - `LED::RGB`:
   - `#write` takes 3 regular args now. Use `*array` instead to pass an array.
   - `#color` only takes a symbol for one of the predefined colors (or :off) now.
+
+- `Motor::Stepper`:
+  - Replaced `#step_cc` with `#step_ccw`.
 
 - Temperature / Humidity / Pressure Sensors:
   - `DS18B20`, `DHT` and `HTU21D` readings now match all the others (Hash with same keys).
@@ -38,12 +66,6 @@
   - Added `#temperature_f` `#temperature_k` `#pressure_atm` `#pressure_bar` helper conversion methods.
   - `[]` access for `@state` removed removed.
   - `#read` methods standardized to always read ALL sub-sensors. Affects `HTU21D` and `BMP180`.
-
-- `DigitalIO::RotaryEncoder`:
-  - Pin names standardized to `a:` and `b:`, but still accept "clock", "data", "clk", "dt".
-
-- `Motor::Stepper`:
-  - Replaced `#step_cc` with `#step_ccw`.
 
 ### CLI Changes
 
@@ -54,6 +76,7 @@
 - More accurate pin counts when initializing digital listener storage for different boards.
 - Fix a bug where ADS111X sensors were incorrectly validating sample rate when set.
 - Fix a bug where handshake could fail if board was left in a state where it kept transmitting data.
+- Fix a bug where an ESP32 with no DACs might not release a LEDC channel after use.
 
 ## 0.13.5
 
