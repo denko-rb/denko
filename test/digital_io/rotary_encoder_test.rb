@@ -19,15 +19,29 @@ class RotaryEncoderTest < Minitest::Test
     assert_equal 6, long.a.pin
   end
 
-  def test_sets_steps_per_revolution
-    assert_equal 30,      part.steps_per_revolution
-    assert_equal 12.to_f, part.instance_variable_get(:@degrees_per_step)
+  def test_counts_per_revolution
+    assert_equal 60,      part.counts_per_revolution
+    assert_equal 6.to_f,  part.degrees_per_count
   end
   
   def test_resets_on_initialize
-    assert_equal({steps: 0, angle: 0}, part.state)
+    assert_equal({count: 0, angle: 0}, part.state)
   end
   
+  def test_sets_debounce_time_for_both_pins
+    a_mock = Minitest::Mock.new.expect(:call, nil, [1])
+    a_mock.expect(:call, nil, [2])
+    b_mock = Minitest::Mock.new.expect(:call, nil, [1])
+    b_mock.expect(:call, nil, [2])
+    
+    part.a.stub(:debounce_time=, a_mock) do
+      part.b.stub(:debounce_time=, b_mock) do
+        part.send(:after_initialize)
+        part.send(:after_initialize, debounce_time: 2)
+      end
+    end
+  end
+
   def test_calls_listen_on_both_pins_with_given_divider
     a_mock = Minitest::Mock.new.expect(:call, nil, [1])
     a_mock.expect(:call, nil, [2])
@@ -49,56 +63,53 @@ class RotaryEncoderTest < Minitest::Test
     end
   end
   
-  def test_observes_the_right_pin
-    refute_empty part.a.callbacks
-    assert_empty part.b.callbacks
-        
+  def test_observes_the_pins
     part2 = Denko::DigitalIO::RotaryEncoder.new board: board, pins: {b: 6, a: 5}
-    
     refute_empty part2.b.callbacks
-    assert_empty part2.a.callbacks
+    refute_empty part2.a.callbacks
   end
   
-  def test_goes_the_right_direction
-    part.b.send(:update, 1)
-    part.a.send(:update, 1)
-    assert_equal({ steps: -1, angle: 348.0 }, part.state)
-    
-    part.reset
-    
-    part.b.send(:update, 1)
-    part.a.send(:update, 0)
-    assert_equal({ steps: 1, angle: 12.0 }, part.state)
-  end
-
   def test_reverse
     part.reverse
     assert part.reversed
 
-    part.b.send(:update, 1)
     part.a.send(:update, 1)
-    assert_equal({ steps: 1, angle: 12.0 }, part.state)
-  end
-
-  def test_swapped_pins
-    part2 = Denko::DigitalIO::RotaryEncoder.new board: board, pins: {b: 4, a: 3}
-
-    part2.a.send(:update, 1)
-    part2.b.send(:update, 1)
-    assert_equal({ steps: 1, angle: 12.0 }, part2.state)
-  end
-  
-  def test_callback_prefilter
     part.b.send(:update, 1)
+    assert_equal({ count: 2, angle: 12.0 }, part.state)
+  end
+
+  def test_quadrature_decoding
+    part.b.send(:update, 0)
     part.a.send(:update, 0)
     callback_value = nil
     part.add_callback do |value|
       callback_value = value.dup
     end
-    part.b.send(:update, 1)
-    part.a.send(:update, 0)
     
-    assert_equal({change: 1, steps: 2, angle: 24.0}, callback_value)
+    part.reset
+    part.a.send(:update, 1)
+    assert_equal({change: -1, count: -1, angle: 354.0}, callback_value)
+
+    part.b.send(:update, 1)
+    assert_equal({change: -1, count: -2, angle: 348.0}, callback_value)
+
+    part.a.send(:update, 0)
+    assert_equal({change: -1, count: -3, angle: 342.0}, callback_value)
+
+    part.b.send(:update, 0)
+    assert_equal({change: -1, count: -4, angle: 336.0}, callback_value)
+
+    part.b.send(:update, 1)
+    assert_equal({change: 1, count: -3, angle: 342.0}, callback_value)
+
+    part.a.send(:update, 1)
+    assert_equal({change: 1, count: -2, angle: 348.0}, callback_value)
+
+    part.b.send(:update, 0)
+    assert_equal({change: 1, count: -1, angle: 354.0}, callback_value)
+
+    part.a.send(:update, 0)
+    assert_equal({change: 1, count: 0, angle: 0.0}, callback_value)
   end
   
   def test_update_state_removes_change

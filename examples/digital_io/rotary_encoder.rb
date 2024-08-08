@@ -10,17 +10,21 @@ require 'denko'
 board = Denko::Board.new(Denko::Connection::Serial.new)
 encoder = Denko::DigitalIO::RotaryEncoder.new board: board,
                                               pins: { a: 4, b: 5 },
-                                              divider: 1,                 # default, reads each pin every 1ms
-                                              steps_per_revolution: 30    # default
+                                              divider: 1,                 # Default. Applies only to Board. Read pin every 1ms.
+                                              debounce_time: 1,           # Default. Applies only to PiBoard. Debounce filter set to 1 microsecond.
+                                              counts_per_revolution: 60   # Default
 
 # Reverse direction if needed.
-# encoder.reverse
+encoder.reverse
 
-# Reset angle and steps to 0.
+# Reset angle and count to 0.
 encoder.reset
 
 encoder.add_callback do |state|
-  puts "Encoder moved #{state[:change]} steps | CW step count: #{state[:steps]} | Current angle: #{state[:angle]}\xC2\xB0"
+  change_printable = state[:change].to_s
+  change_printable = "+#{change_printable}" if state[:change] > 0
+
+  puts "Encoder moved #{change_printable} | Count: #{state[:count]} | Angle: #{state[:angle]}\xC2\xB0"
 end
 
 sleep
