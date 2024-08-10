@@ -147,7 +147,10 @@ module Denko
       end
 
       def remove_transit_bytes(value)
-        @transit_mutex.synchronize { @transit_bytes = @transit_bytes - value }
+        @transit_mutex.synchronize do 
+          @transit_bytes = @transit_bytes - value
+          @transit_bytes = 0 if @transit_bytes < 0
+        end
       end
     end
   end

@@ -35,6 +35,8 @@ void Denko::sendReady() {
 }
 
 void Denko::run(){
+  if (rxBytes != 0) rxNotify();
+
   while(stream->available()) {
     parse(stream->read());
     rxBytes ++;

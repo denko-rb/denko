@@ -213,7 +213,12 @@ class Denko {
     //
     // Notify computer that board has received bytes.
     void rxNotify();
-    uint8_t rxBytes  = 0;
+    // 8-bit counter on AVR for efficiency, 32-bit otherwise.
+    #ifdef __AVR__
+      uint8_t  rxBytes = 0;
+    #else
+      uint32_t rxBytes = 0;
+    #endif
     //
     // Tell the computer to halt or resume sending data to the board.
     //
