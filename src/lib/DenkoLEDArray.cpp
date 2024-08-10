@@ -38,10 +38,9 @@ void Denko::showLEDArray() {
     // Copy LED data into the pixel buffer.
     memcpy(ledArray.getPixels(), &auxMsg[4], val);
 
-    // ATmega4809 still needs this delay to avoid corrupt data. Not sure why.
-    #if defined(__AVR_ATmega4809__)
-      microDelay(64);
-    #endif
+    // Let the line stay low for about 6 bytes worth of data.
+    // Prevents first pixel green being stuck on.
+    microDelay(60);
 
     // Write the pixel buffer to the array.
     ledArray.show();
