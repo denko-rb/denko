@@ -132,20 +132,20 @@
 //
 // These are 256/64 regardless of whether native USB CDC or UART bridge.
 #if defined(ARDUINO_ARCH_RP2040) || defined(ESP8266) || defined(__SAM3X8E__)
-  #define DENKO_SERIAL_BUFFER_SIZE 256
+  #define DENKO_SERIAL_BUFFER_SIZE 248
   #define DENKO_RX_ACK_INTERVAL 64
 
 // ESP32 defaults to 256 buffer. Stay one under.
 #elif defined(ESP32)
-  #define DENKO_SERIAL_BUFFER_SIZE 255
+  #define DENKO_SERIAL_BUFFER_SIZE 248
   // H2 and C6 unreliable with CDC. Use UART bridge. Still unreliable ACK before buffer full, like S2.
   #if defined(CONFIG_IDF_TARGET_ESP32H2) || defined(CONFIG_IDF_TARGET_ESP32C6)
-    #define DENKO_RX_ACK_INTERVAL 255
+    #define DENKO_RX_ACK_INTERVAL 248
   #else
     #ifdef ARDUINO_USB_CDC_ON_BOOT
       // S2 unreliable with acknowledgement before buffer is full.
       #ifdef CONFIG_IDF_TARGET_ESP32S2
-        #define DENKO_RX_ACK_INTERVAL 255
+        #define DENKO_RX_ACK_INTERVAL 248
       // S3 and C3 are fine acknowledging at half buffer filled.
       #else
         #define DENKO_RX_ACK_INTERVAL 128
@@ -158,11 +158,11 @@
 
 // RA4M1 has a 512 Serial buffer.
 #elif defined(_RENESAS_RA_)
-  #define DENKO_SERIAL_BUFFER_SIZE 512
+  #define DENKO_SERIAL_BUFFER_SIZE 504
   #define DENKO_RX_ACK_INTERVAL 64
 // SAMD21 is 256/128 in native USB mode ONLY. Must use defaults on programming port to avoid data loss.
 #elif defined(__SAMD21G18A__) && defined(DENKO_USB_CDC)
-  #define DENKO_SERIAL_BUFFER_SIZE 256
+  #define DENKO_SERIAL_BUFFER_SIZE 248
   #define DENKO_RX_ACK_INTERVAL 128
 // 32u4 is odd. Size is 63 instead of 64. Interval must be 31. 32 doesn't work at all. Off by 1 errors?
 #elif defined(__AVR_ATmega32U4__)
