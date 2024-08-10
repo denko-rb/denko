@@ -1,3 +1,38 @@
 name: atmega
 fqbn: arduino:avr:uno
-port: /dev/cu.usbmodem14B01
+port: /dev/cu.usbmodem14501
+
+# name: atmega
+# fqbn: arduino:avr:mega
+# port: /dev/cu.usbmodem14501
+
+# name: atmega
+# fqbn: arduino:avr:leonardo
+# port: /dev/cu.usbmodem14501
+
+# Uses native USB port
+# name: atsam3x
+# fqbn: arduino:sam:arduino_due_x
+# port: /dev/cu.usbmodem14501
+
+# Uses native USB port
+# name: atsamd21
+# fqbn: arduino:samd:arduino_zero_native
+# port: /dev/cu.usbmodem14501
+
+# name: esp8266
+# fqbn: esp8266:esp8266:nodemcuv2
+# port: /dev/cu.SLAB_USBtoUART
+
+# name: esp32
+# fqbn: esp32:esp32:esp32doit-devkit-v1
+# port: /dev/cu.SLAB_USBtoUART
+
+# Use for S3 on secondary UART port (not native USB). Native USB needs to be enabled in IDE.
+# name: esp32
+# fqbn: esp32:esp32:lolin_s3
+# port: /dev/cu.usbmodem14501
+
+# name: rp2040
+# fqbn: rp2040:rp2040:rpipicow
+# port: /dev/cu.usbmodem14501
