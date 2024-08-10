@@ -31,10 +31,6 @@ void setup() {
   Ethernet.begin(mac, ip);
   server.begin();
   printEthernetStatus();
-
-  // Add listener callbacks for local logic.
-  denko.digitalListenCallback = onDigitalListen;
-  denko.analogListenCallback = onAnalogListen;
 }
 
 void loop() {
@@ -57,14 +53,4 @@ void loop() {
 
   // Main loop of the denko library.
   denko.run();
-}
-
-// This runs every time a digital pin that denko is listening to changes value.
-// p = pin number, v = current value
-void onDigitalListen(byte p, byte v){
-}
-
-// This runs every time an analog pin that denko is listening to gets read.
-// p = pin number, v = read value
-void onAnalogListen(byte p, int v){
 }

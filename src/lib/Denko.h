@@ -13,14 +13,6 @@ class Denko {
     // Store it and call ->print, ->write, ->available, ->read etc. on it.
     Stream* stream;
 
-    // Callback hooks for local logic (defined in main sketch) based on listeners.
-    // These should be used if:
-    //   1) a round-trip to the remote client is too slow, or
-    //   2) something needs to happen regardless of remote client connection.
-    // Eg. Instant feedback from a smart light switch.
-    void (*digitalListenCallback)(byte p, byte v);
-    void (*analogListenCallback)(byte p, int v);
-
     // Core IO API Functions
     // Functions with a cmd value can be called through the remote API.
     //

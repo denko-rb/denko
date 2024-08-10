@@ -283,7 +283,6 @@ void Denko::updateCoreListeners() {
 // Handle a single analog listener when it needs to read.
 void Denko::analogListenerUpdate(byte i){
   int rval = analogRead(listeners[i][1]);
-  analogListenCallback(listeners[i][1], rval);
   coreResponse(listeners[i][1], rval);
 }
 
@@ -294,7 +293,6 @@ void Denko::digitalListenerUpdate(byte i){
   if (rval != bitRead(listeners[i][0], 5)){
     // State for digital listeners is stored in byte 5 of the listener itself.
     bitWrite(listeners[i][0], 5, rval);
-    digitalListenCallback(listeners[i][1], rval);
     coreResponse(listeners[i][1], rval);
   }
 }
