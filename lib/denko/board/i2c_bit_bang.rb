@@ -1,5 +1,12 @@
 module Denko
   class Board
+    # CMD = 30
+    def i2c_bb_search(scl, sda)
+      write Message.encode command: 30,
+                           pin:     scl,
+                           value:   sda
+    end
+
     # CMD = 31
     def i2c_bb_write(scl, sda, address, bytes, repeated_start=false)
       bytes = [bytes] unless bytes.class == Array

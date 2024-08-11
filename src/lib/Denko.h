@@ -269,7 +269,8 @@ class Denko {
       void    i2c_bb_init       (uint8_t scl, uint8_t sda);
 
       // Remote exposed interface
-      void    i2c_bb_write      ();
-      void    i2c_bb_read       ();
+      void i2c_bb_search ();
+      void i2c_bb_write  ();
+      void i2c_bb_read   ();
     #endif
 };

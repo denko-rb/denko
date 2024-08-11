@@ -38,7 +38,11 @@ end
 puts "Using I2C interface on pins #{sda} (SDA) and #{scl} (SCL)"
 puts
 
+# Board's hardware I2C interface on predetermined pins.
 bus = Denko::I2C::Bus.new(board: board, pin: sda)
+# Bit-banged I2C on any pins.
+# bus = Denko::I2C::BitBang.new(board: board, pins: {scl: 8, sda: 9})
+
 bus.search
 
 if bus.found_devices.empty?

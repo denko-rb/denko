@@ -26,10 +26,10 @@ module Denko
         pins[:sda]
       end
 
-      # def search
-      #   addresses = read_using -> { board.i2c_search }
-      #   @found_devices = addresses.split(":").map(&:to_i) if addresses
-      # end
+      def search
+        addresses = read_using -> { board.i2c_bb_search(pins[:scl], pins[:sda]) }
+        @found_devices = addresses.split(":").map(&:to_i) if addresses
+      end
 
       def write(address, bytes, frequency=nil, repeated_start=false)
         board.i2c_bb_write(pins[:scl], pins[:sda], address, bytes, repeated_start)

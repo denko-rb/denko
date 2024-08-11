@@ -117,6 +117,46 @@ void Denko::i2c_bb_init(uint8_t scl, uint8_t sda) {
 }
 
 //
+// Search for I2C devices on a bit banged I2C interface.
+//
+// cmd = 31
+// pin = SCL pin
+// val = SDA pin
+//
+// Ask each address for a single byte to see if it exists on the bus.
+//
+void Denko::i2c_bb_search() {
+  int ack;
+  uint8_t addr;
+
+  // Switch our "bus" to the given pins.
+  i2c_bb_init((uint8_t)pin, (uint8_t)val);
+
+  // Start sending results.
+  stream->print(i2c_bb_sda_pin);
+
+  // If SDA is low here, nothing connected to bus. Return no results.
+  if (digitalRead(i2c_bb_sda_pin) == 0) {
+    stream->print('\n');
+    return;
+  }
+
+  // Only addresses from 0x08 to 0x77 are usable (8 to 127).
+  for (addr = 0x08; addr < 0x78;  addr++) {
+    i2c_bb_start();
+    ack = i2c_bb_write_byte((addr << 1) & 0b11111110);
+    if (ack == 0) {
+      stream->print(':');
+      stream->print(addr);
+    } 
+    i2c_bb_stop(); 
+  }
+  stream->print('\n');
+}
+
+//
+// Write to an I2C device over a bit banged I2C interface.
+//
 // cmd         = 31
 // pin         = SCL pin
 // val         = SDA pin

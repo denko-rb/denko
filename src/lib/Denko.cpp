@@ -187,6 +187,7 @@ void Denko::process() {
     
     // Implemented in DenkoI2CBB.cpp
     #ifdef DENKO_I2C_BB
+    case 30: i2c_bb_search       ();  break;
     case 31: i2c_bb_write        ();  break;
     case 32: i2c_bb_read         ();  break;
     #endif
