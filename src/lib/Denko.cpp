@@ -185,6 +185,12 @@ void Denko::process() {
     case 28: spiRemoveListener();  break;
     #endif
     
+    // Implemented in DenkoI2CBB.cpp
+    #ifdef DENKO_I2C_BB
+    case 31: i2c_bb_write        ();  break;
+    case 32: i2c_bb_read         ();  break;
+    #endif
+
     // Implemented in DenkoI2C.cpp
     #ifdef DENKO_I2C
     case 33: i2cSearch           ();  break;

@@ -101,7 +101,7 @@
 | Servo/ESC PWM         | :green_heart:   | H     | See Motor table          | Uses PWM
 | Tone Out (Square Wave)| :green_heart:   | H     | `PulseIO::Buzzer`        | Except SAM3X. Uses PWM
 | I2C                   | :green_heart:   | H     | `I2C::Bus`               | Predetermined pins from IDE
-| I2C Bit Bang          | :heart:         | S     | `I2C::BitBang`           | Any pins
+| I2C Bit Bang          | :yellow_heart:  | S     | `I2C::BitBang`           | Any pins. No search yet. Maybe timing issues?
 | SPI                   | :green_heart:   | H     | `SPI::Bus`               | Predetermined pins from IDE
 | SPI Bit Bang          | :green_heart:   | S     | `SPI::BitBang`           | Any pins
 | UART                  | :green_heart:   | H     | `UART::Hardware`         | Except Atmega328, ATmega168

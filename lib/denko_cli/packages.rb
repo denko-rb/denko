@@ -29,6 +29,13 @@ PACKAGES = {
       "DenkoOneWire.cpp",
     ]
   },
+  i2c_bb: {
+    description: "Bit Bang I2C support",
+    directive: "DENKO_I2C_BB",
+    files: [
+      "DenkoI2CBB.cpp",
+    ]
+  },
   spi_bb: {
     description: "Bit Bang SPI support",
     directive: "DENKO_SPI_BB",

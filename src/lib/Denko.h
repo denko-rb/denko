@@ -246,4 +246,30 @@ class Denko {
       };
       SpiListener spiListeners[SPI_LISTENER_COUNT];
     #endif
+
+    // I2C Bit Bang Interface
+    #if defined(DENKO_I2C_BB)
+      uint8_t i2c_bb_scl_pin;
+      uint8_t i2c_bb_sda_pin;
+      uint8_t i2c_bb_quarter_period = 1;
+
+      // Internal stuff
+      void    i2c_bb_delay_quarter_period(); 
+      void    i2c_bb_delay_half_period();
+      void    i2c_bb_sda_high   ();
+      void    i2c_bb_sda_low    ();
+      void    i2c_bb_scl_high   ();
+      void    i2c_bb_scl_low    ();
+      void    i2c_bb_start      ();
+      void    i2c_bb_stop       ();
+      uint8_t i2c_bb_read_bit   ();
+      void    i2c_bb_write_bit  (uint8_t  bit );
+      uint8_t i2c_bb_read_byte  (bool     back);
+      int     i2c_bb_write_byte (uint8_t  data);
+      void    i2c_bb_init       (uint8_t scl, uint8_t sda);
+
+      // Remote exposed interface
+      void    i2c_bb_write      ();
+      void    i2c_bb_read       ();
+    #endif
 };

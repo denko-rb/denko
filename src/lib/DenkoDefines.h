@@ -11,6 +11,7 @@
 // #define DENKO_EEPROM
 // #define DENKO_ONE_WIRE
 // #define DENKO_TONE
+// #define DENKO_I2C_BB
 // #define DENKO_SPI_BB
 // #define DENKO_I2C
 // #define DENKO_SPI
