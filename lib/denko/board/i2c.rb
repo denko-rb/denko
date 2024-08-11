@@ -31,12 +31,12 @@ module Denko
       
       # Use top bit of address to select stop condition (1), or repated start (0).
       send_stop = repeated_start ? 0 : 1
-      frequency = i2c_convert_frequency(frequency)
       
       write Message.encode  command:     34,
-                            pin:         address | (send_stop << 7),
-                            value:       bytes.length,
-                            aux_message: pack(:uint8, frequency) + pack(:uint8, bytes)
+                            aux_message: pack(:uint8, i2c_convert_frequency(frequency)) + 
+                                         pack(:uint8, address | (send_stop << 7)) +
+                                         pack(:uint8, bytes.length) +
+                                         pack(:uint8, bytes)
     end
 
     # CMD = 35
@@ -45,7 +45,6 @@ module Denko
 
       # Use top bit of address to select stop condition (1), or repated start (0).
       send_stop = repeated_start ? 0 : 1
-      frequency = i2c_convert_frequency(frequency)
 
       # A register address starting register address can be given (up to 4 bytes)
       if register
@@ -57,9 +56,10 @@ module Denko
       end
 
       write Message.encode  command:      35,
-                            pin:          address | (send_stop << 7),
-                            value:        read_length,
-                            aux_message:  pack(:uint8, frequency) + register_packed
+                            aux_message:  pack(:uint8, i2c_convert_frequency(frequency)) + 
+                                          pack(:uint8, address | (send_stop << 7)) +
+                                          pack(:uint8, read_length) +
+                                          register_packed
     end
   end
 end

@@ -24,13 +24,15 @@ class APII2CTest < Minitest::Test
 
   def test_write
     board
-    aux = pack(:uint8, 0x00) + pack(:uint8, [1,2,3,4])
     address = 0x30
-      
+    data    = [1,2,3,4]
+
     # Normal
-    message1 = Denko::Message.encode command: 34, pin: address | (1 << 7), value: 4, aux_message: aux
+    aux_stop = pack(:uint8, 0x00) +  pack(:uint8, address | (1 << 7)) + pack(:uint8, data.length) + pack(:uint8, data)
+    message1 = Denko::Message.encode command: 34, aux_message: aux_stop
     # Repeated start
-    message2 = Denko::Message.encode command: 34, pin: address | (0 << 7), value: 4, aux_message: aux
+    aux_repeat = pack(:uint8, 0x00) +  pack(:uint8, address | (0 << 7)) + pack(:uint8, data.length) + pack(:uint8, data)
+    message2   = Denko::Message.encode command: 34, aux_message: aux_repeat
 
     mock = Minitest::Mock.new
     mock.expect :call, nil, [message1]
@@ -50,11 +52,14 @@ class APII2CTest < Minitest::Test
 
   def test_read
     board
-    aux = pack(:uint8, 0x00) + pack(:uint8, [1, 0x03])
+    address = 0x30
+
     # Normal
-    message1 = Denko::Message.encode command: 35, pin: 0x30 | (1 << 7), value: 4, aux_message: aux
+    aux_stop = pack(:uint8, 0x00) + pack(:uint8, address | (1 << 7)) + pack(:uint8, 4) + pack(:uint8, [1, 0x03])
+    message1 = Denko::Message.encode command: 35, aux_message: aux_stop
     # Repeated start
-    message2 = Denko::Message.encode command: 35, pin: 0x30 | (0 << 7), value: 4, aux_message: aux
+    aux_repeat = pack(:uint8, 0x00) + pack(:uint8, address | (0 << 7)) + pack(:uint8, 4) + pack(:uint8, [1, 0x03])
+    message2   = Denko::Message.encode command: 35, aux_message: aux_repeat
 
     mock = Minitest::Mock.new
     mock.expect :call, nil, [message1]
@@ -69,8 +74,8 @@ class APII2CTest < Minitest::Test
   
   def test_read_without_register
     board
-    aux = pack(:uint8, 0x00) + pack(:uint8, [0])
-    message = Denko::Message.encode command: 35, pin: 0x30 | (1 << 7), value: 4, aux_message: aux
+    aux = pack(:uint8, 0x00) + pack(:uint8, 0x30 | (1 << 7)) + pack(:uint8, 4) + pack(:uint8, [0])
+    message = Denko::Message.encode command: 35, aux_message: aux
 
     mock = Minitest::Mock.new
     mock.expect :call, nil, [message]
@@ -93,8 +98,9 @@ class APII2CTest < Minitest::Test
       
     messages = []
     # 100 kHz, 400 kHz, 1 Mhz, 3.4 MHz
+    aux_after_config = pack(:uint8, 0x30 | (1 << 7)) + pack(:uint8, data.length) + pack(:uint8, data)
     [0x00, 0x01, 0x02, 0x03].each do |code|
-      messages << Denko::Message.encode(command: 34, pin: 0x30 | (1 << 7), value: 4, aux_message: pack(:uint8, code) + pack(:uint8, data))
+      messages << Denko::Message.encode(command: 34, aux_message: pack(:uint8, code) + aux_after_config)
     end
 
     mock = Minitest::Mock.new

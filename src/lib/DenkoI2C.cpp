@@ -67,74 +67,75 @@ void Denko::i2cSearch() {
   stream->print('\n');
 }
 
-// CMD = 34
-// Write to an I2C device over a harwdare I2C interface.
 //
-// pin
-//  bits 0..6 = Device address
-//  bit  7    = Send stop condition. 0 = no, repeated start. 1 = yes.
-//
-// val
-//  bits 0..4 = Data length. NOTE: maximum of 32. Anything more is ignored.
-// 
-// auxMsg[0]  = I2C settings. Just speed selection for now.
-//
-// auxMsg[1]+ = data
+// cmd         = 34
+// pin         = <reseverd>
+// val         = <reserved>
+// auxMsg[0]   = I2C settings
+//  Bits[7..2] = <reserved>
+//  Bits[1..0] = Bitmask for I2C speed
+// auxMsg[1]   = Device address in bits [6..0] + repeated start in bit 7
+// auxMsg[2]   = Data length to write
+// auxMsg[3]+  = Data
 //
 void Denko::i2cWrite() {
   // Get parameters from message.
-  uint8_t address     =  (uint8_t)pin & 0b01111111;
-  uint8_t dataLength  =  (uint8_t)val;
+  uint8_t speedMask  = auxMsg[0] & 0b00000011;
+  uint8_t address    = auxMsg[1] & 0b01111111;
+  uint8_t sendStop   = auxMsg[1] >> 7;
+  uint8_t dataLength = auxMsg[2];
 
-  // Limit to 32 bytes.
+  // Limit to board's I2C buffer size.
   if (dataLength > DENKO_I2C_BUFFER_SIZE) dataLength = DENKO_I2C_BUFFER_SIZE;
 
+  // Start and set speed.
   if (!i2cStarted)            i2cBegin();
-  if (i2cSpeed != auxMsg[0])  i2cSetSpeed(auxMsg[0]);
+  if (i2cSpeed != speedMask)  i2cSetSpeed(speedMask);
 
   Wire.beginTransmission(address);
-  Wire.write(&auxMsg[1], dataLength);
+  Wire.write(&auxMsg[3], dataLength);
 
   // No repeated start on ESP32.
   #if defined(ESP32)
     Wire.endTransmission();
   #else
-    uint8_t sendStop = (uint8_t)pin >> 7;
+    
     Wire.endTransmission(sendStop);
   #endif
 }
 
-// CMD = 35
+//
 // Read from an I2C device over a harwdare I2C interface.
 //
-// pin
-//  bits 0..6 = Device address
-//  bit  7    = Send stop condition. 0 = no, repeated start. 1 = yes.
-//
-// val
-//  bits 0..4 = Data length. NOTE: maximum of 32. Anything more is ignored.
-//
-// auxMsg[0]  = I2C settings. Just speed selection for now.
-//
-// auxMsg[1]  = If > 0, write a register address of that many bytes before reading.
-// auxMsg[2]+ = Register address bytes in order.
+// cmd         = 35
+// pin         = <reseverd>
+// val         = <reserved>
+// auxMsg[0]   = I2C settings
+//  Bits[7..2] = <reserved>
+//  Bits[1..0] = Bitmask for I2C speed
+// auxMsg[1]   = Device address in bits [6..0] + repeated start in bit 7
+// auxMsg[2]   = Data length to read
+// auxMsg[3]   = Register address length
+// auxMsg[4]+  = Register address bytes if length > 0
 //
 void Denko::i2cRead() {
   // Get parameters from message.
-  uint8_t address         = (uint8_t)pin & 0b01111111;
-  uint8_t sendStop        = (uint8_t)pin >> 7;
-  uint8_t dataLength      = (uint8_t)val;
+  uint8_t speedMask  = auxMsg[0] & 0b00000011;
+  uint8_t address    = auxMsg[1] & 0b01111111;
+  uint8_t sendStop   = auxMsg[1] >> 7;
+  uint8_t dataLength = auxMsg[2];
 
-  // Limit to 32 bytes.
+  // Limit to board's I2C buffer size.
   if (dataLength > DENKO_I2C_BUFFER_SIZE) dataLength = DENKO_I2C_BUFFER_SIZE;
 
+  // Start and set speed.
   if (!i2cStarted)            i2cBegin();
-  if (i2cSpeed != auxMsg[0])  i2cSetSpeed(auxMsg[0]);
+  if (i2cSpeed != speedMask)  i2cSetSpeed(speedMask);
   
   // Optionally write up to a 4 byte register address before reading.
-  if ((auxMsg[1] > 0) && (auxMsg[1] < 5)) {
+  if ((auxMsg[3] > 0) && (auxMsg[3] < 5)) {
     Wire.beginTransmission(address);
-    Wire.write(&auxMsg[2], auxMsg[1]);
+    Wire.write(&auxMsg[4], auxMsg[3]);
     Wire.endTransmission(sendStop);
   }
   
