@@ -53,7 +53,12 @@ module Denko
       end
 
       def pre_callback_filter(bytes)
-        bytes = bytes.split(",").map(&:to_i)
+        # C extensions respond with Ruby array
+        # External Board responds with comma delimited String
+        unless bytes.class == Array
+          bytes = bytes.split(",").map(&:to_i)
+        end
+
         bytes.length > 1 ? bytes : bytes[0]
       end
     end

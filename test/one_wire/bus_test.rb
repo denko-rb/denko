@@ -92,6 +92,7 @@ class OneWireBusTest < Minitest::Test
   def test_pre_callback_filter
     assert_equal [255, 180, 120], part.pre_callback_filter("255,180,120")
     assert_equal 127,             part.pre_callback_filter("127")
+    assert_equal [123, 111, 187], part.pre_callback_filter([123,111,187])
   end
 
   def test_reset
