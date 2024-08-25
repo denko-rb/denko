@@ -34,7 +34,7 @@ module Denko
       #
       # Proxy a pin to a single-pin component. Set this up in the including
       # component's #initialize_pins method. Additional options for each proxy
-      # (eg. pullup/pulldown) can be injected there.
+      # (eg. mode: :input_pullup) can be injected there.
       # 
       def proxy_pin(name, klass, pin_options={})
         # Proxied pins are required by default.

@@ -21,8 +21,8 @@ class InputPinTest < Minitest::Test
     
     board.stub(:set_pin_mode, mock) do
       part
-      InputComponent.new(board: board, pin: 2, pulldown: true)
-      InputComponent.new(board: board, pin: 3, pullup: true)
+      InputComponent.new(board: board, pin: 2, mode: :input_pulldown)
+      InputComponent.new(board: board, pin: 3, mode: :input_pullup)
     end
     mock.verify
     

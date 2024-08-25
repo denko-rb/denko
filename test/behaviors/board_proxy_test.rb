@@ -18,7 +18,7 @@ class BoardProxyTest < Minitest::Test
     assert_equal part.high, 1
     assert_equal part.low, 0
     assert_equal part.convert_pin("7"), 7
-    part.set_pin_mode(1, :output, :pullup)
+    part.set_pin_mode(1, :output)
     part.start_read
   end
 end

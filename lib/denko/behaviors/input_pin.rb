@@ -2,6 +2,8 @@ module Denko
   module Behaviors
     module InputPin
       include SinglePin
+
+      INPUT_MODES = [:input, :input_pulldown, :input_pullup]
       
       def _stop_listener
         board.stop_listener(pin)
@@ -16,14 +18,16 @@ module Denko
       def initialize_pins(options={})
         super(options)
         
-        # Assume input direction, and look for pull mode in options.
-        initial_mode = :input
-        initial_mode = :input_pullup   if options[:pullup]
-        initial_mode = :input_pulldown if options[:pulldown]
+        # Allow pull direction to be set with :mode, else default to :input.
+        if options[:mode]
+          initial_mode = options[:mode]
+          unless INPUT_MODES.include?(initial_mode)
+            raise "invalid input mode: #{initial_mode} given. Should be one of #{INPUT_MODES.inspect}"
+          end
+        else
+          initial_mode = :input
+        end
 
-        # If user was explicit about mode, just use that.
-        initial_mode = options[:mode]  if options[:mode]
-        
         self.mode = initial_mode
       end
     end

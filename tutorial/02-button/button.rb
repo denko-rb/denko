@@ -11,14 +11,14 @@ board = Denko::Board.new(Denko::Connection::Serial.new)
 # Create an object for a momentary button, giving the board, and the pin that
 # the ungrounded side of the button is connected to.
 #
-# `pullup: true` tells the board to keep the input pin high (logical 1) when the
+# `mode: :input_pullup` keeps the input pin high (logical 1) when the
 # button is not pressed. Without this (or an external pullup resistor), the pin
 # might float between 0 and 1, giving incorrect readings. When the button is
 # pressed, it pulls the input pin down to ground (0).
 #
 # See button.pdf in this folder for a hook-up diagram.
 #
-button = Denko::DigitalIO::Button.new(board: board, pin: 7, pullup: true)
+button = Denko::DigitalIO::Button.new(board: board, pin: 7, mode: :input_pullup)
 
 #
 # As soon as a Button (or any DigitalInput) is created, the board starts
