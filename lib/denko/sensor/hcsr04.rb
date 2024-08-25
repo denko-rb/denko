@@ -15,6 +15,9 @@ module Denko
       def after_initialize(options={})
         super(options)
 
+        # Avoid generating extraneous alerts when used with Denko::PiBoard.
+        echo.stop
+
         # Receive values from echo pin.
         echo.add_callback { |data| self.update(data) }
       end
