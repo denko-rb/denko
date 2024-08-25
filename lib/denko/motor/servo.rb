@@ -5,6 +5,7 @@ module Denko
       include Behaviors::Threaded
 
       def after_initialize(options={})
+        options[:mode] = :output_pwm
         super(options)
         @min = options[:min] || 544
         @max = options[:max] || 2400

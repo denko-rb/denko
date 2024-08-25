@@ -1,6 +1,11 @@
 module Denko
   module PulseIO
     class Buzzer < PWMOutput
+      def initialize_pins(options={})
+        options[:mode] = :output_pwm
+        super(options)
+      end
+
       def after_initialize(options={})
         low
       end
