@@ -14,19 +14,22 @@ class InputPinTest < Minitest::Test
   end
 
   def test_mode_and_pullup
+    modes = [:input, :input_pulldown, :input_pullup]
+
     mock = Minitest::Mock.new
-    mock.expect :call, nil, [1, :input]
-    mock.expect :call, nil, [2, :input_pulldown]
-    mock.expect :call, nil, [3, :input_pullup]
+    modes.each_with_index do |mode, pin|
+      mock.expect :call, nil, [pin+1, mode]
+    end
     
     board.stub(:set_pin_mode, mock) do
-      part
-      InputComponent.new(board: board, pin: 2, mode: :input_pulldown)
-      InputComponent.new(board: board, pin: 3, mode: :input_pullup)
+      modes.each_with_index do |mode, pin|
+        local_part = InputComponent.new(board: board, pin: pin+1, mode: mode)
+        assert_equal mode, local_part.mode
+      end
     end
     mock.verify
     
-    assert_equal :input, part.mode
+    assert_raises { InputComponent.new(board: board, pin: modes.count+1, mode: :wrong_mode) }
   end
 
   def test_debounce_time=

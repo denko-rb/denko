@@ -4,54 +4,71 @@
 // Set up a single pin for the desired type of input or output.
 void Denko::setMode(byte p, byte m) {
   //
-  // Use the lowest 3 bits of m to set different input/output modes, and enable 
-  // or disable needed peripherals on different platforms.
+  // Use the lowest 4 bits of m to set different input/output modes.
+  // Also enables/disables peripherals for certain targets.
   //
   // OUTPUT MODES:  
-  // 000 = Digital Output
-  // 010 = PWM Ouptut
-  // 100 = DAC Output
+  // 0000 = Digital Output
+  // 0010 = PWM Ouptut
+  // 0100 = DAC Output
+  // 0110 = Open Drain Output  (Only ESP32 implements this, and we don't really use it)
+  // 1000 = Open Source Output (Nothing implements this yet)
   //
   // INPUT MODES
-  // 001 = Digital Input
-  // 011 = Digital Input with internal pulldown if available.
-  // 101 = Digital Input with internal pullup if available.
-  m = m & 0b00000111;
+  // 0001 = Input with no pull bias
+  // 0011 = Input with internal pulldown, if available.
+  // 0101 = Input with internal pullup, if available.
+  m = m & 0b00001111;
 
   #if defined(ESP32)
     // Free the LEDC channel if leaving PWM mode.
-    if (m != 0b010) releaseLEDC(p);
+    if (m != 0b0010) releaseLEDC(p);
     
     // Disable attached DAC if leaving DAC mode.
     #if defined(SOC_DAC_SUPPORTED)
-      if (m != 0b100) dacDisable(p);
+      if (m != 0b0100) dacDisable(p);
     #endif
   #endif
       
   // On the SAMD21 and RA4M1, mode needs to be INPUT when using the DAC.
   #if defined(__SAMD21G18A__) || defined(_RENESAS_RA_)
-    if (m == 0b100){
+    if (m == 0b0100){
       pinMode(p, INPUT);
       return;
     }
   #endif
   
-  // Handle the named INPUT_* states on boards implementing them.
+  // Handle INPUT_* states on boards implementing them.
   #ifdef INPUT_PULLDOWN
-  if (m == 0b011) {
+  if (m == 0b0011) {
     pinMode(p, INPUT_PULLDOWN);
     return;
   }
   #endif
   
   #ifdef INPUT_PULLUP
-  if (m == 0b101) {
+  if (m == 0b0101) {
     pinMode(p, INPUT_PULLUP);
     return;
   }
   #endif
   
-  // Handle the standard INPUT and OUTPUT states.
+  // Handle OUTPUT_* states on boards implementing them.
+  #ifdef OUTPUT_OPEN_DRAIN
+  if (m == 0b0110) {
+    pinMode(p, OUTPUT_OPEN_DRAIN);
+    return;
+  }
+  #endif
+
+  #ifdef OUTPUT_OPEN_SOURCE
+  if (m == 0b1000) {
+    pinMode(p, OUTPUT_OPEN_SOURCE);
+    return;
+  }
+  #endif
+
+  // Handle standard INPUT and OUTPUT states.
   // Allows INPUT_* to fallback to INPUT when not implemented.
   if (bitRead(m, 0) == 0) {
     pinMode(p, OUTPUT);
@@ -61,7 +78,7 @@ void Denko::setMode(byte p, byte m) {
 
   // Write high to set pullup for AVRs that use this method.
   #ifdef __AVR__
-    if (m == 0b101) digitalWrite(p, HIGH);
+    if (m == 0b0101) digitalWrite(p, HIGH);
   #endif
 }
 

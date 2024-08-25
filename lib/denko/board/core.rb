@@ -3,13 +3,14 @@ module Denko
     DIVIDERS = [1, 2, 4, 8, 16, 32, 64, 128]
 
     PIN_MODES = {
-                  output:         0b000,
-                  output_pwm:     0b010,
-                  output_dac:     0b100,
-                  input:          0b001,
-                  input_pulldown: 0b011,
-                  input_pullup:   0b101,
-                  input_output:   0b111
+                  output:             0b0000,
+                  output_pwm:         0b0010,
+                  output_dac:         0b0100,
+                  output_open_drain:  0b0110,
+                  output_open_source: 0b1000,
+                  input:              0b0001,
+                  input_pulldown:     0b0011,
+                  input_pullup:       0b0101,
     }
 
     # CMD = 0
