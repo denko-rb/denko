@@ -74,16 +74,19 @@
 
 # Single Board Computers
 
-### Raspberry Pi Single Board Computers
-**Note:** See the [denko-piboard](https://github.com/denko-rb/denko-piboard) extension to this gem. It uses the peripheral classes from this gem, but swaps out `Board` for `PiBoard`, which uses the Raspberry Pi's built-in GPIO interface. This is still a work-in-progress.
+See the [denko-piboard](https://github.com/denko-rb/denko-piboard) extension to this gem. It uses the peripheral classes from this gem, but swaps out `Board` for `PiBoard`. This uses the SBC's onboard GPIO header, with standard Linux drivers, instead of an attached microcontroller.
 
-|    Chip        | Status          | Products              | Notes |
-| :--------      | :------:        | :---------------      |------ |
-| BCM2835        | :yellow_heart:  | Pi 1, Pi Zero (W)     |
-| BCM2836/7      | :question:      | Pi 2                  |
-| BCM2837A0/B0   | :yellow_heart:  | Pi 3                  |
-| BCM2711        | :question:      | Pi 4, Pi 400          |
-| BCM2710A1      | :question:      | Pi Zero 2W            |
+In theory, this should work on any well supported SBC, with a recent version of Linux. The list below is confirmed working hardware.
+
+|    Chip        | Status          | Products                               | Notes |
+| :--------      | :------:        | :----------------------                |------ |
+| Allwinner H618 | :green_heart:   | Orange Pi Zero 2 W                     |
+| BCM2835        | :green_heart:   | Raspberry Pi 1, Raspberry Pi Zero (W)  |
+| BCM2836/7      | :question:      | Raspberry Pi 2                         |
+| BCM2837A0/B0   | :green_heart:   | Raspberry Pi 3                         |
+| BCM2711        | :green_heart:   | Raspberry Pi 4, Raspberry Pi 400       |
+| BCM2710A1      | :green_heart:   | Raspberry Pi Zero 2W                   |
+| BCM2712        | :question:      | Raspberry Pi 5                         |
 
 # Peripherals
 
@@ -105,7 +108,7 @@
 | SPI                   | :green_heart:   | H     | `SPI::Bus`               | Predetermined pins from IDE
 | SPI Bit Bang          | :green_heart:   | S     | `SPI::BitBang`           | Any pins
 | UART                  | :green_heart:   | H     | `UART::Hardware`         | Except Atmega328, ATmega168
-| UART Bit Bang         | :green_heart:   | S     | `UART::BitBang`          | Only ATmega328, ATmega168
+| UART Bit Bang         | :green_heart:   | S     | `UART::BitBang`          | Only ATmega328
 | Maxim OneWire         | :green_heart:   | S     | `OneWire::Bus`           | No overdrive
 | Infrared Emitter      | :green_heart:   | S     | `PulseIO::IRTransmitter` | Except SAM3X, RA4M1
 | Infrared Receiver     | :heart:         | S     | `PulseIO::IRReceiver`    | Doable with existing library
