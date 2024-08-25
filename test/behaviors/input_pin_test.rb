@@ -18,13 +18,11 @@ class InputPinTest < Minitest::Test
     mock.expect :call, nil, [1, :input]
     mock.expect :call, nil, [2, :input_pulldown]
     mock.expect :call, nil, [3, :input_pullup]
-    mock.expect :call, nil, [4, :input_output]
     
     board.stub(:set_pin_mode, mock) do
       part
       InputComponent.new(board: board, pin: 2, pulldown: true)
       InputComponent.new(board: board, pin: 3, pullup: true)
-      InputComponent.new(board: board, pin: 4, mode: :input_output)
     end
     mock.verify
     

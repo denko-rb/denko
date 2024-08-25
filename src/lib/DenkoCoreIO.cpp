@@ -16,7 +16,6 @@ void Denko::setMode(byte p, byte m) {
   // 001 = Digital Input
   // 011 = Digital Input with internal pulldown if available.
   // 101 = Digital Input with internal pullup if available.
-  // 111 = Digital Input/Output (ESP32 Only?)
   m = m & 0b00000111;
 
   #if defined(ESP32)
@@ -41,13 +40,6 @@ void Denko::setMode(byte p, byte m) {
   #ifdef INPUT_PULLDOWN
   if (m == 0b011) {
     pinMode(p, INPUT_PULLDOWN);
-    return;
-  }
-  #endif
-  
-  #ifdef INPUT_OUTPUT
-  if (m == 0b111) {
-    pinMode(p, INPUT_OUTPUT);
     return;
   }
   #endif

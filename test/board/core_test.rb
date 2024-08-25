@@ -19,7 +19,6 @@ class BoardCoreTest < Minitest::Test
     mock.expect(:call, nil, [Denko::Message.encode(command: 0, pin: 1, value: 0b001)])
     mock.expect(:call, nil, [Denko::Message.encode(command: 0, pin: 1, value: 0b011)])
     mock.expect(:call, nil, [Denko::Message.encode(command: 0, pin: 1, value: 0b101)])
-    mock.expect(:call, nil, [Denko::Message.encode(command: 0, pin: 1, value: 0b111)])  
 
     board.stub(:write, mock) do
       board.set_pin_mode 1, :output
@@ -28,7 +27,6 @@ class BoardCoreTest < Minitest::Test
       board.set_pin_mode 1, :input
       board.set_pin_mode 1, :input_pulldown
       board.set_pin_mode 1, :input_pullup
-      board.set_pin_mode 1, :input_output
     end
     mock.verify
 
