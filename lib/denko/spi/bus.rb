@@ -22,8 +22,8 @@ module Denko
 
       # Add peripheral to self and the board. It gets callbacks directly from the board.
       def add_component(component)
-        # Treat pin 255 as the component having no select pin. Mostly for APA102.
-        return if component.pin == 255
+        # Ignore components with no select pin. Mostly for APA102.
+        return unless component.pin
 
         pins = components.map { |c| c.pin }
         if pins.include? component.pin

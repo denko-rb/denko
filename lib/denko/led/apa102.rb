@@ -1,13 +1,17 @@
 module Denko
   module LED
     class APA102
-      include SPI::Peripheral
+      include Behaviors::BusPeripheral
 
       attr_reader :length, :bpp, :brightness
 
+      def pin; nil; end
+
       def before_initialize(options={})
-        options[:pin] = 255
         super(options)
+        unless [Denko::SPI::Bus, Denko::SPI::BitBang].include? options[:bus].class
+          raise "APA102 must be connected to the output pin of a SPI bus"
+        end
       end
 
       def after_initialize(options={})
@@ -80,7 +84,8 @@ module Denko
       end
 
       def show
-        spi_write(@start_frame + @buffer + @end_frame)
+        data = @start_frame + @buffer + @end_frame
+        bus.transfer(pin, write: data)
       end
     end
   end

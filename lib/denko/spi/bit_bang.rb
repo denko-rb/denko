@@ -14,16 +14,14 @@ module Denko
         # Clean up the pins hash.
         [:poci, :miso, :pico, :mosi, :sck, :clk].each { |key| pins.delete(key) }
 
-        # Validate input or output pin.
-        unless pins[:input] || pins[:output]
-          raise ArgumentError, "no input or output pin given. Require either or both"
-        end
+        # Validate pins.
+        raise ArgumentError, "either output or input pin required" unless pins[:input] || pins[:output]
+        raise ArgumentError, "clock pin required" unless pins[:clock]
 
-        # If only output or input, set the other 255 for a one-directional bus.
-        pins[:input]  = 255 if pins[:output] && !pins[:input]
-        pins[:output] = 255 if pins[:input]  && !pins[:output]
-
-        require_pins(:clock, :input, :output)
+        # Create proxies.
+        proxy_pin :clock,   DigitalIO::Output
+        proxy_pin :output,  DigitalIO::Output if pins[:output]
+        proxy_pin :input,   DigitalIO::Input  if pins[:input]
       end
 
       def transfer(select_pin, write: [], read: 0, frequency: nil, mode: 0, bit_order: :msbfirst)
@@ -41,7 +39,7 @@ module Denko
         board.spi_stop(pin)
       end
 
-      # Delegate this to board so peripherals can initialize their select pins.
+      # Delegate these to board so peripherals can initialize their select pins.
       def set_pin_mode(*args)
         board.set_pin_mode(*args)
       end
@@ -52,8 +50,8 @@ module Denko
 
       # Add peripheral to self and the board. It gets callbacks directly from the board.
       def add_component(component)
-        # Treat pin 255 as the component having no select pin. Mostly for APA102.
-        return if component.pin == 255
+        # Ignore components with no select pin. Mostly for APA102.
+        return unless component.pin
 
         pins = components.map { |c| c.pin }
         if pins.include? component.pin

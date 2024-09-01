@@ -16,16 +16,16 @@ class APISPITest < Minitest::Test
   
   def test_spi_modes
     # Start with mode = 0.
-    args = [[], 0, 1000000, 0, :msbfirst]
+    args = [nil, [], 0, 1000000, 0, :msbfirst]
     assert_equal (pack :uint8, 0b10000000), board.spi_header(*args)[0]
 
-    args[3] = 1
+    args[4] = 1
     assert_equal (pack :uint8, 0b10000001), board.spi_header(*args)[0]
 
-    args[3] = 2
+    args[4] = 2
     assert_equal (pack :uint8, 0b10000010), board.spi_header(*args)[0]
 
-    args[3] = 3
+    args[4] = 3
     assert_equal (pack :uint8, 0b10000011), board.spi_header(*args)[0]
 
     # Invalid mode = 4.
@@ -33,15 +33,15 @@ class APISPITest < Minitest::Test
   end
   
   def test_spi_lsbfirst
-    args = [[], 0, 1000000, 0, :lsbfirst]
+    args = [nil, [], 0, 1000000, 0, :lsbfirst]
     assert_equal (pack :uint8, 0b00000000), board.spi_header(*args)[0]
   end
 
   def test_spi_frequency
-    args = [[], 0, 1000000, 0, :msbfirst]
+    args = [nil, [], 0, 1000000, 0, :msbfirst]
     assert_equal (pack :uint32, 1000000), board.spi_header(*args)[3..6]
 
-    args[2] = 8000000
+    args[3] = 8000000
     assert_equal (pack :uint32, 8000000), board.spi_header(*args)[3..6]
   end
   
@@ -62,7 +62,7 @@ class APISPITest < Minitest::Test
   def test_spi_transfer
     board
     bytes = [1,2,3,4]
-    header = board.spi_header(bytes, 4, 8000000, 2, :lsbfirst)
+    header = board.spi_header(3, bytes, 4, 8000000, 2, :lsbfirst)
     aux = header + pack(:uint8, bytes)
     mock = Minitest::Mock.new.expect  :call, nil,
                                       [Denko::Message.encode(command: 26, pin: 3, aux_message: aux)]
@@ -76,7 +76,7 @@ class APISPITest < Minitest::Test
   
   def test_spi_listen
     board
-    header = board.spi_header([], 8, 1000000, 0, :lsbfirst)
+    header = board.spi_header(3, [], 8, 1000000, 0, :lsbfirst)
     mock = Minitest::Mock.new.expect  :call, nil,
                                       [Denko::Message.encode(command: 27, pin: 3, aux_message: header)]
     

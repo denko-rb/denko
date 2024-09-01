@@ -84,7 +84,8 @@ void Denko::spiEnd() {
 // val         = empty
 // auxMsg[0]   = SPI settings
 //   Bit 0..1  = SPI mode
-//   Bit 2..6  = ** unused **
+//   Bit 2..5  = ** unused **
+//   Bit 6     = Whether to toggle select pin (1), or not (0)
 //   Bit 7     = Read and write bit order: MSBFIRST(1) or LSBFIRST(0)
 // auxMsg[1]   = read length  (number of bytes)
 // auxMsg[2]   = write length (number of bytes)
@@ -100,8 +101,8 @@ void Denko::spiTransfer(uint32_t clockRate, uint8_t select, uint8_t settings, ui
     stream->print(':');
   }
 
-  // Pull select pin low, treating 255 as no select pin.
-  if (select != 255) {
+  // Pull select low.
+  if (bitRead(settings, 6) == 1) {
     pinMode(select, OUTPUT);
     digitalWrite(select, LOW);
   }
@@ -122,8 +123,8 @@ void Denko::spiTransfer(uint32_t clockRate, uint8_t select, uint8_t settings, ui
     }
   }
 
-  // Leave select high, treating 255 as no select pin.
-  if (select != 255) digitalWrite(select, HIGH);
+  // Leave select high.
+  if (bitRead(settings, 6) == 1) digitalWrite(select, HIGH);
 
   spiEnd();
 }

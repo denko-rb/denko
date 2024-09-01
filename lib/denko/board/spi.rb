@@ -1,6 +1,6 @@
 module Denko
   class Board
-    def spi_header_generic(write, read, mode, bit_order)
+    def spi_header_generic(select_pin, write, read, mode, bit_order)
       # Defaults.
       mode      ||= 0
       bit_order ||= :msbfrst
@@ -14,14 +14,17 @@ module Denko
         raise ArgumentError, "invalid SPI mode: #{settings.inspect}. Must be 0, 1, 2, or 3"
       end
 
+      # Bit 6 of settings indicates wiether a select pin needs to be toggled.
+      settings |= 0b01000000 if select_pin
+
       # Bit 7 of settings toggles MSBFIRST (1) or LSBFIRST (0) for both read and write.
-      settings = settings | 0b10000000 unless bit_order == :lsbfirst
+      settings |= 0b10000000 unless bit_order == :lsbfirst
 
       # Return generic portion of header (used by both hardware and bit bang SPI).
       pack(:uint8, [settings, read, write.length])
     end
 
-    def spi_header(write, read, frequency, mode, bit_order)
+    def spi_header(select_pin, write, read, frequency, mode, bit_order)
       # Set default frequency and validate.
       frequency ||= 1000000
       unless [Integer, Float].include? frequency.class
@@ -29,7 +32,7 @@ module Denko
       end
 
       # Get the generic part of the SPI header. 
-      header = spi_header_generic(write, read, mode, bit_order)
+      header = spi_header_generic(select_pin, write, read, mode, bit_order)
 
       # Generic header + packed frequency = hardware SPI header.
       header + pack(:uint32, frequency)
@@ -38,8 +41,9 @@ module Denko
     # CMD = 26
     def spi_transfer(select_pin, write: [], read: 0, frequency: nil, mode: nil, bit_order: nil)
       raise ArgumentError, "no bytes given to read or write" if (read == 0) && (write.empty?)
+      raise ArgumentError, "select_pin cannot be nil when reading or listening" if (read != 0) && (select_pin == nil)
 
-      header = spi_header(write, read, frequency, mode, bit_order)
+      header = spi_header(select_pin, write, read, frequency, mode, bit_order)
 
       self.write Message.encode command: 26,
                                 pin: select_pin,
@@ -49,8 +53,9 @@ module Denko
     # CMD = 27
     def spi_listen(select_pin, read: 0, frequency: nil, mode: nil, bit_order: nil)
       raise ArgumentError, 'no bytes to read. Give read: argument > 0' unless (read > 0)
+      raise ArgumentError, "select_pin cannot be nil when reading or listening" if (select_pin == nil)
 
-      header = spi_header([], read, frequency, mode, bit_order)
+      header = spi_header(select_pin, [], read, frequency, mode, bit_order)
       
       self.write Message.encode command: 27,
                                 pin: select_pin,
