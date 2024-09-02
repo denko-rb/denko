@@ -1,12 +1,18 @@
 module Denko
   module I2C
+    class BitBangSDA
+      include Behaviors::InputPin
+      include Behaviors::Callbacks
+    end
+
     class BitBang
       include Behaviors::MultiPin
       include Behaviors::BusControllerAddressed
       include Behaviors::Reader
 
       def initialize_pins(options={})
-        require_pins :scl, :sda
+        proxy_pin :scl,   DigitalIO::Output
+        proxy_pin :sda,   BitBangSDA
       end
 
       attr_reader :found_devices
@@ -15,15 +21,7 @@ module Denko
         super(options)
         @found_devices = []
 
-        # Board will see we respond to #pin with pins[:sda], and provide updates 
-        unregister
-        register
         bubble_callbacks
-      end
-
-      # Receive data coming from the SDA pin.
-      def pin
-        pins[:sda]
       end
 
       def search
@@ -40,7 +38,7 @@ module Denko
       end
 
       def bubble_callbacks
-        add_callback(:bus_controller) do |str|
+        self.sda.add_callback(:bus_controller) do |str|
           if str && str.match(/\A\d+-/)
             address, data = str.split("-", 2)
             address = address.to_i

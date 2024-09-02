@@ -1,5 +1,10 @@
 module Denko
   module SPI
+    class BitBangPOCI
+      include Behaviors::InputPin
+      include Behaviors::Callbacks
+    end
+
     class BitBang
       include Behaviors::MultiPin
       include Behaviors::BusController
@@ -21,7 +26,7 @@ module Denko
         # Create proxies.
         proxy_pin :clock,   DigitalIO::Output
         proxy_pin :output,  DigitalIO::Output if pins[:output]
-        proxy_pin :input,   DigitalIO::Input  if pins[:input]
+        proxy_pin :input,   BitBangPOCI       if pins[:input]
       end
 
       def transfer(select_pin, write: [], read: 0, frequency: nil, mode: 0, bit_order: :msbfirst)
