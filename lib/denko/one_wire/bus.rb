@@ -10,6 +10,9 @@ module Denko
       attr_reader :parasite_power
 
       def after_initialize(options = {})
+        # Set input mode to force upfront pin validation.
+        self.mode = :input
+
         super(options)
         read_power_supply
       end

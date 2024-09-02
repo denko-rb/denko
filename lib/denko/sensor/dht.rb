@@ -6,6 +6,9 @@ module Denko
       include TemperatureHelper
 
       def after_initialize(options={})
+        # Set input mode to force upfront pin validation.
+        self.mode = :input
+
         # Avoid repeated memory allocation for callback data and state.
         @reading   = { temperature: nil, humidity: nil }
         self.state = { temperature: nil, humidity: nil }
