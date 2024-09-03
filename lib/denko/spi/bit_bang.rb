@@ -1,10 +1,5 @@
 module Denko
   module SPI
-    class BitBangPOCI
-      include Behaviors::InputPin
-      include Behaviors::Callbacks
-    end
-
     class BitBang
       include Behaviors::MultiPin
       include Behaviors::BusController
@@ -24,9 +19,9 @@ module Denko
         raise ArgumentError, "clock pin required" unless pins[:clock]
 
         # Create proxies.
-        proxy_pin :clock,   DigitalIO::Output
-        proxy_pin :output,  DigitalIO::Output if pins[:output]
-        proxy_pin :input,   BitBangPOCI       if pins[:input]
+        proxy_pin :clock,   DigitalIO::CBitBang
+        proxy_pin :output,  DigitalIO::CBitBang if pins[:output]
+        proxy_pin :input,   DigitalIO::CBitBang if pins[:input]
       end
 
       def transfer(select_pin, write: [], read: 0, frequency: nil, mode: 0, bit_order: :msbfirst)

@@ -1,18 +1,13 @@
 module Denko
   module I2C
-    class BitBangSDA
-      include Behaviors::InputPin
-      include Behaviors::Callbacks
-    end
-
     class BitBang
       include Behaviors::MultiPin
       include Behaviors::BusControllerAddressed
       include Behaviors::Reader
 
       def initialize_pins(options={})
-        proxy_pin :scl,   DigitalIO::Output
-        proxy_pin :sda,   BitBangSDA
+        proxy_pin :scl, DigitalIO::CBitBang
+        proxy_pin :sda, DigitalIO::CBitBang
       end
 
       attr_reader :found_devices

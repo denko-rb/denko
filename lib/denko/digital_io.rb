@@ -5,5 +5,6 @@ module Denko
     autoload :Button,         "#{__dir__}/digital_io/button"
     autoload :Relay,          "#{__dir__}/digital_io/relay"
     autoload :RotaryEncoder,  "#{__dir__}/digital_io/rotary_encoder"
+    autoload :CBitBang,       "#{__dir__}/digital_io/c_bit_bang"
   end
 end
