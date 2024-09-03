@@ -120,10 +120,14 @@
 // Uses SerialUSB (left port), which is native USB, on Arduino Due & Zero, or Serial otherwise.
 // On many boards, eg. Arduino Leonardo, RP2040, ESP32-S3, Serial is native USB regardless.
 #if defined(__SAM3X8E__) || defined(__SAMD21G18A__)
-  #define DENKO_SERIAL_IF SerialUSB
-  #define DENKO_USB_CDC
-  // To use programming USB (right) on Due and Zero, comment 2 lines above, uncomment 1 line below.
-  // #define DENKO_SERIAL_IF Serial
+  // Prefer native USB, "SerialUSB" (left port on Due and Zero) once available.
+  #if defined(SerialUSB)
+    #define DENKO_SERIAL_IF SerialUSB
+    #define DENKO_USB_CDC
+  // "Serial" is UART (right port) on Due and Zero, but may be native USB on boards with one port.
+  #else
+    #define DENKO_SERIAL_IF Serial
+  #endif
 #else
   #define DENKO_SERIAL_IF Serial
 #endif
