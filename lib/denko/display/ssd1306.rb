@@ -116,11 +116,11 @@ module Denko
       attr_accessor :canvas
 
       def off
-        command(DISPLAY_OFF)
+        command [DISPLAY_OFF]
       end
 
       def on
-        command(DISPLAY_ON)
+        command [DISPLAY_ON]
       end
 
       def contrast=(value)
