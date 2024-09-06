@@ -27,8 +27,12 @@ module Denko
         PAGE_START         = 0xB0 # page 0-7
 
         # Double byte. Following byte sets value.
-        ADDRESSING_MODE    = 0x20
-          # Values: 0x00 = horizontal, 0x01 = vertical, 0x02 = page
+        ADDRESSING_MODE  = 0x20
+          # Values:
+          #   0x00 = horizontal (Pages auto-increment. Used for SSD1306)
+          #   0x01 = vertical
+          #   0x02 = page       (Default. Page and column must be set each time. Needed on SH1106)
+        ADDRESSING_MODE_DEFAULT = 0x00
       
         # Triple byte. Following 2 bytes sets value. For H/V addressing modes only.
         COLUMN_ADDRESS_RANGE = 0x21
@@ -104,7 +108,7 @@ module Denko
           VCOM_DESELECT_LEVEL,    0x20,
           PRECHARGE_PERIOD,       0xF1,           # Charge period for internal charge pump
           CHARGE_PUMP,            0x14,           # Internal charge pump
-          ADDRESSING_MODE,        0x00,           # Horizontal addressing mode so pages auto increment
+          ADDRESSING_MODE,        self.class::ADDRESSING_MODE_DEFAULT,
           DISPLAY_ON
         ]
         
