@@ -1,7 +1,7 @@
 module Denko
   module AnalogIO
     class ADS1118
-      include SPI::Peripheral
+      include SPI::Peripheral::SinglePin
       include ADS111X
 
       # Config register values on startup. MSB-first.

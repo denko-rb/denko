@@ -1,7 +1,7 @@
 module Denko
   module SPI
     class BaseRegister
-      include Peripheral
+      include SPI::Peripheral::SinglePin
       #
       # Registers act as a Board for components that need only digital pins in
       # in their I/O direction. Give the register as a 'board' when initializing a

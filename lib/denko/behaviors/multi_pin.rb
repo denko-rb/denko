@@ -42,7 +42,12 @@ module Denko
     
         # Make the proxy, passing through options, and store it.
         if self.pins[name]
-          proxy = klass.new pin_options.merge(board: self.board, pin: self.pins[name])          
+          # Allow pin_options to override board or pin number.
+          proxy_options = pin_options
+          proxy_options[:board] ||= self.board
+          proxy_options[:pin]   ||= self.pins[name]
+
+          proxy = klass.new(proxy_options) 
           self.proxies[name] = proxy
           instance_variable_set("@#{name}", proxy)
         end

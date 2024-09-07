@@ -11,7 +11,7 @@ TEST_DATA = [0, 1, 2, 3, 4, 5, 6, 7]
 
 # Create a simple test component class.
 class SPITester
-  include Denko::SPI::Peripheral
+  include Denko::SPI::Peripheral::SinglePin
 end
 spi_tester = SPITester.new(bus: bus, pin: SELECT_PIN)
 spi_tester.add_callback do |rx_bytes|

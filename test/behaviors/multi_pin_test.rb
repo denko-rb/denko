@@ -5,8 +5,9 @@ class MultiPinComponent
   
   def initialize_pins(options={})
     require_pin :one
-    proxy_pin   :two,   Denko::DigitalIO::Output
-    proxy_pin   :maybe, Denko::DigitalIO::Input, optional: true
+    proxy_pin   :two,         Denko::DigitalIO::Output
+    proxy_pin   :maybe,       Denko::DigitalIO::Input,  optional: true
+    proxy_pin   :other_board, Denko::DigitalIO::Output, board: options[:board2], optional: true
   end
 end
 
@@ -15,9 +16,14 @@ class MultiPinTest < Minitest::Test
     @board ||= BoardMock.new
   end
 
+  def board2
+    @board2 ||= BoardMock.new
+  end
+
   def part
     @part ||= MultiPinComponent.new board: board,
-                                    pins: { one: 9, two: 10, maybe: 11 }
+                                    board2: board2,
+                                    pins: { one: 9, two: 10, maybe: 11, other_board: 13 }
   end
 
   def test_validate_pins
@@ -38,6 +44,10 @@ class MultiPinTest < Minitest::Test
     assert_equal Denko::DigitalIO::Output, part.proxies[:two].class
     assert_equal Denko::DigitalIO::Input, part.proxies[:maybe].class
   end
+
+  def test_build_proxy_on_other_board
+    assert_equal board2, part.proxies[:other_board].board
+  end
   
   def attr_reader_exists_for_optional_pins
     part = MultiPinComponent.new board: board, pins: { one: 9, two:10 }
@@ -56,7 +66,7 @@ class MultiPinTest < Minitest::Test
 
   def test_proxy_states
     part.two.high
-    assert_equal({two: board.high, maybe: nil}, part.proxy_states)
+    assert_equal({two: board.high, maybe: nil, other_board: nil}, part.proxy_states)
 
     part2 = MultiPinComponent.new board: board, pins: { one: 'A1', two:12 }
     part2.two.low
