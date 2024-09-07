@@ -145,8 +145,8 @@ Polling and reading follow a call and response pattern.
 | Name                     | Status         | Interface                    | Component Class     | Notes |
 | :---------------         | :------:       | :--------                    | :---------------    |------ |
 | HD44780 LCD              | :green_heart:  | Digital Out, Output Register | `Display::HD44780`  |
-| SSD1306 OLED             | :yellow_heart: | I2C                          | `Display::SSD1306`  | 1 font, some graphics
-| SH1106  OLED             | :yellow_heart: | I2C                          | `Display::SH1106`   | Similar to SSD1306
+| SSD1306 OLED             | :yellow_heart: | I2C or SPI                   | `Display::SSD1306`  | 1 font, some graphics
+| SH1106  OLED             | :yellow_heart: | I2C or SPI                   | `Display::SH1106`   | Works same as SSD1306
 | ST7565R (128x64 Mono)    | :heart:        | SPI                          | `Display::ST7565R`  |
 | ST7735S (160x128 RGB)    | :heart:        | SPI                          | `Display::ST7735S`  |
 | ILI9341 (240x320 RGB)    | :heart:        | SPI                          | `Display::ILI9341`  |

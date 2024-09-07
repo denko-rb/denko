@@ -6,31 +6,27 @@ require 'denko'
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
 
+# The SH1106 OLED connects to either an I2C or SPI bus, depending on the model you have.
+# Bus setup exampels in order:
+#   I2C Hardware
+#   I2C Bit-Bang
+#   SPI Hardware
+#   SPI Bit-Bang
 #
-# Default pins for the I2C0 (first) interface on most chips:
-#
-# ATmega 328p:       SDA = 'A4'  SCL = 'A5' - Arduino Uno, Nano
-# ATmega 32u4:       SDA =   2   SCL =   3  - Arduino Leonardo, Pro Micro
-# ATmega1280 / 2560: SDA =  20   SCL =  21  - Arduino Mega
-# SAM3X8E:           SDA =  20   SCL =  21  - Arduino Due
-# SAMD21G18:         SDA =  20   SCL =  21  - Arduino Zero, M0, M0 Pro
-# ESP8266:           SDA =   4   SCL =   5
-# ESP32:             SDA =  21   SCL =  22
-# RP2040:            SDA =   4   SCL =   5  - Raspberry Pi Pico (W)
-#
-# Only give the SDA pin of the I2C bus. SCL (clock) pin must be 
-# connected for it to work, but we don't need to control it.
-#
-
-# Board's hardware I2C interface on predetermined pins.
 bus = Denko::I2C::Bus.new(board: board, pin: :SDA)
-# Bit-banged I2C on any pins.
-# bus = Denko::I2C::BitBang.new(board: board, pins: {scl: 8, sda: 9})
+# bus = Denko::I2C::BitBang.new(board: board, pins: {scl: 4, sda: 5})
+# bus = Denko::SPI::Bus.new(board: board)
+# bus = Denko::SPI::BitBang.new(board: board, pins: {clock: 13, output: 11})
 
-oled = Denko::Display::SH1106.new(bus: bus, rotate: true)
-canvas = oled.canvas
+# I2C OLED, connected to I2C SDA and SCL only. Default I2C address of 0x3C.
+oled = Denko::Display::SH1106.new(bus: bus, address: 0x3C, rotate: true)
+
+# SPI OLED, connected to SPI CLK and MOSI pins.
+# select and dc pins must be given. reset is optional (can be pulled high instead).
+# oled = Denko::Display::SH1106.new(bus: bus, pins: {select: 10, dc: 7, reset: 8}, rotate: true)
 
 # Draw some text on the OLED's canvas (a Ruby memory buffer).
+canvas = oled.canvas
 canvas.text_cursor = [27,60]
 canvas.print("Hello World!")
 

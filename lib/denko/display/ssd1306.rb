@@ -3,7 +3,7 @@ require_relative 'canvas'
 module Denko
   module Display
     class SSD1306
-      include I2C::Peripheral
+      include Behaviors::BusPeripheral
 
       # Fundamental Commands
         # Single byte (no need to OR with anything)
@@ -65,12 +65,6 @@ module Denko
       WIDTHS  = [64,96,128]
       HEIGHTS = [16,32,48,64]
 
-      def before_initialize(options={})
-        @i2c_address   = 0x3C
-        @i2c_frequency = 400000
-        super(options)
-      end
-
       def after_initialize(options={})
         super(options)
 
@@ -79,8 +73,8 @@ module Denko
         @rows    = options[:rows]    || options[:height] || 64
 
         # Validate known sizes.
-        raise ArgumentError, "error in SSD1306 width: #{@columns}. Must be in: #{WIDTHS.inspect}" unless WIDTHS.include?(@columns)
-        raise ArgumentError, "error in SSD1306 height: #{@rows}. Must be in: #{HEIGHTS.inspect}" unless HEIGHTS.include?(@rows)
+        raise ArgumentError, "error in #{self.class} width: #{@columns}. Must be in: #{WIDTHS.inspect}" unless WIDTHS.include?(@columns)
+        raise ArgumentError, "error in #{self.class} height: #{@rows}. Must be in: #{HEIGHTS.inspect}" unless HEIGHTS.include?(@rows)
 
         # Everything except 96x16 size uses clock 0x80.
         clock = 0x80
@@ -94,7 +88,8 @@ module Denko
         seg_remap     = options[:rotate] ? 0x01 : 0x00
         com_direction = options[:rotate] ? 0x08 : 0x00
 
-        # Startup sequence
+        # Startup sequence (SPI doesn't work properly if this isn't sent twice.)
+        2.times do
         command [
           MULTIPLEX_RATIO,        @rows - 1,
           DISPLAY_OFFSET,         0x00,
@@ -111,6 +106,7 @@ module Denko
           ADDRESSING_MODE,        self.class::ADDRESSING_MODE_DEFAULT,
           DISPLAY_ON
         ]
+        end
         
         # Create a new blank canvas and draw it.
         self.canvas = Canvas.new(@columns, @rows)
@@ -169,14 +165,61 @@ module Denko
         end
       end
 
-      # Commands are I2C messages prefixed with 0x00.
-      def command(bytes)
-        i2c_write([0x00] + bytes)
+      def i2c_setup
+        singleton_class.include(I2C::Peripheral)
+
+        define_singleton_method(:before_initialize) do |options|
+          @i2c_address   = 0x3C
+          @i2c_frequency = 400000
+          super(options)
+        end
+
+        # Commands are I2C messages prefixed with 0x00.
+        define_singleton_method(:command) do |bytes|
+          i2c_write([0x00] + bytes)
+        end
+
+        # Data are I2C messages prefixed with 0x40.
+        define_singleton_method(:data) do |bytes|
+          i2c_write([0x40] + bytes)
+        end
       end
 
-      # Data are I2C messages prefixed with 0x40.
-      def data(bytes)
-        i2c_write([0x40] + bytes)
+      def spi_setup
+        singleton_class.include(SPI::Peripheral::MultiPin)
+
+        define_singleton_method(:initialize_pins) do |options|
+          super(options)
+          proxy_pin :dc,    DigitalIO::Output, board: bus.board
+          proxy_pin :reset, DigitalIO::Output, board: bus.board, optional: true
+          reset.high if reset
+        end
+
+        # Commands are SPI bytes written while DC pin low.
+        define_singleton_method(:command) do |bytes|
+          dc.low
+          spi_write(bytes)
+        end
+
+        # Data are SPI SPI bytes written while DC pin high.
+        define_singleton_method(:data) do |bytes|
+          dc.high
+          spi_write(bytes)
+        end
+      end
+
+      def initialize(options={})
+        bus = options[:bus] || options[:board]
+
+        if bus.class.ancestors.include?(Denko::SPI::Bus) || bus.class.ancestors.include?(Denko::SPI::BitBang)
+          spi_setup
+        elsif bus.class.ancestors.include?(Denko::I2C::Bus) || bus.class.ancestors.include?(Denko::I2C::BitBang)
+          i2c_setup
+        else
+          raise ArgumentError, "#{self.class} must be connected to either an I2C or SPI bus"
+        end
+
+        super(options)
       end
     end
   end
