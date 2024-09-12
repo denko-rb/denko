@@ -17,7 +17,7 @@ module Denko
         @found_devices = []
 
         # Denko::PiBoard needs this called once to put pins into the proper modes.
-        board.i2c_bb_claim(scl.pin, sda.pin) if board.respond_tot?(:i2c_bb_claim)
+        board.i2c_bb_claim(scl.pin, sda.pin) if board.respond_to?(:i2c_bb_claim)
 
         bubble_callbacks
       end
