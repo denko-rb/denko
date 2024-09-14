@@ -39,7 +39,7 @@ void Denko::spiBBtransfer( uint8_t clock, uint8_t input, uint8_t output, uint8_t
   // Set idle state of clock pin based on SPI mode.
   pinMode(clock, OUTPUT);
   if ((mode == 0)||(mode == 1)) digitalWrite(clock, LOW);
-  if ((mode == 2)||(mode == 3)) digitalWrite(clock, LOW);
+  if ((mode == 2)||(mode == 3)) digitalWrite(clock, HIGH);
 
   // Stream read bytes as if coming from select pin.
   if (rLength > 0) {
