@@ -5,6 +5,10 @@ module Denko
     VAL_MAX = 9999
 
     def self.encode(command: nil, pin: nil, value: nil, aux_message: nil)
+      if (command == 1) && (pin < 64) && (value == 1 || value == 0)
+        return (pin | 0b10000000 | (value << 6)).chr
+      end
+
       # Start building message backwards with aux_message first.
       if aux_message
         # Convert it to String.

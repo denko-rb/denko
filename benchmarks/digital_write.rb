@@ -7,7 +7,7 @@ require 'denko'
 # Because the protocol is still ASCII, a single-digit pin may
 # be faster than a double-digit, if serial I/O is the bottleneck.
 PIN          = 4
-TOTAL_WRITES = 20_000
+TOTAL_WRITES = 200_000
 
 connection = Denko::Connection::Serial.new
 board      = Denko::Board.new(connection)

@@ -57,6 +57,11 @@ void Denko::run(){
 }
 
 void Denko::parse(byte c) {
+  if ((fragmentIndex == 0) && (charIndex == 0) && ((c & 0b10000000) != 0)) {
+    dWrite((c & 0b00111111), ((c & 0b01000000) >> 6), false);
+    return;
+  }
+
   if ((c == '\n') || (c == '\\')) {
     // If last char was a \, this \ or \n is escaped.
     if(escaping){

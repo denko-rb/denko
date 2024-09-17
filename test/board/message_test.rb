@@ -30,25 +30,31 @@ class MessageTest < Minitest::Test
   end
 
   def test_build_messages_correctly
-    assert_equal "1.1.1\n",    Denko::Message.encode(command: 1, pin: 1, value: 1)
-    assert_equal "1.1\n",      Denko::Message.encode(command: 1, pin: 1)
-    assert_equal "1..1\n",     Denko::Message.encode(command: 1, value: 1)
-    assert_equal "1\n",        Denko::Message.encode(command: 1)
-    assert_equal "1...test\n", Denko::Message.encode(command: 1, aux_message: "test")
+    assert_equal "0.1.1\n",    Denko::Message.encode(command: 0, pin: 1, value: 1)
+    assert_equal "0.1\n",      Denko::Message.encode(command: 0, pin: 1)
+    assert_equal "0..1\n",     Denko::Message.encode(command: 0, value: 1)
+    assert_equal "0\n",        Denko::Message.encode(command: 0)
+    assert_equal "0...test\n", Denko::Message.encode(command: 0, aux_message: "test")
+  end
+
+  def test_single_byte_digital_write
+    assert_equal 0b11000100.chr, Denko::Message.encode(command: 1, pin: 4,  value: 1)
+    assert_equal 0b10000100.chr, Denko::Message.encode(command: 1, pin: 4,  value: 0)
+    assert_equal "1.64.1\n",     Denko::Message.encode(command: 1, pin: 64, value: 1)
   end
 
   def test_escape_newline_in_aux
-    assert_equal  "1...line1\\\nline2\\\n\n",
-                  Denko::Message.encode(command: 1, aux_message: "line1\nline2\n")
+    assert_equal  "0...line1\\\nline2\\\n\n",
+                  Denko::Message.encode(command: 0, aux_message: "line1\nline2\n")
   end
 
   def test_escape_backslash_in_aux
-    assert_equal  "1...line1\\\\line2\\\\\n",
-                  Denko::Message.encode(command: 1, aux_message: "line1\\line2\\")
+    assert_equal  "0...line1\\\\line2\\\\\n",
+                  Denko::Message.encode(command: 0, aux_message: "line1\\line2\\")
   end
 
   def test_escape_newline_and_backslashes_together
-    assert_equal  "1...line1\\\\\\\nline2\\\\\\\n\n",
-                  Denko::Message.encode(command: 1, aux_message: "line1\\\nline2\\\n")
+    assert_equal  "0...line1\\\\\\\nline2\\\\\\\n\n",
+                  Denko::Message.encode(command: 0, aux_message: "line1\\\nline2\\\n")
   end
 end
