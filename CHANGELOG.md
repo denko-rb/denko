@@ -12,8 +12,8 @@
 ### Board Changes
 
 - ESP32 Boards
-  - Now requires the 3.0+ version of the ESP32 Arduino Core.
-  - USB-CDC (aka native USB) appears to be broken in the 3.0 core. Will eventually hang if sending a lot of data both directions at the same time. Use a UART bridge on one of the standard serial interfaces until this is fixed.
+  - Now require the 3.0+ version of the ESP32 Arduino Core.
+  - USB-CDC (aka native USB) appears to be broken in the 3.0 core. Will eventually hang if sending a lot of data both directions at the same time. Use a UART bridge on one of the default hardware serial interface until this is fixed.
   - Infrared output temporarily disabled, until IR library is compatible with 3.0
 
 ### New Peripherals
@@ -38,8 +38,8 @@
 
 ### Peripheral Changes
 
-- All Peripherals
-  - On CRuby, `@state_mutex` and `@callback_mutex` are now instances `Denko::MutexStub`, which does nothing. This is a big performance boost, especially with YJIT, since time is only lost waiting for the GVL, not many smaller mutexes.
+- All Peripherals:
+  - On CRuby, `@state_mutex` and `@callback_mutex` are now instances of `Denko::MutexStub`, which does nothing. This is a big performance boost, since time is only lost waiting for the GVL, not many smaller mutexes.
 
 - Temperature / Humidity / Pressure Sensors:
   - `DS18B20`, `DHT` and `HTU21D` readings now match all the others (Hash with same keys).
@@ -56,11 +56,11 @@
   - Added `#debounce=(time)` which just calls `Board#set_pin_debounce` for the pin.
 
 - `DigitalIO::CBitBang`:
-  - New helper class. Just enforces initialize validation that pins that will eventually be bit-banged. Essential for `PiBoard`, but a good idea for `Board`.
+  - New helper class. Enforces initialize validation for pins that get bit-banged. Essential for `PiBoard`.
   - Always starts pins in `:input` mode. The bit-bang routine is expected to change them.
 
 - `DigitalIO::Input`:
-  - `#initialize` no longer accepts `pullup: true` or `pulldown: true`. Set mode explicitly instead, like `mode: :input_pullup`.
+  - `#initialize` no longer accepts `pullup: true` or `pulldown: true`. Set mode explicitly, like `mode: :input_pullup`.
 
 - `DigitalIO::RotaryEncoder`:
   - Pin names standardized to `a:` and `b:`, but still accept "clock", "data", "clk", "dt".
@@ -82,37 +82,37 @@
 - `OneWire::Bus`:
   -`#update` now accepts either String of comma delimited bytes (ASCII), or Array of bytes (from `PiBoard` C extension).
 
-- `Spi::Peripheral`:
+- `SPI::Peripheral`:
   - Split into `SPI:Peripheral::SinglePin` and `Spi::Peripheral::MultiPin` to allow modeling more complex peripherals.
 
 ### Fiwmare Changes
 
-- General
+- General:
   - Boards now report their serial buffer as 8 bytes less than the actual buffer size.
   - Removed local callback hooks (meant for customization in C) from the Arduino sketches.
   - Improved serial interface selection for ATSAMD21 boards. Some boards have the native interface as `Serial`, some as `SerialUSB`. The native interface is always selected now, regardless of its name.
   - More accurate pin counts when initializing digital listener storage for different boards.
 
-- Core I/O
+- Core I/O:
   - Removed `INPUT_OUTPUT` mode. Only ESP32 used it and it's the same as `OUTPUT`.
   - Added an optimized single-byte binary message type for `#digital_write`. Improves write throughput 6-7x. Only works for pins 0..63. Fallback automatic for higher pins.
 
-- Hardware I2C
+- Hardware I2C:
   - Message format changed so "value" isn't used. Will be used for differentiating multiple I2C interfaces in future.
 
-- Hardware SPI
-  - Transfers can now be done without a chip select pin. This accomodates LED strips like APA102, but could also work for WS2812 @ 2.4 MHz.
+- Hardware SPI:
+  - Transfers don't need a chip select pin now. This is for LED strips like APA102, but could also work for WS2812 @ 2.4 MHz.
 
-- Added Bit-bang I2C. Works similar to Bit-bang SPI.  
+- Added Bit-Bang I2C. Works similar to Bit-Bang SPI.  
 
 ### Board Interface Changes
 
 - Added `Board#set_pin_debounce`
-  - Implemented for Linux GPIO alerts in `Denko::PiBoard` (denko-piboard gem)
+  - Implemented for Linux GPIO alerts in `Denko::PiBoard` (denko-piboard gem).
   - Sets a time (in microseconds) that level changes on a pin must be stable for, before an update happens.
-  - Does nothing for `Denko::Board`
+  - Does nothing for `Denko::Board`.
 
-- Added `OUTPUT_OPEN_DRAIN` and `OUTPUT_OPEN_SOURCE` pin modes to support `PiBoard`
+- Added `OUTPUT_OPEN_DRAIN` and `OUTPUT_OPEN_SOURCE` pin modes to support `PiBoard`.
 
 ### CLI Changes
 
@@ -123,7 +123,7 @@
 - ADS111X sensors were incorrectly validating sample rate when set.
 - Handshake could fail if board was left in a state where it kept transmitting data.
 - An ESP32 with no DACs might not release a LEDC channel after use.
-- Denko::Connection` could have -ve bytes in transit, making it overflow the board's rx buffer.
+- `Denko::Connection` could have negative bytes in transit, making it overflow the board's rx buffer.
 - `Servo`, `Buzzer` and `IRTransmitter` didn't start in `:output_pwm` mode.
 - `SSD1306#on` and `#off` would raise errors, trying to write Integer instead of Array to `I2C::Bus`.
 - `SPI::BitBang` did not correctly set initial clock state for modes 2 and 3.
