@@ -5,6 +5,7 @@ module Denko
     VAL_MAX = 9999
 
     def self.encode(command: nil, pin: nil, value: nil, aux_message: nil)
+      # Optimized single byte binary message for digital write on pins 0..63.
       if (command == 1) && (pin < 64) && (value == 1 || value == 0)
         return (pin | 0b10000000 | (value << 6)).chr
       end

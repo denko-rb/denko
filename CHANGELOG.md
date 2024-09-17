@@ -5,26 +5,16 @@
 ### New Boards
 
 - ESP32-H2 and ESP32-C6 variants (`--target esp32`):
+  - Depends on ESP32 Arduino Core 3.0+
   - No WiFi on H2
   - No DACs on either
-  - USB-CDC flaky on both. Use external UART for now.
 
 ### Board Changes
 
 - ESP32 Boards
-  - Now based on (and requires) the 3.0+ version of the ESP32 Arduino Core.
-  - Infrared output functionality temporarily disabled, until IR library is compatible with 3.0
-
-### Board Interface Changes
-
-- Added `Board#set_pin_debounce`
-  - Implemented for Linux GPIO alerts in `Denko::PiBoard` (denko-piboard gem)
-  - Sets a time (in microseconds) that level change on a pin must hold for, before an update happens.
-  - Does nothing for `Denko::Board`
-
-### Behavior Mixin Changes
-
-- Added `InputPin#debounce=(time)` which just calls `Board#set_pin_debounce` for the pin.
+  - Now requires the 3.0+ version of the ESP32 Arduino Core.
+  - USB-CDC (aka native USB) appears to be broken in the 3.0 core. Will eventually hang if sending a lot of data both directions at the same time. Use a UART bridge on one of the standard serial interfaces until this is fixed.
+  - Infrared output temporarily disabled, until IR library is compatible with 3.0
 
 ### New Peripherals
 
@@ -33,15 +23,44 @@
   - Connects via I2C bus. Driver written in Ruby.
   - Modeled after `AnalogIO::Input` since it's a single channel ADC.
   - Can be read directly with `#read` or polled with `#poll`.
-  - Full scale voltage must be givin in the initailize hash, `full_scale_voltage:`.
+  - Full scale voltage must be given in the initailize hash, `full_scale_voltage:`.
   - Gain and sample rate configurable.
   - See example for more.
 
-### Peripheral Interface Changes
+- SSD1306 1-Color OLED
+  - Added SPI version.
+  - Both versions use `Denko::Display::SSD1306`. Instances mutate to I2C or SPI on initialize, based on type of bus given.
+
+- SH1106 1-Color OLED
+  - Class is `Denko::Display::SH1106`.
+  - Almost the same as SSD1306. Most driver code is shared between them.
+  - I2C and SPI versions both supported, in the same way as SSD1306 above.
+
+### Peripheral Changes
+
+- All Peripherals
+  - On CRuby, `@state_mutex` and `@callback_mutex` are now instances `Denko::MutexStub`, which does nothing. This is a big performance boost, especially with YJIT, since time is only lost waiting for the GVL, not many smaller mutexes.
+
+- Temperature / Humidity / Pressure Sensors:
+  - `DS18B20`, `DHT` and `HTU21D` readings now match all the others (Hash with same keys).
+  - Readings standardized to be in ºC, %RH and Pascals. Callbacks always receive hash with these.
+  - Added `#temperature_f` `#temperature_k` `#pressure_atm` `#pressure_bar` helper conversion methods.
+  - `[]` access for `@state` removed removed.
+  - `#read` methods standardized to always read ALL sub-sensors. Affects `HTU21D` and `BMP180`.
 
 - `AnalogIO::Input`:
   - Added `#smoothing=` and `#smoothing_size=` accessors to `AnalogIO::Input` for configuring smoothing.
-  - `AnalogIO::Sensor` removed. Use this instead.
+  - `AnalogIO::Sensor` removed. Use `Input` instead.
+
+- `Behavior::InputPin`  
+  - Added `#debounce=(time)` which just calls `Board#set_pin_debounce` for the pin.
+
+- `DigitalIO::CBitBang`:
+  - New helper class. Just enforces initialize validation that pins that will eventually be bit-banged. Essential for `PiBoard`, but a good idea for `Board`.
+  - Always starts pins in `:input` mode. The bit-bang routine is expected to change them.
+
+- `DigitalIO::Input`:
+  - `#initialize` no longer accepts `pullup: true` or `pulldown: true`. Set mode explicitly instead, like `mode: :input_pullup`.
 
 - `DigitalIO::RotaryEncoder`:
   - Pin names standardized to `a:` and `b:`, but still accept "clock", "data", "clk", "dt".
@@ -60,12 +79,40 @@
 - `Motor::Stepper`:
   - Replaced `#step_cc` with `#step_ccw`.
 
-- Temperature / Humidity / Pressure Sensors:
-  - `DS18B20`, `DHT` and `HTU21D` readings now match all the others (Hash with same keys).
-  - Readings standardized to be in ºC, %RH and Pascals. Callbacks always receive hash with these.
-  - Added `#temperature_f` `#temperature_k` `#pressure_atm` `#pressure_bar` helper conversion methods.
-  - `[]` access for `@state` removed removed.
-  - `#read` methods standardized to always read ALL sub-sensors. Affects `HTU21D` and `BMP180`.
+- `OneWire::Bus`:
+  -`#update` now accepts either String of comma delimited bytes (ASCII), or Array of bytes (from `PiBoard` C extension).
+
+- `Spi::Peripheral`:
+  - Split into `SPI:Peripheral::SinglePin` and `Spi::Peripheral::MultiPin` to allow modeling more complex peripherals.
+
+### Fiwmare Changes
+
+- General
+  - Boards now report their serial buffer as 8 bytes less than the actual buffer size.
+  - Removed local callback hooks (meant for customization in C) from the Arduino sketches.
+  - Improved serial interface selection for ATSAMD21 boards. Some boards have the native interface as `Serial`, some as `SerialUSB`. The native interface is always selected now, regardless of its name.
+  - More accurate pin counts when initializing digital listener storage for different boards.
+
+- Core I/O
+  - Removed `INPUT_OUTPUT` mode. Only ESP32 used it and it's the same as `OUTPUT`.
+  - Added an optimized single-byte binary message type for `#digital_write`. Improves write throughput 6-7x. Only works for pins 0..63. Fallback automatic for higher pins.
+
+- Hardware I2C
+  - Message format changed so "value" isn't used. Will be used for differentiating multiple I2C interfaces in future.
+
+- Hardware SPI
+  - Transfers can now be done without a chip select pin. This accomodates LED strips like APA102, but could also work for WS2812 @ 2.4 MHz.
+
+- Added Bit-bang I2C. Works similar to Bit-bang SPI.  
+
+### Board Interface Changes
+
+- Added `Board#set_pin_debounce`
+  - Implemented for Linux GPIO alerts in `Denko::PiBoard` (denko-piboard gem)
+  - Sets a time (in microseconds) that level changes on a pin must be stable for, before an update happens.
+  - Does nothing for `Denko::Board`
+
+- Added `OUTPUT_OPEN_DRAIN` and `OUTPUT_OPEN_SOURCE` pin modes to support `PiBoard`
 
 ### CLI Changes
 
@@ -73,10 +120,13 @@
 
 ### Bug Fixes
 
-- More accurate pin counts when initializing digital listener storage for different boards.
-- Fix a bug where ADS111X sensors were incorrectly validating sample rate when set.
-- Fix a bug where handshake could fail if board was left in a state where it kept transmitting data.
-- Fix a bug where an ESP32 with no DACs might not release a LEDC channel after use.
+- ADS111X sensors were incorrectly validating sample rate when set.
+- Handshake could fail if board was left in a state where it kept transmitting data.
+- An ESP32 with no DACs might not release a LEDC channel after use.
+- Denko::Connection` could have -ve bytes in transit, making it overflow the board's rx buffer.
+- `Servo`, `Buzzer` and `IRTransmitter` didn't start in `:output_pwm` mode.
+- `SSD1306#on` and `#off` would raise errors, trying to write Integer instead of Array to `I2C::Bus`.
+- `SPI::BitBang` did not correctly set initial clock state for modes 2 and 3.
 
 ## 0.13.5
 
