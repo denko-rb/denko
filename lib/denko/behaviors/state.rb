@@ -2,8 +2,8 @@ module Denko
   module Behaviors
     module State
       def initialize(options={})
-        # Component includes State, so no need to call super here.
-        @state_mutex = Mutex.new
+        # Component includes State, so it calls super, not State.
+        @state_mutex = Denko.cruby? ? Denko::MutexStub.new : Mutex.new
         @state = nil
       end
       

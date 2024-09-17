@@ -30,6 +30,14 @@ class ComponentTest < Minitest::Test
     assert_nil BaseComponent.new(board: board).state
   end
   
+  def test_state_mutex_is_correct_class
+    if (RUBY_ENGINE == "ruby")
+      assert_equal part.instance_variable_get(:@state_mutex).class, Denko::MutexStub
+    else
+      assert_equal part.instance_variable_get(:@state_mutex).class, Mutex
+    end
+  end
+
   def test_sets_and_gets_state
     part.send(:state=, 10)
     assert_equal part.state, 10

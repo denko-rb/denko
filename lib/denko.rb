@@ -4,10 +4,17 @@ module Denko
   def self.root
     File.expand_path '../..', __FILE__
   end
+
+  def self.cruby?
+    RUBY_ENGINE == "ruby"
+  end
 end
 
 # For method delegation.
 require 'forwardable'
+
+# Bypass mutexes where possible for CRuby.
+require_relative 'denko/mutex_stub'
 
 # Component support stuff.
 require_relative 'denko/version'

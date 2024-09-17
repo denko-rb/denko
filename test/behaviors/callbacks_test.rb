@@ -27,6 +27,14 @@ class CallbacksTest < Minitest::Test
     @part ||= CallbackComponent.new(board: board, pin: 1)
   end
 
+  def callback_mutex_is_correct_class
+    if (RUBY_ENGINE == "ruby")
+      assert_equal part.instance_variable_get(:@callback_mutex).class, Denko::MutexStub
+    else
+      assert_equal part.instance_variable_get(:@callback_mutex).class, Mutex
+    end
+  end
+
   def test_callback_mutex
     callback = Proc.new{}
     mock = Minitest::Mock.new

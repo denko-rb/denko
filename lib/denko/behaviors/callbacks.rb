@@ -5,7 +5,7 @@ module Denko
       attr_reader :callback_mutex
 
       def initialize(options={})
-        @callback_mutex = Mutex.new
+        @callback_mutex = Denko.cruby? ? Denko::MutexStub.new : Mutex.new
         remove_callbacks
         super(options)
       end
