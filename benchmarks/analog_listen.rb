@@ -30,7 +30,7 @@ inputs.each do |input|
   input.listen(DIVIDER)
 end
 
-print "Sampling for #{TEST_TIME} seconds..."
+print "Sampling for #{TEST_TIME} seconds... "
 
 # Main test
 start = Time.now
@@ -41,7 +41,7 @@ finish = Time.now
 readings = $readings
 inputs.each { |input| input.stop }
 
-puts " Done."; puts
+puts "Done."; puts
 
 rps   = (readings / (finish - start))
 rpspi = rps / inputs.count
