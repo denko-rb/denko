@@ -36,7 +36,7 @@ module Denko
       end
 
       def bubble_callbacks
-        self.sda.add_callback(:bus_controller) do |str|
+        self.add_callback(:bus_controller) do |str|
           if str && str.match(/\A\d+-/)
             address, data = str.split("-", 2)
             address = address.to_i
@@ -48,6 +48,10 @@ module Denko
               component.update(data) if component.address == address
             end
           end
+        end
+
+        self.sda.add_callback(:bus_forwarder) do |data|
+          self.update(data)
         end
       end
     end
