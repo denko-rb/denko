@@ -151,7 +151,7 @@ Most boards have a regular LED on-board. Test it with the [blink](examples/led/b
 
 ### denko-piboard
 
-[This gem](https://github.com/denko-rb/denko-piboard) adds a `Board`-compatible class for the built-in GPIO headers on single board computers (eg. Raspberry Pi). Connect peripherals directly to the SBC, and use classes from this gem.
+[denko-piboard](https://github.com/denko-rb/denko-piboard) adds a `Board`-compatible class for the built-in GPIO headers on single board computers (eg. Raspberry Pi). Connect peripherals directly to the SBC, and use classes from this gem.
 
 ### mruby-denko
 

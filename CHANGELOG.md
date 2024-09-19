@@ -19,20 +19,19 @@
 ### New Peripherals
 
 - ADS1100 Analog-to-Digital Converter:
-  - Class: `Denko::AnalogIO::ADS1100`.
+  - Class: `Denko::AnalogIO::ADS1100`
   - Connects via I2C bus. Driver written in Ruby.
   - Modeled after `AnalogIO::Input` since it's a single channel ADC.
   - Can be read directly with `#read` or polled with `#poll`.
   - Full scale voltage must be given in the initailize hash, `full_scale_voltage:`.
-  - Gain and sample rate configurable.
-  - See example for more.
+  - Gain and sample rate configurable. See example for more.
 
 - SSD1306 1-Color OLED
   - Added SPI version.
   - Both versions use `Denko::Display::SSD1306`. Instances mutate to I2C or SPI on initialize, based on type of bus given.
 
 - SH1106 1-Color OLED
-  - Class is `Denko::Display::SH1106`.
+  - Class: `Denko::Display::SH1106`
   - Almost the same as SSD1306. Most driver code is shared between them.
   - I2C and SPI versions both supported, in the same way as SSD1306 above.
 
@@ -53,17 +52,18 @@
   - `AnalogIO::Sensor` removed. Use `Input` instead.
 
 - `Behavior::InputPin`  
-  - Added `#debounce=(time)` which just calls `Board#set_pin_debounce` for the pin.
+  - Added `#debounce=(time)` which just calls `Board#set_pin_debounce` for the pin. Only on `PiBoard`.
 
 - `DigitalIO::CBitBang`:
-  - New helper class. Enforces initialize validation for pins that get bit-banged. Essential for `PiBoard`.
+  - New helper class. Forces initialize validation for bit-bang pins. Essential for `PiBoard`.
+  - As a side-effect, makes sure 2 low-level bit-bang Components (eg. buses) can't use the same pin.
   - Always starts pins in `:input` mode. The bit-bang routine is expected to change them.
 
 - `DigitalIO::Input`:
   - `#initialize` no longer accepts `pullup: true` or `pulldown: true`. Set mode explicitly, like `mode: :input_pullup`.
 
 - `DigitalIO::RotaryEncoder`:
-  - Pin names standardized to `a:` and `b:`, but still accept "clock", "data", "clk", "dt".
+  - Pin names standardized to `a:` and `b:`, but still accept `:clock`, `:data`, `:clk`, `:dt`.
   - `steps_per_revolution` changed to `counts_per_revolution`
   - Every level change is counted now (full-quadrature). Was half-quadrature before.
   - `counts_per_revolution` now defaults to 60 instead of 30 (generic 30-detent encoders).
@@ -74,13 +74,13 @@
 
 - `LED::RGB`:
   - `#write` takes 3 regular args now. Use `*array` instead to pass an array.
-  - `#color` only takes a symbol for one of the predefined colors (or :off) now.
+  - `#color` only takes a symbol for one of the predefined colors (or `:off`) now.
 
 - `Motor::Stepper`:
   - Replaced `#step_cc` with `#step_ccw`.
 
 - `OneWire::Bus`:
-  -`#update` now accepts either String of comma delimited bytes (ASCII), or Array of bytes (from `PiBoard` C extension).
+  - `#update` now accepts either String of comma delimited bytes (ASCII), or Array of bytes (from `PiBoard` C extension).
 
 - `SPI::Peripheral`:
   - Split into `SPI:Peripheral::SinglePin` and `Spi::Peripheral::MultiPin` to allow modeling more complex peripherals.
