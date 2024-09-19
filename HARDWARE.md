@@ -74,19 +74,7 @@
 
 # Single Board Computers
 
-See the [denko-piboard](https://github.com/denko-rb/denko-piboard) extension to this gem. It uses the peripheral classes from this gem, but swaps out `Board` for `PiBoard`. This uses the SBC's onboard GPIO header, with standard Linux drivers, instead of an attached microcontroller.
-
-In theory, this should work on any well supported SBC, with a recent version of Linux. The list below is confirmed working hardware.
-
-|    Chip        | Status          | Products                               | Notes |
-| :--------      | :------:        | :----------------------                |------ |
-| Allwinner H618 | :green_heart:   | Orange Pi Zero 2 W                     |
-| BCM2835        | :green_heart:   | Raspberry Pi 1, Raspberry Pi Zero (W)  |
-| BCM2836/7      | :question:      | Raspberry Pi 2                         |
-| BCM2837A0/B0   | :green_heart:   | Raspberry Pi 3                         |
-| BCM2711        | :green_heart:   | Raspberry Pi 4, Raspberry Pi 400       |
-| BCM2710A1      | :green_heart:   | Raspberry Pi Zero 2W                   |
-| BCM2712        | :question:      | Raspberry Pi 5                         |
+See the [Support](https://github.com/denko-rb/denko-piboard?tab=readme-ov-file#support) section of denko-piboard.
 
 # Peripherals
 

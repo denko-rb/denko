@@ -1,6 +1,6 @@
 # denko 0.14.0 [![Test Status](https://github.com/denko-rb/denko/actions/workflows/ruby.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/ruby.yml)
 
-Use a connected microcontroller and peripherals in Ruby, without writing microcontroller code. Work with LEDs, buttons, sensors, and more, just as easily as any Ruby object:
+Use connected microcontrollers and peripherals in Ruby, without writing microcontroller code. Work with LEDs, buttons, sensors, and more, just like any Ruby object:
 
 ```ruby
 led.blink 0.5
@@ -20,7 +20,7 @@ end
 - The physical MCUs and peripherals all map to Ruby objects, so you can focus on hardware and appplication logic, not the layers in between.
 - Peripheral drivers are easy to implement, since they're pure Ruby.
 - Multitasking works out of the box, even on single core microcontrollers.
-- Integrating mutiple controllers is seamless. Setup another and you just get more Ruby objects.
+- Integrating multiple microcontrollers is seamless. You just get more Ruby objects.
 
 ## Supported Hardware
 
@@ -126,7 +126,7 @@ Most boards have a regular LED on-board. Test it with the [blink](examples/led/b
   - Breadboard
   - Jumper wires
   
-  **Tip:** Kits are a cost-effective way to get started. They will almost certainly include these parts, plus more, getting you well beyond the tutorial.
+  **Tip:** Kits are a good way to get started. They should include these parts and more, getting you beyond the tutorial.
 
 #### Included Examples
 
@@ -151,10 +151,10 @@ Most boards have a regular LED on-board. Test it with the [blink](examples/led/b
 
 ### denko-piboard
 
-The [denko-piboard](https://github.com/denko-rb/denko-piboard) gem adds a `Board`-compatible class for built-in GPIO headers on single-board-computers (eg. Raspberry Pi). Connect peripherals directly to the SBC, and use classes from this gem.
+[This gem](https://github.com/denko-rb/denko-piboard) adds a `Board`-compatible class for the built-in GPIO headers on single board computers (eg. Raspberry Pi). Connect peripherals directly to the SBC, and use classes from this gem.
 
 ### mruby-denko
 
 A SBC (or computer + microcontroller combo) is great if you need the power anyway, but what if you don't? Why not run Ruby on the microcontroller itself?
 
-That's the aim of [mruby-denko](https://github.com/denko-rb/mruby-denko): run mruby on the ESP32, using peripheral classes as close to this gem as practical. Still early in development (limited features), but already usable.
+That's the goal of [mruby-denko](https://github.com/denko-rb/mruby-denko): run mruby on the ESP32, using peripheral classes as close to this gem as practical. Still early in development (limited features), but already usable.
