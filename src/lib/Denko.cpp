@@ -315,7 +315,7 @@ void Denko::resetState() {
     spiClearListeners();
   #endif
   #ifdef ESP32
-    clearLedcChannels();
+    ledcDetachAll();
   #endif
   registerDivider = 8; // Update register listeners every ~8ms.
   fragmentIndex = 0;

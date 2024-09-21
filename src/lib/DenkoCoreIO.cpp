@@ -22,7 +22,7 @@ void Denko::setMode(byte p, byte m) {
 
   #if defined(ESP32)
     // Free the LEDC channel if leaving PWM mode.
-    if (m != 0b0010) releaseLEDC(p);
+    if (m != 0b0010) ledcDetach(p);
     
     // Disable attached DAC if leaving DAC mode.
     #if defined(SOC_DAC_SUPPORTED)
@@ -122,12 +122,8 @@ byte Denko::dRead(byte p) {
 // Write an analog output pin. 0 for LOW, up to 255 for HIGH @ 8-bit resolution.
 void Denko::pwmWrite(byte p, int v, boolean echo) {
   #ifdef ESP32
-    // Assign new or find existing LEDC channel for this pin.
-    byte channel = ledcChannel(p);
-    
-    // Reattach the pin in case dWrite detached it.
-    ledcAttachChannel(p, 1000, esp32AnalogWRes, channel);
-    
+    // Try to reattach LEDC each time. Should be cached, and dWrite might detatch it.
+    ledcAttach(p, 1000, esp32AnalogWRes);
     ledcWrite(p, v);
   #else
     analogWrite(p,v);
@@ -136,65 +132,9 @@ void Denko::pwmWrite(byte p, int v, boolean echo) {
   if (echo) coreResponse(p, v);
 }
 
-//
-// Manage ESP32 LEDC channels so we can do PWM write.
-//
 #ifdef ESP32
-byte Denko::ledcChannel(byte p) {
-  // Search for enabled LEDC channel with given pin and use that if found.
-  for (int i = LEDC_CHANNEL_COUNT -1; i > 0; i--){
-    if ((ledcPins[i][0] == 1) && (ledcPins[i][1] == p)){
-      return i;
-    }
-  }
-
-  // We didn't find a channel to reuse.
-  for (int i = LEDC_CHANNEL_COUNT -1; i > 0; i--){
-    // If the channel isn't initialized and it isn't marked as used, use it.
-    // should find some way to check if the channel itslef is being used
-    if ((ledcPins[i][0] == 0)) {
-      assignLEDC(i, p);
-      return i;
-    }
-  }
-  
-  // Return a useless channel if none available.
-  return 255;
-};
-
-// Assign a LEDC channel to a pin and save it.
-byte Denko::assignLEDC(byte channel, byte p){
-  // First 8 channels: up to 40Mhz @ 16-bits
-  // Last 8 channels: up to 500kHz @ 13-bits
-  // Just use similar settings to ATmega for now.
-  ledcAttachChannel(p, 1000, esp32AnalogWRes, channel);
-  
-  // Save the pin and mark it as in use.
-  ledcPins[channel][0] = 1;
-  ledcPins[channel][1] = p;
-  return channel;
-}
-
-// Release a LEDC channel when done with it.
-void Denko::releaseLEDC(byte p){
-  // Detach the pin from the channel.
-  ledcDetach(p);
-  
-  // Mark any channel associated with the pin as unused.
-  for (int i = LEDC_CHANNEL_COUNT -1; i > 0; i--){
-    if (ledcPins[i][1] == p) ledcPins[i][0] = 0;
-  }
-}
-
-// Clear all the LEDC channels on reset.
-void Denko::clearLedcChannels(){
-  for (int i = LEDC_CHANNEL_COUNT -1; i > 0; i--){
-    // Stop the channel if it was still enabled.
-    if (ledcPins[i][0] != 0) ledcDetach(ledcPins[i][1]);
-    
-    // Mark the channel as unused.
-    ledcPins[i][0] = 0;
-  }
+void Denko::ledcDetachAll() {
+  for(byte i=0; i++; i<256) ledcDetach(i);
 }
 #endif
 

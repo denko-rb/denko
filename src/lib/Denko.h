@@ -45,20 +45,10 @@ class Denko {
     void clearCoreListeners    ();
     void findLastActiveListener();
 
-    //
-    // Tanslating aWrite to ledcWrite for PWM out on the ESP32.
-    //
-    // Track which pin is assigned to each LEDC channel.
-    // Byte 0 = enabled or disabled
-    // Byte 1 = pin number attached to that channel
-    //
     #ifdef ESP32
-    byte ledcPins[LEDC_CHANNEL_COUNT][2];
-    byte ledcChannel(byte p);
-    byte assignLEDC(byte channel, byte pin);
-    void releaseLEDC(byte p);
-    void clearLedcChannels();
-    uint8_t esp32AnalogWRes = 8;
+      // Use 8 bits for PWM width to match everything else.
+      uint8_t esp32AnalogWRes = 8;
+      void ledcDetachAll();
     #endif
 
     //
