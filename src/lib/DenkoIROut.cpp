@@ -2,7 +2,7 @@
 // This file adds to the Denko class only if DENKO_IR_OUT is defined in Denko.h.
 //
 #include "Denko.h"
-#if defined(DENKO_IR_OUT) && !defined(ESP8266) && !defined(ESP32)
+#if defined(DENKO_IR_OUT) && !defined(ESP8266)
 
 // Save memory by disabling receiver.
 #undef RAW_BUFFER_LENGTH

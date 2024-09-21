@@ -23,10 +23,9 @@ class DenkoCLI::Generator
     # No IR out and WS2812 on the UNO R4. WS2812 compiles but doesn't work.
     ra4m1: STANDARD_PACKAGES - [:ir_out, :led_array],
 
-    # ESP8266 + ESP32 use a different IR library.
-    # Temporarily disabled on ESP32 until library catches up with 3.0+ ESP32 Arduino core.
+    # ESP8266 uses an IR library specific to it.
     esp8266: STANDARD_PACKAGES - [:ir_out] + [:ir_out_esp],
-    esp32:   STANDARD_PACKAGES - [:ir_out],
+    esp32:   STANDARD_PACKAGES,
     
     # RP2040 can't use WS2812 yet.
     rp2040: STANDARD_PACKAGES - [:led_array],
