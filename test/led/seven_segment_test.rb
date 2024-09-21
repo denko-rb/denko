@@ -87,13 +87,13 @@ class SevenSegmentLEDTest < Minitest::Test
     part.segments.each do 
       mocks << Minitest::Mock.new.expect(:call, nil, [1])
     end
-    part.segments[0].stub(:write, mocks[0]) do
-      part.segments[1].stub(:write, mocks[1]) do
-        part.segments[2].stub(:write, mocks[2]) do
-          part.segments[3].stub(:write, mocks[3]) do
-            part.segments[4].stub(:write, mocks[4]) do
-              part.segments[5].stub(:write, mocks[5]) do
-                part.segments[6].stub(:write, mocks[6]) do
+    part.segments[0].stub(:digital_write, mocks[0]) do
+      part.segments[1].stub(:digital_write, mocks[1]) do
+        part.segments[2].stub(:digital_write, mocks[2]) do
+          part.segments[3].stub(:digital_write, mocks[3]) do
+            part.segments[4].stub(:digital_write, mocks[4]) do
+              part.segments[5].stub(:digital_write, mocks[5]) do
+                part.segments[6].stub(:digital_write, mocks[6]) do
                   part.display('+')
                 end
               end

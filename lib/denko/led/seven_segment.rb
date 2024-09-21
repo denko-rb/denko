@@ -95,7 +95,7 @@ module Denko
         bits = CHARACTERS[char] || ALL_OFF
         bits.each_with_index do |bit, index|
           bit = 1^bit if anode
-          segments[index].write(bit) unless (segments[index].state == bit)
+          segments[index].digital_write(bit) unless (segments[index].state == bit)
         end
       end
 

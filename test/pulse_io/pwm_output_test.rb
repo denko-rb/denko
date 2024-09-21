@@ -30,20 +30,9 @@ class PWMOutTest < Minitest::Test
     enable_mock.verify
   end
 
-  def test_write_uses_digital_write_at_limits
-    mock = Minitest::Mock.new
-    mock.expect :call, nil, [board.high]
-    mock.expect :call, nil, [board.low]
-    part.stub(:digital_write, mock) do
-      part.write(board.pwm_high)
-      part.write(board.low)
-    end
-    mock.verify
-  end
-
-  def test_write_uses_analog_write_between_limits
-    mock = Minitest::Mock.new.expect :call, nil, [128]
-    part.stub(:pwm_write, mock) do
+  def test_write_uses_board_pwm_write_always
+    mock = Minitest::Mock.new.expect :call, nil, [14, 128]
+    board.stub(:pwm_write, mock) do
       part.write(128)
     end
     mock.verify
