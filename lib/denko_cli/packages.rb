@@ -90,17 +90,8 @@ PACKAGES = {
   ir_out: {
     description: "Transmit infrared signals",
     directive: "DENKO_IR_OUT",
-    exclude: [:esp8266],
     files: [
       "DenkoIROut.cpp",
-    ]
-  },
-  ir_out_esp: {
-    description: "Transmit infrared signals with the ESP8266 and ESP32",
-    directive: "DENKO_IR_OUT",
-    only: [:esp8266],
-    files: [
-      "DenkoIROutESP.cpp",
     ]
   },
   led_array: {

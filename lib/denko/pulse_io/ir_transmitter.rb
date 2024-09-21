@@ -9,8 +9,8 @@ module Denko
       end
 
       def emit(pulses=[], frequency: 38)
-        if pulses.length > 256 || pulses.length < 1
-          raise ArgumentError, 'wrong number of IR pulses (expected 1 to 256)'
+        if pulses.length > 255 || pulses.length < 1
+          raise ArgumentError, 'wrong number of IR pulses (expected 1 to 255)'
         end
 
         pulses.each_with_index do |pulse, index|

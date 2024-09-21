@@ -11,7 +11,7 @@ class IRTransmitterTest < Minitest::Test
   
   def test_pulse_count_validation
     assert_raises(ArgumentError) do
-      part.emit Array.new(257) { 0 }
+      part.emit Array.new(256) { 0 }
     end
   end
   

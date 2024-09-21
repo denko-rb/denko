@@ -2,7 +2,7 @@
 // This file adds to the Denko class only if DENKO_IR_OUT is defined in Denko.h.
 //
 #include "Denko.h"
-#if defined(DENKO_IR_OUT) && !defined(ESP8266)
+#if defined(DENKO_IR_OUT)
 
 // Save memory by disabling receiver.
 #undef RAW_BUFFER_LENGTH
@@ -20,14 +20,19 @@
 // CMD = 16
 // Send an infrared signal.
 void Denko::irSend(){
-  // Byte 1+ of auxMsg is already little-endian uint16 pulses.
-  uint16_t *pulseArray = reinterpret_cast<uint16_t *>(auxMsg + 1);
-  
-  // Dynamically set the sending pin. Needs to be PWM capable.
+  // Change send pin per call. Must be PWM capable.
   IrSender.setSendPin(pin);
 
-  // auxMsg[0] contains number of uint16_t
+  // Byte 2+ of auxMsg is already little-endian uint16 pulses.
+  //
+  // WARNING: This offset must always be an even number, for aligned
+  // memory access on the ESP8266, or it breaks.
+  uint16_t *pulseArray = reinterpret_cast<uint16_t *>(auxMsg + 2);
+
+  // auxMsg[0..1] contains number of pulses, also uint16.
+  uint16_t length = *reinterpret_cast<uint16_t *>(auxMsg);  
+
   // Val contains frequency
-  IrSender.sendRaw(pulseArray, auxMsg[0], val);
+  IrSender.sendRaw(pulseArray, length, val);
 }
 #endif

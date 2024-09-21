@@ -13,7 +13,7 @@ class APIInfraredTest < Minitest::Test
   
   def test_infrared_emit
     board
-    aux = pack(:uint8, 4) + pack(:uint16, [255,0,255,0])
+    aux = pack(:uint16, 4) + pack(:uint16, [255,0,255,0])
     message = Denko::Message.encode command: 16, pin: 8, value: 38, aux_message: aux
     
     mock = Minitest::Mock.new.expect :call, nil, [message]

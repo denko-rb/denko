@@ -24,7 +24,7 @@ class DenkoCLI::Generator
     ra4m1: STANDARD_PACKAGES - [:ir_out, :led_array],
 
     # ESP8266 uses an IR library specific to it.
-    esp8266: STANDARD_PACKAGES - [:ir_out] + [:ir_out_esp],
+    esp8266: STANDARD_PACKAGES,
     esp32:   STANDARD_PACKAGES,
     
     # RP2040 can't use WS2812 yet.

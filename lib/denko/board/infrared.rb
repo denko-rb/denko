@@ -2,11 +2,11 @@ module Denko
   class Board
     def infrared_emit(pin, frequency, pulses)
       #
-      # Limit to 255 marks/spaces (not pairs) for now.
+      # Limit to 255 marks/spaces (not pairs).
       #
-      # Length must be 1-byte long, not literally 1
+      # Make length uint16 as well, for aligned memory access on ESP8266.
       # Pulses max is 2x255 bytes long since each is 2 bytes.
-      length = pack :uint8,  pulses.length,  max: 1
+      length = pack :uint16, pulses.length,  max: 2
       bytes  = pack :uint16, pulses, min: 1, max: 510
 
       write Message.encode command: 16,
