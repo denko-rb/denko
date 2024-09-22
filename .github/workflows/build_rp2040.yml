@@ -36,6 +36,7 @@ jobs:
               - name: Servo
               - name: IRremote
                 version: 4.4.1
+              - name: Adafruit NeoPixel 
               - name: Ethernet
               - name: WiFi
                 
