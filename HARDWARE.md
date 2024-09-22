@@ -72,7 +72,7 @@
 
 |    Chip        | Status          | Board Tested          | Notes |
 | :--------      | :------:        | :---------------      |------ |
-| RP2040         | :green_heart:   | Raspberry Pi Pico (W) | WiFi only on W version. No WS1812 LED support.
+| RP2040         | :green_heart:   | Raspberry Pi Pico (W) |
 
 # Single Board Computers
 
@@ -102,7 +102,7 @@ See the [Support](https://github.com/denko-rb/denko-piboard?tab=readme-ov-file#s
 | Maxim OneWire         | :green_heart:   | S     | `OneWire::Bus`           | No overdrive
 | Infrared Emitter      | :green_heart:   | S     | `PulseIO::IRTransmitter` | Except SAM3X, RA4M1
 | Infrared Receiver     | :heart:         | S     | `PulseIO::IRReceiver`    | Doable with existing library
-| WS2812                | :green_heart:   | S     | See LED table            | Except RP2040, RA4M1
+| WS2812                | :green_heart:   | S     | See LED table            | Except RA4M1
 | ESP32-PCNT            | :heart:         | H     | -                        | Only ESP32. Pulse counter (for encoders)
 | ESP32-MCPWM           | :heart:         | H     | -                        | Only ESP32. Motor control PWM
 

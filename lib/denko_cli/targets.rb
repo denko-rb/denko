@@ -28,6 +28,6 @@ class DenkoCLI::Generator
     esp32:   STANDARD_PACKAGES,
     
     # RP2040 can't use WS2812 yet.
-    rp2040: STANDARD_PACKAGES - [:led_array],
+    rp2040: STANDARD_PACKAGES,
   }
 end
