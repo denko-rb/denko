@@ -50,8 +50,13 @@ class PWMOutTest < Minitest::Test
 
   def test_pwm_enable
     part
-    args = [14, :output_pwm, {frequency: nil, resolution: nil}]
-    mock = Minitest::Mock.new.expect :call, nil, args
+    mock = Minitest::Mock.new
+    if (RUBY_VERSION.split(".")[0].to_i < 3)
+      mock.expect :call, nil, [14, :output_pwm], {frequency: nil, resolution: nil}
+    else
+      mock.expect :call, nil, [14, :output_pwm, {frequency: nil, resolution: nil}]
+    end
+
     board.stub(:set_pin_mode, mock) do
       part.pwm_enable
     end
@@ -62,8 +67,13 @@ class PWMOutTest < Minitest::Test
 
   def test_pwm_enable_uses_stored_settings
     part2
-    args = [6, :output_pwm, {frequency: 1000, resolution: 12}]
-    mock = Minitest::Mock.new.expect :call, nil, args
+    mock = Minitest::Mock.new
+    if (RUBY_VERSION.split(".")[0].to_i < 3)
+      mock.expect :call, nil, [6, :output_pwm], {frequency: 1000, resolution: 12}
+    else
+      mock.expect :call, nil, [6, :output_pwm, {frequency: 1000, resolution: 12}]
+    end
+
     board.stub(:set_pin_mode, mock) do
       part2.pwm_enable
     end
@@ -74,8 +84,13 @@ class PWMOutTest < Minitest::Test
 
   def test_pwm_enable_uses_arg_settings
     part
-    args = [14, :output_pwm, {frequency: 500, resolution: 14}]
-    mock = Minitest::Mock.new.expect :call, nil, args
+    mock = Minitest::Mock.new
+    if (RUBY_VERSION.split(".")[0].to_i < 3)
+      mock.expect :call, nil, [14, :output_pwm], {frequency: 500, resolution: 14}
+    else
+      mock.expect :call, nil, [14, :output_pwm, {frequency: 500, resolution: 14}]
+    end
+
     board.stub(:set_pin_mode, mock) do
       part.pwm_enable(frequency: 500, resolution: 14)
     end

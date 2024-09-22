@@ -2,8 +2,6 @@
 
 ## 0.14.0
 
-- Ruby < 3.0 is no longer supported.
-
 ### New Boards
 
 - ESP32-H2 and ESP32-C6 variants (`--target esp32`):
@@ -21,12 +19,17 @@
 
 ### New Peripherals
 
+- Bit-Bang I2C:
+  - Class: `Denko::I2C::BitBang`
+  - Start a software bit-banged I2C bus on any 2 pins.
+  - Interchangeable with hardware bus, `Denko::I2C::Bus`, as far as I2C peripherals are concerned.
+
 - ADS1100 Analog-to-Digital Converter:
   - Class: `Denko::AnalogIO::ADS1100`
   - Connects via I2C bus. Driver written in Ruby.
   - Modeled after `AnalogIO::Input` since it's a single channel ADC.
   - Can be read directly with `#read` or polled with `#poll`.
-  - Full scale voltage must be given in the initailize hash, `full_scale_voltage:`.
+  - Full scale voltage must be given in the initailize hash, `full_scale_ voltage:`.
   - Gain and sample rate configurable. See example for more.
 
 - SSD1306 1-Color OLED
@@ -51,7 +54,7 @@
   - `#read` methods standardized to always read ALL sub-sensors. Affects `HTU21D` and `BMP180`.
 
 - `AnalogIO::Input`:
-  - Added `#smoothing=` and `#smoothing_size=` accessors to `AnalogIO::Input` for configuring smoothing.
+  - Added `#smoothing=` and `#smoothing_size=` accessors to `AnalogIO::Input` for configuration.
   - `AnalogIO::Sensor` removed. Use `Input` instead.
 
 - `Behavior::InputPin`
@@ -78,14 +81,14 @@
 - `LED`:
   - `Base`, `RGB` and `SevenSegment` all inherit from `PulseIO::PWMOutput`, so see that below.
   - `#write` MUST always be given a PWM duty if used, not `0` or `1`.
-  - Alternatively, call `#digital_write` only to stay in "digital mode".
+  - Alternatively, call `#digital_write` only to stay in faster digital mode.
 
 - `LED::RGB`:
   - `#write` takes 3 regular args now. Use `*array` instead to pass an array.
   - `#color` only takes a symbol for one of the predefined colors (or `:off`) now.
 
 - `Motor::Stepper`:
-  - Replaced `#step_cc` with `#step_ccw`.
+  - `#step_cc` changed to `#step_ccw`.
 
 - `OneWire::Bus`:
   - `#update` now accepts either String of comma delimited bytes (ASCII), or Array of bytes (from `PiBoard` C extension).
@@ -97,10 +100,10 @@
 - `PulseIO::PWMOutput`:
   - `#write` will never do `#digital_write` now, always `#pwm_write`.
   - Starts with mode as `:output` instead of `:output_pwm`, conserving PWM channels.
-  - Mode doesn't change until first call to `#pwm_write`.
-  - Calling only `#digital_write` explicitly will keep it in "digital mode".
+  - Mode change is lazy. Happens with first call to `#pwm_write`.
+  - Calling only `#digital_write` explicitly stays in `:output` (digital) mode, which is faster.
   - Set resolution and frequency per `PWMOutput` instance (pin), instead of per `Board`:
-    - `#initialize` hash now accepts `frequency:` and `resolution:` keys.
+    - `#initialize` hash now takes `frequency:` and `resolution:` keys.
     - Or call `#pwm_enable` explicitly with `frequency:` and `resolution:` kwargs.
     - Only on ESP32 for now. Defaults to 1 kHz and 8-bit when not given.
 
