@@ -28,8 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby-version:
-          ["3.0", "3.3", "head", "jruby-9.4.8.0", "truffleruby-24.1.0"]
+        ruby-version: ["3.0", "3.3", "head", "jruby-9.4.8.0"]
 
     steps:
       - name: Checkout
