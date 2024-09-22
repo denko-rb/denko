@@ -67,7 +67,7 @@ Denko::OneWire::Helper
 
 # Pulse IO
 Denko::PulseIO::Buzzer
-Denko::PulseIO::IRTransmitter
+Denko::PulseIO::IROutput
 Denko::PulseIO::PWMOutput
 
 # RTC

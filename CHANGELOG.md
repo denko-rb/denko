@@ -52,7 +52,7 @@
   - Added `#smoothing=` and `#smoothing_size=` accessors to `AnalogIO::Input` for configuring smoothing.
   - `AnalogIO::Sensor` removed. Use `Input` instead.
 
-- `Behavior::InputPin`  
+- `Behavior::InputPin`
   - Added `#debounce=(time)` which just calls `Board#set_pin_debounce` for the pin. Only on `PiBoard`.
 
 - `DigitalIO::CBitBang`:
@@ -88,6 +88,10 @@
 - `OneWire::Bus`:
   - `#update` now accepts either String of comma delimited bytes (ASCII), or Array of bytes (from `PiBoard` C extension).
 
+- `PulseIO::IRTransmitter`:
+    - Renamed to `PulseIO::IROutput` to be more consistent with other classes.
+    - `#emit` renamed to `#write` for consistency.
+
 - `PulseIO::PWMOutput`:
   - `#write` will never do `#digital_write` now, always `#pwm_write`.
   - Starts with mode as `:output` instead of `:output_pwm`, conserving PWM channels.
@@ -116,7 +120,7 @@
   - Transfers don't need a chip select pin now. This is for LED strips like APA102, but could also work for WS2812 @ 2.4 MHz.
 
 - Bit-Bang I2C:
-  - Newly added. Works similar to Bit-Bang SPI.  
+  - Newly added. Works similar to Bit-Bang SPI.
 
 ### Board Interface Changes
 
@@ -232,7 +236,7 @@
 
 - WS2812
   - Larger aux message size now allows up to 256 pixels (3 bytes per pixel) on a strip
-  
+
 ### Bug Fixes
 
 - Fixed a bug with WS2812 strips where it would try to memcpy 3x the number of necessary bytes. Fixed this by just sending the total number of bytes to write to the strip, rather than number of pixels * bytes per pxiel.
@@ -365,7 +369,7 @@ Fixes critical 1-Wire bugs introduced when namespace was reorganized for 0.13.0.
   - Connects via I2C bus. Driver written in Ruby.
   - All features in the datasheet are implemented, except status checking.
   - Both are mostly identical, except for BMP280 lacking humidity.
-  
+
 - HTU21D Temperature + Humidity Sensor:
   - Class: `Denko::Sensor::HTU21D`
   - Connects via I2C bus. Driver written in Ruby.
@@ -458,7 +462,7 @@ See new examples in the [examples](examples) folder to learn more.
   - This solves compatibility with boards that the library didn't work on.
   - `HD44780#create_char` allows 8 custom characters to be defined in memory addresses 0-7.
   - `HD44780#write` draws the custom  (or standard) character from a given memory address.
-  
+
 - `Denko::PulseIO::PWMOutput` (previously `Denko::Components::Basic::AnalogOutput`):
   - Changed `#analog_write` to `#pwm_write`.
   - Added `#pwm_enable` and `#pwm_disable` methods.
@@ -484,7 +488,7 @@ See new examples in the [examples](examples) folder to learn more.
   - All calls to `delayMicroseconds()` should be replaced with this.
   - Exposed in Ruby via `CMD=99`. It takes one argument, uint_16 for delay length in microsceonds.
   - `Board#micro_delay` and `Component::#micro_delay` are defined.
-  
+
 - `dacWrite` function added to board library. `aWrite` function renamed to `pwmWrite`. Need this to avoid conflict between DAC, PWM and regular output on some chips.
 
 - CMD numbers for some board functions changed to accomodate dacWrite:
@@ -497,7 +501,7 @@ See new examples in the [examples](examples) folder to learn more.
   pulseread   11 -> 9
   servoToggle  8 -> 10
   servoWrite   9 -> 11
-  ````  
+  ````
 
 - `Board#analog_write` replaced by `Board#pwm_write` and `Board#dac_write`, matching the two C functions.
 
@@ -575,7 +579,7 @@ See new examples in the [examples](examples) folder to learn more.
   - WiFi version supports OTA (over-the-air) update in the Arduino IDE. Initial flash must still be done via serial.
   - Dev boards can map GPIOs to physical pins differently. Always look up the GPIO numbers and use those for pin numbers.
   - **Note:** SoftwareSerial and LiquidCrystal (LCD) both do not work on the ESP8266, and are excluded from the sketch.
-  
+
 - ESP32 (`--target esp32`):
   - Works with either built in WiFi or Serial.
   - WiFi version does NOT support OTA (over-the-air) updates yet.
@@ -584,7 +588,7 @@ See new examples in the [examples](examples) folder to learn more.
   - **Note:** Servos and analog outputs share the `LEDC` channels on the board. Maximum of 16 combined.
   - **Note:** SoftwareSerial and LiquidCrystal (LCD) both do not work on the ESP32, and are excluded from the sketch.
   - **Note:** SPI bug exists where input modes don't match other platforms. Eg. For a register using mode 0 on AVR, mode 2 needs to be set on ESP32 for it to work. Using mode 0 misses a bit.
-  
+
 - Arduino Due (`--target sam3x`) :
   - Up to 12-bit analog in/out. Pass a `bits:` option to `Board#new` to set resolution for both.
   - DAC support. Refer to DAC pins as `'DAC0'`, `'DAC1'`, just as labeled on the board. Call `#analog_write` or just `#write` on an `sensor` component that uses the pin.
@@ -607,7 +611,7 @@ See new examples in the [examples](examples) folder to learn more.
 
 - Infrared Emitter support. _Uses [Arduino-IRremote](https://github.com/z3t0/Arduino-IRremote), and the [ESP8266 fork](https://github.com/markszabo/IRremoteESP8266) where applicable._
 
-- Tone (piezo) support. _Uses Arduino `tone`,`noTone` functions._ 
+- Tone (piezo) support. _Uses Arduino `tone`,`noTone` functions._
 
 - SoftwareSerial **(write only)**. _Uses Arduino `SoftSerial` library. Only tested on ATmega chips._
 
@@ -655,7 +659,7 @@ See new examples in the [examples](examples) folder to learn more.
 
 - `BoardProxy` abstraction for shift/SPI registers:
   - The `Register` classes implement enough of the `Board` interface to satisfy components based on `DigitalInput` and `DigitalOutput`, such as `Led` or `Button`.
-  - This lets you call methods on components directly, rather than manipulating the register data to control components indirectly. 
+  - This lets you call methods on components directly, rather than manipulating the register data to control components indirectly.
   - Initialize the appropriate `Register` object for the type of register. To initialize a component connected to the register, use the register as the `board:`, and give the parallel I/O pin on the register that the component is connected to. Pin 0 maps to the lowest bit.
   - This also works for `MultiPin` components built out of only `DigitalInput` or `DigitalOutput`, eg. `SSD` - seven segment display or `RGBLed`. See `examples/register` for more.
 
@@ -667,7 +671,7 @@ See new examples in the [examples](examples) folder to learn more.
 - Callback functionality for components has been extracted into a mixin module, `Mixins::Callbacks`.
   - Like before, callbacks for all components on a board run sequentially, in a single "update" thread, separate from the main thread. This is the same thread reading from TxRx.
   - `#add_callback` and `#remove_callback` methods are available, and take an optional `key` as argument.
-  - Blocks given to `#add_callback` are stored in `@callbacks[key]`, to be called later, when the "update" thread receives data for the component. The default key is `:persistent`. 
+  - Blocks given to `#add_callback` are stored in `@callbacks[key]`, to be called later, when the "update" thread receives data for the component. The default key is `:persistent`.
   - Each key represents an array of callbacks, so multiple callbacks can share the same key.
   - Calling `#remove_callbacks` with a key empties that array. Calling with no key removes **all** callbacks for the component.
   - `#pre_callback_filter` is defined in the `Callbacks` module. The return value of this method is what is given to the component's callbacks and to update its `@state`. By default, it returns whatever was given from the board.
@@ -707,7 +711,7 @@ See new examples in the [examples](examples) folder to learn more.
   * Flashing the updated sketch to the board is required.
 
 ## 0.11.1
- 
+
 ### New Features
 
 * Support for the Arduino Ethernet shield and compatibles (Wiznet W5100 chipset).

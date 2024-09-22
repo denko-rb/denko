@@ -1,6 +1,6 @@
 module Denko
   module PulseIO
-    class IRTransmitter
+    class IROutput
       include Behaviors::OutputPin
 
       def initialize_pins(options={})
@@ -8,7 +8,7 @@ module Denko
         super(options)
       end
 
-      def emit(pulses=[], frequency: 38)
+      def write(pulses=[], frequency: 38)
         if pulses.length > 255 || pulses.length < 1
           raise ArgumentError, 'wrong number of IR pulses (expected 1 to 255)'
         end
