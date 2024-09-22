@@ -2,6 +2,8 @@
 
 ## 0.14.0
 
+- Ruby < 3.0 is no longer supported.
+
 ### New Boards
 
 - ESP32-H2 and ESP32-C6 variants (`--target esp32`):

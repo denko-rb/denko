@@ -9,39 +9,39 @@ name: Ruby MiniTest
 
 on:
   workflow_dispatch:
-  
+
   push:
-    branches: [ "master" ]
+    branches: ["master"]
     paths-ignore:
-      - 'src/**'
+      - "src/**"
 
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
     paths-ignore:
-      - 'src/**'
+      - "src/**"
 
 permissions:
   contents: read
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby-version: ['2.7', '3.2', 'jruby-9.4.2.0', 'truffleruby-22.3.1']
+        ruby-version:
+          ["3.0", "3.3", "head", "jruby-9.4.8.0", "truffleruby-24.1.0"]
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        submodules: true
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: true
 
-    - name: Setup Ruby, JRuby and TruffleRuby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: ${{ matrix.ruby-version }}
-        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      - name: Setup Ruby, JRuby and TruffleRuby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
-    - name: Run tests
-      run: bundle exec rake
+      - name: Run tests
+        run: bundle exec rake
