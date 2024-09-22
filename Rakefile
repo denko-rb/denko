@@ -1,4 +1,4 @@
-#!/usr/bin/env rake
+#!/usr/bin/env ruby
 require "bundler/gem_tasks"
 require 'rake/testtask'
 

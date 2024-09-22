@@ -29,11 +29,11 @@ jobs:
     strategy:
       matrix:
         ruby-version:
-          ["3.0", "3.3", "head", "jruby-9.4.8.0", "truffleruby-23.1.2"]
+          ["3.0", "3.3", "head", "jruby-9.4.8.0", "truffleruby-24.1.0"]
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: true
 
