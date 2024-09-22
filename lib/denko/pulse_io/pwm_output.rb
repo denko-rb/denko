@@ -3,21 +3,35 @@ module Denko
     class PWMOutput < DigitalIO::Output
       interrupt_with :write
 
-      attr_reader :pwm_enabled
+      attr_reader :resolution, :frequency, :pwm_high
 
-      def initialize_pins(options={})
+      def after_initialize(options={})
+        @frequency  = options[:frequency]  || nil
+        @resolution = options[:resolution] || nil
+        @pwm_high   = @resolution ? (2**@resolution-1) : board.pwm_high
         super(options)
-        @pwm_enabled = false
       end
 
-      def pwm_enable
-        self.mode = :output_pwm
-        @pwm_enabled = true
+      def pwm_options
+        {frequency: @frequency, resolution: @resolution}
+      end
+
+      def pwm_enabled
+        @mode == :output_pwm
+      end
+
+      def pwm_enable(frequency: nil, resolution: nil)
+        @frequency  = frequency if frequency
+        if resolution
+          @resolution = resolution
+          @pwm_high = 2**@resolution-1
+        end
+        board.set_pin_mode(pin, :output_pwm, pwm_options)
+        @mode = :output_pwm
       end
 
       def pwm_disable
         self.mode = :output
-        @pwm_enable = false
       end
 
       def digital_write(value)

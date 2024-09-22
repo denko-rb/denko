@@ -14,13 +14,24 @@ module Denko
     }
 
     # CMD = 0
-    def set_pin_mode(pin, mode=:input)
+    def set_pin_mode(pin, mode=:input, options={})
       unless PIN_MODES.keys.include? mode
         raise ArgumentError, "cannot set mode: #{mode}. Should be one of: #{PIN_MODES.keys.inspect}"
       end
+
+      # Set frequency and resolution for PWM if given.
+      aux = nil
+      if (mode == :output_pwm) && options
+        aux    = [0, 0]
+        aux[0] = options[:frequency] if options[:frequency]
+        aux[1] = options[:resolution] if options[:resolution]
+        aux = pack :uint32, aux, min: 8, max: 8
+      end
+
       write Message.encode  command: 0,
                             pin: pin,
-                            value: PIN_MODES[mode]
+                            value: PIN_MODES[mode],
+                            aux_message: aux
     end
 
     def set_pin_debounce(pin, debounce_time)
@@ -29,7 +40,7 @@ module Denko
     # CMD = 1
     def digital_write(pin,value)
       unless (value == 1) || (value == 0)
-        raise ArgumentError, "cannot write digital value: #{value}. Should be Integer either 0 or 1" 
+        raise ArgumentError, "cannot write digital value: #{value}. Should be Integer either 0 or 1"
       end
       write Message.encode command: 1, pin: pin, value: value
     end
@@ -46,7 +57,7 @@ module Denko
       end
       write Message.encode command: 3, pin: pin, value: value.round
     end
-    
+
     # CMD = 4
     def dac_write(pin,value)
       if (value < 0) || (value > dac_high)
@@ -64,7 +75,7 @@ module Denko
     def set_listener(pin, state=:off, **options)
       # Default to digital listener and validate.
       options[:mode] ||= :digital
-      unless (options[:mode] == :digital) || (options[:mode] == :analog) 
+      unless (options[:mode] == :digital) || (options[:mode] == :analog)
         raise ArgumentError, "error in mode: #{options[:mode]}. Should be one of: [:digital, :analog]"
       end
       mode_byte = (options[:mode] == :digital) ? 0 : 1
@@ -75,7 +86,7 @@ module Denko
       else
         options[:divider] ||= 16
       end
-      
+
       # Convert divider to exponent and validate.
       exponent = Math.log2(options[:divider]).round
       if (exponent < 0) || (exponent > 7)
@@ -83,7 +94,7 @@ module Denko
       end
 
       # Validate state.
-      unless (state == :on) || (state == :off) 
+      unless (state == :on) || (state == :off)
         raise ArgumentError, "error in state: #{options[:state]}. Should be one of: [:on, :off]"
       end
       state_byte = (state == :on) ? 1 : 0
@@ -135,7 +146,7 @@ module Denko
       end
       write Message.encode(command: 96, value: value)
     end
-    
+
     # CMD = 97
     def set_analog_read_resolution(value)
       if (value < 0) || (value > 16)

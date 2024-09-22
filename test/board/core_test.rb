@@ -14,7 +14,8 @@ class BoardCoreTest < Minitest::Test
   def test_set_pin_mode
     mock = Minitest::Mock.new
     mock.expect(:call, nil, [Denko::Message.encode(command: 0, pin: 1, value: 0b000)])
-    mock.expect(:call, nil, [Denko::Message.encode(command: 0, pin: 1, value: 0b010)])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 0, pin: 1, value: 0b010, aux_message: pack(:uint32, [0, 0]))])
+    mock.expect(:call, nil, [Denko::Message.encode(command: 0, pin: 1, value: 0b010, aux_message: pack(:uint32, [1000, 12]))])
     mock.expect(:call, nil, [Denko::Message.encode(command: 0, pin: 1, value: 0b100)])
     mock.expect(:call, nil, [Denko::Message.encode(command: 0, pin: 1, value: 0b001)])
     mock.expect(:call, nil, [Denko::Message.encode(command: 0, pin: 1, value: 0b011)])
@@ -23,6 +24,7 @@ class BoardCoreTest < Minitest::Test
     board.stub(:write, mock) do
       board.set_pin_mode 1, :output
       board.set_pin_mode 1, :output_pwm
+      board.set_pin_mode 1, :output_pwm, frequency: 1000, resolution: 12
       board.set_pin_mode 1, :output_dac
       board.set_pin_mode 1, :input
       board.set_pin_mode 1, :input_pulldown
@@ -34,7 +36,7 @@ class BoardCoreTest < Minitest::Test
   end
 
   def test_set_pin_debounce
-    board.set_pin_debounce(1, 1) 
+    board.set_pin_debounce(1, 1)
   end
 
   def test_digital_write
@@ -76,7 +78,7 @@ class BoardCoreTest < Minitest::Test
 
     assert_raises { board.pwm_write 1, "wrong" }
   end
-  
+
   def test_dac_write
     mock = Minitest::Mock.new
     mock.expect(:call, nil, [Denko::Message.encode(command: 4, pin: 1, value: board.low)])
@@ -169,16 +171,16 @@ class BoardCoreTest < Minitest::Test
     assert_raises { board.analog_read_resolution= "wrong"  }
   end
 
-  def micro_delay   
+  def micro_delay
     aux = pack(:uint16, [1000])
     message = Denko::Message.encode command: 99, aux_message: aux
     mock = Minitest::Mock.new.expect :call, nil, [message]
-    
+
     board.stub(:write, mock) do
       board.micro_delay(1000)
     end
-    
-    assert_raises(ArgumentError) { board.micro_delay(65536)   }  
-    assert_raises(ArgumentError) { board.micro_delay("wrong") }  
+
+    assert_raises(ArgumentError) { board.micro_delay(65536)   }
+    assert_raises(ArgumentError) { board.micro_delay("wrong") }
   end
 end
