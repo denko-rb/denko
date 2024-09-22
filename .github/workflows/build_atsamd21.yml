@@ -2,30 +2,30 @@ name: ATSAMD21
 
 on:
   workflow_dispatch:
-  
+
   pull_request:
     paths:
-      - 'src/**'
-      - '.github/workflows/build_atsamd21.yml'
+      - "src/**"
+      - ".github/workflows/build_atsamd21.yml"
 
   push:
     paths:
-      - 'src/**'
-      - '.github/workflows/build_atsamd21.yml'
-      
+      - "src/**"
+      - ".github/workflows/build_atsamd21.yml"
+
 jobs:
   arduino_zero_native:
     name: atsamd21 ${{ matrix.sketches.name }}
-    
+
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         sketches:
           - name: serial
           - name: ethernet
           - name: wifi
-            
+
         board:
           - fqbn: arduino:samd:arduino_zero_native
             denko-target: atsamd21
@@ -38,13 +38,13 @@ jobs:
               - name: Ethernet
               - name: WiFi
               - name: Adafruit NeoPixel
-                
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: true
-      
+
       - name: Generate
         id: generate
         run: echo "path=$(./bin/denko sketch ${{ matrix.sketches.name }} --target ${{ matrix.board.denko-target }})" >> $GITHUB_OUTPUT
