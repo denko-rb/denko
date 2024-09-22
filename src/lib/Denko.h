@@ -27,10 +27,10 @@ class Denko {
     void dacWrite    (byte p, int v,  boolean echo=true);  //cmd = 4
     int  aRead       (byte p);                             //cmd = 5
     void setListener (byte p, boolean enabled, byte analog, byte exponent, boolean local=true); //cmd = 6
-    
+
     // Read value of micros() every loop.
     unsigned long currentTime;
-    
+
     // Counts 1ms ticks based on currentTime. Rolls over every 256ms.
     byte tickCount;
 
@@ -46,7 +46,7 @@ class Denko {
     void findLastActiveListener();
 
     #ifdef ESP32
-      // Use 8 bits for PWM width to match everything else.
+      // 8-bit global PWM resolution by default, to match other boards. Reconfigurable.
       uint8_t esp32AnalogWRes = 8;
       void ledcDetachAll();
     #endif
@@ -119,7 +119,7 @@ class Denko {
     void showLEDArray       (); //cmd = 19
 
     // Bit Bang SPI
-    void spiBBtransfer         (uint8_t clock, uint8_t input, uint8_t output, uint8_t select, uint8_t settings, 
+    void spiBBtransfer         (uint8_t clock, uint8_t input, uint8_t output, uint8_t select, uint8_t settings,
                                 uint8_t rLength, uint8_t wLength, byte *data);                                                          //cmd = 21
     byte spiBBtransferByte     (uint8_t clock, uint8_t input, uint8_t output, uint8_t select,
                                 uint8_t mode, uint8_t bitOrder, byte data);
@@ -132,7 +132,7 @@ class Denko {
     void spiTransfer           (uint32_t clockRate, uint8_t select, uint8_t settings, uint8_t rLength, uint8_t wLength, byte *data);    //cmd = 26
     void spiAddListener        ();                                                                                                      //cmd = 27
     void spiReadListener       (uint8_t i);
- 
+
     // SPI Listeners (both hardware and bit bang)
     void spiRemoveListener     ();                                                                                                      //cmd = 28
     void spiUpdateListeners    ();
@@ -221,7 +221,7 @@ class Denko {
 
     //
     // Shared SPI listeners that can be used by either hardware or bit bang SPI.
-    // 
+    //
     #if defined(DENKO_SPI) || defined(DENKO_SPI_BB)
       // How many SPI lsiteners.
       #define SPI_LISTENER_COUNT 4
@@ -244,7 +244,7 @@ class Denko {
       uint8_t i2c_bb_quarter_period = 1;
 
       // Internal stuff
-      void    i2c_bb_delay_quarter_period(); 
+      void    i2c_bb_delay_quarter_period();
       void    i2c_bb_delay_half_period();
       void    i2c_bb_sda_high   ();
       void    i2c_bb_sda_low    ();

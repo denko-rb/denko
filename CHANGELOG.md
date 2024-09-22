@@ -97,6 +97,10 @@
   - Starts with mode as `:output` instead of `:output_pwm`, conserving PWM channels.
   - Mode doesn't change until first call to `#pwm_write`.
   - Calling only `#digital_write` explicitly will keep it in "digital mode".
+  - Set resolution and frequency per `PWMOutput` instance (pin), instead of per `Board`:
+    - `#initialize` hash now accepts `frequency:` and `resolution:` keys.
+    - Or call `#pwm_enable` explicitly with `frequency:` and `resolution:` kwargs.
+    - Only on ESP32 for now. Defaults to 1 kHz and 8-bit when not given.
 
 - `SPI::Peripheral`:
   - Split into `SPI:Peripheral::SinglePin` and `Spi::Peripheral::MultiPin` to allow modeling more complex peripherals.
@@ -123,6 +127,8 @@
   - Newly added. Works similar to Bit-Bang SPI.
 
 ### Board Interface Changes
+
+- `Board#set_pin_mode` now takes a third argument, an `options={}` hash. Only used keys are `resolution:` and `frequency:` for setting PWM resolution. Only works on ESP32 boards so far.
 
 - Added `Board#set_pin_debounce`
   - Implemented for Linux GPIO alerts in `Denko::PiBoard` (denko-piboard gem).

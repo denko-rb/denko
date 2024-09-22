@@ -7,7 +7,7 @@ void Denko::setMode(byte p, byte m) {
   // Use the lowest 4 bits of m to set different input/output modes.
   // Also enables/disables peripherals for certain targets.
   //
-  // OUTPUT MODES:  
+  // OUTPUT MODES:
   // 0000 = Digital Output
   // 0010 = PWM Ouptut
   // 0100 = DAC Output
@@ -21,15 +21,26 @@ void Denko::setMode(byte p, byte m) {
   m = m & 0b00001111;
 
   #if defined(ESP32)
-    // Free the LEDC channel if leaving PWM mode.
-    if (m != 0b0010) ledcDetach(p);
-    
     // Disable attached DAC if leaving DAC mode.
     #if defined(SOC_DAC_SUPPORTED)
-      if (m != 0b0100) dacDisable(p);
+        if (m != 0b0100) dacDisable(p);
     #endif
+
+    // Attach or detach LEDC channel whether entering or leaving PWM mode.
+    if (m == 0b0010) {
+      // auxMsg[0..3] is frequency, [4..7] is resolution.
+      uint32_t freq = *reinterpret_cast<uint32_t *>(auxMsg);
+      uint8_t  res  = *reinterpret_cast<uint8_t *>(auxMsg + 4);
+      // Fallback to defaults.
+      if (freq == 0) freq = 1000;
+      if (res  == 0) res  = esp32AnalogWRes;
+      ledcAttach(p, freq, res);
+      return;
+    } else {
+      ledcDetach(p);
+    }
   #endif
-      
+
   // On the SAMD21 and RA4M1, mode needs to be INPUT when using the DAC.
   #if defined(__SAMD21G18A__) || defined(_RENESAS_RA_)
     if (m == 0b0100){
@@ -37,7 +48,7 @@ void Denko::setMode(byte p, byte m) {
       return;
     }
   #endif
-  
+
   // Handle INPUT_* states on boards implementing them.
   #ifdef INPUT_PULLDOWN
   if (m == 0b0011) {
@@ -45,14 +56,14 @@ void Denko::setMode(byte p, byte m) {
     return;
   }
   #endif
-  
+
   #ifdef INPUT_PULLUP
   if (m == 0b0101) {
     pinMode(p, INPUT_PULLUP);
     return;
   }
   #endif
-  
+
   // Handle OUTPUT_* states on boards implementing them.
   #ifdef OUTPUT_OPEN_DRAIN
   if (m == 0b0110) {
@@ -100,7 +111,7 @@ void Denko::dWrite(byte p, byte v, boolean echo) {
     #endif
     ledcDetach(p);
   #endif
-    
+
   if (v == 0) {
     digitalWrite(p, LOW);
   }
@@ -122,8 +133,6 @@ byte Denko::dRead(byte p) {
 // Write an analog output pin. 0 for LOW, up to 255 for HIGH @ 8-bit resolution.
 void Denko::pwmWrite(byte p, int v, boolean echo) {
   #ifdef ESP32
-    // Try to reattach LEDC each time. Should be cached, and dWrite might detatch it.
-    ledcAttach(p, 1000, esp32AnalogWRes);
     ledcWrite(p, v);
   #else
     analogWrite(p,v);
@@ -145,7 +154,7 @@ void Denko::dacWrite(byte p, int v, boolean echo) {
   #if defined(ESP32) && defined(SOC_DAC_SUPPORTED)
     ::dacWrite(p, v);
   #endif
-    
+
   #if defined(__SAM3X8E__) || defined(__SAMD21G18A__) || defined(_RENESAS_RA_)
     analogWrite(p, v);
   #endif
