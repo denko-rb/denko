@@ -7,14 +7,12 @@
 - ESP32-H2 and ESP32-C6 variants (`--target esp32`):
   - Depends on ESP32 Arduino Core 3.0+
   - No WiFi on H2
-  - No DACs on either
 
 ### Board Changes
 
 - ESP32 Boards
-  - Now require the 3.0+ version of the ESP32 Arduino Core.
-  - USB-CDC (aka native USB) appears to be broken in the 3.0 core. Will eventually hang if sending a lot of data both directions at the same time. Use a UART bridge on one of the default hardware serial interface until this is fixed.
-  - Infrared output temporarily disabled, until IR library is compatible with 3.0
+  - 3.0+ version of the ESP32 Arduino Core now required.
+  - USB-CDC (aka native USB) appears to be broken in the 3.0 core. Will eventually hang if sending a lot of data both directions at the same time. Use one of the standard UART interfaces until this is fixed.
 
 ### New Peripherals
 
@@ -72,6 +70,11 @@
 - `I2C::Peripheral`:
   - `#i2c_read` arg order changed from `(register, num_bytes)` to `(num_bytes, register: nil)`
 
+- `LED`:
+  - `Base`, `RGB` and `SevenSegment` all inherit from `PulseIO::PWMOutput`, so see that below.
+  - `#write` MUST always be given a PWM duty if used, not `0` or `1`.
+  - Alternatively, call `#digital_write` only to stay in "digital mode".
+
 - `LED::RGB`:
   - `#write` takes 3 regular args now. Use `*array` instead to pass an array.
   - `#color` only takes a symbol for one of the predefined colors (or `:off`) now.
@@ -81,6 +84,12 @@
 
 - `OneWire::Bus`:
   - `#update` now accepts either String of comma delimited bytes (ASCII), or Array of bytes (from `PiBoard` C extension).
+
+- `PulseIO::PWMOutput`:
+  - `#write` will never do `#digital_write` now, always `#pwm_write`.
+  - Starts with mode as `:output` instead of `:output_pwm`, conserving PWM channels.
+  - Mode doesn't change until first call to `#pwm_write`.
+  - Calling only `#digital_write` explicitly will keep it in "digital mode".
 
 - `SPI::Peripheral`:
   - Split into `SPI:Peripheral::SinglePin` and `Spi::Peripheral::MultiPin` to allow modeling more complex peripherals.
@@ -103,7 +112,8 @@
 - Hardware SPI:
   - Transfers don't need a chip select pin now. This is for LED strips like APA102, but could also work for WS2812 @ 2.4 MHz.
 
-- Added Bit-Bang I2C. Works similar to Bit-Bang SPI.  
+- Bit-Bang I2C:
+  - Newly added. Works similar to Bit-Bang SPI.  
 
 ### Board Interface Changes
 
@@ -118,7 +128,7 @@
 
 - All Atmel targets now prefixed with "at". Eg. `atsamd21` now, instead of `samd21` before.
 
-### Bug Fixes
+### Bugs Fixed
 
 - ADS111X sensors were incorrectly validating sample rate when set.
 - Handshake could fail if board was left in a state where it kept transmitting data.
@@ -127,6 +137,9 @@
 - `Servo`, `Buzzer` and `IRTransmitter` didn't start in `:output_pwm` mode.
 - `SSD1306#on` and `#off` would raise errors, trying to write Integer instead of Array to `I2C::Bus`.
 - `SPI::BitBang` did not correctly set initial clock state for modes 2 and 3.
+- `IRTransmitter.emit` didn't work at all ESP8266. Pulse data wasn't aligned properly in memory.
+- `Board#ws2812_write` was validating max length to 256 instead of 255.
+- WS2812 write on ESP32 would crash it, only with *some* low 8-bit pixel values. Still unsure why, but four extra 0 bytes (preceding the pixel data in auxMsg) seems to work around this.
 
 ## 0.13.5
 
