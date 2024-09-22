@@ -10,9 +10,9 @@ module Denko
       bytes  = pack :uint16, pulses, min: 1, max: 510
 
       write Message.encode command: 16,
-                          pin: pin,
-                          value: frequency,
-                          aux_message: length + bytes
+                           pin: pin,
+                           value: frequency,
+                           aux_message: length + bytes
     end
   end
 end

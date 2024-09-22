@@ -1,6 +1,5 @@
 #
-# Walk a single pixel along the length of an APA102 strip and back,
-# changing color each time it returns to position 0.
+# Fade test for APA102 LED strip.
 #
 require 'bundler/setup'
 require 'denko'

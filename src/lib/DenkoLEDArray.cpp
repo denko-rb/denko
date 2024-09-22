@@ -21,13 +21,16 @@
 //
 // pin          = Microcontroller pin connected to Data In pin of the LED array.
 // val          = Number of raw pixel data bytes to expect. Max 9999.
-// auxMsg[0..3] = Reserved for future settings.
-// auxMsg[4+]   = Raw pixel data, already in correct byte order (GRB, RGB, etc.).
+// auxMsg[0..3] = ALWAYS ZERO or ESP32 can crash if pixel bytes have certain low values. Very confusing.
+// auxMsg[4..7] = Reserved for future settings.
+// auxMsg[8+]   = Raw pixel data, already in correct byte order (GRB, RGB, etc.).
+//
+#define WS2812_DATA_OFFSET 8
 //
 void Denko::showLEDArray() {
   // Avoid memcpy on ESP32 by calling espShow() directly.
   #ifdef ESP32
-    espShow(pin, &auxMsg[4], val, true);
+    espShow(pin, &auxMsg[WS2812_DATA_OFFSET], val, true);
 
   // memcpy method for everything else.
   #else
@@ -36,7 +39,7 @@ void Denko::showLEDArray() {
     ledArray.begin();
 
     // Copy LED data into the pixel buffer.
-    memcpy(ledArray.getPixels(), &auxMsg[4], val);
+    memcpy(ledArray.getPixels(), &auxMsg[WS2812_DATA_OFFSET], val);
 
     // Let the line stay low for about 6 bytes worth of data.
     // Prevents first pixel green being stuck on.

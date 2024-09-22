@@ -62,7 +62,7 @@ arduino-cli config init
 arduino-cli config add board_manager.additional_urls https://arduino.esp8266.com/stable/package_esp8266com_index.json
 arduino-cli core update-index
 arduino-cli core install esp8266:esp8266
-arduino-cli lib install IRremoteESP8266@2.8.6
+arduino-cli lib install IRremote@4.4.1
 arduino-cli lib install "Adafruit NeoPixel"
 ````
 

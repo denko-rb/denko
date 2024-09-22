@@ -1,9 +1,11 @@
 #
-# Walk a single pixel along the length of a WS2812 strip and back,
-# changing color each time it returns to position 0.
+# Walk a pixel along a WS2812 strip and back, changing color each loop.
 #
 require 'bundler/setup'
 require 'denko'
+
+WS2812_PIN = 4
+PIXELS     = 8
 
 RED    = [255, 0, 0]
 GREEN  = [0, 255, 0]
@@ -11,10 +13,6 @@ BLUE   = [0, 0, 255]
 WHITE  = [255, 255, 255]
 COLORS = [RED, GREEN, BLUE, WHITE]
 
-WS2812_PIN = 4
-PIXELS = 8
-
-# Move along the strip and back, one pixel at a time.
 positions = (0..PIXELS-1).to_a + (1..PIXELS-2).to_a.reverse
 
 board = Denko::Board.new(Denko::Connection::Serial.new)

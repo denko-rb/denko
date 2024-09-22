@@ -19,8 +19,8 @@
 | ESP32-S2       | :green_heart:   | LOLIN S2 Pico        | Native USB-CDC (broken in core 3.0+)
 | ESP32-S3       | :green_heart:   | LOLIN S3 V1.0.0      | Native USB-CDC (broken in core 3.0+)
 | ESP32-C3       | :green_heart:   | LOLIN C3 Mini V2.1.0 | Native USB-CDC (broken in core 3.0+)
-| ESP32-H2       | :yellow_heart:  | ESP32-H2-MINI-1      | No Wi-Fi. Native USB-CDC (broken in core 3.0+)
-| ESP32-C6       | :yellow_heart:  | ESP32-C6-WROOM-1     | Native USB-CDC (broken in core 3.0+)
+| ESP32-H2       | :green_heart:   | ESP32-H2-MINI-1      | No Wi-Fi. Native USB-CDC (broken in core 3.0+)
+| ESP32-C6       | :green_heart:   | ESP32-C6-WROOM-1     | Native USB-CDC (broken in core 3.0+)
 
 **Note:** For ESP32 chips using native USB-CDC, make sure `USB CDC On Boot` is `Enabled` in the IDE's `Tools` menu. Flashing from the CLI doesn't automatically enable this, so the IDE is recommended for now.
 
