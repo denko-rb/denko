@@ -52,9 +52,7 @@ module Denko
 
     # CMD = 3
     def pwm_write(pin,value)
-      if  (value < 0) || (value > pwm_high)
-        raise ArgumentError, "cannot write PWM value: #{value}. Should be Integer in range 0..#{pwm_high} "
-      end
+      raise ArgumentError, "PWM value cannot be negative" if (value < 0)
       write Message.encode command: 3, pin: pin, value: value.round
     end
 
