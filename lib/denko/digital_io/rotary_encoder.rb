@@ -23,18 +23,10 @@ module Denko
       end
 
       after_initialize do
-        @counts_per_revolution = params[:counts_per_revolution] || params[:cpr] || 60
-        @reversed = false || params[:reversed] || params[:reverse]
-
-        # PiBoard will use GPIO alerts, default to 1 microsecond debounce time.
-        @debounce_time = params[:debounce_time] || 1
-        a.debounce_time = @debounce_time
-        b.debounce_time = @debounce_time
-
-        # Board will default to 1ms digital listeners.
-        @divider = params[:divider] || 1
-        a.listen(@divider)
-        b.listen(@divider)
+        a.debounce_time = debounce_time
+        b.debounce_time = debounce_time
+        a.listen(divider)
+        b.listen(divider)
 
         # Let initial state settle.
         sleep 0.010
@@ -43,22 +35,38 @@ module Denko
         reset
       end
 
+      # PiBoard will use GPIO alerts, default to 1 microsecond debounce time.
+      def debounce_time
+        @debounce_time ||= params[:debounce_time] || 1
+      end
+
+      # Board will default to 1ms digital listeners.
+      def divider
+        @divider ||= params[:divider] || 1
+      end
+
+      def reversed
+        @reversed ||= false || params[:reversed] || params[:reverse]
+      end
+
+      def reverse
+        @reversed = !@reversed
+      end
+
+      def counts_per_revolution
+        @counts_per_revolution ||= params[:counts_per_revolution] || params[:cpr] || 60
+      end
+
+      def degrees_per_count
+        @degrees_per_count ||= (360 / counts_per_revolution.to_f)
+      end
+
       def state
         state_mutex.synchronize { @state ||= { count: 0, angle: 0 } }
       end
 
       def reading
         @reading ||= { count: 0, angle: 0, change: 0 }
-      end
-
-      attr_reader :reversed, :counts_per_revolution, :divider, :debounce_time
-
-      def reverse
-        @reversed = !@reversed
-      end
-
-      def degrees_per_count
-        @degrees_per_count ||= (360 / @counts_per_revolution.to_f)
       end
 
       def angle
