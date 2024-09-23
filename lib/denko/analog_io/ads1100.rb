@@ -5,8 +5,8 @@ module Denko
       include Behaviors::Poller
       include InputHelper
 
-      i2c_default_address   0x48
-      i2c_default_frequency 400_000
+      I2C_ADDRESS   = 0x48
+      I2C_FREQUENCY = 400_000
 
       # Convert sample rates in samples-per-seconds to their bit representation.
       SAMPLE_RATES = [  # Bitmask

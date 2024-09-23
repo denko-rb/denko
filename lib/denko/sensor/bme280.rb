@@ -6,7 +6,7 @@ module Denko
       include TemperatureHelper
       include PressureHelper
 
-      i2c_default_address 0x76
+      I2C_ADDRESS = 0x76
 
       # Reading Mode Settings
       SLEEP_MODE      = 0b00

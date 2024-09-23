@@ -2,9 +2,9 @@ require_relative '../test_helper'
 
 class I2CPeripheralBase
   include Denko::I2C::Peripheral
-  i2c_default_address        0x30
-  i2c_default_frequency      400_000
-  i2c_default_repeated_start true
+  I2C_ADDRESS        = 0x30
+  I2C_FREQUENCY      = 400_000
+  I2C_REPEATED_START = true
 end
 
 class I2CPeripheralTest < Minitest::Test

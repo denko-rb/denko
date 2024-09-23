@@ -6,7 +6,7 @@ module Denko
       include TemperatureHelper
       include PressureHelper
 
-      i2c_default_address 0x70
+      I2C_ADDRESS = 0x70
 
       UPDATE_TIME           = 0.020
       RESET_REGISTER        = 0xE0

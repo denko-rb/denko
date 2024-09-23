@@ -4,7 +4,7 @@ module Denko
       include I2C::Peripheral
       include Behaviors::Poller
 
-      i2c_default_address 0x57
+      I2C_ADDRESS = 0x57
 
       def _read
         i2c_write(0x01)

@@ -6,7 +6,7 @@ module Denko
       include TemperatureHelper
       include PressureHelper
 
-      i2c_default_address 0x77
+      I2C_ADDRESS = 0x77
 
       # Write this to register 0xE0 for soft reset
       SOFT_RESET = 0xB6

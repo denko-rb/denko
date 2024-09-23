@@ -5,6 +5,10 @@ module Denko
     class SSD1306
       include Behaviors::BusPeripheral
 
+      # Default I2C_SETTINGS
+        I2C_ADDRESS   = 0x3C
+        I2C_FREQUENCY = 400_000
+
       # Fundamental Commands
         # Single byte (no need to OR with anything)
         PIXELS_FROM_RAM = 0xA4
@@ -168,8 +172,6 @@ module Denko
       def mutate_i2c
         singleton_class.class_eval do
           include I2C::Peripheral
-          i2c_default_address   0x3C
-          i2c_default_frequency 400_000
 
           # Commands are I2C messages prefixed with 0x00.
           def command(bytes)

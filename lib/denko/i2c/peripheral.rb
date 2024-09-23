@@ -4,47 +4,21 @@ module Denko
       include Behaviors::BusPeripheralAddressed
       include Behaviors::Reader
 
-      #
-      # DSL to set I2C defaults when a Peripheral includes this Module.
-      #
-      def self.included(klass)
-        klass.extend ClassMethods
-      end
+      I2C_ADDRESS         = nil
+      I2C_FREQUENCY       = 100_000
+      I2C_REPEATED_START  = false
 
-      I2C_DEFAULTS = [:@i2c_address, :@i2c_frequency, :@i2c_repeated_start]
-
-      module ClassMethods
-        I2C_DEFAULTS.each do |ivar_sym|
-          getter_sym = ivar_sym.to_s.gsub("@", "").to_sym
-          setter_sym = getter_sym.to_s.gsub("i2c_", "i2c_default_").to_sym
-
-          # Class ivar setter per subclass: SubClass.i2c_default_{NAME} VALUE
-          define_method(setter_sym) do |value|
-            self.instance_variable_set(ivar_sym, value)
-          end
-        end
-      end
-
-      #
-      # Instance Methods
-      #
-
-      # No getters at the class level. Instead look for ivar set in singleton first, then class.
-      def i2c_defaults
-        hash = { frequency: 100_000, repeated_start: false }
-        I2C_DEFAULTS.each do |ivar_sym|
-          hash_sym = ivar_sym.to_s.gsub("@i2c_", "").to_sym
-          hash[hash_sym] = self.class.instance_variable_get(ivar_sym)      if self.class.instance_variable_defined?(ivar_sym)
-          hash[hash_sym] = singleton_class.instance_variable_get(ivar_sym) if singleton_class.instance_variable_defined?(ivar_sym)
-        end
-        hash
+      # Define I2C defaults in subclasses by overriding the constants above.
+      def i2c_default(sym)
+        const_sym = "I2C_#{sym}".upcase.to_sym
+        self.class.const_get(const_sym) if self.class.const_defined?(const_sym)
       end
 
       def before_initialize(options={})
         # Use @address instead of @i2c_address for default BusPeripheral behavior.
-        @address            = options[:i2c_address]        || options[:address]        || i2c_defaults[:address]
-        @i2c_frequency      = options[:i2c_frequency]      || options[:frequency]      || i2c_defaults[:frequency]
-        @i2c_repeated_start = options[:i2c_repeated_start] || options[:repeated_start] || i2c_defaults[:repeated_start]
+        @address            = options[:i2c_address]        || options[:address]        || i2c_default(:address)
+        @i2c_frequency      = options[:i2c_frequency]      || options[:frequency]      || i2c_default(:frequency)
+        @i2c_repeated_start = options[:i2c_repeated_start] || options[:repeated_start] || i2c_default(:repeated_start)
         super(options)
       end
 

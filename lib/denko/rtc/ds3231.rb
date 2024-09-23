@@ -5,7 +5,7 @@ module Denko
     class DS3231
       include I2C::Peripheral
 
-      i2c_default_address 0x68
+      I2C_ADDRESS = 0x68
 
       # Write start register 0x00, then bytes to set time.
       def time=(time)

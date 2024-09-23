@@ -4,8 +4,8 @@ module Denko
       include I2C::Peripheral
       include ADS111X
 
-      i2c_default_address   0x48
-      i2c_default_frequency 400_000
+      I2C_ADDRESS   = 0x48
+      I2C_FREQUENCY = 400_000
 
       # Config register values on startup. MSB-first.
       # Matches datasheet, except MSB bit 7 unset to avoid conversion start.

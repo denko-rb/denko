@@ -5,7 +5,7 @@ module Denko
       include Behaviors::Poller
       include TemperatureHelper
 
-      i2c_default_address 0x38
+      I2C_ADDRESS = 0x38
 
       # Commands
       INIT_AND_CALIBRATE   = [0xE1, 0x08, 0x00]

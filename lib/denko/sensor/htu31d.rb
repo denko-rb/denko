@@ -5,7 +5,7 @@ module Denko
       include Behaviors::Poller
       include TemperatureHelper
 
-      i2c_default_address 0x40
+      I2C_ADDRESS = 0x40
 
       # Commands
       RESET           = 0x1E
