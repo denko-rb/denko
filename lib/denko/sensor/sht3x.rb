@@ -5,6 +5,8 @@ module Denko
       include Behaviors::Poller
       include TemperatureHelper
 
+      i2c_default_address 0x44
+
       RESET                 = 0x30A2
       RESET_TIME            = 0.002
       HEATER_OFF            = 0x3066
@@ -21,11 +23,6 @@ module Denko
       CLEAR_STATUS_REGISTER = 0x3041
       BREAK                 = 0x3093
       ART                   = 0x2B32
-
-      def before_initialize(options={})
-        @i2c_address = 0x44
-        super(options)
-      end
 
       def after_initialize(options={})
         super(options)

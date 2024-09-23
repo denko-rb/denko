@@ -4,6 +4,9 @@ module Denko
       include I2C::Peripheral
       include ADS111X
 
+      i2c_default_address   0x48
+      i2c_default_frequency 400_000
+
       # Config register values on startup. MSB-first.
       # Matches datasheet, except MSB bit 7 unset to avoid conversion start.
       # Same as: [0x05, 0x83] or [5, 131]
@@ -18,12 +21,6 @@ module Denko
       # Register addresses.
       CONFIG_ADDRESS     = 0b01
       CONVERSION_ADDRESS = 0b00
-
-      def before_initialize(options={})
-        @i2c_address   = 0x48
-        @i2c_frequency = 400_000
-        super(options)
-      end
 
       def after_initialize(options={})
         super(options)
@@ -44,7 +41,7 @@ module Denko
       def _read(config)
         # Write config register to start reading.
         i2c_write [CONFIG_ADDRESS] + config
-        
+
         # Sleep the right amount of time for conversion, based on sample rate bits.
         sleep WAIT_TIMES[config[1] >> 5]
 

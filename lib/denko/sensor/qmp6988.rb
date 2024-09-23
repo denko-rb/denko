@@ -6,6 +6,8 @@ module Denko
       include TemperatureHelper
       include PressureHelper
 
+      i2c_default_address 0x70
+
       UPDATE_TIME           = 0.020
       RESET_REGISTER        = 0xE0
       RESET_COMMAND         = 0xE6
@@ -65,11 +67,6 @@ module Denko
         16 =>  0b100,
         32 =>  0b101, # 0b110 and 0b111 are also valid for 16.
       }
-
-      def before_initialize(options={})
-        @i2c_address = 0x70
-        super(options)
-      end
 
       def after_initialize(options={})
         super(options)

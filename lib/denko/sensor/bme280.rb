@@ -6,6 +6,8 @@ module Denko
       include TemperatureHelper
       include PressureHelper
 
+      i2c_default_address 0x76
+
       # Reading Mode Settings
       SLEEP_MODE      = 0b00
       ONESHOT_MODE    = 0b01 # 0b10 is also valid. Called "forced mode" in datasheet.
@@ -49,11 +51,6 @@ module Denko
                             8  =>  0b011,
                             16 =>  0b100, # 0b101, 0b110 and 0b111 are also valid for 16.
                           }
-
-      def before_initialize(options={})
-        @i2c_address = 0x76
-        super(options)
-      end
 
       def after_initialize(options={})
         super(options)

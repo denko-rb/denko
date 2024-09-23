@@ -5,6 +5,8 @@ module Denko
       include Behaviors::Poller
       include TemperatureHelper
 
+      i2c_default_address 0x38
+
       # Commands
       INIT_AND_CALIBRATE   = [0xE1, 0x08, 0x00]
       READ_STATUS_REGISTER = [0x71]
@@ -28,11 +30,6 @@ module Denko
 
       # Number of bytes in each reading.
       DATA_LENGTH       = 6
-
-      def before_initialize(options={})
-        @i2c_address = 0x38
-        super(options)
-      end
 
       def after_initialize(options={})
         super(options)

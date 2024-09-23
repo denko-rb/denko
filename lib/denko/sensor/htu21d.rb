@@ -5,6 +5,8 @@ module Denko
       include Behaviors::Poller
       include TemperatureHelper
 
+      i2c_default_address 0x40
+
       # Commands
       SOFT_RESET                = 0xFE
       WRITE_CONFIG              = 0xE6
@@ -15,11 +17,6 @@ module Denko
       CONFIG_DEFAULT            = 0b00000011
       HEATER_MASK               = 0b00000100
       RESOLUTION_MASK           = 0b10000001
-
-      def before_initialize(options={})
-        @i2c_address = 0x40
-        super(options)
-      end
 
       def after_initialize(options={})
         super(options)

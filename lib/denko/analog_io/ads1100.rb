@@ -5,6 +5,9 @@ module Denko
       include Behaviors::Poller
       include InputHelper
 
+      i2c_default_address   0x48
+      i2c_default_frequency 400_000
+
       # Convert sample rates in samples-per-seconds to their bit representation.
       SAMPLE_RATES = [  # Bitmask
         128,            # 0b00
@@ -34,7 +37,7 @@ module Denko
       # Default config register:
       #   Bit 7   : Start conversion (write 1) | Conversion in progress (read 1)
       #   Bit 6-5 : Reserved, must be 00
-      #   Bit 4   : Conversion mode. 0 = continuous (datasheet default). 1 = single (our default). 
+      #   Bit 4   : Conversion mode. 0 = continuous (datasheet default). 1 = single (our default).
       #   Bit 3-2 : Sample Rate (see array above)
       #   Bit 1-2 : PGA setting (see array above)
       CONFIG_STARTUP = 0b00011100
@@ -42,12 +45,6 @@ module Denko
       # Masks
       GAIN_CLEAR = 0b11111100
       SAMPLE_RATE_CLEAR = 0b11110011
-
-      def before_initialize(options={})
-        @i2c_address   = 0x48
-        @i2c_frequency = 400_000
-        super(options)
-      end
 
       def after_initialize(options={})
         super(options)
@@ -71,7 +68,7 @@ module Denko
       def _read
         # Set bit 7 of the config register and write it to start conversion.
         i2c_write(@config_register | (1<<7))
-        
+
         # Sleep the right amount of time for conversion, based on sample rate bits.
         sleep WAIT_TIMES[@sample_rate]
 

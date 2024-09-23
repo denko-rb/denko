@@ -6,6 +6,8 @@ module Denko
       include TemperatureHelper
       include PressureHelper
 
+      i2c_default_address 0x77
+
       # Write this to register 0xE0 for soft reset
       SOFT_RESET = 0xB6
 
@@ -21,11 +23,6 @@ module Denko
         4  =>  0b10,
         8  =>  0b11,
       }
-
-      def before_initialize(options={})
-        @i2c_address = 0x77
-        super(options)
-      end
 
       def after_initialize(options={})
         super(options)

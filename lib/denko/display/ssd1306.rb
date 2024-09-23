@@ -33,7 +33,7 @@ module Denko
           #   0x01 = vertical
           #   0x02 = page       (Default. Page and column must be set each time. Needed on SH1106)
         ADDRESSING_MODE_DEFAULT = 0x00
-      
+
         # Triple byte. Following 2 bytes sets value. For H/V addressing modes only.
         COLUMN_ADDRESS_RANGE = 0x21
         PAGE_ADDRESS_RANGE   = 0x22
@@ -107,7 +107,7 @@ module Denko
           DISPLAY_ON
         ]
         end
-        
+
         # Create a new blank canvas and draw it.
         self.canvas = Canvas.new(@columns, @rows)
         draw
@@ -132,12 +132,12 @@ module Denko
         # Convert y-coords to page coords.
         p_min = y_min / 8
         p_max = y_max / 8
-        
+
         # If drawing the whole frame (default), bypass temp buffer to save time.
         if (x_min == 0) && (x_max == @columns-1) && (p_min == 0) && (p_max == @rows/8)
           draw_partial(canvas.framebuffer, x_min, x_max, p_min, p_max)
-          
-        # Copy bytes for the given rectangle into a temp buffer. 
+
+        # Copy bytes for the given rectangle into a temp buffer.
         else
           temp_buffer = []
           (p_min..p_max).each do |page|
@@ -145,7 +145,7 @@ module Denko
             src_end   = (@columns * page) + x_max
             temp_buffer += canvas.framebuffer[src_start..src_end]
           end
-    
+
           # And draw them.
           draw_partial(temp_buffer, x_min, x_max, p_min, p_max)
         end
@@ -154,34 +154,32 @@ module Denko
       def draw_partial(buffer, x_min, x_max, p_min, p_max)
         # Limit auto-incrementing GRAM address to the rectangle being drawn.
         command [ COLUMN_ADDRESS_RANGE, x_min, x_max, PAGE_ADDRESS_RANGE, p_min, p_max ]
-        
+
         # Send all the bytes at once if within board I2C limit.
         if buffer.length < (bus.board.i2c_limit - 1)
           data(buffer)
-        
+
         # Or split into chunks.
-        else  
+        else
           buffer.each_slice(bus.board.i2c_limit - 1) { |slice| data(slice) }
         end
       end
 
       def i2c_setup
-        singleton_class.include(I2C::Peripheral)
+        singleton_class.class_eval do
+          include I2C::Peripheral
+          i2c_default_address   0x3C
+          i2c_default_frequency 400_000
 
-        define_singleton_method(:before_initialize) do |options|
-          @i2c_address   = 0x3C
-          @i2c_frequency = 400000
-          super(options)
-        end
+          # Commands are I2C messages prefixed with 0x00.
+          def command(bytes)
+            i2c_write([0x00] + bytes)
+          end
 
-        # Commands are I2C messages prefixed with 0x00.
-        define_singleton_method(:command) do |bytes|
-          i2c_write([0x00] + bytes)
-        end
-
-        # Data are I2C messages prefixed with 0x40.
-        define_singleton_method(:data) do |bytes|
-          i2c_write([0x40] + bytes)
+          # Data are I2C messages prefixed with 0x40.
+          def data(bytes)
+            i2c_write([0x40] + bytes)
+          end
         end
       end
 
