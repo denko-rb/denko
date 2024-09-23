@@ -24,16 +24,8 @@ module Denko
       CONVERSION_ADDRESS = 0b00
 
       after_initialize do
-        # Mutex and variables for BoardProxy behavior.
-        @mutex        = Mutex.new
-        @active_pin   = nil
-        @active_gain  = nil
-
         # Set register bytes to default and write to device.
-        @config_register = CONFIG_STARTUP.dup
-        i2c_write [CONFIG_ADDRESS] + @config_register
-
-        # Enable BoardProxy callbacks.
+        i2c_write [CONFIG_ADDRESS] + config_register
         enable_proxy
       end
 

@@ -5,6 +5,7 @@ module Denko
       # Functionality shared among the ADS111X class of ADC converters.
       #
       include Behaviors::Reader
+      attr_accessor :config_register, :active_pin, :active_gain
 
       PGA_SETTINGS = [  # Bitmask   Full scale voltage
         0.0001875,      # 0b000     6.144 V
@@ -55,9 +56,9 @@ module Denko
       def enable_proxy
         self.add_callback(:board_proxy) do |value|
           components.each do |component|
-            if @active_pin == component.pin
-              component.volts_per_bit = PGA_SETTINGS[@active_gain]
-              component.update(value) 
+            if active_pin == component.pin
+              component.volts_per_bit = PGA_SETTINGS[active_gain]
+              component.update(value)
             end
           end
         end
@@ -65,28 +66,28 @@ module Denko
 
       def analog_read(pin, negative_pin=nil, gain=nil, sample_rate=nil)
         # Wrap in mutex so calls and callbacks are atomic.
-        @mutex.synchronize do
+        mutex.synchronize do
           # Default gain and sample rate.
           gain        ||= 0b010
           sample_rate ||= 0b100
 
           # Set these for callbacks.
-          @active_pin   = pin
-          @active_gain  = gain
+          self.active_pin   = pin
+          self.active_gain  = gain
 
           # Set gain in upper config register.
           raise ArgumentError "wrong gain: #{gain.inspect} given for ADS111X" unless PGA_RANGE.include?(gain)
-          @config_register[0] = self.class::BASE_MSB | (gain << 1)
+          config_register[0] = self.class::BASE_MSB | (gain << 1)
 
           # Set mux bits in upper config register.
           mux_bits = pins_to_mux_bits(pin, negative_pin)
-          @config_register[0] = @config_register[0] | (mux_bits << 4)
+          config_register[0] = config_register[0] | (mux_bits << 4)
 
           # Set sample rate in lower config_register.
           raise ArgumentError "wrong sample_rate: #{sample_rate.inspect} given for ADS111X" unless SAMPLE_RATE_RANGE.include?(sample_rate)
-          @config_register[1] = self.class::BASE_LSB | (sample_rate << 5)
+          config_register[1] = self.class::BASE_LSB | (sample_rate << 5)
 
-          read(@config_register)
+          read(config_register)
         end
       end
 
@@ -117,6 +118,14 @@ module Denko
       end
 
       def stop_listener(pin)
+      end
+
+      def mutex
+        @mutex ||= Mutex.new
+      end
+
+      def config_register
+        @config_register ||= self.class::CONFIG_STARTUP.dup
       end
     end
   end

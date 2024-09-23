@@ -16,20 +16,12 @@ module Denko
       BASE_MSB = 0b10000001
       BASE_LSB = 0b00001010
 
+      def spi_mode
+        @spi_mode ||= params[:spi_mode] || 1
+      end
+
       after_initialize do
-        # SPI mode 1 recommended.
-        @spi_mode = params[:spi_mode] || 1
-
-        # Mutex and variables for BoardProxy behavior.
-        @mutex        = Mutex.new
-        @active_pin   = nil
-        @active_gain  = nil
-
-        # Set register bytes to default and write to device.
-        @config_register = CONFIG_STARTUP.dup
-        spi_write(@config_register)
-
-        # Enable BoardProxy callbacks.
+        spi_write(config_register)
         enable_proxy
       end
 
@@ -52,7 +44,7 @@ module Denko
 
       def _temperature_read
         # Wrap in mutex to not interfere with other reads.
-        @mutex.synchronize do
+        mutex.synchronize do
           _read([0b10000001, 0b10011011])
         end
       end
