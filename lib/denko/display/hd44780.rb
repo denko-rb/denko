@@ -47,6 +47,44 @@ module Denko
       LCD_5x10DOTS = 0x04
       LCD_5x8DOTS  = 0x00
 
+      def bits
+        @bits ||= 4
+      end
+
+      # Default to 16x2 display if columns and rows given.
+      def columns
+        @columns ||= params[:columns] || 16
+      end
+
+      def rows
+        @rows ||= params[:rows] || 2
+      end
+
+      # Fuction set byte to set up the LCD. These OR'ed defaults == 0x00.
+      def function
+        @function ||= LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS
+      end
+
+      # Offset memory address when moving cursor.
+      # Row 2 always starts at memory address 0x40.
+      # For 4 line LCDs:
+      #   Row 3 is immediately after row 1, +16 or 20 bytes, depending on columns.
+      #   Row 4 is immediately after row 2, +16 or 20 bytes, depending on columns.
+      def row_offsets
+        @row_offsets ||= [0x00, 0x40, 0x00+columns, 0x40+columns]
+      end
+
+      # Start with cursor off and no cursor blink.
+      def control
+        @control ||= LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF
+      end
+
+      def entry_mode
+        @entry_mode ||= LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT
+      end
+
+      attr_writer :columns, :rows, :function, :bits, :row_offsets, :control, :entry_mode
+
       def initialize_pins(options={})
         # All the required pins.
         [:rs, :enable, :d4, :d5, :d6, :d7].each do |symbol|
@@ -64,40 +102,24 @@ module Denko
       end
 
       after_initialize do
-        # Default to 16x2 display if columns and rows given.
-        @columns = params[:columns] || 16
-        @rows    = params[:rows]    || 2
-
-        # Create a fuction set byte to set up the LCD. These defaults equal 0x00.
-        @function = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS
-
-        # Set 8-bit mode in the mask if d0-d3 are present.
+        # Switch to 8-bit mode if d0-d3 are present.
         if (d0 && d1 && d2 && d3)
-          @bits          = 8
-          @function |= LCD_8BITMODE
-        else
-          @bits = 4
+          self.bits = 8
+          self.function |= LCD_8BITMODE
         end
 
         # Set 2 line (row) mode if needed.
-        @function |= LCD_2LINE if (@rows > 1)
+        self.function |= LCD_2LINE if (rows > 1)
 
         # Some 1 line displays can use a 5x10 font.
-        @function |= LCD_5x10DOTS if params[:tall_font] && (@rows == 1)
-
-        # Offset memory address when moving cursor.
-        # Row 2 always starts at memory address 0x40.
-        # For 4 line LCDs:
-        #   Row 3 is immediately after row 1, +16 or 20 bytes, depending on columns.
-        #   Row 4 is immediately after row 2, +16 or 20 bytes, depending on columns.
-        @row_offsets = [0x00, 0x40, 0x00+@columns, 0x40+@columns]
+        self.function |= LCD_5x10DOTS if params[:tall_font] && (rows == 1)
 
         # Wait 50ms for power to be > 2.7V, then pull everything low.
         micro_delay(50000)
         enable.low; rs.low; rw.low if rw
 
         # Start in 4-bit mode.
-        if @bits == 4
+        if bits == 4
           # Keep setting 8-bit mode until ready.
           command(0x03); micro_delay(4500)
           command(0x03); micro_delay(4500)
@@ -108,24 +130,21 @@ module Denko
 
         # Or start in 8 bit mode.
         else
-          command(LCD_FUNCTIONSET | @function)
+          command(LCD_FUNCTIONSET | function)
           micro_delay(4500)
-          command(LCD_FUNCTIONSET | @function)
+          command(LCD_FUNCTIONSET | function)
           micro_delay(150)
-          command(LCD_FUNCTIONSET | @function)
+          command(LCD_FUNCTIONSET | function)
         end
 
         # Set functions (lines, font size, etc.).
-        command(LCD_FUNCTIONSET | @function)
+        command(LCD_FUNCTIONSET | function)
 
-        # Start with cursor off and no cursor blink.
-        @control = LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF
         display_on
         clear
 
-        # Set entry mode defaults.
-        @mode = LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT
-        command(LCD_ENTRYMODESET | @mode)
+        # Write entry mode.
+        command(LCD_ENTRYMODESET | entry_mode)
 
         # Need this small delay to avoid garbage data on startup.
         sleep 0.05
@@ -143,8 +162,8 @@ module Denko
 
       def set_cursor(col, row)
         # Limit to the highest row, 0 indexed.
-        row = (@rows - 1) if row > (@rows - 1)
-        command(LCD_SETDDRAMADDR | (col + @row_offsets[row]))
+        row = (rows - 1) if row > (rows - 1)
+        command(LCD_SETDDRAMADDR | (col + row_offsets[row]))
       end
       alias :move_to :set_cursor
 
@@ -165,21 +184,21 @@ module Denko
       }
       CONTROL_TOGGLES.each_key do |key|
         define_method (key.to_s << "_off").to_sym do
-          command LCD_DISPLAYCONTROL | (@control &= ~CONTROL_TOGGLES[key])
+          command LCD_DISPLAYCONTROL | (self.control &= ~CONTROL_TOGGLES[key])
         end
         define_method (key.to_s << "_on") do
-          command LCD_DISPLAYCONTROL | (@control |= CONTROL_TOGGLES[key])
+          command LCD_DISPLAYCONTROL | (self.control |= CONTROL_TOGGLES[key])
         end
       end
 
       def left_to_right
-        @mode |= LCD_ENTRYLEFT
-        command(LCD_ENTRYMODESET | @mode)
+        self.entry_mode |= LCD_ENTRYLEFT
+        command(LCD_ENTRYMODESET | entry_mode)
       end
 
       def right_to_left
-        @mode &= ~LCD_ENTRYLEFT
-        command(LCD_ENTRYMODESET | @mode)
+        self.entry_mode &= ~LCD_ENTRYLEFT
+        command(LCD_ENTRYMODESET | entry_mode)
       end
 
       def scroll_left
@@ -191,13 +210,13 @@ module Denko
       end
 
       def autoscroll_on
-        @mode |= LCD_ENTRYSHIFTINCREMENT;
-        command(LCD_ENTRYMODESET | @mode);
+        self.entry_mode |= LCD_ENTRYSHIFTINCREMENT;
+        command(LCD_ENTRYMODESET | entry_mode);
       end
 
       def autoscroll_off
-        @mode &= ~LCD_ENTRYSHIFTINCREMENT;
-        command(LCD_ENTRYMODESET | @mode);
+        self.entry_mode &= ~LCD_ENTRYSHIFTINCREMENT;
+        command(LCD_ENTRYMODESET | entry_mode);
       end
 
       # Define custom characters as bitmaps.
@@ -224,7 +243,7 @@ module Denko
         bits_from_byte = byte.to_s(2).rjust(8, "0").reverse
 
         # Write bits depending on connection.
-        @bits == 8 ? write8(bits_from_byte) : write4(bits_from_byte)
+        bits == 8 ? write8(bits_from_byte) : write4(bits_from_byte)
       end
 
       def write4(bits)
