@@ -56,9 +56,11 @@ module Denko
         3 => 0.01198 * CONVERSION_SAFETY_FACTOR,
       }
 
-      def after_initialize(options={})
-        super(options)
-        @resolutions = { temperature: 0, humidity: 0 }
+      def resolutions
+        @resolutions ||= { temperature: 0, humidity: 0 }
+      end
+
+      after_initialize do
         reset
       end
 
@@ -95,21 +97,21 @@ module Denko
       end
 
       def temperature_resolution
-        @resolutions[:temperature]
+        resolutions[:temperature]
       end
 
       def temperature_resolution=(setting)
         raise ArgumentError, "wrong resolution given: #{setting}. Must be in range 0..3" unless (0..3).include?(setting)
-        @resolutions[:temperature] = setting
+        resolutions[:temperature] = setting
       end
 
       def humidity_resolution
-        @resolutions[:humidity]
+        resolutions[:humidity]
       end
 
       def humidity_resolution=(setting)
         raise ArgumentError, "wrong resolution given: #{setting}. Must be in range 0..3" unless (0..3).include?(setting)
-        @resolutions[:humidity] = setting
+        resolutions[:humidity] = setting
       end
 
       def _read
