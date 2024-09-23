@@ -59,6 +59,7 @@ class RotaryEncoderTest < Minitest::Test
     part.stub(:observe_pins, mock) do
       part.send(:run_after_initialize_cbs)
     end
+    mock.verify
   end
 
   def test_observes_the_pins
