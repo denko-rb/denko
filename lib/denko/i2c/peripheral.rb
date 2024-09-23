@@ -27,7 +27,10 @@ module Denko
 
       def i2c_repeated_start
         return @i2c_repeated_start unless @i2c_repeated_start.nil?
-        @i2c_repeated_start = params[:i2c_repeated_start] || params[:repeated_start] || i2c_default(:repeated_start)
+        @i2c_repeated_start = params[:i2c_repeated_start]   if @i2c_repeated_start.nil?
+        @i2c_repeated_start = params[:repeated_start]       if @i2c_repeated_start.nil?
+        @i2c_repeated_start = i2c_default(:repeated_start)  if @i2c_repeated_start.nil?
+        @i2c_repeated_start
       end
 
       attr_writer :i2c_frequency, :i2c_repeated_start
