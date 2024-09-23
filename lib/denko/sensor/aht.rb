@@ -36,11 +36,7 @@ module Denko
 
       def after_initialize(options={})
         super(options)
-
-        # Avoid repeated memory allocation for callback data.
-        @reading         = { temperature: nil, humidity: nil }
         @status_register = 0x00
-
         sleep(self.class::POWER_ON_DELAY)
         reset
         calibrate
@@ -48,6 +44,10 @@ module Denko
 
       def state
         state_mutex.synchronize { @state = { temperature: nil, humidity: nil } }
+      end
+
+      def reading
+        @reading ||= { temperature: nil, humidity: nil }
       end
 
       def reset
@@ -95,13 +95,13 @@ module Denko
 
         # Humidity uses the upper 4 bits of the shared byte as its lowest 4 bits.
         h_raw = ((bytes[1] << 16) | (bytes[2] << 8) | (bytes[3])) >> 4
-        @reading[:humidity] = (h_raw.to_f / 2**20) * 100
+        reading[:humidity] = (h_raw.to_f / 2**20) * 100
 
         # Temperature uses the lower 4 bits of the shared byte as its highest 4 bits.
         t_raw = ((bytes[3] & 0x0F) << 16) | (bytes[4] << 8) | bytes[5]
-        @reading[:temperature] = (t_raw.to_f / 2**20) * 200 - 50
+        reading[:temperature] = (t_raw.to_f / 2**20) * 200 - 50
 
-        @reading
+        reading
       end
 
       def update_state(reading)

@@ -1,20 +1,16 @@
 module Denko
   module Sensor
     class DHT
-      include Behaviors::SinglePin
+      include Behaviors::InputPin
       include Behaviors::Poller
       include TemperatureHelper
 
-      def after_initialize(options={})
-        # Set input mode to force upfront pin validation.
-        self.mode = :input
-
-        # Avoid repeated memory allocation for callback data and state.
-        @reading   = { temperature: nil, humidity: nil }
-      end
-
       def state
         state_mutex.synchronize { @state = { temperature: nil, humidity: nil } }
+      end
+
+      def reading
+        @reading ||= { temperature: nil, humidity: nil }
       end
 
       def _read
@@ -41,10 +37,10 @@ module Denko
         end
         return { error: 'CRC failure' } unless crc(bytes)
 
-        @reading[:temperature] = ((bytes[2] << 8) | bytes[3]).to_f / 10
-        @reading[:humidity]    = ((bytes[0] << 8) | bytes[1]).to_f / 10
+        reading[:temperature] = ((bytes[2] << 8) | bytes[3]).to_f / 10
+        reading[:humidity]    = ((bytes[0] << 8) | bytes[1]).to_f / 10
 
-        @reading
+        reading
       end
 
       def update_state(reading)

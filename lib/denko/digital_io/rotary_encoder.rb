@@ -26,9 +26,6 @@ module Denko
         @counts_per_revolution = options[:counts_per_revolution] || options[:cpr] || 60
         @reversed = false || options[:reversed] || options[:reverse]
 
-        # Avoid repeated memory allocation.
-        @reading   = { count: 0, angle: 0, change: 0}
-
         # PiBoard will use GPIO alerts, default to 1 microsecond debounce time.
         @debounce_time = options[:debounce_time] || 1
         a.debounce_time = @debounce_time
@@ -48,6 +45,10 @@ module Denko
 
       def state
         state_mutex.synchronize { @state ||= { count: 0, angle: 0 } }
+      end
+
+      def reading
+        @reading ||= { count: 0, angle: 0, change: 0 }
       end
 
       attr_reader :reversed, :counts_per_revolution, :divider, :debounce_time
@@ -92,11 +93,11 @@ module Denko
       def pre_callback_filter(step)
         step = -step if reversed
 
-        state_mutex.synchronize { @reading[:count] = @state[:count] + step }
-        @reading[:change] = step
-        @reading[:angle]  = @reading[:count] * degrees_per_count % 360
+        state_mutex.synchronize { reading[:count] = @state[:count] + step }
+        reading[:change] = step
+        reading[:angle]  = reading[:count] * degrees_per_count % 360
 
-        @reading
+        reading
       end
 
       #

@@ -57,10 +57,6 @@ module Denko
 
       def after_initialize(options={})
         super(options)
-
-        # Avoid repeated memory allocation for callback data.
-        @reading   = { temperature: nil, humidity: nil, pressure: nil }
-
         #
         # Setup defaults for the config registers:
         #   Oneshot reading mode
@@ -88,6 +84,10 @@ module Denko
 
       def state
         state_mutex.synchronize { @state = { temperature: nil, humidity: nil, pressure: nil } }
+      end
+
+      def reading
+        @reading ||= { temperature: nil, humidity: nil, pressure: nil }
       end
 
       #
@@ -215,13 +215,13 @@ module Denko
       def decode_reading(bytes)
         # Always read temperature since t_fine is needed to calibrate other values.
         temperature, t_fine = decode_temperature(bytes)
-        @reading[:temperature] = temperature
+        reading[:temperature] = temperature
 
         # Pressure and humidity are optional. Humidity is not available on the BMP280.
-        @reading[:pressure] = decode_pressure(bytes, t_fine) if reading_pressure?
-        @reading[:humidity] = decode_humidity(bytes, t_fine) if reading_humidity?
+        reading[:pressure] = decode_pressure(bytes, t_fine) if reading_pressure?
+        reading[:humidity] = decode_humidity(bytes, t_fine) if reading_humidity?
 
-        @reading
+        reading
       end
 
       def decode_temperature(bytes)

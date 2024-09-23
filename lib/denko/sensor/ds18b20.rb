@@ -4,13 +4,12 @@ module Denko
       include TemperatureHelper
       FAMILY_CODE = 0x28
 
-     def after_initialize(options={})
-        # Avoid repeated memory allocation for callback data and state.
-        @reading   = { temperature: nil }
-      end
-
       def state
         state_mutex.synchronize { @state = { temperature: nil } }
+      end
+
+      def reading
+        @reading ||= { temperature: nil }
       end
 
       def _read
@@ -37,14 +36,14 @@ module Denko
         return { crc_error: true } unless OneWire::Helper.crc(bytes)
 
         @resolution ||= decode_resolution(bytes)
-        @reading[:temperature] = decode_temperature(bytes)
+        reading[:temperature] = decode_temperature(bytes)
 
-        @reading
+        reading
       end
 
       def update_state(reading)
         state_mutex.synchronize do
-          @state[:temperature] = @reading[:temperature]
+          @state[:temperature] = reading[:temperature]
         end
       end
 

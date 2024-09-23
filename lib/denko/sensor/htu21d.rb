@@ -23,10 +23,6 @@ module Denko
 
       def after_initialize(options={})
         super(options)
-
-        # Avoid repeated memory allocation for callback data and state.
-        @reading   = { temperature: nil, humidity: nil }
-
         @config = CONFIG_DEFAULT
         reset
         heater_off
@@ -34,6 +30,10 @@ module Denko
 
       def state
         state_mutex.synchronize { @state = { temperature: nil, humidity: nil } }
+      end
+
+      def reading
+        @reading ||= { temperature: nil, humidity: nil }
       end
 
       def reset
@@ -120,24 +120,24 @@ module Denko
           humidity = (raw_value.to_f / 524.288) - 6
           humidity = 0.0   if humidity < 0.0
           humidity = 100.0 if humidity > 100.0
-          @reading[:humidity] = humidity
+          reading[:humidity] = humidity
         else
-          @reading[:temperature] = (175.72 * raw_value.to_f / 65536) - 46.8
+          reading[:temperature] = (175.72 * raw_value.to_f / 65536) - 46.8
         end
 
         # Wait for both values to be read.
-        return nil unless (@reading[:temperature] && @reading[:humidity])
+        return nil unless (reading[:temperature] && reading[:humidity])
 
-        @reading
+        reading
       end
 
       def update_state(reading)
         state_mutex.synchronize do
-          @state[:temperature] = @reading[:temperature]
-          @state[:humidity] = @reading[:humidity]
+          @state[:temperature] = reading[:temperature]
+          @state[:humidity]    = reading[:humidity]
         end
         # Reset so pre_callback_filter can check for both values.
-        @reading = {temperature: nil, humidity: nil}
+        reading = { temperature: nil, humidity: nil }
       end
 
       #

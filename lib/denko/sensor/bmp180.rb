@@ -30,9 +30,6 @@ module Denko
       def after_initialize(options={})
         super(options)
 
-        # Avoid repeated memory allocation for callback data and state.
-        @reading   = { temperature: nil, pressure: nil }
-
         # Default to start conversion off, reading temperature, no pressure oversampling.
         @register = 0b00001110
         @calibration_data_loaded = false
@@ -46,6 +43,10 @@ module Denko
 
       def state
         state_mutex.synchronize { @state = { temperature: nil, pressure: nil } }
+      end
+
+      def reading
+        @reading ||= { temperature: nil, pressure: nil }
       end
 
       #
@@ -147,9 +148,9 @@ module Denko
       #
       def decode_reading(bytes)
         temperature, b5 = decode_temperature(bytes)
-        @reading[:temperature] = temperature
-        @reading[:pressure] = decode_pressure(bytes, b5)
-        @reading
+        reading[:temperature] = temperature
+        reading[:pressure] = decode_pressure(bytes, b5)
+        reading
       end
 
       def decode_temperature(bytes)
