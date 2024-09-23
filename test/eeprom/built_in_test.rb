@@ -2,14 +2,14 @@ require_relative '../test_helper'
 
 class BoardMock < Denko::Board
   attr_reader :eeprom_stub
-  
+
   def eeprom_read(start_address, length)
     # Initialize a fake EEPROM
     @eeprom_stub ||= Array.new(eeprom_length){255}
-    
+
     # Pack it up like a string coming from the board.
     string = @eeprom_stub[start_address, length].map{ |x| x.to_s }.join(",")
-    
+
     # Update ourselves with it.
     self.update("254:#{start_address}-#{string}\n")
   end
@@ -27,7 +27,7 @@ class BuiltInEEPROMTest < Minitest::Test
   def part
     @part ||= board.eeprom
   end
-  
+
   def test_pin_ee
     assert_equal part.pin, 254
   end
@@ -35,14 +35,14 @@ class BuiltInEEPROMTest < Minitest::Test
   def test_loads_on_initialize_and_updates_correctly
     assert_equal part.state, Array.new(board.eeprom_length){255}
   end
-  
+
   def test_delegates_to_state_array
     mock = Minitest::Mock.new
     mock.expect(:[], 255, [0])
     mock.expect(:[]=, 128, [1, 128])
     mock.expect(:each, nil)
     mock.expect(:each_with_index, nil)
-    
+
     part.stub(:state, mock) do
       part[0]
       part[1] = 128
@@ -50,12 +50,12 @@ class BuiltInEEPROMTest < Minitest::Test
       part.each_with_index { |el| el }
     end
   end
-  
+
   def test_saves_to_the_board
     part[0] = 128
     part[part.length] = 127
     part.save
-    assert_equal board.eeprom_stub[0], 128
-    assert_equal board.eeprom_stub[board.eeprom_length], 127
+    assert_equal 128, board.eeprom_stub[0]
+    assert_equal 127, board.eeprom_stub[board.eeprom_length]
   end
 end

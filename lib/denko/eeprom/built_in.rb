@@ -27,7 +27,7 @@ module Denko
 
       def save
         state_mutex.synchronize do
-          state.each_slice(128).with_index do |slice, index|
+          @state.each_slice(128).with_index do |slice, index|
             board.eeprom_write(index * 128, slice)
           end
         end

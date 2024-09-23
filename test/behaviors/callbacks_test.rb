@@ -29,9 +29,9 @@ class CallbacksTest < Minitest::Test
 
   def callback_mutex_is_correct_class
     if (RUBY_ENGINE == "ruby")
-      assert_equal part.instance_variable_get(:@callback_mutex).class, Denko::MutexStub
+      assert_equal Denko::MutexStub, part.callback_mutex.class
     else
-      assert_equal part.instance_variable_get(:@callback_mutex).class, Mutex
+      assert_equal Mutex, part.callback_mutex.class
     end
   end
 
@@ -39,7 +39,7 @@ class CallbacksTest < Minitest::Test
     callback = Proc.new{}
     mock = Minitest::Mock.new
     3.times {mock.expect(:call, nil)}
-    
+
     part.callback_mutex.stub(:synchronize, mock) do
       part.callbacks
       part.add_callback(:key, &callback)
@@ -113,7 +113,7 @@ class CallbacksTest < Minitest::Test
     value = 0
     part.add_callback { value = 1 }
     part.update(nil)
-    assert_equal 0, value 
+    assert_equal 0, value
   end
 
   def test_no_callbacks_with_filter_returning_nil
@@ -121,6 +121,6 @@ class CallbacksTest < Minitest::Test
     value = 0
     part2.add_callback { value = 1 }
     part2.update("anything")
-    assert_equal 0, value 
+    assert_equal 0, value
   end
 end

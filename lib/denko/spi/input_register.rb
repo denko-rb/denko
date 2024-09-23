@@ -80,11 +80,12 @@ module Denko
         bits = byte_array_to_bit_array(message.split(","))
 
         callback_mutex.synchronize {
-          break if callbacks.empty?
+          break unless @callbacks
+          break if @callbacks.empty?
 
           # Arduino doesn't de-duplicate state. Do it, but honor :force_update callbacks.
           if (bits != state) || @callbacks[:force_update]
-            callbacks.each_value do |array|
+            @callbacks.each_value do |array|
               array.each { |callback| callback.call(bits) }
             end
           end
