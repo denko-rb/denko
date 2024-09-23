@@ -165,7 +165,7 @@ module Denko
         end
       end
 
-      def i2c_setup
+      def mutate_i2c
         singleton_class.class_eval do
           include I2C::Peripheral
           i2c_default_address   0x3C
@@ -183,26 +183,28 @@ module Denko
         end
       end
 
-      def spi_setup
-        singleton_class.include(SPI::Peripheral::MultiPin)
+      def mutate_spi
+        singleton_class.class_eval do
+          include SPI::Peripheral::MultiPin
 
-        define_singleton_method(:initialize_pins) do |options|
-          super(options)
-          proxy_pin :dc,    DigitalIO::Output, board: bus.board
-          proxy_pin :reset, DigitalIO::Output, board: bus.board, optional: true
-          reset.high if reset
-        end
+          def initialize_pins(options={})
+            super(options)
+            proxy_pin :dc,    DigitalIO::Output, board: bus.board
+            proxy_pin :reset, DigitalIO::Output, board: bus.board, optional: true
+            reset.high if reset
+          end
 
-        # Commands are SPI bytes written while DC pin low.
-        define_singleton_method(:command) do |bytes|
-          dc.low
-          spi_write(bytes)
-        end
+          # Commands are SPI bytes written while DC pin low.
+          def command(bytes)
+            dc.low
+            spi_write(bytes)
+          end
 
-        # Data are SPI SPI bytes written while DC pin high.
-        define_singleton_method(:data) do |bytes|
-          dc.high
-          spi_write(bytes)
+          # Data are SPI SPI bytes written while DC pin high.
+          def data(bytes)
+            dc.high
+            spi_write(bytes)
+          end
         end
       end
 
@@ -210,9 +212,9 @@ module Denko
         bus = options[:bus] || options[:board]
 
         if bus.class.ancestors.include?(Denko::SPI::Bus) || bus.class.ancestors.include?(Denko::SPI::BitBang)
-          spi_setup
+          mutate_spi
         elsif bus.class.ancestors.include?(Denko::I2C::Bus) || bus.class.ancestors.include?(Denko::I2C::BitBang)
-          i2c_setup
+          mutate_i2c
         else
           raise ArgumentError, "#{self.class} must be connected to either an I2C or SPI bus"
         end
