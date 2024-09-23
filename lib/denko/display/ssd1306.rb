@@ -72,6 +72,23 @@ module Denko
 
       attr_accessor :canvas
 
+      # Default to a 128x64 display.
+      def columns
+        @columns ||= params[:columns] || params[:width] || 128
+      end
+
+      def rows
+        @rows ||= params[:rows] || params[:height] || 64
+      end
+
+      def rotated
+        return @rotated unless @rotated.nil?
+        @rotated = params[:rotated]
+        @rotated = params[:rotate] if @rotated.nil?
+        @rotated = false if @rotated.nil?
+        @rotated
+      end
+
       # Decide whether this instnace is I2C or SPI.
       before_initialize do
         bus = params[:bus] || params[:board]
@@ -86,30 +103,26 @@ module Denko
       end
 
       after_initialize do
-        # Default to a 128x64 display.
-        @columns = params[:columns] || params[:width]  || 128
-        @rows    = params[:rows]    || params[:height] || 64
-
         # Validate known sizes.
-        raise ArgumentError, "error in #{self.class} width: #{@columns}. Must be in: #{WIDTHS.inspect}" unless WIDTHS.include?(@columns)
-        raise ArgumentError, "error in #{self.class} height: #{@rows}. Must be in: #{HEIGHTS.inspect}" unless HEIGHTS.include?(@rows)
+        raise ArgumentError, "error in #{self.class} width: #{columns}. Must be in: #{WIDTHS.inspect}" unless WIDTHS.include?(columns)
+        raise ArgumentError, "error in #{self.class} height: #{rows}. Must be in: #{HEIGHTS.inspect}" unless HEIGHTS.include?(rows)
 
         # Everything except 96x16 size uses clock 0x80.
         clock = 0x80
-        clock = 0x60 if (@columns == 96 && @rows == 16)
+        clock = 0x60 if (columns == 96 && rows == 16)
 
         # 128x32 and 96x16 sizes use com pin config 0x02
         com_pin_config = 0x12
-        com_pin_config = 0x02 if (@columns == 96 && @rows == 16) || (@columns == 128 && @rows == 32)
+        com_pin_config = 0x02 if (columns == 96 && rows == 16) || (columns == 128 && rows == 32)
 
         # Reflecting horizontally and vertically to effectively rotate 180 degrees.
-        seg_remap     = params[:rotate] ? 0x01 : 0x00
-        com_direction = params[:rotate] ? 0x08 : 0x00
+        seg_remap     = rotated ? 0x01 : 0x00
+        com_direction = rotated ? 0x08 : 0x00
 
         # Startup sequence (SPI doesn't work properly if this isn't sent twice.)
         2.times do
         command [
-          MULTIPLEX_RATIO,        @rows - 1,
+          MULTIPLEX_RATIO,        rows - 1,
           DISPLAY_OFFSET,         0x00,
           START_LINE            | 0x00,
           SEGMENT_REMAP         | seg_remap,
@@ -127,7 +140,7 @@ module Denko
         end
 
         # Create a new blank canvas and draw it.
-        self.canvas = Canvas.new(@columns, @rows)
+        self.canvas = Canvas.new(columns, rows)
         draw
       end
 
@@ -144,21 +157,21 @@ module Denko
         command [CONTRAST, value]
       end
 
-      def draw(x_min=0, x_max=(@columns-1), y_min=0, y_max=(@rows-1))
+      def draw(x_min=0, x_max=(columns-1), y_min=0, y_max=(rows-1))
         # Convert y-coords to page coords.
         p_min = y_min / 8
         p_max = y_max / 8
 
         # If drawing the whole frame (default), bypass temp buffer to save time.
-        if (x_min == 0) && (x_max == @columns-1) && (p_min == 0) && (p_max == @rows/8)
+        if (x_min == 0) && (x_max == columns-1) && (p_min == 0) && (p_max == rows/8)
           draw_partial(canvas.framebuffer, x_min, x_max, p_min, p_max)
 
         # Copy bytes for the given rectangle into a temp buffer.
         else
           temp_buffer = []
           (p_min..p_max).each do |page|
-            src_start = (@columns * page) + x_min
-            src_end   = (@columns * page) + x_max
+            src_start = (columns * page) + x_min
+            src_end   = (columns * page) + x_max
             temp_buffer += canvas.framebuffer[src_start..src_end]
           end
 
