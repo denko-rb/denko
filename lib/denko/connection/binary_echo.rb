@@ -8,6 +8,10 @@ module Denko
         bytes = (min..max).to_a
         board.binary_echo(pin, bytes)
       end
+
+      def test_array(arr)
+        board.binary_echo(pin, arr)
+      end
     end
   end
 end

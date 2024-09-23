@@ -2,20 +2,20 @@ module Denko
   module Behaviors
     module Callbacks
       include State
-      attr_reader :callback_mutex
 
-      def initialize(options={})
+      def callback_mutex
+        return @callback_mutex if @callback_mutex
         @callback_mutex = Denko.cruby? ? Denko::MutexStub.new : Mutex.new
-        remove_callbacks
-        super(options)
+        @callback_mutex
       end
 
       def callbacks
-        callback_mutex.synchronize { @callbacks }
+        callback_mutex.synchronize { @callbacks ||= {} }
       end
 
       def add_callback(key=:persistent, &block)
         callback_mutex.synchronize do
+          @callbacks      ||= {}
           @callbacks[key] ||= []
           @callbacks[key] << block
         end
@@ -23,7 +23,7 @@ module Denko
 
       def remove_callback(key=nil)
         callback_mutex.synchronize do
-          key ? @callbacks.delete(key) : @callbacks = {}
+          (@callbacks && key) ? @callbacks.delete(key) : @callbacks = {}
         end
       end
 
@@ -46,13 +46,13 @@ module Denko
         end
 
         callback_mutex.synchronize do
-          @callbacks.each_value do |array|
+          callbacks.each_value do |array|
             array.each do |callback|
               callback.call(filtered_data)
             end
           end
           # Remove one-time callbacks added by #read.
-          @callbacks.delete(:read)
+          callbacks.delete(:read)
         end
 
         update_state(filtered_data)

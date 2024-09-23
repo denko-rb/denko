@@ -5,7 +5,7 @@ module Denko
       include Behaviors::Poller
       include TemperatureHelper
       include PressureHelper
-      
+
       # Reading Mode Settings
       SLEEP_MODE      = 0b00
       ONESHOT_MODE    = 0b01 # 0b10 is also valid. Called "forced mode" in datasheet.
@@ -40,8 +40,8 @@ module Denko
                               8  =>  0b100,
                               16 =>  0b101, # 0b110 and 0b111 are also valid for 16x.
                             }
-                            
-      # IIR Filter Coefficients  
+
+      # IIR Filter Coefficients
       IIR_COEFFICIENTS = {
                             0  =>  0b000,
                             2  =>  0b001,
@@ -49,7 +49,7 @@ module Denko
                             8  =>  0b011,
                             16 =>  0b100, # 0b101, 0b110 and 0b111 are also valid for 16.
                           }
-      
+
       def before_initialize(options={})
         @i2c_address = 0x76
         super(options)
@@ -57,10 +57,9 @@ module Denko
 
       def after_initialize(options={})
         super(options)
-        
-        # Avoid repeated memory allocation for callback data and state.
+
+        # Avoid repeated memory allocation for callback data.
         @reading   = { temperature: nil, humidity: nil, pressure: nil }
-        self.state = { temperature: nil, humidity: nil, pressure: nil }
 
         #
         # Setup defaults for the config registers:
@@ -74,7 +73,7 @@ module Denko
           # Bits 2..4 control the pressure oversampling factor
           # Bits 5..7 control the temperature oversampling factor.
           f4: 0b00100110,
-        
+
           # Bits 0..1 should always be 0.
           # Bits 2..4 control the IIR filter coefficient.
           # Bits 5..7 control the standby time when in continuous reading mode.
@@ -83,8 +82,12 @@ module Denko
         # Bits 0..2 control the humidity oversampling factor, on BME280 only.
         # Bits 3+ are unused.
         @registers.merge!(f2: 0b00000001) if humidity_available?
-        
+
         @calibration_data_loaded = false
+      end
+
+      def state
+        state_mutex.synchronize { @state = { temperature: nil, humidity: nil, pressure: nil } }
       end
 
       #
@@ -96,7 +99,7 @@ module Denko
       end
 
       attr_reader :measurement_time
-      
+
       def update_measurement_time
         t_oversampling = 2 ** (((@registers[:f4] & 0b11100000) >> 5) - 1)
         p_oversampling = 2 ** (((@registers[:f4] & 0b00011100) >> 2) - 1)
@@ -112,57 +115,57 @@ module Denko
         # Milliseconds to seconds
         @measurement_time = @measurement_time / 1000
       end
-      
+
       def continuous_mode
         @registers[:f4] = (@registers[:f4] & 0b11111100) | CONTINUOUS_MODE
-        write_settings 
+        write_settings
       end
-      
+
       def standby_time=(ms)
         raise ArgumentError, "invalid standby time: #{ms}" unless self.class::STANDBY_TIMES.keys.include? ms
 
         @registers[:f5] = (@registers[:f5] & 0b00011111) | (self.class::STANDBY_TIMES[ms] << 5)
         write_settings
       end
-      
+
       def temperature_samples=(factor)
         raise ArgumentError, "invalid oversampling factor: #{factor}" unless OVERSAMPLE_FACTORS.keys.include? factor
         raise ArgumentError, "temperature must be read. Invalid oversampling factor: #{factor}" if factor == 0
-        
+
         @registers[:f4] = (@registers[:f4] & 0b00011111) | (OVERSAMPLE_FACTORS[factor] << 5)
         write_settings
       end
-      
+
       def pressure_samples=(factor)
         raise ArgumentError, "invalid oversampling factor: #{factor}" unless OVERSAMPLE_FACTORS.keys.include? factor
-        
+
         @registers[:f4] = (@registers[:f4] & 0b11100011) | (OVERSAMPLE_FACTORS[factor] << 2)
         write_settings
       end
-      
+
       def humidity_samples=(factor)
         raise ArgumentError, "invalid oversampling factor: #{factor}" unless OVERSAMPLE_FACTORS.keys.include? factor
-        
+
         @registers[:f2] = (@registers[:f2] & 0b11111000) | OVERSAMPLE_FACTORS[factor]
         write_settings
       end
-      
+
       def iir_coefficient=(coeff)
         raise ArgumentError, "invalid IIR coefficient: #{coeff}" unless IIR_COEFFICIENTS.keys.include? coeff
-        
+
         @registers[:f5] = (@registers[:f5] & 0b11100011) | (IIR_COEFFICIENTS[coeff] << 2)
         write_settings
       end
-    
+
       def write_settings
         if humidity_available?
-          i2c_write [0xF2, @registers[:f2], 0xF4, @registers[:f4], 0xF5, @registers[:f5]] 
+          i2c_write [0xF2, @registers[:f2], 0xF4, @registers[:f4], 0xF5, @registers[:f5]]
         else
           i2c_write [0xF4, @registers[:f4], 0xF5, @registers[:f5]]
         end
         update_measurement_time
       end
-      
+
       def config_register_bits
         str = ""
         @registers.each_key do |key|
@@ -173,13 +176,13 @@ module Denko
 
       #
       # Reading Methods
-      # 
+      #
       def _read
         get_calibration_data unless calibration_data_loaded
         write_settings
         i2c_read 0xF7, 8
       end
-      
+
       def pre_callback_filter(data)
         if data.length == 8
           return decode_reading(data)
@@ -194,11 +197,11 @@ module Denko
           return nil
         end
       end
-      
+
       def update_state(reading)
         # Checking for Hash ignores calibration data and nil.
         if reading.class == Hash
-          @state_mutex.synchronize do
+          state_mutex.synchronize do
             @state[:temperature] = reading[:temperature]
             @state[:pressure]    = reading[:pressure]
             @state[:humidity]    = reading[:humidity]
@@ -213,18 +216,18 @@ module Denko
         # Always read temperature since t_fine is needed to calibrate other values.
         temperature, t_fine = decode_temperature(bytes)
         @reading[:temperature] = temperature
-      
+
         # Pressure and humidity are optional. Humidity is not available on the BMP280.
         @reading[:pressure] = decode_pressure(bytes, t_fine) if reading_pressure?
         @reading[:humidity] = decode_humidity(bytes, t_fine) if reading_humidity?
-          
+
         @reading
       end
-      
+
       def decode_temperature(bytes)
         # Reformat raw temeprature bytes (20-bits in 24) to uint32.
         adc_t = ((bytes[3] << 16) | (bytes[4] << 8) | (bytes[5])) >> 4
-                  
+
         # Floating point temperature calculation from datasheet. Result in degrees Celsius.
         var1 = (adc_t /  16384.0 - @calibration[:t1] / 1024.0) * @calibration[:t2]
         var2 = (adc_t / 131072.0 - @calibration[:t1] / 8192.0) ** 2 * @calibration[:t3]
@@ -232,11 +235,11 @@ module Denko
         temperature = (var1 + var2) / 5120.0
         [temperature, t_fine]
       end
-      
+
       def decode_pressure(bytes, t_fine)
         # Reformat raw pressure bytes (20-bits in 24) to uint32.
         adc_p = ((bytes[0] << 16) | (bytes[1] << 8) | (bytes[2])) >> 4
-        
+
         # Floating point pressure calculation from datasheet. Result in Pascals.
         var1 = (t_fine / 2.0) - 64000.0
         var2 = var1 * var1 * @calibration[:p6] / 32768.0
@@ -255,11 +258,11 @@ module Denko
         end
         pressure
       end
-      
+
       def decode_humidity(bytes, t_fine)
         # Raw data for humidity is big-endian uint16.
         adc_h = (bytes[6] << 8) | bytes[7]
-        
+
         # Floating point humidity calculation from datasheet. Result in % RH.
         humidity = t_fine - 76800.0
         humidity = (adc_h - (@calibration[:h4] * 64.0 + @calibration[:h5] / 16384.0 * humidity)) *
@@ -274,24 +277,24 @@ module Denko
         # Bits 2..4 of 0xF4 register must not be 0.
         (@registers[:f4] >> 2 & 0b111) != OVERSAMPLE_FACTORS[0]
       end
-      
+
       def reading_humidity?
         return false unless humidity_available?
         # Lowest 3 bits of 0xF2 register must not be 0.
         (@registers[:f2] & 0b111) != OVERSAMPLE_FACTORS[0]
       end
-      
+
       # No humidity on the BMP280.
       def humidity_available?
         !self.class.to_s.match(/bmp/i)
       end
-      
+
       #
       # Calibration Methods
       #
       attr_reader :calibration_data_loaded
-      
-      def get_calibration_data        
+
+      def get_calibration_data
         # First group of calibration bytes, sent to #process_calibration_a.
         read_using -> { i2c_read(26, register: 0x88) }
 
@@ -341,7 +344,7 @@ module Denko
         end
       end
     end
-    
+
     #
     # BMP280 is mostly compatible with BME280, except for a few changes.
     #

@@ -74,12 +74,10 @@ module Denko
       def after_initialize(options={})
         super(options)
 
-        # Avoid repeated memory allocation for callback data and state.
-        @reading     = { temperature: nil, pressure: nil }
-        self.state   = { temperature: nil, pressure: nil }
-
+        # Avoid repeated memory allocation for callback data.
+        @reading = { temperature: nil, pressure: nil }
         reset
-        
+
         # Get 5 config registers. Copy 0xF4 to modify it for control.
         get_config_registers
         @ctrl_meas_register = @registers[:f4].dup
@@ -95,6 +93,10 @@ module Denko
         sleep @measurement_time
 
         get_calibration_data
+      end
+
+      def state
+        state_mutex.synchronize { @state = { temperature: nil, pressure: nil } }
       end
 
       #
@@ -130,7 +132,7 @@ module Denko
         sleep UPDATE_TIME
       end
       attr_reader :temperature_samples
-      
+
       def pressure_samples=(factor)
         raise ArgumentError, "invalid oversampling factor: #{factor}" unless OVERSAMPLE_FACTORS.keys.include? factor
         @ctrl_meas_register = (@ctrl_meas_register & 0b11100011) | (OVERSAMPLE_FACTORS[factor] << 2)
@@ -178,7 +180,7 @@ module Denko
           i2c_write [CTRL_MEAS_REGISTER, @ctrl_meas_register]
           sleep @measurement_time
         end
-        
+
         # Read the data bytes.
         i2c_read(DATA_LENGTH, register: DATA_REGISTER)
       end
@@ -223,7 +225,7 @@ module Denko
       end
 
       def update_state(reading)
-        @state_mutex.synchronize do
+        state_mutex.synchronize do
           @state[:temperature] = reading[:temperature]
           @state[:pressure]    = reading[:pressure]
         end

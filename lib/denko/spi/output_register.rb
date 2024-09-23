@@ -13,25 +13,25 @@ module Denko
         @buffer_writes = false if options[:buffer_writes] == false
         @write_delay = options[:write_delay] || 0.001
       end
-      
+
       def after_initialize(options={})
         write
       end
 
       #
-      # Overrides Peripheral#write to always write @state.
+      # Overrides Peripheral#write to always write state.
       # Convert bit state to array of 0-255 integers (bytes) first.
       #
       def write
         bytes = []
-        @state.each_slice(8) do |slice|
+        state.each_slice(8) do |slice|
           # Convert nils in the slice to zero.
           zeroed = slice.map { |bit| bit.to_i }
-          
+
           # Each slice is 8 bits of a byte, with the lowest on the left.
           # Reverse to reading order (lowest right) then join into string, and convert to integer.
           byte = zeroed.reverse.join.to_i(2)
-          
+
           # Pack bytes in reverse order.
           bytes.unshift byte
         end
@@ -45,7 +45,7 @@ module Denko
         state[pin] = value  # Might not be atomic?
         @buffer_writes ? write_buffered(state) : write
       end
-      
+
       def digital_read(pin)
         state[pin]
       end

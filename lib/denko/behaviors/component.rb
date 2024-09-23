@@ -5,7 +5,6 @@ module Denko
       attr_reader :board
 
       def initialize(options={})
-        super(options)
         before_initialize(options)
         initialize_board(options)
         convert_pins(options)

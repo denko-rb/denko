@@ -3,9 +3,8 @@ module Denko
     class BaseRegister
       include SPI::Peripheral::SinglePin
       #
-      # Registers act as a Board for components that need only digital pins in
-      # in their I/O direction. Give the register as a 'board' when initializing a
-      # new component, and pin numbers that map onto the registers parallel output pins.
+      # Registers can be a BoardProxy for components needing digital pins.
+      # Give the Register as board: and pin: is the Register's parallel pin number.
       #
       include Behaviors::BoardProxy
 
@@ -14,23 +13,24 @@ module Denko
       def before_initialize(options={})
         super(options)
         #
-        # To use the register as a board proxy, we need to know how many
-        # bytes there are and map each bit to a virtual pin.
-        # Defaults to 1 byte. Ignore if writing to the register directly.
+        # How many bytes (pins / 8)  for use as BoardProxy. Default to 1 (8 pins).
+        # Can be ignored if reading / writing the register directly.
         #
         @bytes = options[:bytes] || 1
-        #
-        # When used as a board proxy, store the state of each register
-        # pin as a 0 or 1 in an array that is (@bytes * 8) long. Zero out to start.
-        #
-        @state = Array.new(@bytes*8) { 0 }
       end
 
       def after_initialize(options={})
         super(options)
-
-        # Drive select pin high by default.
+        # Select pin is active-low.
         self.high
+      end
+
+      #
+      # When used as BoardProxy, store the state of each register
+      # pin as a 0 or 1 in an array that is (@bytes * 8) long.
+      #
+      def state
+        state_mutex.synchronize { @state ||= Array.new(@bytes*8) { 0 } }
       end
     end
   end

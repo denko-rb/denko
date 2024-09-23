@@ -18,6 +18,7 @@ class PollerTest < Minitest::Test
   def inject(data, wait_for_callbacks = true)
     Thread.new do
       if wait_for_callbacks
+        while (!part.callbacks) do; sleep 0.01; end
         while (!part.callbacks[:read]) do; sleep 0.01; end
       end
       loop do

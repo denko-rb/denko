@@ -5,7 +5,7 @@ module Denko
       include Behaviors::Poller
       include TemperatureHelper
       include PressureHelper
-      
+
       # Write this to register 0xE0 for soft reset
       SOFT_RESET = 0xB6
 
@@ -29,10 +29,9 @@ module Denko
 
       def after_initialize(options={})
         super(options)
-        
+
         # Avoid repeated memory allocation for callback data and state.
         @reading   = { temperature: nil, pressure: nil }
-        self.state = { temperature: nil, pressure: nil }
 
         # Default to start conversion off, reading temperature, no pressure oversampling.
         @register = 0b00001110
@@ -45,6 +44,10 @@ module Denko
         soft_reset
       end
 
+      def state
+        state_mutex.synchronize { @state = { temperature: nil, pressure: nil } }
+      end
+
       #
       # Configuration Methods
       #
@@ -53,7 +56,7 @@ module Denko
       end
 
       attr_reader :measurement_time
-      
+
       def update_measurement_time
         # Get oversample bits from current register setting.
         oversample_exponent = (@register & 0b11000000) >> 6
@@ -71,7 +74,7 @@ module Denko
         raise ArgumentError, "invalid oversampling factor: #{factor}" unless OVERSAMPLE_FACTORS.keys.include? factor
         @oss = OVERSAMPLE_FACTORS[factor]
       end
-    
+
       def write_settings
         update_measurement_time
         i2c_write [0xF4, @register]
@@ -104,7 +107,7 @@ module Denko
 
       def _read
         get_calibration_data unless calibration_data_loaded
-        
+
         _read_temperature
         _read_pressure
       end
@@ -132,13 +135,13 @@ module Denko
       def update_state(reading)
         # Checking for Hash ignores calibration data and nil.
         if reading.class == Hash
-          @state_mutex.synchronize do
+          state_mutex.synchronize do
             @state[:temperature] = reading[:temperature]
             @state[:pressure]    = reading[:pressure]
           end
         end
       end
-      
+
       #
       # Decoding Methods
       #
@@ -165,7 +168,7 @@ module Denko
         # Return temperature and b5 for pressure calculation.
         [temperature, b5]
       end
-      
+
       def decode_pressure(bytes, b5)
         # Pressure is bytes [2..3], MSB first.
         up = ((bytes[2] << 16) | (bytes[3] << 8) | (bytes[4])) >> (8 - @oss)
@@ -197,8 +200,8 @@ module Denko
       # Calibration Methods
       #
       attr_reader :calibration_data_loaded
-      
-      def get_calibration_data        
+
+      def get_calibration_data
         #  Calibration data is 22 bytes starting at address 0xAA.
         read_using -> { i2c_read(22, register: 0xAA) }
       end

@@ -64,10 +64,13 @@ module Denko
 
         # Avoid repeated memory allocation for callback data and state.
         @reading     = { temperature: nil, humidity: nil }
-        self.state   = { temperature: nil, humidity: nil }
         @resolutions = { temperature: 0, humidity: 0 }
 
         reset
+      end
+
+      def state
+        state_mutex.synchronize { @state = { temperature: nil, humidity: nil } }
       end
 
       def reset
@@ -83,7 +86,7 @@ module Denko
       def heater_off?
         !@heater_on
       end
-      
+
       def heater_on
         i2c_write [HEATER_ON]
         @heater_on = true
@@ -93,7 +96,7 @@ module Denko
         i2c_write [HEATER_OFF]
         @heater_on = false
       end
-      
+
       def temperature_resolution
         @resolutions[:temperature]
       end
@@ -102,16 +105,16 @@ module Denko
         raise ArgumentError, "wrong resolution given: #{setting}. Must be in range 0..3" unless (0..3).include?(setting)
         @resolutions[:temperature] = setting
       end
-      
+
       def humidity_resolution
         @resolutions[:humidity]
       end
-      
+
       def humidity_resolution=(setting)
         raise ArgumentError, "wrong resolution given: #{setting}. Must be in range 0..3" unless (0..3).include?(setting)
         @resolutions[:humidity] = setting
       end
-      
+
       def _read
         # Calculate total conversion time.
         conversion_time = T_CONVERSION_TIMES[temperature_resolution] +
@@ -151,9 +154,9 @@ module Denko
         return nil unless (@reading[:temperature] && @reading[:humidity])
         @reading
       end
-      
+
       def update_state(reading)
-        @state_mutex.synchronize do
+        state_mutex.synchronize do
           @state[:temperature] = reading[:temperature]
           @state[:humidity]    = reading[:humidity]
         end

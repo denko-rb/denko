@@ -6,7 +6,7 @@ module Denko
       include TemperatureHelper
 
       # Commands
-      INIT_AND_CALIBRATE   = [0xE1, 0x08, 0x00] 
+      INIT_AND_CALIBRATE   = [0xE1, 0x08, 0x00]
       READ_STATUS_REGISTER = [0x71]
       START_MEASUREMENT    = [0xAC, 0x33, 0x00]
       SOFT_RESET           = [0xBA]
@@ -37,14 +37,17 @@ module Denko
       def after_initialize(options={})
         super(options)
 
-        # Avoid repeated memory allocation for callback data and state.
+        # Avoid repeated memory allocation for callback data.
         @reading         = { temperature: nil, humidity: nil }
-        self.state       = { temperature: nil, humidity: nil }
         @status_register = 0x00
 
         sleep(self.class::POWER_ON_DELAY)
         reset
         calibrate
+      end
+
+      def state
+        state_mutex.synchronize { @state = { temperature: nil, humidity: nil } }
       end
 
       def reset
@@ -102,7 +105,7 @@ module Denko
       end
 
       def update_state(reading)
-        @state_mutex.synchronize do
+        state_mutex.synchronize do
           @state[:temperature] = reading[:temperature]
           @state[:humidity]    = reading[:humidity]
         end
@@ -120,7 +123,7 @@ module Denko
       # Changed constants compared to AHT10. Always access with self.class::CONSTANT_NAME
       # in shared methods coming from the superclass.
       #
-      INIT_AND_CALIBRATE = [0xBE, 0x08, 0x00] 
+      INIT_AND_CALIBRATE = [0xBE, 0x08, 0x00]
       POWER_ON_DELAY     = 0.100
       DATA_LENGTH        = 7
 
@@ -157,7 +160,7 @@ module Denko
             end
           end
         end
-        
+
         # Limit CRC size to 8 bits.
         crc = crc & 0xFF
       end

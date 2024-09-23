@@ -15,7 +15,7 @@ module Denko
         medium: { lsb: 0x0B, measurement_time: 0.007 },
         low:    { lsb: 0x16, measurement_time: 0.005 },
       }
-      
+
       # Unused
       READ_STATUS_REGISTER  = 0xF32D
       CLEAR_STATUS_REGISTER = 0x3041
@@ -71,7 +71,7 @@ module Denko
       end
 
       def update_state(reading)
-        @state_mutex.synchronize do
+        state_mutex.synchronize do
           @state[:temperature] = reading[:temperature]
           @state[:humidity]    = reading[:humidity]
         end
@@ -90,7 +90,7 @@ module Denko
       def heater_off?
         !@heater_on
       end
-      
+
       def heater_on
         i2c_write [HEATER_ON]
         @heater_on = true
@@ -120,7 +120,7 @@ module Denko
             end
           end
         end
-        
+
         # Limit CRC size to 8 bits.
         crc = crc & 0xFF
       end

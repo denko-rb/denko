@@ -79,13 +79,12 @@ module Denko
       def update(message)
         bits = byte_array_to_bit_array(message.split(","))
 
-        @callback_mutex.synchronize {
-          #
-          # The Arduino code does not de-duplicate repeated state.
-          # Do it here, but if a :force_update callback exists, run anyway.
-          #
-          if (bits != @state)|| @callbacks[:force_update]
-            @callbacks.each_value do |array|
+        callback_mutex.synchronize {
+          break if callbacks.empty?
+
+          # Arduino doesn't de-duplicate state. Do it, but honor :force_update callbacks.
+          if (bits != state) || @callbacks[:force_update]
+            callbacks.each_value do |array|
               array.each { |callback| callback.call(bits) }
             end
           end
@@ -94,12 +93,12 @@ module Denko
           @callbacks.delete(:read)
           @callbacks.delete(:force_update)
         }
-        @state = bits
+        self.state = bits
       end
 
       def update_component(part, pin, value)
         # Update if component is listening and value has changed.
-        if @listening_pins[pin] && (value != @state[pin])
+        if @listening_pins[pin] && (value != state[pin])
           part.update(value)
         # Also update if the component forced a read.
         elsif @reading_pins[pin] && @callbacks[:force_update]
@@ -114,14 +113,14 @@ module Denko
       def byte_array_to_bit_array(byte_array)
         #
         # For each array element (1 byte):
-        # decimal number as string -> integer -> padded string of binary digits 
+        # decimal number as string -> integer -> padded string of binary digits
         # -> reverse digits from reading order to array indexing order
         # -> join digits of all bytes into one string
         #
         binary_string = byte_array.map do |byte|
           byte.to_i.to_s(2).rjust(8, "0").reverse
         end.join
-        
+
         # Split the digits out of the string into individual integers.
         binary_string.split("").map { |bit| bit.to_i }
       end

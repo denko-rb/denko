@@ -18,6 +18,7 @@ class ReaderTest < Minitest::Test
   def inject(data, wait_for_callbacks = true)
     Thread.new do
       if wait_for_callbacks
+        while (!part.callbacks) do; sleep 0.01; end
         while (!part.callbacks[:read]) do; sleep 0.01; end
       end
       loop do
@@ -39,7 +40,7 @@ class ReaderTest < Minitest::Test
   def test_read_once
     mock = Minitest::Mock.new.expect :call, nil
     inject(1)
-    
+
     part.stub(:_read, mock) do
       part.read
     end
@@ -50,7 +51,7 @@ class ReaderTest < Minitest::Test
     inject(42)
     assert_equal part.read, 42
   end
-  
+
   def test_read_using_with_lambda
     inject(1)
     reader = Minitest::Mock.new.expect :call, nil

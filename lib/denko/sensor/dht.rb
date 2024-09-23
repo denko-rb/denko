@@ -11,7 +11,10 @@ module Denko
 
         # Avoid repeated memory allocation for callback data and state.
         @reading   = { temperature: nil, humidity: nil }
-        self.state = { temperature: nil, humidity: nil }
+      end
+
+      def state
+        state_mutex.synchronize { @state = { temperature: nil, humidity: nil } }
       end
 
       def _read
@@ -45,7 +48,7 @@ module Denko
       end
 
       def update_state(reading)
-        @state_mutex.synchronize do
+        state_mutex.synchronize do
           @state[:temperature] = reading[:temperature]
           @state[:humidity]    = reading[:humidity]
         end

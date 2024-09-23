@@ -23,7 +23,7 @@ module Denko
         @smoothing_set.shift while (@smoothing_set.length > @smoothing_size)
 
         average = @smoothing_set.reduce(:+) / @smoothing_set.length.to_f
-        
+
         # Round up or down based on previous state to reduce fluctuations.
         state && (state > average) ? average.ceil : average.floor
       end
@@ -33,7 +33,7 @@ module Denko
         smoothing ? smooth_input(value.to_i) : value.to_i
       end
 
-      # Attach a callback that only fires when @state changes.
+      # Attach a callback that only fires when state changes.
       def on_change(&block)
         add_callback(:on_change) do |new_state|
           block.call(new_state) if new_state != self.state

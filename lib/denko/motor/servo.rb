@@ -26,7 +26,7 @@ module Denko
         microseconds = ((value.to_f / 180) * (@max - @min)) + @min
         board.servo_write(pin, microseconds.round)
 
-        @state = value
+        self.state = value
       end
 
       def speed=(value)
@@ -35,7 +35,7 @@ module Denko
         microseconds = (((value.to_f + 100) / 200) * (@max - @min)) + @min
         board.servo_write(pin, microseconds.round)
 
-        @state = value
+        self.state = value
       end
 
       alias :angle=   :position=
