@@ -1,6 +1,7 @@
 module Denko
   module AnalogIO
     class ADS1115
+      include Behaviors::Component
       include I2C::Peripheral
       include ADS111X
 
@@ -22,9 +23,7 @@ module Denko
       CONFIG_ADDRESS     = 0b01
       CONVERSION_ADDRESS = 0b00
 
-      def after_initialize(options={})
-        super(options)
-
+      after_initialize do
         # Mutex and variables for BoardProxy behavior.
         @mutex        = Mutex.new
         @active_pin   = nil

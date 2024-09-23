@@ -1,6 +1,7 @@
 module Denko
   module Behaviors
     module OutputPin
+      include Component
       include SinglePin
 
       OUTPUT_MODES = [:output, :output_pwm, :output_dac, :output_open_drain, :output_open_source]

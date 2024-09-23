@@ -1,10 +1,11 @@
 module Denko
   module Behaviors
     module InputPin
+      include Component
       include SinglePin
 
       INPUT_MODES = [:input, :input_pulldown, :input_pullup]
-      
+
       def _stop_listener
         board.stop_listener(pin)
       end
@@ -14,10 +15,10 @@ module Denko
       end
 
     protected
-    
+
       def initialize_pins(options={})
         super(options)
-        
+
         # Allow pull direction to be set with :mode, else default to :input.
         if options[:mode]
           initial_mode = options[:mode]

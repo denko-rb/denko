@@ -1,14 +1,12 @@
 module Denko
   module AnalogIO
-    class Potentiometer < Input      
-      def after_initialize(options={})
-        super(options)
-        
-        # Enable smoothing.
-        self.smoothing = true
+    class Potentiometer < Input
+      include Behaviors::Component
 
-        # Start listening immediately. Read 2x as often as regular Input.
-        listen(@divider = 8)
+      after_initialize do
+        # Enable smoothing and start listening immediately at ~125 Hz.
+        self.smoothing = true
+        listen(8)
       end
     end
   end

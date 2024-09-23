@@ -5,9 +5,6 @@ module Denko
       include Behaviors::Poller
       include Constants
 
-      attr_reader :address
-      alias  :bus :board
-
       def read_scratch(num_bytes, &block)
         atomically do
           bus.add_callback(:read, &block) if block_given?

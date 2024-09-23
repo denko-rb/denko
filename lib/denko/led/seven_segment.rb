@@ -1,8 +1,9 @@
 module Denko
   module LED
     class SevenSegment
+      include Behaviors::Component
       include Behaviors::MultiPin
-      
+
       ALL_OFF = [0,0,0,0,0,0,0]
       BLANK = " "
 
@@ -14,13 +15,15 @@ module Denko
         proxy_pin :cathode, DigitalIO::Output, optional: true
         proxy_pin :anode,   DigitalIO::Output, optional: true
       end
-      
-      def after_initialize(options={})
-        @segments = [a,b,c,d,e,f,g]
-        clear; on
+
+      def segments
+        @segments ||= [a,b,c,d,e,f,g]
       end
 
-      attr_reader :segments
+      after_initialize do
+        clear
+        on
+      end
 
       def clear
         write(BLANK)
@@ -46,7 +49,7 @@ module Denko
 
       def on?;   @on; end
       def off?; !@on; end
-      
+
       CHARACTERS = {
         '0' => [1,1,1,1,1,1,0],
         '1' => [0,1,1,0,0,0,0],

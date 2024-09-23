@@ -1,16 +1,16 @@
 module Denko
   module Behaviors
     module BusPeripheralAddressed
-      include Denko::Behaviors::BusPeripheral
+      include Component
+      include BusPeripheral
 
-      attr_reader :address
+      def address
+        @address ||= params[:address]
+      end
 
-      def before_initialize(options={})
-        # Allow @address override in options, even if peripheral sets a default.
-        @address = options[:address] if options[:address]
-
-        raise ArgumentError, "missing address for #{self}. Try Bus#search first" unless @address
-        super(options)
+      # Validate address presence after initialization.
+      after_initialize do
+        raise ArgumentError, "no address set for for #{self}. Try Bus#search first" unless address
       end
     end
   end

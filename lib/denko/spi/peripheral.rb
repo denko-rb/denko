@@ -2,19 +2,23 @@ module Denko
   module SPI
     module Peripheral
       module Core
+        include Behaviors::Component
         include Behaviors::Callbacks
         include Behaviors::BusPeripheral
 
-        attr_reader :spi_frequency, :spi_mode, :spi_bit_order
-
-        def before_initialize(options={})
-          super(options)
-
-          # Save SPI settings.
-          @spi_frequency  = options[:spi_frequency]
-          @spi_mode       = options[:spi_mode]
-          @spi_bit_order  = options[:spi_bit_order]
+        def spi_frequency
+          @spi_frequency ||= params[:spi_frequency] || 1_000_000
         end
+
+        def spi_mode
+          @spi_mode ||= params[:spi_mode] || 0
+        end
+
+        def spi_bit_order
+          @spi_bit_order ||= params[:spi_bit_order] || :msbfirst
+        end
+
+        attr_writer :spi_frequency, :spi_mode, :spi_bit_order
 
         #
         # Delegate methods to the bus.

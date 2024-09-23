@@ -1,6 +1,7 @@
 module Denko
   module Sensor
     class QMP6988
+      include Behaviors::Component
       include I2C::Peripheral
       include Behaviors::Poller
       include TemperatureHelper
@@ -68,8 +69,7 @@ module Denko
         32 =>  0b101, # 0b110 and 0b111 are also valid for 16.
       }
 
-      def after_initialize(options={})
-        super(options)
+      after_initialize do
         reset
 
         # Get 5 config registers. Copy 0xF4 to modify it for control.

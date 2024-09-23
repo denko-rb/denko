@@ -1,26 +1,25 @@
 module Denko
   module Motor
     class Stepper
+      include Behaviors::Component
       include Behaviors::MultiPin
-      
+
       def initialize_pins(options={})
         proxy_pin :step,      DigitalIO::Output
         proxy_pin :direction, DigitalIO::Output
-        
+
         proxy_pin :ms1,    DigitalIO::Output, optional: true
         proxy_pin :ms2,    DigitalIO::Output, optional: true
         proxy_pin :enable, DigitalIO::Output, optional: true
-        proxy_pin :slp,    DigitalIO::Output, optional: true        
+        proxy_pin :slp,    DigitalIO::Output, optional: true
       end
-      
+
       attr_reader :microsteps
-                  
-      def after_initialize(options={})
-        wake; on;
-        
-        if (ms1 && ms2)
-          self.microsteps = 8
-        end
+
+      after_initialize do
+        wake
+        on
+        self.microsteps = 8 if (ms1 && ms2)
       end
 
       def sleep

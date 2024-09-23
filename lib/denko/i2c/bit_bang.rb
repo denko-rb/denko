@@ -1,6 +1,7 @@
 module Denko
   module I2C
     class BitBang
+      include Behaviors::Component
       include Behaviors::MultiPin
       include Behaviors::BusControllerAddressed
       include Behaviors::Reader
@@ -10,13 +11,14 @@ module Denko
         proxy_pin :sda, DigitalIO::CBitBang
       end
 
-      attr_reader :found_devices
-
-      def after_initialize(options={})
-        super(options)
-        @found_devices = []
+      after_initialize do
         bubble_callbacks
       end
+
+      def found_devices
+        @found_devices ||= []
+      end
+      attr_writer :found_devices
 
       def search
         addresses = read_using -> { board.i2c_bb_search(pins[:scl], pins[:sda]) }

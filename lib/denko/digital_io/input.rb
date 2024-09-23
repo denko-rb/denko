@@ -1,13 +1,13 @@
 module Denko
   module DigitalIO
     class Input
+      include Behaviors::Component
       include Behaviors::InputPin
       include Behaviors::Reader
       include Behaviors::Poller
       include Behaviors::Listener
 
-      def after_initialize(options={})
-        super(options)
+      after_initialize do
         @divider = 4
         _listen
       end
@@ -32,7 +32,7 @@ module Denko
           block.call(data) if data.to_i == board.low
         end
       end
-      
+
       def pre_callback_filter(value)
         value.to_i
       end

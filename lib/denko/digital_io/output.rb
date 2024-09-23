@@ -1,13 +1,13 @@
 module Denko
   module DigitalIO
     class Output
+      include Behaviors::Component
       include Behaviors::OutputPin
       include Behaviors::Callbacks
       include Behaviors::Threaded
       interrupt_with :digital_write
 
-      def after_initialize(options={})
-        super(options)
+      after_initialize do
         board.digital_read(pin)
       end
 
@@ -19,7 +19,7 @@ module Denko
         @board.digital_write(@pin, value)
         self.state = value
       end
-      
+
       alias :write :digital_write
 
       def low
@@ -33,13 +33,13 @@ module Denko
       def toggle
         state == board.low ? high : low
       end
-      
+
       alias :off :low
       alias :on  :high
-      
+
       def high?; state == board.high end
       def low?;  state == board.low  end
-      
+
       alias :on?  :high?
       alias :off? :low?
     end

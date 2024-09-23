@@ -1,6 +1,7 @@
 module Denko
   module Sensor
     class AHT10
+      include Behaviors::Component
       include I2C::Peripheral
       include Behaviors::Poller
       include TemperatureHelper
@@ -31,8 +32,7 @@ module Denko
       # Number of bytes in each reading.
       DATA_LENGTH       = 6
 
-      def after_initialize(options={})
-        super(options)
+      after_initialize do
         @status_register = 0x00
         sleep(self.class::POWER_ON_DELAY)
         reset

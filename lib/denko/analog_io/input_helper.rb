@@ -7,22 +7,20 @@ module Denko
       #
       attr_accessor :smoothing, :smoothing_size
 
-      # Set up smoothing during initialize.
-      def after_initialize(options={})
-        super(options)
+      def smoothing_size
+        @smoothing_size ||= 8
+      end
 
-        # Default to smoothing disabled, with a set size of 8.
-        @smoothing        = false
-        @smoothing_size   = 8
-        @smoothing_set  ||= []
+      def smoothing_set
+        @smoothing_set ||= []
       end
 
       def smooth_input(value)
         # Add new value, but limit to the 8 latest values.
-        @smoothing_set << value
-        @smoothing_set.shift while (@smoothing_set.length > @smoothing_size)
+        smoothing_set << value
+        smoothing_set.shift while (smoothing_set.length > smoothing_size)
 
-        average = @smoothing_set.reduce(:+) / @smoothing_set.length.to_f
+        average = smoothing_set.reduce(:+) / smoothing_set.length.to_f
 
         # Round up or down based on previous state to reduce fluctuations.
         state && (state > average) ? average.ceil : average.floor

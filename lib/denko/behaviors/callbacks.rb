@@ -4,8 +4,7 @@ module Denko
       include State
 
       def callback_mutex
-        return @callback_mutex if @callback_mutex
-        @callback_mutex = Denko.cruby? ? Denko::MutexStub.new : Mutex.new
+        @callback_mutex ||= Denko.cruby? ? Denko::MutexStub.new : Mutex.new
         @callback_mutex
       end
 

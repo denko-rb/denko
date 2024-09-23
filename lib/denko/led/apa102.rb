@@ -1,24 +1,22 @@
 module Denko
   module LED
     class APA102
+      include Behaviors::Component
       include Behaviors::BusPeripheral
 
       attr_reader :length, :bpp, :brightness
 
       def pin; nil; end
 
-      def before_initialize(options={})
-        super(options)
-        unless [Denko::SPI::Bus, Denko::SPI::BitBang].include? options[:bus].class
+      before_initialize do
+        unless [Denko::SPI::Bus, Denko::SPI::BitBang].include? params[:bus].class
           raise "APA102 must be connected to the output pin of a SPI bus"
         end
       end
 
-      def after_initialize(options={})
-        super(options)
-
-        raise ArgumentError, "no length given for APA102 array" unless options[:length]
-        @length = options[:length]
+      after_initialize do
+        raise ArgumentError, "no length given for APA102 array" unless params[:length]
+        @length = params[:length]
 
         # Start frame is always 32 0-bits (4 bytes).
         @start_frame = Array.new(4) { 0 }
@@ -37,7 +35,7 @@ module Denko
 
         # Default to max brightness.
         self.brightness = 31
-        
+
         off
       end
 
@@ -61,7 +59,7 @@ module Denko
         if array[3]
           @buffer[index*bpp+0] = 0b11100000 | array[3]
         end
-        
+
         # APA102 uses BGR ordering.
         @buffer[index*bpp+1] = array[2]
         @buffer[index*bpp+2] = array[1]

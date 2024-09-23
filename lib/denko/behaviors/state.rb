@@ -2,8 +2,7 @@ module Denko
   module Behaviors
     module State
       def state_mutex
-        return @state_mutex if @state_mutex
-        @state_mutex = Denko.cruby? ? Denko::MutexStub.new : Mutex.new
+        @state_mutex ||= Denko.cruby? ? Denko::MutexStub.new : Mutex.new
         @state_mutex
       end
 

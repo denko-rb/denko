@@ -1,17 +1,19 @@
 module Denko
   module I2C
     class Bus
+      include Behaviors::Component
       include Behaviors::SinglePin
       include Behaviors::BusControllerAddressed
       include Behaviors::Reader
 
-      attr_reader :found_devices
-
-      def after_initialize(options={})
-        super(options)
-        @found_devices = []
+      after_initialize do
         bubble_callbacks
       end
+
+      def found_devices
+        @found_devices ||= []
+      end
+      attr_writer :found_devices
 
       def search
         addresses = read_using -> { board.i2c_search }
@@ -25,7 +27,7 @@ module Denko
       def _read(address, register, num_bytes, frequency=100000, repeated_start=false)
         board.i2c_read(address, register, num_bytes, frequency, repeated_start)
       end
-      
+
       def bubble_callbacks
         add_callback(:bus_controller) do |str|
           if str && str.match(/\A\d+-/)

@@ -1,25 +1,26 @@
 module Denko
   module UART
     class Hardware
+      include Behaviors::Component
       include Behaviors::SinglePin
       include Behaviors::Callbacks
 
       attr_reader :index, :baud
-      
-      def before_initialize(options={})
-        if options[:index] && (options[:index] > 0) && (options[:index] < 4)
-          @index = options[:index]
+
+      before_initialize do
+        if params[:index] && (params[:index] > 0) && (params[:index] < 4)
+          @index = params[:index]
         else
-          raise ArgumentError, "UART index (#{options[:index]}) not given or out of range (1..3)"
+          raise ArgumentError, "UART index (#{params[:index]}) not given or out of range (1..3)"
         end
 
         # Set pin to a "virtual pin" in 251 - 253 that will match the board.
-        options[:pin] = 250 + options[:index]
+        params[:pin] = 250 + params[:index]
       end
 
-      def after_initialize(options={})
+      after_initialize do
         initialize_buffer
-        start(options[:baud] ||= 9600)
+        start(params[:baud] ||= 9600)
       end
 
       def initialize_buffer

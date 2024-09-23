@@ -1,6 +1,7 @@
 module Denko
   module Sensor
     class HTU21D
+      include Behaviors::Component
       include I2C::Peripheral
       include Behaviors::Poller
       include TemperatureHelper
@@ -18,8 +19,7 @@ module Denko
       HEATER_MASK               = 0b00000100
       RESOLUTION_MASK           = 0b10000001
 
-      def after_initialize(options={})
-        super(options)
+      after_initialize do
         @config = CONFIG_DEFAULT
         reset
         heater_off

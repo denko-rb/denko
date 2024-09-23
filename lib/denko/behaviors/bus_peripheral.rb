@@ -5,9 +5,8 @@ module Denko
 
       alias  :bus :board
 
-      def before_initialize(options={})
-        options[:board] ||= options[:bus]
-        super(options)
+      before_initialize do
+        params[:board] ||= params[:bus]
       end
 
       def atomically(&block)

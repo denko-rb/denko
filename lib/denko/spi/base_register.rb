@@ -1,6 +1,7 @@
 module Denko
   module SPI
     class BaseRegister
+      include Behaviors::Component
       include SPI::Peripheral::SinglePin
       #
       # Registers can be a BoardProxy for components needing digital pins.
@@ -8,20 +9,19 @@ module Denko
       #
       include Behaviors::BoardProxy
 
-      attr_reader :bytes
+      # Default registers to 1 byte, or 8 pins when used as Board Proxy.
+      # Can be ignored if reading / writing the register directly.
+      def bytes
+        @bytes ||= 1
+      end
+      attr_writer :bytes
 
-      def before_initialize(options={})
-        super(options)
-        #
-        # How many bytes (pins / 8)  for use as BoardProxy. Default to 1 (8 pins).
-        # Can be ignored if reading / writing the register directly.
-        #
-        @bytes = options[:bytes] || 1
+      before_initialize do
+        self.bytes = params[:bytes] if params[:bytes]
       end
 
-      def after_initialize(options={})
-        super(options)
-        # Select pin is active-low.
+      # Select pin is active-low. Disable.
+      after_initialize do
         self.high
       end
 
@@ -30,7 +30,7 @@ module Denko
       # pin as a 0 or 1 in an array that is (@bytes * 8) long.
       #
       def state
-        state_mutex.synchronize { @state ||= Array.new(@bytes*8) { 0 } }
+        state_mutex.synchronize { @state ||= Array.new(bytes*8) { 0 } }
       end
     end
   end

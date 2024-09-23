@@ -1,38 +1,38 @@
 module Denko
   module DigitalIO
     class RotaryEncoder
+      include Behaviors::Component
       include Behaviors::MultiPin
       include Behaviors::Callbacks
 
-      def initialize_pins(options={})
+      def initialize_pins(params={})
         # Allow pins to be given as printed on common parts.
-        unless options[:pins][:a]
-          options[:pins][:a] = options[:pins][:clk] if options[:pins][:clk]
-          options[:pins][:a] = options[:pins][:clock] if options[:pins][:clock]
+        unless params[:pins][:a]
+          params[:pins][:a] = params[:pins][:clk] if params[:pins][:clk]
+          params[:pins][:a] = params[:pins][:clock] if params[:pins][:clock]
         end
-        unless options[:pins][:b]
-          options[:pins][:b] = options[:pins][:dt] if options[:pins][:dt]
-          options[:pins][:b] = options[:pins][:data] if options[:pins][:data]
+        unless params[:pins][:b]
+          params[:pins][:b] = params[:pins][:dt] if params[:pins][:dt]
+          params[:pins][:b] = params[:pins][:data] if params[:pins][:data]
         end
 
         # But always refer to them as a and b internally.
-        [:clk, :clock, :dt, :data].each { |key| options[:pins].delete(key) }
+        [:clk, :clock, :dt, :data].each { |key| params[:pins].delete(key) }
         proxy_pin :a, DigitalIO::Input
         proxy_pin :b, DigitalIO::Input
       end
 
-      def after_initialize(options={})
-        super(options)
-        @counts_per_revolution = options[:counts_per_revolution] || options[:cpr] || 60
-        @reversed = false || options[:reversed] || options[:reverse]
+      after_initialize do
+        @counts_per_revolution = params[:counts_per_revolution] || params[:cpr] || 60
+        @reversed = false || params[:reversed] || params[:reverse]
 
         # PiBoard will use GPIO alerts, default to 1 microsecond debounce time.
-        @debounce_time = options[:debounce_time] || 1
+        @debounce_time = params[:debounce_time] || 1
         a.debounce_time = @debounce_time
         b.debounce_time = @debounce_time
 
         # Board will default to 1ms digital listeners.
-        @divider = options[:divider] || 1
+        @divider = params[:divider] || 1
         a.listen(@divider)
         b.listen(@divider)
 

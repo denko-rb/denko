@@ -1,17 +1,20 @@
 module Denko
   module LED
     class WS2812
+      include Behaviors::Component
       include Behaviors::SinglePin
 
-      attr_reader :length, :bpp
+      def length
+        @length ||= params[:length] || 1
+      end
 
-      def after_initialize(options={})
-        super(options)
-        raise ArgumentError, "no length given for WS2812 array" unless options[:length]
-        @length = options[:length]
+      def bpp
+        @bpp ||= params[:bpp] || 3
+      end
 
-        # This is BYTES per pixel, not bits per pixel.
-        @bpp = 3
+      attr_writer :length, :bpp
+
+      after_initialize do
         off
       end
 

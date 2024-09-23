@@ -1,6 +1,7 @@
 module Denko
   module AnalogIO
     class ADS1118
+      include Behaviors::Component
       include SPI::Peripheral::SinglePin
       include ADS111X
 
@@ -15,11 +16,9 @@ module Denko
       BASE_MSB = 0b10000001
       BASE_LSB = 0b00001010
 
-      def after_initialize(options={})
-        super(options)
-
+      after_initialize do
         # SPI mode 1 recommended.
-        @spi_mode = options[:spi_mode] || 1
+        @spi_mode = params[:spi_mode] || 1
 
         # Mutex and variables for BoardProxy behavior.
         @mutex        = Mutex.new
@@ -37,7 +36,7 @@ module Denko
       def _read(config)
         # Write config register to start reading.
         spi_write(config)
-        
+
         # Sleep the right amount of time for conversion, based on sample rate bits.
         sleep WAIT_TIMES[config[1] >> 5]
 
@@ -60,7 +59,7 @@ module Denko
 
       def temperature_read(&block)
         reading = read_using -> { _temperature_read }
-        
+
         # Temperature is shifted 2 bits left, and is 0.03125 degrees C per bit.
         temperature = (reading / 4) * 0.03125
 

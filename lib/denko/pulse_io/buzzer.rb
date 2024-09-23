@@ -1,12 +1,14 @@
 module Denko
   module PulseIO
     class Buzzer < PWMOutput
+      include Behaviors::Component
+
       def initialize_pins(options={})
         options[:mode] = :output_pwm
         super(options)
       end
 
-      def after_initialize(options={})
+      after_initialize do
         low
       end
 
@@ -18,7 +20,7 @@ module Denko
       def no_tone
         board.no_tone(pin)
       end
-      
+
       # Kill the thread if running, and send no_tone.
       def stop
         stop_thread

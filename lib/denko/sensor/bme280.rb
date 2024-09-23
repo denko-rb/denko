@@ -1,6 +1,7 @@
 module Denko
   module Sensor
     class BME280
+      include Behaviors::Component
       include I2C::Peripheral
       include Behaviors::Poller
       include TemperatureHelper
@@ -52,8 +53,7 @@ module Denko
                             16 =>  0b100, # 0b101, 0b110 and 0b111 are also valid for 16.
                           }
 
-      def after_initialize(options={})
-        super(options)
+      after_initialize do
         #
         # Setup defaults for the config registers:
         #   Oneshot reading mode

@@ -52,9 +52,9 @@ class PWMOutTest < Minitest::Test
     part
     mock = Minitest::Mock.new
     if (RUBY_VERSION.split(".")[0].to_i < 3)
-      mock.expect :call, nil, [14, :output_pwm], {frequency: nil, resolution: nil}
+      mock.expect :call, nil, [14, :output_pwm], {frequency: 1000, resolution: 8}
     else
-      mock.expect :call, nil, [14, :output_pwm, {frequency: nil, resolution: nil}]
+      mock.expect :call, nil, [14, :output_pwm, {frequency: 1000, resolution: 8}]
     end
 
     board.stub(:set_pin_mode, mock) do

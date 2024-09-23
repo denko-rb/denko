@@ -1,14 +1,16 @@
 module Denko
   module UART
     class UARTRxPin
+      include Behaviors::Component
       include Behaviors::InputPin
       include Behaviors::Callbacks
     end
 
     class BitBang
+      include Behaviors::Component
       include Behaviors::MultiPin
       include Behaviors::Callbacks
-      
+
       attr_reader :baud
 
       def initialize_pins(options={})
@@ -16,10 +18,10 @@ module Denko
         proxy_pin(:rx, UARTRxPin)
       end
 
-      def after_initialize(options={})
+      after_initialize do
         hook_rx_callback
         initialize_buffer
-        start(options[:baud] || 9600)
+        start(params[:baud] || 9600)
       end
 
       def initialize_buffer

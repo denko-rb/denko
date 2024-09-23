@@ -1,6 +1,7 @@
 module Denko
   module Sensor
     class BMP180
+      include Behaviors::Component
       include I2C::Peripheral
       include Behaviors::Poller
       include TemperatureHelper
@@ -24,9 +25,7 @@ module Denko
         8  =>  0b11,
       }
 
-      def after_initialize(options={})
-        super(options)
-
+      after_initialize do
         # Default to start conversion off, reading temperature, no pressure oversampling.
         @register = 0b00001110
         @calibration_data_loaded = false

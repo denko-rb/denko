@@ -1,6 +1,7 @@
 module Denko
   module Sensor
     class SHT3X
+      include Behaviors::Component
       include I2C::Peripheral
       include Behaviors::Poller
       include TemperatureHelper
@@ -24,8 +25,7 @@ module Denko
       BREAK                 = 0x3093
       ART                   = 0x2B32
 
-      def after_initialize(options={})
-        super(options)
+      after_initialize do
         reset
         self.repeatability = :high
       end

@@ -1,20 +1,19 @@
 module Denko
   module Sensor
     class HCSR04
-      # Speed of sound in meters per second.
-      SPEED_OF_SOUND = 343.0
-
+      include Behaviors::Component
       include Behaviors::MultiPin
       include Behaviors::Poller
+
+      # Speed of sound in meters per second.
+      SPEED_OF_SOUND = 343.0
 
       def initialize_pins(options={})
         proxy_pin :trigger, DigitalIO::Output
         proxy_pin :echo,    DigitalIO::Input
       end
 
-      def after_initialize(options={})
-        super(options)
-
+      after_initialize do
         # Avoid generating extraneous alerts when used with Denko::PiBoard.
         echo.stop
 

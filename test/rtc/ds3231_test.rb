@@ -6,9 +6,7 @@ class DS3231Test < Minitest::Test
   end
 
   def bus
-    return @bus if @bus
-    @bus = Denko::I2C::Bus.new(board: board, pin:5)
-    @bus
+    @bus ||= Denko::I2C::Bus.new(board: board, pin:5)
   end
 
   def part

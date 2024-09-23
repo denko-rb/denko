@@ -3,9 +3,10 @@ require_relative 'canvas'
 module Denko
   module Display
     class SSD1306
+      include Behaviors::Component
       include Behaviors::BusPeripheral
 
-      # Default I2C_SETTINGS
+      # I2C Defaults
         I2C_ADDRESS   = 0x3C
         I2C_FREQUENCY = 400_000
 
@@ -69,12 +70,25 @@ module Denko
       WIDTHS  = [64,96,128]
       HEIGHTS = [16,32,48,64]
 
-      def after_initialize(options={})
-        super(options)
+      attr_accessor :canvas
 
+      # Decide whether this instnace is I2C or SPI.
+      before_initialize do
+        bus = params[:bus] || params[:board]
+
+        if bus.class.ancestors.include?(Denko::SPI::Bus) || bus.class.ancestors.include?(Denko::SPI::BitBang)
+          mutate_spi
+        elsif bus.class.ancestors.include?(Denko::I2C::Bus) || bus.class.ancestors.include?(Denko::I2C::BitBang)
+          mutate_i2c
+        else
+          raise ArgumentError, "#{self.class} must be connected to either an I2C or SPI bus"
+        end
+      end
+
+      after_initialize do
         # Default to a 128x64 display.
-        @columns = options[:columns] || options[:width]  || 128
-        @rows    = options[:rows]    || options[:height] || 64
+        @columns = params[:columns] || params[:width]  || 128
+        @rows    = params[:rows]    || params[:height] || 64
 
         # Validate known sizes.
         raise ArgumentError, "error in #{self.class} width: #{@columns}. Must be in: #{WIDTHS.inspect}" unless WIDTHS.include?(@columns)
@@ -89,8 +103,8 @@ module Denko
         com_pin_config = 0x02 if (@columns == 96 && @rows == 16) || (@columns == 128 && @rows == 32)
 
         # Reflecting horizontally and vertically to effectively rotate 180 degrees.
-        seg_remap     = options[:rotate] ? 0x01 : 0x00
-        com_direction = options[:rotate] ? 0x08 : 0x00
+        seg_remap     = params[:rotate] ? 0x01 : 0x00
+        com_direction = params[:rotate] ? 0x08 : 0x00
 
         # Startup sequence (SPI doesn't work properly if this isn't sent twice.)
         2.times do
@@ -116,8 +130,6 @@ module Denko
         self.canvas = Canvas.new(@columns, @rows)
         draw
       end
-
-      attr_accessor :canvas
 
       def off
         command [DISPLAY_OFF]
@@ -208,20 +220,6 @@ module Denko
             spi_write(bytes)
           end
         end
-      end
-
-      def initialize(options={})
-        bus = options[:bus] || options[:board]
-
-        if bus.class.ancestors.include?(Denko::SPI::Bus) || bus.class.ancestors.include?(Denko::SPI::BitBang)
-          mutate_spi
-        elsif bus.class.ancestors.include?(Denko::I2C::Bus) || bus.class.ancestors.include?(Denko::I2C::BitBang)
-          mutate_i2c
-        else
-          raise ArgumentError, "#{self.class} must be connected to either an I2C or SPI bus"
-        end
-
-        super(options)
       end
     end
   end

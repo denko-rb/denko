@@ -1,19 +1,30 @@
 module Denko
   module PulseIO
     class PWMOutput < DigitalIO::Output
+      include Behaviors::Component
       interrupt_with :write
 
-      attr_reader :resolution, :frequency, :pwm_high
-
-      def after_initialize(options={})
-        @frequency  = options[:frequency]  || nil
-        @resolution = options[:resolution] || nil
-        @pwm_high   = @resolution ? (2**@resolution-1) : board.pwm_high
-        super(options)
+      def frequency
+        @frequency ||= params[:frequency] || 1000
       end
 
-      def pwm_options
-        {frequency: @frequency, resolution: @resolution}
+      def resolution
+        @resolution ||= params[:resolution] || board.analog_write_resolution
+      end
+
+      def pwm_high
+        @pwm_high ||= (2**resolution-1)
+      end
+
+      attr_writer :frequency
+
+      def resolution=(value)
+        @resolution = value
+        @pwm_high = (2**value-1)
+      end
+
+      def pwm_settings_hash
+        { frequency: frequency, resolution: resolution }
       end
 
       def pwm_enabled
@@ -21,12 +32,9 @@ module Denko
       end
 
       def pwm_enable(frequency: nil, resolution: nil)
-        @frequency  = frequency if frequency
-        if resolution
-          @resolution = resolution
-          @pwm_high = 2**@resolution-1
-        end
-        board.set_pin_mode(pin, :output_pwm, pwm_options)
+        self.frequency  = frequency  if frequency
+        self.resolution = resolution if resolution
+        board.set_pin_mode(pin, :output_pwm, pwm_settings_hash)
         @mode = :output_pwm
       end
 

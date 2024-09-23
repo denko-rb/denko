@@ -10,7 +10,7 @@ class ServoMotorTest < Minitest::Test
   end
 
   def test_toggle_on_initialize
-    mock = Minitest::Mock.new.expect(:call, nil, [1, :on], min: 544, max: 2400)
+    mock = Minitest::Mock.new.expect(:call, nil, [1, :on], min: 500, max: 2500)
     board.stub(:servo_toggle, mock) do
       Denko::Motor::Servo.new(board: board, pin:1)
     end

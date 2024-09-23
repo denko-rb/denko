@@ -1,20 +1,28 @@
 module Denko
   module SPI
     class OutputRegister < BaseRegister
+      include Behaviors::Component
 
-      def before_initialize(options={})
-        super(options)
-        #
-        # When used as a board proxy, only write sate if @write_delay seconds
-        # have passed since this object last got input. Better for things like SSDs
-        # where many bits change in sequence, but not at exactly the same time.
-        #
+      #
+      # When used as a board proxy, only write sate if write_delay seconds
+      # have passed since this object last got input. Better for things like SSDs
+      # where many bits change in sequence, but not at exactly the same time.
+      #
+      def buffer_writes
+        return @buffer_writes unless @buffer_writes.nil?
         @buffer_writes = true
-        @buffer_writes = false if options[:buffer_writes] == false
-        @write_delay = options[:write_delay] || 0.001
+        @buffer_writes = false if params[:buffer_writes] == false
+        @buffer_writes
       end
 
-      def after_initialize(options={})
+      def write_delay
+        return @write_delay if @write_delay
+        @write_delay = params[:write_delay] || 0.001
+      end
+
+      attr_writer :buffer_writes, :write_delay
+
+      after_initialize do
         write
       end
 
@@ -43,7 +51,7 @@ module Denko
       #
       def digital_write(pin, value)
         state[pin] = value  # Might not be atomic?
-        @buffer_writes ? write_buffered(state) : write
+        buffer_writes ? write_buffered(state) : write
       end
 
       def digital_read(pin)
@@ -57,7 +65,7 @@ module Denko
       include Behaviors::Threaded
       def write_buffered(old_state)
         threaded do
-          sleep @write_delay
+          sleep write_delay
           # Keep delaying if state has changed.
           write if (old_state == state)
         end

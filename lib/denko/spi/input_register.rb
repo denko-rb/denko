@@ -1,28 +1,30 @@
 module Denko
   module SPI
     class InputRegister < BaseRegister
+      include Behaviors::Component
 
-      def before_initialize(options={})
-        super(options)
-        #
-        # Keep track of whether anything is listening or reading a specific pin.
-        # This might be separate from whether a component is attached or not.
-        #
-        @reading_pins   = Array.new(@bytes*8) { false }
-        @listening_pins = Array.new(@bytes*8) { false }
+      #
+      # Keep track of whether anything is listening or reading a specific pin.
+      # This might be separate from whether a component is attached or not.
+      #
+      def reading_pins
+        @reading_pins ||= Array.new(bytes*8) { false }
       end
 
-      def after_initialize(options={})
-        super(options)
+      def listening_pins
+        @listening_pins ||= Array.new(bytes*8) { false }
+      end
+
+      after_initialize do
         enable_proxy
       end
 
       def read
-        spi_read(@bytes)
+        spi_read(bytes)
       end
 
       def listen
-        spi_listen(@bytes)
+        spi_listen(bytes)
       end
 
       def stop
@@ -35,7 +37,7 @@ module Denko
       def digital_read(pin)
         # Remember what pin was read and force callbacks to run next update.
         add_callback(:force_update) { Proc.new{} }
-        @reading_pins[pin] = true
+        reading_pins[pin] = true
 
         # Don't actually call #read if already listening.
         read unless any_listening
@@ -43,16 +45,16 @@ module Denko
 
       def digital_listen(pin, divider)
         listen unless any_listening
-        @listening_pins[pin] = true
+        listening_pins[pin] = true
       end
 
       def stop_listener(pin)
-        @listening_pins[pin] = false
+        listening_pins[pin] = false
         stop unless any_listening
       end
 
       def any_listening
-        @listening_pins.each { |p| return true if p }
+        listening_pins.each { |p| return true if p }
         false
       end
 
@@ -67,7 +69,7 @@ module Denko
             components.each do |part|
               update_component(part, pin, value) if pin == part.pin
             end
-            @reading_pins[pin] = false
+            reading_pins[pin] = false
           end
         end
       end
@@ -99,10 +101,11 @@ module Denko
 
       def update_component(part, pin, value)
         # Update if component is listening and value has changed.
-        if @listening_pins[pin] && (value != state[pin])
+        if listening_pins[pin] && (value != state[pin])
           part.update(value)
         # Also update if the component forced a read.
-        elsif @reading_pins[pin] && @callbacks[:force_update]
+        # Always called inside callback_mutex, so @callbacks, not callbacks
+        elsif reading_pins[pin] && @callbacks[:force_update]
           part.update(value)
         end
       end

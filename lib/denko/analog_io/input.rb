@@ -1,49 +1,52 @@
 module Denko
   module AnalogIO
     class Input
+      include Behaviors::Component
       include Behaviors::InputPin
       include Behaviors::Poller
       include Behaviors::Listener
       include InputHelper
-      
-      def before_initialize(options={})
+
+      before_initialize do
         # Allow giving ADC unit with multiple pins as a board proxy.
-        if options[:adc]
-          options[:board] = options[:adc]
-          options.delete(:adc)
+        if params[:adc]
+          params[:board] = params[:adc]
+          params.delete(:adc)
         end
-
-        super(options)
       end
 
-      def after_initialize(options={})
-        super(options)
-
-        # Default 16ms listener for analog inputs connected to a Board.
-        @divider = 16
-
-        # If using a negative input on a supported ADC, store the pin.
-        @negative_pin = options[:negative_pin]
-
-        # If the ADC has a programmable amplifier, pass through its setting.
-        @gain = options[:gain]
-
-        # If using a non-default sampling rate, store it.
-        @sample_rate = options[:sample_rate]
+      # Default 16ms listener for analog inputs connected to a Board.
+      def divider
+        @divider ||= params[:divider] || 16
       end
 
-      attr_reader :negative_pin, :gain, :sample_rate
+      # Negative input on ADCs that support it.
+      def negative_pin
+        @negative_pin ||= params[:negative_pin]
+      end
 
-      # ADCs can set this based on gain, so exact voltages can be calculated.
+      # PGA gain for ADCs that support it
+      def gain
+        @gain ||= params[:gain]
+      end
+
+      # Sample rates for ADCs that support it.
+      def sample_rate
+        @sample_rate ||= params[:sample_rate]
+      end
+
+      attr_writer :divider, :negative_pin, :gain, :sample_rate
+
+      # Allow ADCs to set this, so exact voltages can be calculated.
       attr_accessor :volts_per_bit
 
       def _read
         board.analog_read(pin, negative_pin, gain, sample_rate)
       end
 
-      def _listen(divider=nil)
-        @divider = divider || @divider
-        board.analog_listen(pin, @divider)
+      def _listen(div=nil)
+        self.divider = div if div
+        board.analog_listen(pin, divider)
       end
     end
   end

@@ -10,11 +10,9 @@ class I2CBusTest < Minitest::Test
   end
 
   def part
-    return @part if @part
-    @part = Denko::I2C::Bus.new(board: board, pin:5)
-    @part
+    @part ||= Denko::I2C::Bus.new(board: board, pin:5)
   end
-  
+
   def peripheral
     @peripheral ||= I2CPeripheralBase.new(bus: part, address: 0x30)
   end
@@ -43,20 +41,20 @@ class I2CBusTest < Minitest::Test
     end
     mock.verify
   end
-  
+
   def test__read
     board.inject_read_for_pin(5, "48-255,0,255,0,255,0")
-    
+
     mock = Minitest::Mock.new.expect :call, nil, [0x32, 0x03, 6, 100000, false]
     board.stub(:i2c_read, mock) do
       part.read 0x32, 0x03, 6
     end
     mock.verify
   end
-  
+
   def test_updates_peripherals
     mock = Minitest::Mock.new.expect :call, nil, [[255, 127]]
-    
+
     peripheral.stub(:update, mock) do
       part.send(:update, "48-255,127")
       part.send(:update, "50-128,0")

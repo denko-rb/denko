@@ -10,8 +10,7 @@ module Denko
         254
       end
 
-      def after_initialize(options={})
-        super(options)
+      after_initialize do
         load
       end
 

@@ -1,6 +1,7 @@
 module Denko
   module OneWire
     class Bus
+      include Behaviors::Component
       include Behaviors::SinglePin
       include Behaviors::BusControllerAddressed
       include Behaviors::Reader
@@ -9,11 +10,10 @@ module Denko
 
       attr_reader :parasite_power
 
-      def after_initialize(options = {})
+      after_initialize do
         # Set input mode to force upfront pin validation.
         self.mode = :input
 
-        super(options)
         read_power_supply
       end
 

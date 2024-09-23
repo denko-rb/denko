@@ -1,29 +1,36 @@
 module Denko
   module I2C
     module Peripheral
+      include Behaviors::Component
       include Behaviors::BusPeripheralAddressed
       include Behaviors::Reader
 
+      # Set I2C defaults for including classes by defining these constants in them.
       I2C_ADDRESS         = nil
       I2C_FREQUENCY       = 100_000
       I2C_REPEATED_START  = false
 
-      # Define I2C defaults in subclasses by overriding the constants above.
       def i2c_default(sym)
         const_sym = "I2C_#{sym}".upcase.to_sym
         self.class.const_get(const_sym) if self.class.const_defined?(const_sym)
       end
 
-      def before_initialize(options={})
-        # Use @address instead of @i2c_address for default BusPeripheral behavior.
-        @address            = options[:i2c_address]        || options[:address]        || i2c_default(:address)
-        @i2c_frequency      = options[:i2c_frequency]      || options[:frequency]      || i2c_default(:frequency)
-        @i2c_repeated_start = options[:i2c_repeated_start] || options[:repeated_start] || i2c_default(:repeated_start)
-        super(options)
+       # Use @address instead of @i2c_address for default BusPeripheral behavior.
+      def address
+        @address ||= params[:i2c_address] || params[:address] || i2c_default(:address)
+      end
+      alias :i2c_address :address
+
+      def i2c_frequency
+        @i2c_frequency ||= params[:i2c_frequency] || params[:frequency] || i2c_default(:frequency)
       end
 
-      alias :i2c_address :address
-      attr_accessor :i2c_repeated_start, :i2c_frequency
+      def i2c_repeated_start
+        return @i2c_repeated_start unless @i2c_repeated_start.nil?
+        @i2c_repeated_start = params[:i2c_repeated_start] || params[:repeated_start] || i2c_default(:repeated_start)
+      end
+
+      attr_writer :i2c_frequency, :i2c_repeated_start
 
       def i2c_write(bytes=[])
         bus.write(i2c_address, bytes, i2c_frequency, i2c_repeated_start)

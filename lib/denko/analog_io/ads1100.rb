@@ -1,6 +1,7 @@
 module Denko
   module AnalogIO
     class ADS1100
+      include Behaviors::Component
       include I2C::Peripheral
       include Behaviors::Poller
       include InputHelper
@@ -46,19 +47,17 @@ module Denko
       GAIN_CLEAR = 0b11111100
       SAMPLE_RATE_CLEAR = 0b11110011
 
-      def after_initialize(options={})
-        super(options)
-
+      after_initialize do
         # Unlike some ADS parts, full-scale voltage depends on supply (Vdd). User must specify.
-        @full_scale_voltage = options[:full_scale_voltage]
+        @full_scale_voltage = params[:full_scale_voltage]
         raise ArgumentError "full-scale voltage not given for ADS1100" unless @full_scale_voltage.is_a?(Numeric)
 
         # Initialize the config register with our defaults (single conversion).
         @config_register = CONFIG_STARTUP.dup
 
         # Set gain and sample rate if given.
-        self.gain         = options[:gain]        || 1
-        self.sample_rate  = options[:sample_rate] || 8
+        self.gain         = params[:gain]        || 1
+        self.sample_rate  = params[:sample_rate] || 8
 
         # Write initial config.
         i2c_write(@config_register)
