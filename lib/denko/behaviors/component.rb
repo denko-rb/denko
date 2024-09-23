@@ -84,13 +84,9 @@ module Denko
       # Behaviors::Component only requires a board.
       # Include modules from Setup or override this to use pins.
       #
-      def before_initialize(options={}); end
       def convert_pins(options={});      end
       def initialize_pins(options={});   end
       alias :initialize_pin :initialize_pins
-
-      # Override in components. Call super when inheriting or mixing in.
-      def after_initialize(options={}); end
     end
   end
 end

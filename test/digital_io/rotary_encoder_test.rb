@@ -30,36 +30,34 @@ class RotaryEncoderTest < Minitest::Test
 
   def test_sets_debounce_time_for_both_pins
     a_mock = Minitest::Mock.new.expect(:call, nil, [1])
-    a_mock.expect(:call, nil, [2])
     b_mock = Minitest::Mock.new.expect(:call, nil, [1])
-    b_mock.expect(:call, nil, [2])
 
     part.a.stub(:debounce_time=, a_mock) do
       part.b.stub(:debounce_time=, b_mock) do
         part.send(:run_after_initialize_cbs)
-        part.send(:after_initialize, debounce_time: 2)
       end
     end
+    a_mock.verify
+    b_mock.verify
   end
 
   def test_calls_listen_on_both_pins_with_given_divider
     a_mock = Minitest::Mock.new.expect(:call, nil, [1])
-    a_mock.expect(:call, nil, [2])
     b_mock = Minitest::Mock.new.expect(:call, nil, [1])
-    b_mock.expect(:call, nil, [2])
 
     part.a.stub(:listen, a_mock) do
       part.b.stub(:listen, b_mock) do
-        part.send(:after_initialize)
-        part.send(:after_initialize, divider: 2)
+        part.send(:run_after_initialize_cbs)
       end
     end
+    a_mock.verify
+    b_mock.verify
   end
 
   def test_observes_on_initialize
     mock = Minitest::Mock.new.expect(:call, nil)
     part.stub(:observe_pins, mock) do
-      part.send(:after_initialize)
+      part.send(:run_after_initialize_cbs)
     end
   end
 
