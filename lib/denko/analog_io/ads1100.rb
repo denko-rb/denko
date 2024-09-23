@@ -48,28 +48,19 @@ module Denko
       SAMPLE_RATE_CLEAR = 0b11110011
 
       after_initialize do
-        # Unlike some ADS parts, full-scale voltage depends on supply (Vdd). User must specify.
-        @full_scale_voltage = params[:full_scale_voltage]
-        raise ArgumentError "full-scale voltage not given for ADS1100" unless @full_scale_voltage.is_a?(Numeric)
+        # Validate user gave full scale voltage.
+        raise ArgumentError "full-scale voltage not a Numeric or not given for ADS1100" unless full_scale_voltage.is_a?(Numeric)
 
-        # Initialize the config register with our defaults (single conversion).
-        @config_register = CONFIG_STARTUP.dup
-
-        # Set gain and sample rate if given.
-        self.gain         = params[:gain]        || 1
-        self.sample_rate  = params[:sample_rate] || 8
-
-        # Write initial config.
-        i2c_write(@config_register)
-        sleep WAIT_TIMES[@sample_rate]
+        i2c_write(config_register)
+        sleep WAIT_TIMES[sample_rate]
       end
 
       def _read
         # Set bit 7 of the config register and write it to start conversion.
-        i2c_write(@config_register | (1<<7))
+        i2c_write(config_register | (1<<7))
 
         # Sleep the right amount of time for conversion, based on sample rate bits.
-        sleep WAIT_TIMES[@sample_rate]
+        sleep WAIT_TIMES[sample_rate]
 
         # Read the result, triggering callbacks.
         i2c_read(2)
@@ -86,28 +77,42 @@ module Denko
         super(value)
       end
 
+      # Default to single conversion.
+      def config_register
+        @config_register ||= CONFIG_STARTUP.dup
+      end
+
       def gain=(gain)
         raise ArgumentError "wrong gain: #{gain.inspect} given for ADS1100" unless GAINS.include?(gain)
-        @config_register = (@config_register & GAIN_CLEAR) | GAINS.index(gain)
+        config_register = (config_register & GAIN_CLEAR) | GAINS.index(gain)
         @gain = GAINS.index(gain)
       end
 
       def sample_rate=(rate)
         raise Argument Error "wrong sample_rate: #{sample_rate.inspect} given for ADS1100" unless SAMPLE_RATES.include?(rate)
-        @config_register = (@config_register & SAMPLE_RATE_CLEAR) | (SAMPLE_RATES.index(rate) << 2)
+        config_register = (config_register & SAMPLE_RATE_CLEAR) | (SAMPLE_RATES.index(rate) << 2)
         @sample_rate = SAMPLE_RATES.index(rate)
       end
 
       def gain
+        # Default gain is 1.
+        self.gain = 1 unless @gain
         GAINS[@gain]
       end
 
       def sample_rate
+        # Default sample rate is 8.
+        self.sample_rate = 8 unless @sample_rate
         SAMPLE_RATES[@sample_rate]
       end
 
+      # Unlike some ADS parts, full-scale voltage depends on supply (Vdd). User must specify.
+      def full_scale_voltage
+        @full_scale_voltage ||= params[:full_scale_voltage]
+      end
+
       def volts_per_bit
-        @full_scale_voltage / (GAINS[@gain] * BIT_RANGES[@sample_rate]).to_f
+        full_scale_voltage / (GAINS[gain] * BIT_RANGES[sample_rate]).to_f
       end
     end
   end
