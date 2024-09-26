@@ -30,9 +30,6 @@ bus = Denko::SPI::BitBang.new(board: board, pins: SPI_BIT_BANG_PINS)
 #     spi_frequency:  1000000    - Only affects hardware SPI interfaces
 #     spi_mode:       0
 #     spi_bit_order:  :msbfirst
-#     write_delay:    0.001      - How long to buffer writes, in seconds
-#     buffer_writes:  true       - Wait for write_delay before writing whole register state.
-#                                  Makes proxied components write pseudo-parallelly.
 #
 register = Denko::SPI::OutputRegister.new(bus: bus, pin: REGISTER_SELECT_PIN)
 

@@ -32,17 +32,6 @@ class OutputRegisterTest < Minitest::Test
     mock.verify
   end
 
-  def test_state_setup
-    assert_equal 0.001, part.write_delay
-    assert_equal true,  part.buffer_writes
-  end
-
-  def test_write_buffering_control
-    new_part = Denko::SPI::OutputRegister.new(options.merge(buffer_writes: false, write_delay: 0.5))
-    assert_equal 0.5,   new_part.write_delay
-    assert_equal false, new_part.buffer_writes
-  end
-
   def test_updates_and_writes_state_for_children
     led
 
@@ -82,12 +71,5 @@ class OutputRegisterTest < Minitest::Test
     mock.verify
 
     assert_equal part.state, bit_array
-  end
-
-  def test_disable_buffering
-    part.instance_variable_set(:@buffer_writes, false)
-    part.instance_variable_set(:@write_delay, 1)
-    led.on
-    assert_nil part.thread
   end
 end

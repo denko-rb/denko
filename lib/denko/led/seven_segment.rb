@@ -96,9 +96,21 @@ module Denko
 
       def write(char)
         bits = CHARACTERS[char] || ALL_OFF
+        bits = bits.map { |b| 1^b } if anode
+
         bits.each_with_index do |bit, index|
-          bit = 1^bit if anode
-          segments[index].digital_write(bit) unless (segments[index].state == bit)
+          if board_is_register?
+            # On a register, use #bit_write except for the last bit. This changes state in memory.
+            # #digital_write on the last bit causes the register to write to its parallel out.
+            if (index == bits.length-1)
+              segments[index].digital_write(bit)
+            else
+              board.bit_write(segments[index].pin, bit)
+            end
+          else
+            # On a board, only set bits if changed.
+            segments[index].digital_write(bit) unless (segments[index].state == bit)
+          end
         end
       end
 

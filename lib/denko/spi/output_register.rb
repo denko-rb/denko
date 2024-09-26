@@ -3,26 +3,8 @@ module Denko
     class OutputRegister < BaseRegister
       include Behaviors::Component
 
-      #
-      # When used as a board proxy, only write sate if write_delay seconds
-      # have passed since this object last got input. Better for things like SSDs
-      # where many bits change in sequence, but not at exactly the same time.
-      #
-      def buffer_writes
-        return @buffer_writes unless @buffer_writes.nil?
-        @buffer_writes = true
-        @buffer_writes = false if params[:buffer_writes] == false
-        @buffer_writes
-      end
-
-      def write_delay
-        return @write_delay if @write_delay
-        @write_delay = params[:write_delay] || 0.001
-      end
-
-      attr_writer :buffer_writes, :write_delay
-
       after_initialize do
+        state
         write
       end
 
@@ -32,16 +14,20 @@ module Denko
       #
       def write
         bytes = []
-        state.each_slice(8) do |slice|
-          # Convert nils in the slice to zero.
-          zeroed = slice.map { |bit| bit.to_i }
+        state_mutex.synchronize do
+          return if @previous_state == @state
+          @state.each_slice(8) do |slice|
+            # Convert nils in the slice to zero.
+            zeroed = slice.map { |bit| bit.to_i }
 
-          # Each slice is 8 bits of a byte, with the lowest on the left.
-          # Reverse to reading order (lowest right) then join into string, and convert to integer.
-          byte = zeroed.reverse.join.to_i(2)
+            # Each slice is 8 bits of a byte, with the lowest on the left.
+            # Reverse to reading order (lowest right) then join into string, and convert to integer.
+            byte = zeroed.reverse.join.to_i(2)
 
-          # Pack bytes in reverse order.
-          bytes.unshift byte
+            # Pack bytes in reverse order.
+            bytes.unshift byte
+          end
+          @previous_state = @state.dup
         end
         spi_write(bytes)
       end
@@ -50,25 +36,16 @@ module Denko
       # BoardProxy interface
       #
       def digital_write(pin, value)
-        state[pin] = value  # Might not be atomic?
-        buffer_writes ? write_buffered(state) : write
+        bit_write(pin, value)
+        write
+      end
+
+      def bit_write(pin, value)
+        state_mutex.synchronize { @state[pin] = value }
       end
 
       def digital_read(pin)
         state[pin]
-      end
-
-      #
-      # If acting as board, do writes in a separate thread and with small delay.
-      # Lets us catch multiple changed bits, like when hosting an SSD.
-      #
-      include Behaviors::Threaded
-      def write_buffered(old_state)
-        threaded do
-          sleep write_delay
-          # Keep delaying if state has changed.
-          write if (old_state == state)
-        end
       end
     end
   end
