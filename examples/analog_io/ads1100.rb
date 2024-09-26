@@ -15,7 +15,7 @@ def print_reading(name, raw, voltage)
 end
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
-bus = Denko::I2C::Bus.new(board: board, pin: :SDA)
+bus = Denko::I2C::Bus.new(board: board)
 
 # Unlike the ADS1115/1118, full-scale voltage depends on Vdd. Give during setup.
 # This works for my M5Stack ADC unit (0-12V) when checked against a multimeter.
@@ -25,7 +25,7 @@ ads = Denko::AnalogIO::ADS1100.new  bus: bus,
                                     gain: 2
                                     # address: 0x48 default
 
-#                                   
+#
 # Configure gain and sample rate. See datasheet for more info.
 # Valid values:
 #   Gain:         1 (default), 2,  4,  8

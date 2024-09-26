@@ -22,7 +22,7 @@ module Denko
         4_096,          # 0b00      12    128
         16_383,         # 0b01      14    32
         32_767,         # 0b10      15    16
-        65_535,         # 0b00      16    8
+        65_535,         # 0b11      16    8
       ]
 
       # Wait times need to be slightly longer than the actual sample times.
@@ -50,9 +50,10 @@ module Denko
       after_initialize do
         # Validate user gave full scale voltage.
         raise ArgumentError "full-scale voltage not a Numeric or not given for ADS1100" unless full_scale_voltage.is_a?(Numeric)
+        state
 
         i2c_write(config_register)
-        sleep WAIT_TIMES[sample_rate]
+        sleep WAIT_TIMES[sample_rate_mask]
       end
 
       def _read
@@ -60,7 +61,7 @@ module Denko
         i2c_write(config_register | (1<<7))
 
         # Sleep the right amount of time for conversion, based on sample rate bits.
-        sleep WAIT_TIMES[sample_rate]
+        sleep WAIT_TIMES[sample_rate_mask]
 
         # Read the result, triggering callbacks.
         i2c_read(2)
@@ -79,19 +80,30 @@ module Denko
 
       # Default to single conversion.
       def config_register
-        @config_register ||= CONFIG_STARTUP.dup
+        @config_register ||= CONFIG_STARTUP
       end
+
+      def sample_rate=(rate)
+        raise Argument Error "wrong sample_rate: #{sample_rate.inspect} given for ADS1100" unless SAMPLE_RATES.include?(rate)
+        self.sample_rate_mask = SAMPLE_RATES.index(rate)
+        config_register = (config_register & SAMPLE_RATE_CLEAR) | (sample_rate_mask << 2)
+        @sample_rate = rate
+      end
+
+      def sample_rate_mask
+        @sample_rate_mask ||= SAMPLE_RATES.index(sample_rate)
+      end
+
+      def sample_rate
+        @sample_rate ||= 8
+      end
+
+      attr_writer :sample_rate_mask
 
       def gain=(gain)
         raise ArgumentError "wrong gain: #{gain.inspect} given for ADS1100" unless GAINS.include?(gain)
         config_register = (config_register & GAIN_CLEAR) | GAINS.index(gain)
         @gain = GAINS.index(gain)
-      end
-
-      def sample_rate=(rate)
-        raise Argument Error "wrong sample_rate: #{sample_rate.inspect} given for ADS1100" unless SAMPLE_RATES.include?(rate)
-        config_register = (config_register & SAMPLE_RATE_CLEAR) | (SAMPLE_RATES.index(rate) << 2)
-        @sample_rate = SAMPLE_RATES.index(rate)
       end
 
       def gain
@@ -100,19 +112,13 @@ module Denko
         GAINS[@gain]
       end
 
-      def sample_rate
-        # Default sample rate is 8.
-        self.sample_rate = 8 unless @sample_rate
-        SAMPLE_RATES[@sample_rate]
-      end
-
       # Unlike some ADS parts, full-scale voltage depends on supply (Vdd). User must specify.
       def full_scale_voltage
         @full_scale_voltage ||= params[:full_scale_voltage]
       end
 
       def volts_per_bit
-        full_scale_voltage / (GAINS[gain] * BIT_RANGES[sample_rate]).to_f
+        full_scale_voltage / (GAINS[gain] * BIT_RANGES[sample_rate_mask]).to_f
       end
     end
   end
