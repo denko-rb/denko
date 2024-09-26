@@ -152,17 +152,15 @@ class BoardMock < Denko::Board
 
   WAITING_ON_READ_KEYS = [:read, :bus_controller, :board_proxy, :force_udpate]
 
-  def component_exists_for_pin(pin)
-    self.components.each do |component|
-      return component if component.pin == pin
-    end
-    false
-  end
-
   def waiting_on_read(component)
     WAITING_ON_READ_KEYS.each do |key|
       return true if component.callbacks[key]
     end
+    false
+  end
+
+  def single_pin_component_exists(pin)
+    return single_pin_components[pin]
     false
   end
 
@@ -176,36 +174,27 @@ class BoardMock < Denko::Board
       component = false
       while !component
         sleep(0.001)
-        component = component_exists_for_pin(pin)
+        component = single_pin_component_exists(pin)
       end
-
-      # Wait for the component to have a "WAITING_ON_READ" callback.
-      sleep(0.001) while !component.callback_mutex
-      sleep(0.001) while !component.callbacks
-      sleep(0.001) while !waiting_on_read(component)
-
-      # Then inject the message.
-      @read_injection_mutex.synchronize do
-        self.update("#{pin}:#{message}")
-      end
+      inject_read(component, "#{pin}:#{message}")
     end
   end
 
-  #
-  # Inject a message into the Board instance as if it were coming from the phsyical board.
-  # Use this to mock input data for the blocking #read pattern in the Reader behavior.
-  #
   def inject_read_for_component(component, pin, message)
     Thread.new do
-      # Wait for the component to have a "WAITING_ON_READ" callback.
-      sleep(0.001) while !component.callback_mutex
-      sleep(0.001) while !component.callbacks
-      sleep(0.001) while !waiting_on_read(component)
+      inject_read(component, "#{pin}:#{message}")
+    end
+  end
 
-      # Then inject the message.
-      @read_injection_mutex.synchronize do
-        self.update("#{pin}:#{message}")
-      end
+  def inject_read(component, string)
+    # Wait for the component to have a "WAITING_ON_READ" callback.
+    sleep(0.001) while !component.callback_mutex
+    sleep(0.001) while !component.callbacks
+    sleep(0.001) while !waiting_on_read(component)
+
+    # Then inject the message.
+    @read_injection_mutex.synchronize do
+      self.update(string)
     end
   end
 end
