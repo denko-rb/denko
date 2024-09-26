@@ -5,7 +5,7 @@ require 'bundler/setup'
 require 'denko'
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
-bus = Denko::I2C::Bus.new(board: board, pin: :SDA)
+bus = Denko::I2C::Bus.new(board: board)
 sensor = Denko::Sensor::BMP180.new(bus: bus) # address: 0x77 default
 
 # Enable oversampling for the pressure sensor only (1,2,4, 8).

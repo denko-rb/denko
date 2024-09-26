@@ -7,7 +7,7 @@ require 'denko'
 board = Denko::Board.new(Denko::Connection::Serial.new)
 
 # Board's hardware I2C interface on predetermined pins.
-bus = Denko::I2C::Bus.new(board: board, pin: :SDA)
+bus = Denko::I2C::Bus.new(board: board)
 # Bit-banged I2C on any pins.
 # bus = Denko::I2C::BitBang.new(board: board, pins: {scl: 8, sda: 9})
 

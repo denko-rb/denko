@@ -5,7 +5,7 @@ require 'bundler/setup'
 require 'denko'
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
-bus = Denko::I2C::Bus.new(board: board, pin: :SDA)
+bus = Denko::I2C::Bus.new(board: board)
 
 sensor = Denko::Sensor::BME280.new(bus: bus) # address: 0x76 default
 # Use A BMP280 with no humidity instead.

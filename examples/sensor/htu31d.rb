@@ -5,7 +5,7 @@ require 'bundler/setup'
 require 'denko'
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
-bus = Denko::I2C::Bus.new(board: board, pin: :SDA)
+bus = Denko::I2C::Bus.new(board: board)
 sensor = Denko::Sensor::HTU31D.new(bus: bus)
 
 # Get and set heater state.

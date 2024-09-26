@@ -5,7 +5,7 @@ require 'bundler/setup'
 require 'denko'
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
-bus = Denko::I2C::Bus.new(board: board, pin: :SDA)
+bus = Denko::I2C::Bus.new(board: board)
 sensor = Denko::Sensor::AHT20.new(bus: bus) # address: 0x38 default
 
 # Get the shared #print_tph_reading method to print readings neatly.
