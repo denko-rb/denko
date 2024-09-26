@@ -15,7 +15,7 @@ class MultiPinComponentMock
   def pin
     {a: 1, b: 2}
   end
-end 
+end
 
 class SubcomponentsTest < Minitest::Test
   def connection
@@ -60,7 +60,7 @@ class SubcomponentsTest < Minitest::Test
     board.remove_component(multi_pin)
     assert_empty board.components
   end
-  
+
   def test_calls_stop_on_remove
     pinless = PinlessComponentMock.new
     board.add_component(pinless)
@@ -71,5 +71,13 @@ class SubcomponentsTest < Minitest::Test
     end
 
     mock.verify
+  end
+
+  def test_stops_i2c_duplication
+    i2c0 = Denko::I2C::Bus.new(board: board, pin: 0)
+    assert_raises { Denko::I2C::Bus.new(board: board, pin: 1) }
+
+    i2c1 = Denko::I2C::Bus.new(board: board, pin: 2, i2c_index: 1)
+    assert_equal [i2c0, i2c1], board.components
   end
 end

@@ -19,7 +19,14 @@ class I2CBusTest < Minitest::Test
 
   def test_initialize
     assert_equal part.found_devices, []
+    assert_equal 0, part.i2c_index
     refute_nil part.callbacks[:bus_controller]
+
+    part2 = Denko::I2C::Bus.new(board: board, pin: 6, index: 10)
+    assert_equal 10, part2.i2c_index
+
+    part3 = Denko::I2C::Bus.new(board: board, pin: 7, i2c_index: 11)
+    assert_equal 11, part3.i2c_index
   end
 
   def test_search

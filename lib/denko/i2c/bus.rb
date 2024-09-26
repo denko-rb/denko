@@ -10,6 +10,10 @@ module Denko
         bubble_callbacks
       end
 
+      def i2c_index
+        @i2c_index ||= params[:i2c_index] || params[:index] || 0
+      end
+
       def found_devices
         @found_devices ||= []
       end
