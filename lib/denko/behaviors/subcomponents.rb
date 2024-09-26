@@ -40,10 +40,10 @@ module Denko
       def add_hw_i2c(component)
         if component.respond_to?(:i2c_index)
           unless hw_i2c_devs[component.i2c_index]
-            hw_i2c_devs[component.pin] = component
+            hw_i2c_devs[component.i2c_index] = component
           else
             raise StandardError,  "Error adding #{component} to #{self}. I2C dev: #{component.i2c_index} " \
-                                  "already in use by: #{hw_i2c_devs[component.pin]}"
+                                  "already in use by: #{hw_i2c_devs[component.i2c_index]}"
           end
         end
       end

@@ -79,13 +79,15 @@ class SubcomponentsTest < Minitest::Test
   end
 
   def test_hw_i2c_buses_add_and_remove_properly
-    i2c0 = Denko::I2C::Bus.new(board: board, pin: 0, i2c_index: 0)
-    i2c1 = Denko::I2C::Bus.new(board: board, pin: 1, i2c_index: 1)
+    i2c0 = Denko::I2C::Bus.new(board: board, pin: 10, i2c_index: 0)
+    i2c1 = Denko::I2C::Bus.new(board: board, pin: 11, i2c_index: 1)
     assert_equal [i2c0, i2c1], board.components
 
-    hash = { 0 => i2c0, 1 => i2c1 }
-    assert_equal hash, board.hw_i2c_devs
+    # Have the right hash keys.
+    assert_equal i2c0, board.hw_i2c_devs[0]
+    assert_equal i2c1, board.hw_i2c_devs[1]
 
+    # Get removed correctly.
     board.remove_component(i2c0)
     hash = { 1 => i2c1 }
     assert_equal hash, board.hw_i2c_devs
