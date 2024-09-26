@@ -26,12 +26,13 @@ module Denko
       ART                   = 0x2B32
 
       after_initialize do
+        state
         reset
         self.repeatability = :high
       end
 
       def state
-        state_mutex.synchronize { @state = { temperature: nil, humidity: nil } }
+        state_mutex.synchronize { @state ||= { temperature: nil, humidity: nil } }
       end
 
       def reading

@@ -34,11 +34,12 @@ module Denko
         # Temporary storage for raw bytes, since two I2C reads are needed for temperature and pressure.
         @raw_bytes = [0, 0, 0, 0, 0]
 
+        state
         soft_reset
       end
 
       def state
-        state_mutex.synchronize { @state = { temperature: nil, pressure: nil } }
+        state_mutex.synchronize { @state ||= { temperature: nil, pressure: nil } }
       end
 
       def reading

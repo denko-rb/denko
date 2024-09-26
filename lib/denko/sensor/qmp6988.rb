@@ -70,6 +70,7 @@ module Denko
       }
 
       after_initialize do
+        state
         reset
 
         # Get 5 config registers. Copy 0xF4 to modify it for control.
@@ -90,7 +91,7 @@ module Denko
       end
 
       def state
-        state_mutex.synchronize { @state = { temperature: nil, pressure: nil } }
+        state_mutex.synchronize { @state ||= { temperature: nil, pressure: nil } }
       end
 
       def reading

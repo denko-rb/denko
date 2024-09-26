@@ -35,6 +35,7 @@ module Denko
       after_initialize do
         @status_register = 0x00
         sleep(self.class::POWER_ON_DELAY)
+        state
         reset
         calibrate
       end

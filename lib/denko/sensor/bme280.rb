@@ -77,6 +77,7 @@ module Denko
         @registers.merge!(f2: 0b00000001) if humidity_available?
 
         @calibration_data_loaded = false
+        state
       end
 
       def state
@@ -177,7 +178,7 @@ module Denko
       def _read
         get_calibration_data unless calibration_data_loaded
         write_settings
-        i2c_read 0xF7, 8
+        i2c_read 8, register: 0xF7
       end
 
       def pre_callback_filter(data)
