@@ -73,11 +73,21 @@ class SubcomponentsTest < Minitest::Test
     mock.verify
   end
 
-  def test_stops_i2c_duplication
+  def test_disallows_duplicate_hw_i2c_buses
     i2c0 = Denko::I2C::Bus.new(board: board, pin: 0)
     assert_raises { Denko::I2C::Bus.new(board: board, pin: 1) }
+  end
 
-    i2c1 = Denko::I2C::Bus.new(board: board, pin: 2, i2c_index: 1)
+  def test_hw_i2c_buses_add_and_remove_properly
+    i2c0 = Denko::I2C::Bus.new(board: board, pin: 0, i2c_index: 0)
+    i2c1 = Denko::I2C::Bus.new(board: board, pin: 1, i2c_index: 1)
     assert_equal [i2c0, i2c1], board.components
+
+    hash = { 0 => i2c0, 1 => i2c1 }
+    assert_equal hash, board.hw_i2c_devs
+
+    board.remove_component(i2c0)
+    hash = { 1 => i2c1 }
+    assert_equal hash, board.hw_i2c_devs
   end
 end
