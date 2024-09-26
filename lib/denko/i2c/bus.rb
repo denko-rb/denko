@@ -2,7 +2,6 @@ module Denko
   module I2C
     class Bus
       include Behaviors::Component
-      include Behaviors::SinglePin
       include Behaviors::BusControllerAddressed
       include Behaviors::Reader
 

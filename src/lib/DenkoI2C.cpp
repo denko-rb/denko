@@ -44,7 +44,7 @@ void Denko::i2cSetSpeed(uint8_t code) {
       i2cSpeed = 1;
       Wire.setClock(400000);
     }
-  #endif 
+  #endif
 }
 
 // CMD = 33
@@ -54,7 +54,7 @@ void Denko::i2cSearch() {
   uint8_t addr;
   if (!i2cStarted) i2cBegin();
   i2cSetSpeed(0);
-  stream->print(SDA);
+  stream->print("I2C0");
 
   // Only addresses from 0x08 to 0x77 are usable (8 to 127).
   for (addr = 0x08; addr < 0x78;  addr++) {
@@ -99,7 +99,7 @@ void Denko::i2cWrite() {
   #if defined(ESP32)
     Wire.endTransmission();
   #else
-    
+
     Wire.endTransmission(sendStop);
   #endif
 }
@@ -131,25 +131,25 @@ void Denko::i2cRead() {
   // Start and set speed.
   if (!i2cStarted)            i2cBegin();
   if (i2cSpeed != speedMask)  i2cSetSpeed(speedMask);
-  
+
   // Optionally write up to a 4 byte register address before reading.
   if ((auxMsg[3] > 0) && (auxMsg[3] < 5)) {
     Wire.beginTransmission(address);
     Wire.write(&auxMsg[4], auxMsg[3]);
     Wire.endTransmission(sendStop);
   }
-  
+
   // ESP32 crashes if requestFrom gets the 3rd arg.
-  #if defined(ESP32)  
+  #if defined(ESP32)
     Wire.requestFrom(address, dataLength);
   #else
     Wire.requestFrom(address, dataLength, sendStop);
   #endif
-  
-  // Send data as if coming from SDA pin. Prefix with device adddress.
+
+  // Send data as if coming from a pin called "I2C0". Prefix with device adddress.
   // Fail silently if no bytes read / invalid device address.
-  stream->print(SDA); stream->print(':');
-  stream->print(address); stream->print('-');  
+  stream->print("I2C0:");
+  stream->print(address); stream->print('-');
   while(Wire.available()){
     stream->print(Wire.read());
     stream->print(',');

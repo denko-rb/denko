@@ -164,6 +164,11 @@ class BoardMock < Denko::Board
     false
   end
 
+  def hw_i2c_exists(index)
+    return hw_i2c_devs[index]
+    false
+  end
+
   #
   # Inject a message into the Board instance as if it were coming from the phsyical board.
   # Use this to mock input data for the blocking #read pattern in the Reader behavior.
@@ -177,6 +182,18 @@ class BoardMock < Denko::Board
         component = single_pin_component_exists(pin)
       end
       inject_read(component, "#{pin}:#{message}")
+    end
+  end
+
+  def inject_read_for_i2c(index, message)
+    Thread.new do
+      # Wait for a component to be added.
+      component = false
+      while !component
+        sleep(0.001)
+        component = hw_i2c_exists(index)
+      end
+      inject_read(component, "I2C#{index}:#{message}")
     end
   end
 

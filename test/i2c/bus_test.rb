@@ -30,7 +30,7 @@ class I2CBusTest < Minitest::Test
   end
 
   def test_search
-    board.inject_read_for_pin(5, "48:50")
+    board.inject_read_for_i2c(0, "48:50")
 
     mock = Minitest::Mock.new.expect :call, nil
     board.stub(:i2c_search, mock) do
@@ -50,7 +50,7 @@ class I2CBusTest < Minitest::Test
   end
 
   def test__read
-    board.inject_read_for_pin(5, "48-255,0,255,0,255,0")
+    board.inject_read_for_i2c(0, "48-255,0,255,0,255,0")
 
     mock = Minitest::Mock.new.expect :call, nil, [0x32, 0x03, 6, 100000, false]
     board.stub(:i2c_read, mock) do

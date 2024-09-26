@@ -37,36 +37,36 @@ module Denko
 
       # connection calls #update on board when data is received.
       connection.add_observer(self)
-      
+
       # Set digital and analog IO levels.
       @low  = 0
       @high = 1
       self.analog_write_resolution = options[:write_bits] || 8
       self.analog_read_resolution  = options[:read_bits]  || 10
     end
-    
+
     def finish_write
       sleep 0.001 while @connection.writing?
       write "\n91\n"
       sleep 0.001 while @connection.writing?
     end
-          
+
     def analog_write_resolution=(value)
       set_analog_write_resolution(value)
       @analog_write_resolution = value
       @analog_write_high = (2 ** @analog_write_resolution) - 1
     end
-    
+
     def analog_read_resolution=(value)
       set_analog_read_resolution(value)
       @analog_read_resolution = value
       @analog_read_high = (2 ** @analog_read_resolution) - 1
     end
-    
+
     alias :pwm_high :analog_write_high
     alias :dac_high :analog_write_high
     alias :adc_high :analog_read_high
-    
+
     def write(msg)
       @connection.write(msg)
     end
@@ -77,7 +77,7 @@ module Denko
     #
     # The "halt" part tells the Connection to halt transmission to the board after this message.
     # Since it expects interrupts to be disabled, any data sent could be lost.
-    #  
+    #
     # When the board function has re-enabled interrupts, it should call sendReady(). That
     # signal is read by the Connection, telling it to resume transmisison.
     #
@@ -92,6 +92,15 @@ module Denko
 
     def update(line)
       pin, message = line.split(":", 2)
+
+      # Handle messages from hardware I2C buses.
+      match = pin.match /\AI2C(\d*)/
+      if match
+        dev_index = match[1].to_i
+        hw_i2c_devs[dev_index].update(message)
+        return
+      end
+
       pin = pin.to_i
       if single_pin_components[pin]
         single_pin_components[pin].update(message)
