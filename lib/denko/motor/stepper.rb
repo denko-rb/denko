@@ -1,8 +1,8 @@
 module Denko
   module Motor
     class Stepper
-      include Behaviors::Component
       include Behaviors::MultiPin
+      include Behaviors::Lifecycle
 
       def initialize_pins(options={})
         proxy_pin :step,      DigitalIO::Output

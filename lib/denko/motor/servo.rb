@@ -1,9 +1,9 @@
 module Denko
   module Motor
     class Servo
-      include Behaviors::Component
       include Behaviors::SinglePin
       include Behaviors::Threaded
+      include Behaviors::Lifecycle
 
       before_initialize do
         params[:mode] = :output_pwm

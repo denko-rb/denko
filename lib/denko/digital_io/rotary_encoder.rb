@@ -1,9 +1,9 @@
 module Denko
   module DigitalIO
     class RotaryEncoder
-      include Behaviors::Component
       include Behaviors::MultiPin
       include Behaviors::Callbacks
+      include Behaviors::Lifecycle
 
       def initialize_pins(params={})
         # Allow pins to be given as printed on common parts.

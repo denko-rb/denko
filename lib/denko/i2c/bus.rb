@@ -1,9 +1,9 @@
 module Denko
   module I2C
     class Bus
-      include Behaviors::Component
       include Behaviors::BusControllerAddressed
       include Behaviors::Reader
+      include Behaviors::Lifecycle
 
       after_initialize do
         bubble_callbacks

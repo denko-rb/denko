@@ -1,8 +1,8 @@
 module Denko
   module LED
     class SevenSegment
-      include Behaviors::Component
       include Behaviors::MultiPin
+      include Behaviors::Lifecycle
 
       ALL_OFF = [0,0,0,0,0,0,0]
       BLANK = " "

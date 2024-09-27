@@ -1,9 +1,9 @@
 module Denko
   module Sensor
     class BME280
-      include Behaviors::Component
       include I2C::Peripheral
       include Behaviors::Poller
+      include Behaviors::Lifecycle
       include TemperatureHelper
       include PressureHelper
 
@@ -77,7 +77,6 @@ module Denko
         @registers.merge!(f2: 0b00000001) if humidity_available?
 
         @calibration_data_loaded = false
-        state
       end
 
       def state

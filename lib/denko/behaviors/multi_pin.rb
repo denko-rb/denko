@@ -6,6 +6,8 @@ module Denko
       # with one pin each.
       #
       include Component
+      include Lifecycle
+
       attr_reader :pin, :pins, :proxies
 
       # Return a hash with the state of each proxy component.

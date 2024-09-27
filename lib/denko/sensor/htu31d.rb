@@ -4,7 +4,7 @@ module Denko
       include I2C::Peripheral
       include Behaviors::Poller
       include TemperatureHelper
-      include Behaviors::Component
+      include Behaviors::Lifecycle
 
       I2C_ADDRESS = 0x40
 
@@ -62,7 +62,6 @@ module Denko
       end
 
       after_initialize do
-        state
         reset
       end
 

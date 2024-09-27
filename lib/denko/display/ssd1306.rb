@@ -3,8 +3,8 @@ require_relative 'canvas'
 module Denko
   module Display
     class SSD1306
-      include Behaviors::Component
       include Behaviors::BusPeripheral
+      include Behaviors::Lifecycle
 
       # I2C Defaults
         I2C_ADDRESS   = 0x3C

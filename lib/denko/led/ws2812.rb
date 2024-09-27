@@ -1,8 +1,8 @@
 module Denko
   module LED
     class WS2812
-      include Behaviors::Component
       include Behaviors::SinglePin
+      include Behaviors::Lifecycle
 
       def length
         @length ||= params[:length] || 1

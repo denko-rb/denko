@@ -1,13 +1,14 @@
 module Denko
   module Behaviors
     # Pin and component setup stuff
+    autoload :Lifecycle,  "#{__dir__}/behaviors/lifecycle"
     autoload :State,      "#{__dir__}/behaviors/state"
     autoload :Component,  "#{__dir__}/behaviors/component"
     autoload :SinglePin,  "#{__dir__}/behaviors/single_pin"
     autoload :InputPin,   "#{__dir__}/behaviors/input_pin"
     autoload :OutputPin,  "#{__dir__}/behaviors/output_pin"
     autoload :MultiPin,   "#{__dir__}/behaviors/multi_pin"
- 
+
     # Subcomponent stuff
     autoload :Subcomponents,          "#{__dir__}/behaviors/subcomponents"
     autoload :BusController,          "#{__dir__}/behaviors/bus_controller"

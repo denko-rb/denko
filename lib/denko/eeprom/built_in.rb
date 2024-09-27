@@ -3,6 +3,7 @@ module Denko
     class BuiltIn
       include Behaviors::Component
       include Behaviors::Reader
+      include Behaviors::Lifecycle
 
       public :state=
 

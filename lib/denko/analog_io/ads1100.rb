@@ -1,7 +1,7 @@
 module Denko
   module AnalogIO
     class ADS1100
-      include Behaviors::Component
+      include Behaviors::Lifecycle
       include I2C::Peripheral
       include Behaviors::Poller
       include InputHelper
@@ -50,7 +50,6 @@ module Denko
       after_initialize do
         # Validate user gave full scale voltage.
         raise ArgumentError "full-scale voltage not a Numeric or not given for ADS1100" unless full_scale_voltage.is_a?(Numeric)
-        state
 
         i2c_write(config_register)
         sleep WAIT_TIMES[sample_rate_mask]

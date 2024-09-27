@@ -2,6 +2,7 @@ module Denko
   module Behaviors
     module BusPeripheral
       include Component
+      include Lifecycle
 
       alias  :bus :board
 

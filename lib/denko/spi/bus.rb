@@ -1,7 +1,6 @@
 module Denko
   module SPI
     class Bus
-      include Behaviors::Component
       include Behaviors::BusController
       include Behaviors::Reader
 

@@ -1,7 +1,8 @@
 module Denko
   module PulseIO
     class PWMOutput < DigitalIO::Output
-      include Behaviors::Component
+      include Behaviors::Lifecycle
+
       interrupt_with :write
 
       def frequency

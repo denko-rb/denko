@@ -1,7 +1,7 @@
 module Denko
   module Sensor
     class QMP6988
-      include Behaviors::Component
+      include Behaviors::Lifecycle
       include I2C::Peripheral
       include Behaviors::Poller
       include TemperatureHelper
@@ -70,7 +70,6 @@ module Denko
       }
 
       after_initialize do
-        state
         reset
 
         # Get 5 config registers. Copy 0xF4 to modify it for control.

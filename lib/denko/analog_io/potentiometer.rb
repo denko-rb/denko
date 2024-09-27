@@ -1,7 +1,7 @@
 module Denko
   module AnalogIO
     class Potentiometer < Input
-      include Behaviors::Component
+      include Behaviors::Lifecycle
 
       after_initialize do
         # Enable smoothing and start listening immediately at ~125 Hz.

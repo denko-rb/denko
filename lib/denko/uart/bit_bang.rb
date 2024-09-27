@@ -1,15 +1,15 @@
 module Denko
   module UART
     class UARTRxPin
-      include Behaviors::Component
       include Behaviors::InputPin
       include Behaviors::Callbacks
+      include Behaviors::Lifecycle
     end
 
     class BitBang
-      include Behaviors::Component
       include Behaviors::MultiPin
       include Behaviors::Callbacks
+      include Behaviors::Lifecycle
 
       attr_reader :baud
 

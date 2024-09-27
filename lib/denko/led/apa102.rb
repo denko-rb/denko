@@ -1,8 +1,8 @@
 module Denko
   module LED
     class APA102
-      include Behaviors::Component
       include Behaviors::BusPeripheral
+      include Behaviors::Lifecycle
 
       def pin; nil; end
 

@@ -1,9 +1,9 @@
 module Denko
   module UART
     class Hardware
-      include Behaviors::Component
       include Behaviors::SinglePin
       include Behaviors::Callbacks
+      include Behaviors::Lifecycle
 
       attr_reader :index, :baud
 

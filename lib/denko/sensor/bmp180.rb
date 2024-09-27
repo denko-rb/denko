@@ -1,9 +1,9 @@
 module Denko
   module Sensor
     class BMP180
-      include Behaviors::Component
       include I2C::Peripheral
       include Behaviors::Poller
+      include Behaviors::Lifecycle
       include TemperatureHelper
       include PressureHelper
 
@@ -34,7 +34,6 @@ module Denko
         # Temporary storage for raw bytes, since two I2C reads are needed for temperature and pressure.
         @raw_bytes = [0, 0, 0, 0, 0]
 
-        state
         soft_reset
       end
 

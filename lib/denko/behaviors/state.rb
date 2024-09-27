@@ -1,6 +1,13 @@
 module Denko
   module Behaviors
     module State
+      include Lifecycle
+
+      # Force state initialization.
+      after_initialize do
+        state
+      end
+
       def state_mutex
         @state_mutex ||= Denko.cruby? ? Denko::MutexStub.new : Mutex.new
         @state_mutex

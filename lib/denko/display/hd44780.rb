@@ -6,8 +6,8 @@
 module Denko
   module Display
     class HD44780
-      include Behaviors::Component
       include Behaviors::MultiPin
+      include Behaviors::Lifecycle
 
       # Commands
       LCD_CLEARDISPLAY   = 0x01

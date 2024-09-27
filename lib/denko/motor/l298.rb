@@ -1,8 +1,8 @@
 module Denko
   module Motor
     class L298
-      include Behaviors::Component
       include Behaviors::MultiPin
+      include Behaviors::Lifecycle
 
       attr_reader :speed
 

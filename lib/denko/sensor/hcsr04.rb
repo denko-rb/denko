@@ -1,7 +1,7 @@
 module Denko
   module Sensor
     class HCSR04
-      include Behaviors::Component
+      include Behaviors::Lifecycle
       include Behaviors::MultiPin
       include Behaviors::Poller
 

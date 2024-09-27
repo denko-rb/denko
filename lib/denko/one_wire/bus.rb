@@ -1,10 +1,10 @@
 module Denko
   module OneWire
     class Bus
-      include Behaviors::Component
       include Behaviors::SinglePin
       include Behaviors::BusControllerAddressed
       include Behaviors::Reader
+      include Behaviors::Lifecycle
       include BusEnumerator
       include Constants
 

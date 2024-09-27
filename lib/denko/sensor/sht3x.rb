@@ -1,7 +1,7 @@
 module Denko
   module Sensor
     class SHT3X
-      include Behaviors::Component
+      include Behaviors::Lifecycle
       include I2C::Peripheral
       include Behaviors::Poller
       include TemperatureHelper
@@ -26,7 +26,6 @@ module Denko
       ART                   = 0x2B32
 
       after_initialize do
-        state
         reset
         self.repeatability = :high
       end

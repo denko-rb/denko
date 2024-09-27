@@ -1,7 +1,7 @@
 module Denko
   module AnalogIO
     class ADS1115
-      include Behaviors::Component
+      include Behaviors::Lifecycle
       include I2C::Peripheral
       include ADS111X
 

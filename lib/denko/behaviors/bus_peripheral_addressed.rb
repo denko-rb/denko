@@ -1,8 +1,8 @@
 module Denko
   module Behaviors
     module BusPeripheralAddressed
-      include Component
       include BusPeripheral
+      include Lifecycle
 
       def address
         @address ||= params[:address]

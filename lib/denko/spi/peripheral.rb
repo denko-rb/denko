@@ -2,9 +2,8 @@ module Denko
   module SPI
     module Peripheral
       module Core
-        include Behaviors::Component
-        include Behaviors::Callbacks
         include Behaviors::BusPeripheral
+        include Behaviors::Callbacks
 
         def spi_frequency
           @spi_frequency ||= params[:spi_frequency] || 1_000_000

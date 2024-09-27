@@ -1,10 +1,10 @@
 module Denko
   module I2C
     class BitBang
-      include Behaviors::Component
       include Behaviors::MultiPin
       include Behaviors::BusControllerAddressed
       include Behaviors::Reader
+      include Behaviors::Lifecycle
 
       def initialize_pins(options={})
         proxy_pin :scl, DigitalIO::CBitBang

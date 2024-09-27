@@ -1,10 +1,11 @@
 module Denko
   module DigitalIO
     class Output
-      include Behaviors::Component
       include Behaviors::OutputPin
       include Behaviors::Callbacks
       include Behaviors::Threaded
+      include Behaviors::Lifecycle
+
       interrupt_with :digital_write
 
       after_initialize do

@@ -1,7 +1,7 @@
 module Denko
   module PulseIO
     class Buzzer < PWMOutput
-      include Behaviors::Component
+      include Behaviors::Lifecycle
 
       def initialize_pins(options={})
         options[:mode] = :output_pwm

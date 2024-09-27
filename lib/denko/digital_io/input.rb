@@ -1,11 +1,11 @@
 module Denko
   module DigitalIO
     class Input
-      include Behaviors::Component
       include Behaviors::InputPin
       include Behaviors::Reader
       include Behaviors::Poller
       include Behaviors::Listener
+      include Behaviors::Lifecycle
 
       after_initialize do
         @divider = 4

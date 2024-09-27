@@ -1,11 +1,11 @@
 module Denko
   module AnalogIO
     class Input
-      include Behaviors::Component
       include Behaviors::InputPin
       include Behaviors::Poller
       include Behaviors::Listener
       include InputHelper
+      include Behaviors::Lifecycle
 
       before_initialize do
         # Allow giving ADC unit with multiple pins as a board proxy.

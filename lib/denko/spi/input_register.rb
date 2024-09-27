@@ -1,7 +1,7 @@
 module Denko
   module SPI
     class InputRegister < BaseRegister
-      include Behaviors::Component
+      include Behaviors::Lifecycle
 
       #
       # Keep track of whether anything is listening or reading a specific pin.

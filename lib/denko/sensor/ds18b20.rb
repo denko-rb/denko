@@ -1,13 +1,9 @@
 module Denko
   module Sensor
     class DS18B20 < OneWire::Peripheral
-      include Behaviors::Component
+      include Behaviors::Lifecycle
       include TemperatureHelper
       FAMILY_CODE = 0x28
-
-      after_initialize do
-        state
-      end
 
       def state
         state_mutex.synchronize { @state ||= { temperature: nil } }

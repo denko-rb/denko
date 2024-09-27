@@ -1,9 +1,9 @@
 module Denko
   module I2C
     module Peripheral
-      include Behaviors::Component
       include Behaviors::BusPeripheralAddressed
       include Behaviors::Reader
+      include Behaviors::Lifecycle
 
       # Set I2C defaults for including classes by defining these constants in them.
       I2C_ADDRESS         = nil

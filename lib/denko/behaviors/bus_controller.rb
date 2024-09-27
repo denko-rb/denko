@@ -1,6 +1,7 @@
 module Denko
   module Behaviors
     module BusController
+      include Component
       include Subcomponents
 
       def mutex

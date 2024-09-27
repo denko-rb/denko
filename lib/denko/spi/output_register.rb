@@ -1,7 +1,7 @@
 module Denko
   module SPI
     class OutputRegister < BaseRegister
-      include Behaviors::Component
+      include Behaviors::Lifecycle
 
       after_initialize do
         state

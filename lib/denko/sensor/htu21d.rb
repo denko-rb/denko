@@ -1,7 +1,7 @@
 module Denko
   module Sensor
     class HTU21D
-      include Behaviors::Component
+      include Behaviors::Lifecycle
       include I2C::Peripheral
       include Behaviors::Poller
       include TemperatureHelper
@@ -21,7 +21,6 @@ module Denko
 
       after_initialize do
         @config = CONFIG_DEFAULT
-        state
         reset
         heater_off
       end
