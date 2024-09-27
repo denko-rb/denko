@@ -9,7 +9,7 @@ module Denko
 
       # Write start register 0x00, then bytes to set time.
       def time=(time)
-        i2c_write [0, time_to_bcd(time)]
+        i2c_write [0] + time_to_bcd(time)
         time
       end
 

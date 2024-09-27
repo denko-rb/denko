@@ -26,7 +26,7 @@ class DS3231Test < Minitest::Test
   end
 
   def test_time=
-    mock = Minitest::Mock.new.expect :call, nil, [[0, [0, 0, 0, 6, 1, 1, 48]]]
+    mock = Minitest::Mock.new.expect :call, nil, [[0, 0, 0, 0, 6, 1, 1, 48]]
     part.stub(:i2c_write, mock) do
       part.time = Time.new(2000, 1, 1, 0, 0, 0.0)
     end
