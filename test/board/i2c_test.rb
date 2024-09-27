@@ -2,7 +2,7 @@ require_relative '../test_helper'
 
 class APII2CTest < Minitest::Test
   include TestPacker
-  
+
   def connection
     @connection ||= ConnectionMock.new
   end
@@ -10,11 +10,11 @@ class APII2CTest < Minitest::Test
   def board
     @board ||= Denko::Board.new(connection)
   end
-  
+
   def test_search
     board
     message = Denko::Message.encode command: 33
-    
+
     mock = Minitest::Mock.new.expect :call, nil, [message]
     connection.stub(:write, mock) do
       board.i2c_search
@@ -37,17 +37,17 @@ class APII2CTest < Minitest::Test
     mock = Minitest::Mock.new
     mock.expect :call, nil, [message1]
     mock.expect :call, nil, [message2]
-    
+
     connection.stub(:write, mock) do
-      board.i2c_write(0x30, [1,2,3,4])
-      board.i2c_write(0x30, [1,2,3,4], 100000, true)
+      board.i2c_write(0, 0x30, [1,2,3,4])
+      board.i2c_write(0, 0x30, [1,2,3,4], 100000, true)
     end
     mock.verify
   end
 
   def test_write_limits
-    assert_raises { board.i2c_write(0x30, Array.new(33) {0x00}) }
-    assert_raises { board.i2c_write(0x30, Array.new(0)  {0x00}) }
+    assert_raises { board.i2c_write(0, 0x30, Array.new(33) {0x00}) }
+    assert_raises { board.i2c_write(0, 0x30, Array.new(0)  {0x00}) }
   end
 
   def test_read
@@ -64,14 +64,14 @@ class APII2CTest < Minitest::Test
     mock = Minitest::Mock.new
     mock.expect :call, nil, [message1]
     mock.expect :call, nil, [message2]
-    
+
     connection.stub(:write, mock) do
-      board.i2c_read(0x30, 0x03, 4)
-      board.i2c_read(0x30, 0x03, 4, 100000, true)
+      board.i2c_read(0, 0x30, 0x03, 4)
+      board.i2c_read(0, 0x30, 0x03, 4, 100000, true)
     end
     mock.verify
   end
-  
+
   def test_read_without_register
     board
     aux = pack(:uint8, 0x00) + pack(:uint8, 0x30 | (1 << 7)) + pack(:uint8, 4) + pack(:uint8, [0])
@@ -79,23 +79,23 @@ class APII2CTest < Minitest::Test
 
     mock = Minitest::Mock.new
     mock.expect :call, nil, [message]
-    
+
     connection.stub(:write, mock) do
-      board.i2c_read(0x30, nil, 4)
+      board.i2c_read(0, 0x30, nil, 4)
     end
     mock.verify
   end
 
   def test_read_limits
-    assert_raises { board.i2c_read(0x30, nil, 33) }
-    assert_raises { board.i2c_read(0x30, nil, 0)  }
+    assert_raises { board.i2c_read(0, 0x30, nil, 33) }
+    assert_raises { board.i2c_read(0, 0x30, nil, 0)  }
   end
 
   def test_frequencies
     board
     data = [1,2,3,4]
     address = 0x30
-      
+
     messages = []
     # 100 kHz, 400 kHz, 1 Mhz, 3.4 MHz
     aux_after_config = pack(:uint8, 0x30 | (1 << 7)) + pack(:uint8, data.length) + pack(:uint8, data)
@@ -108,13 +108,13 @@ class APII2CTest < Minitest::Test
       mock.expect :call, nil, [message]
     end
     connection.stub(:write, mock) do
-      board.i2c_write(address, data, 100000)
-      board.i2c_write(address, data, 400000)
-      board.i2c_write(address, data, 1000000)
-      board.i2c_write(address, data, 3400000)
+      board.i2c_write(0, address, data, 100000)
+      board.i2c_write(0, address, data, 400000)
+      board.i2c_write(0, address, data, 1000000)
+      board.i2c_write(0, address, data, 3400000)
     end
     mock.verify
 
-    assert_raises(ArgumentError) { board.i2c_write(0x30, [1,2,3,4], 5000000, false) }
+    assert_raises(ArgumentError) { board.i2c_write(0, 0x30, [1,2,3,4], 5000000, false) }
   end
 end

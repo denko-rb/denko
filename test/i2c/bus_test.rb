@@ -10,7 +10,7 @@ class I2CBusTest < Minitest::Test
   end
 
   def part
-    @part ||= Denko::I2C::Bus.new(board: board, pin:5)
+    @part ||= Denko::I2C::Bus.new(board: board)
   end
 
   def peripheral
@@ -22,10 +22,10 @@ class I2CBusTest < Minitest::Test
     assert_equal 0, part.i2c_index
     refute_nil part.callbacks[:bus_controller]
 
-    part2 = Denko::I2C::Bus.new(board: board, pin: 6, index: 10)
+    part2 = Denko::I2C::Bus.new(board: board, index: 10)
     assert_equal 10, part2.i2c_index
 
-    part3 = Denko::I2C::Bus.new(board: board, pin: 7, i2c_index: 11)
+    part3 = Denko::I2C::Bus.new(board: board, i2c_index: 11)
     assert_equal 11, part3.i2c_index
   end
 
@@ -42,7 +42,7 @@ class I2CBusTest < Minitest::Test
   end
 
   def test_write
-    mock = Minitest::Mock.new.expect :call, nil, [0x30, [0x01, 0x02], 100000, false]
+    mock = Minitest::Mock.new.expect :call, nil, [0, 0x30, [0x01, 0x02], 100000, false]
     board.stub(:i2c_write, mock) do
       part.write 0x30, [0x01, 0x02]
     end
@@ -52,7 +52,7 @@ class I2CBusTest < Minitest::Test
   def test__read
     board.inject_read_for_i2c(0, "48-255,0,255,0,255,0")
 
-    mock = Minitest::Mock.new.expect :call, nil, [0x32, 0x03, 6, 100000, false]
+    mock = Minitest::Mock.new.expect :call, nil, [0, 0x32, 0x03, 6, 100000, false]
     board.stub(:i2c_read, mock) do
       part.read 0x32, 0x03, 6
     end
