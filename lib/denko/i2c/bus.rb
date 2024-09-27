@@ -19,7 +19,7 @@ module Denko
       attr_writer :found_devices
 
       def search
-        addresses = read_using -> { board.i2c_search }
+        addresses = read_using -> { board.i2c_search(i2c_index) }
         @found_devices = addresses.split(":").map(&:to_i) if addresses
       end
 

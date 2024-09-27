@@ -20,7 +20,7 @@ module Denko
     end
 
     # CMD = 33
-    def i2c_search
+    def i2c_search(i2c_index)
       write Message.encode command: 33
     end
 

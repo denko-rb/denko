@@ -17,7 +17,7 @@ class APII2CTest < Minitest::Test
 
     mock = Minitest::Mock.new.expect :call, nil, [message]
     connection.stub(:write, mock) do
-      board.i2c_search
+      board.i2c_search(0)
     end
     mock.verify
   end
