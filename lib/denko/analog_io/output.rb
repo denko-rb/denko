@@ -4,12 +4,12 @@ module Denko
       include Behaviors::OutputPin
       include Behaviors::Callbacks
       include Behaviors::Threaded
-      
+      include Behaviors::Lifecycle
+
       interrupt_with :write
-      
-      def initialize_pins(options={})
-        super(options)
-        self.mode = :output_dac
+
+      before_initialize do
+        params[:mode] = :output_dac
       end
 
       def write(value)

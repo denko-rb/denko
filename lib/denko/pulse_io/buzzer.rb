@@ -3,13 +3,12 @@ module Denko
     class Buzzer < PWMOutput
       include Behaviors::Lifecycle
 
-      def initialize_pins(options={})
-        options[:mode] = :output_pwm
-        super(options)
+      before_initialize do
+        params[:mode] ||= :output_pwm
       end
 
       after_initialize do
-        low
+        board.no_tone(pin)
       end
 
       # Duration is in mills

@@ -18,6 +18,7 @@ module Denko
 
       def initialize_pins(options={})
         @pin = options[:pin]
+        self.mode = params[:mode] if params[:mode]
       end
     end
   end

@@ -3,8 +3,16 @@ module Denko
     module InputPin
       include Component
       include SinglePin
+      include Lifecycle
 
       INPUT_MODES = [:input, :input_pulldown, :input_pullup]
+
+      before_initialize do
+        params[:mode] ||= :input
+        unless INPUT_MODES.include?(params[:mode])
+          raise "invalid input mode: #{params[:mode]} given. Should be one of #{INPUT_MODES.inspect}"
+        end
+      end
 
       def _stop_listener
         board.stop_listener(pin)
@@ -12,24 +20,6 @@ module Denko
 
       def debounce_time=(value)
         board.set_pin_debounce(pin, value)
-      end
-
-    protected
-
-      def initialize_pins(options={})
-        super(options)
-
-        # Allow pull direction to be set with :mode, else default to :input.
-        if options[:mode]
-          initial_mode = options[:mode]
-          unless INPUT_MODES.include?(initial_mode)
-            raise "invalid input mode: #{initial_mode} given. Should be one of #{INPUT_MODES.inspect}"
-          end
-        else
-          initial_mode = :input
-        end
-
-        self.mode = initial_mode
       end
     end
   end

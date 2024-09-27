@@ -2,10 +2,10 @@ module Denko
   module PulseIO
     class IROutput
       include Behaviors::OutputPin
+      include Behaviors::Lifecycle
 
-      def initialize_pins(options={})
-        options[:mode] = :output_pwm
-        super(options)
+      before_initialize do
+        params[:mode] = :output_pwm
       end
 
       def write(pulses=[], frequency: 38)

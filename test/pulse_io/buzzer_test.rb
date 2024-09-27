@@ -10,9 +10,12 @@ class BuzzerTest < Minitest::Test
   end
 
   def test_low_on_initialize
-    assert_equal part.state, board.low
+    mock = Minitest::Mock.new.expect :call, [part.pin]
+    board.stub(:no_tone, mock) do
+      part
+    end
   end
-  
+
   def test_tone
     mock = Minitest::Mock.new
     mock.expect :call, nil, [part.pin, 60, nil]
@@ -23,7 +26,7 @@ class BuzzerTest < Minitest::Test
     end
     mock.verify
   end
-  
+
   def test_no_tone
     part
     mock = Minitest::Mock.new
@@ -33,7 +36,7 @@ class BuzzerTest < Minitest::Test
     end
     mock.verify
   end
-  
+
   def stop
     mock = Minitest::Mock.new
     mock.expect :call, nil
