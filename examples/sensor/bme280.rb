@@ -9,7 +9,7 @@ bus = Denko::I2C::Bus.new(board: board)
 
 sensor = Denko::Sensor::BME280.new(bus: bus) # address: 0x76 default
 # Use A BMP280 with no humidity instead.
-# sensor = Denko::Sensor::BMP280.new(bus: bus) # address: 0x76
+# sensor = Denko::Sensor::BMP280.new(bus: bus) # address: 0x76 default
 
 # Default reading mode is oneshot ("forced" in datasheet).
 # sensor.oneshot_mode

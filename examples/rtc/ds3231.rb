@@ -7,7 +7,7 @@ require 'denko'
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
 # Board's hardware I2C interface on predetermined pins.
-bus = Denko::I2C::Bus.new(board: board)
+bus = Denko::I2C::Bus.new(board: board) # address: 0x68 default
 
 # Tell the bus to search for devices.
 bus.search

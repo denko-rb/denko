@@ -13,16 +13,16 @@ board = Denko::Board.new(Denko::Connection::Serial.new)
 #   SPI Hardware
 #   SPI Bit-Bang
 #
-bus = Denko::I2C::Bus.new(board: board, pin: :SDA)
+bus = Denko::I2C::Bus.new(board: board)
 # bus = Denko::I2C::BitBang.new(board: board, pins: {scl: 4, sda: 5})
 # bus = Denko::SPI::Bus.new(board: board)
 # bus = Denko::SPI::BitBang.new(board: board, pins: {clock: 13, output: 11})
 
-# I2C OLED, connected to I2C SDA and SCL only. Default I2C address of 0x3C.
-oled = Denko::Display::SSD1306.new(bus: bus, address: 0x3C, rotate: true)
+# I2C OLED, connected to I2C SDA and SCL.
+oled = Denko::Display::SSD1306.new(bus: bus, rotate: true) # address: 0x3C is default
 
 # SPI OLED, connected to SPI CLK and MOSI pins.
-# select and dc pins must be given. reset is optional (can be pulled high instead).
+# select: and dc: pins must be given. reset is optional (can be pulled high instead).
 # oled = Denko::Display::SSD1306.new(bus: bus, pins: {select: 10, dc: 7, reset: 8}, rotate: true)
 
 # Draw some text on the OLED's canvas (a Ruby memory buffer).

@@ -5,7 +5,7 @@ require 'bundler/setup'
 require 'denko'
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
-bus = Denko::I2C::Bus.new(board: board, pin: :SDA)
+bus = Denko::I2C::Bus.new(board: board)
 sensor = Denko::Sensor::RCWL9620.new(bus: bus) # address: 0x57 default
 
 sensor.poll(1) do |distance|
