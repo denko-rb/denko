@@ -1,13 +1,8 @@
 module Denko
   module I2C
     class Bus
-      include Behaviors::BusControllerAddressed
-      include Behaviors::Reader
       include Behaviors::Lifecycle
-
-      after_initialize do
-        bubble_callbacks
-      end
+      include BusCommon
 
       def i2c_index
         @i2c_index ||= params[:i2c_index] || params[:index] || 0
@@ -29,22 +24,6 @@ module Denko
 
       def _read(address, register, num_bytes, frequency=100000, repeated_start=false)
         board.i2c_read(i2c_index, address, register, num_bytes, frequency, repeated_start)
-      end
-
-      def bubble_callbacks
-        add_callback(:bus_controller) do |str|
-          if str && str.match(/\A\d+-/)
-            address, data = str.split("-", 2)
-            address = address.to_i
-
-            data = data.split(",").map(&:to_i)
-            data = nil if data.empty?
-
-            components.each do |component|
-              component.update(data) if component.address == address
-            end
-          end
-        end
       end
     end
   end

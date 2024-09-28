@@ -49,8 +49,18 @@ class I2CBusTest < Minitest::Test
     mock.verify
   end
 
-  def test__read
+  def test__read_string
     board.inject_read_for_i2c(0, "48-255,0,255,0,255,0")
+
+    mock = Minitest::Mock.new.expect :call, nil, [0, 0x32, 0x03, 6, 100000, false]
+    board.stub(:i2c_read, mock) do
+      part.read 0x32, 0x03, 6
+    end
+    mock.verify
+  end
+
+  def test__read_array
+    board.inject_read_for_i2c(0, [48,255,0,255,0,255,0])
 
     mock = Minitest::Mock.new.expect :call, nil, [0, 0x32, 0x03, 6, 100000, false]
     board.stub(:i2c_read, mock) do

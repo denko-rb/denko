@@ -2,9 +2,8 @@ module Denko
   module I2C
     class BitBang
       include Behaviors::MultiPin
-      include Behaviors::BusControllerAddressed
-      include Behaviors::Reader
       include Behaviors::Lifecycle
+      include BusCommon
 
       def initialize_pins(options={})
         proxy_pin :scl, DigitalIO::CBitBang
@@ -12,7 +11,8 @@ module Denko
       end
 
       after_initialize do
-        bubble_callbacks
+        # Data received for the SDA pin is really for the bus.
+        sda.add_callback(:bus_forwarder) { |data| self.update(data) }
       end
 
       def found_devices
@@ -31,26 +31,6 @@ module Denko
 
       def _read(address, register, num_bytes, frequency=nil, repeated_start=false)
         board.i2c_bb_read(pins[:scl], pins[:sda], address, register, num_bytes, repeated_start)
-      end
-
-      def bubble_callbacks
-        self.add_callback(:bus_controller) do |str|
-          if str && str.match(/\A\d+-/)
-            address, data = str.split("-", 2)
-            address = address.to_i
-
-            data = data.split(",").map(&:to_i)
-            data = nil if data.empty?
-
-            components.each do |component|
-              component.update(data) if component.address == address
-            end
-          end
-        end
-
-        self.sda.add_callback(:bus_forwarder) do |data|
-          self.update(data)
-        end
       end
     end
   end
