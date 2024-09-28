@@ -8,14 +8,8 @@ module Denko
         @i2c_index ||= params[:i2c_index] || params[:index] || 0
       end
 
-      def found_devices
-        @found_devices ||= []
-      end
-      attr_writer :found_devices
-
-      def search
-        addresses = read_using -> { board.i2c_search(i2c_index) }
-        @found_devices = addresses.split(":").map(&:to_i) if addresses
+      def _search
+        board.i2c_search(i2c_index)
       end
 
       def write(address, bytes, frequency=100000, repeated_start=false)

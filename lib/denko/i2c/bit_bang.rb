@@ -15,14 +15,8 @@ module Denko
         sda.add_callback(:bus_forwarder) { |data| self.update(data) }
       end
 
-      def found_devices
-        @found_devices ||= []
-      end
-      attr_writer :found_devices
-
-      def search
-        addresses = read_using -> { board.i2c_bb_search(pins[:scl], pins[:sda]) }
-        @found_devices = addresses.split(":").map(&:to_i) if addresses
+      def _search
+        board.i2c_bb_search(pins[:scl], pins[:sda])
       end
 
       def write(address, bytes, frequency=nil, repeated_start=false)

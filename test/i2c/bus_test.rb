@@ -30,7 +30,8 @@ class I2CBusTest < Minitest::Test
   end
 
   def test_search
-    board.inject_read_for_i2c(0, "48:50")
+    # Reject 0s created by leading and trailing colons.
+    board.inject_read_for_i2c(0, ":48:50:")
 
     mock = Minitest::Mock.new.expect :call, nil, [0]
     board.stub(:i2c_search, mock) do

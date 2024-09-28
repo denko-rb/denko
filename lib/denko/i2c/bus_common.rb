@@ -9,6 +9,16 @@ module Denko
         bubble_callbacks
       end
 
+      def found_devices
+        @found_devices ||= []
+      end
+      attr_writer :found_devices
+
+      def search
+        addresses = read_using -> { _search }
+        @found_devices = addresses.split(":").map(&:to_i).reject{ |e| e==0 } if addresses
+      end
+
       def bubble_callbacks
         add_callback(:bus_controller) do |data|
           bytes = nil
