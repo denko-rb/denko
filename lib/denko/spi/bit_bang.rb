@@ -7,7 +7,7 @@ module Denko
       include Behaviors::Lifecycle
 
       before_initialize do
-        init_pins = params[:pins]
+        param_pins = params[:pins]
         # Allow pin aliases.
         param_pins[:input]  = param_pins[:input]  || param_pins[:poci] || param_pins[:miso]
         param_pins[:output] = param_pins[:output] || param_pins[:pico] || param_pins[:mosi]
