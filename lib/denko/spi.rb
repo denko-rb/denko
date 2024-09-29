@@ -1,5 +1,6 @@
 module Denko
   module SPI
+    autoload :BusCommon,      "#{__dir__}/spi/bus_common"
     autoload :Bus,            "#{__dir__}/spi/bus"
     autoload :BitBang,        "#{__dir__}/spi/bit_bang"
     module Peripheral

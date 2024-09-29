@@ -31,7 +31,7 @@ module Denko
         raise ArgumentError, "error in SPI frequency: #{frequency.inspect}"
       end
 
-      # Get the generic part of the SPI header. 
+      # Get the generic part of the SPI header.
       header = spi_header_generic(select_pin, write, read, mode, bit_order)
 
       # Generic header + packed frequency = hardware SPI header.
@@ -39,7 +39,7 @@ module Denko
     end
 
     # CMD = 26
-    def spi_transfer(select_pin, write: [], read: 0, frequency: nil, mode: nil, bit_order: nil)
+    def spi_transfer(spi_index, select_pin, write: [], read: 0, frequency: nil, mode: nil, bit_order: nil)
       raise ArgumentError, "no bytes given to read or write" if (read == 0) && (write.empty?)
       raise ArgumentError, "select_pin cannot be nil when reading or listening" if (read != 0) && (select_pin == nil)
 
@@ -51,12 +51,12 @@ module Denko
     end
 
     # CMD = 27
-    def spi_listen(select_pin, read: 0, frequency: nil, mode: nil, bit_order: nil)
+    def spi_listen(spi_index, select_pin, read: 0, frequency: nil, mode: nil, bit_order: nil)
       raise ArgumentError, 'no bytes to read. Give read: argument > 0' unless (read > 0)
       raise ArgumentError, "select_pin cannot be nil when reading or listening" if (select_pin == nil)
 
       header = spi_header(select_pin, [], read, frequency, mode, bit_order)
-      
+
       self.write Message.encode command: 27,
                                 pin: select_pin,
                                 aux_message: header

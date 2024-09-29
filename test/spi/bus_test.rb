@@ -4,7 +4,7 @@ class TempSpiPeripheral
   def initialize(pin)
     @pin = pin
   end
-  
+
   attr_reader :pin
 end
 
@@ -14,28 +14,28 @@ class SPIBusTest < Minitest::Test
   end
 
   def part
-    @bus ||= Denko::SPI::Bus.new(board: board)
+    @bus ||= Denko::SPI::Bus.new(board: board, index: 5)
   end
 
   PIN = 9
   OPTIONS = { read: 2, frequency: 800000, mode: 2, bit_order: :lsbfirst }
 
   def test_transfer
-    mock = Minitest::Mock.new.expect :call, nil, [PIN], **OPTIONS
+    mock = Minitest::Mock.new.expect :call, nil, [5, PIN], **OPTIONS
     board.stub(:spi_transfer, mock) do
       part.transfer(PIN, **OPTIONS)
     end
     mock.verify
   end
-  
+
   def test_listen
-    mock = Minitest::Mock.new.expect :call, nil, [PIN], **OPTIONS
+    mock = Minitest::Mock.new.expect :call, nil, [5, PIN], **OPTIONS
     board.stub(:spi_listen, mock) do
       part.listen(PIN, **OPTIONS)
     end
     mock.verify
   end
-  
+
   def test_stop
     mock = Minitest::Mock.new.expect :call, nil, [PIN]
     board.stub(:spi_stop, mock) do

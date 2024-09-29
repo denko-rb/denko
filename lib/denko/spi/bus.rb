@@ -1,42 +1,24 @@
 module Denko
   module SPI
     class Bus
-      include Behaviors::BusController
-      include Behaviors::Reader
+      include BusCommon
 
       # Board expects all components to have #pin.
       attr_reader :pin
 
-      # Forward some methods directly to the board.
-      extend Forwardable
-
-      # Forward SPI methods with prefixed names.
-      def_delegator :board, :spi_transfer,  :transfer
-      def_delegator :board, :spi_listen,    :listen
-      def_delegator :board, :spi_stop,      :stop
-
-      # Forward pin control methods with same names for board proxying.
-      def_delegator :board, :convert_pin
-      def_delegator :board, :set_pin_mode
-
-      # Add peripheral to self and the board. It gets callbacks directly from the board.
-      def add_component(component)
-        # Ignore components with no select pin. Mostly for APA102.
-        return unless component.pin
-
-        pins = components.map { |c| c.pin }
-        if pins.include? component.pin
-          raise ArgumentError, "duplicate select pin for #{component}"
-        end
-
-        components << component
-        board.add_component(component)
+      def spi_index
+        @spi_index ||= params[:spi_index] || params[:index] || 0
       end
 
-      # Remove peripheral from self and the board.
-      def remove_component(component)
-        components.delete(component)
-        board.remove_component(component)
+      # Prepend spi_index to these and forward to the board.
+      def transfer(*args, **kwargs)
+        args.unshift(spi_index)
+        board.spi_transfer(*args, **kwargs)
+      end
+
+      def listen(*args, **kwargs)
+        args.unshift(spi_index)
+        board.spi_listen(*args, **kwargs)
       end
     end
   end

@@ -2,8 +2,6 @@ module Denko
   module SPI
     class BitBang
       include Behaviors::MultiPin
-      include Behaviors::BusController
-      include Behaviors::Reader
       include Behaviors::Lifecycle
 
       before_initialize do
@@ -35,40 +33,6 @@ module Denko
       def listen(select_pin, read: 0, frequency: nil, mode: 0, bit_order: :msbfirst)
         board.spi_bb_listen select_pin, clock: pins[:clock], input: pins[:input],
                                         read: read, mode: mode, bit_order: bit_order
-      end
-
-      # Uses regular Board#spi_stop since listeners are shared.
-      def stop(pin)
-        board.spi_stop(pin)
-      end
-
-      # Delegate these to board so peripherals can initialize their select pins.
-      def set_pin_mode(*args)
-        board.set_pin_mode(*args)
-      end
-
-      def convert_pin(pin)
-        board.convert_pin(pin)
-      end
-
-      # Add peripheral to self and the board. It gets callbacks directly from the board.
-      def add_component(component)
-        # Ignore components with no select pin. Mostly for APA102.
-        return unless component.pin
-
-        pins = components.map { |c| c.pin }
-        if pins.include? component.pin
-          raise ArgumentError, "duplicate select pin for #{component}"
-        end
-
-        components << component
-        board.add_component(component)
-      end
-
-      # Remove peripheral from self and the board.
-      def remove_component(component)
-        components.delete(component)
-        board.remove_component(component)
       end
     end
   end
