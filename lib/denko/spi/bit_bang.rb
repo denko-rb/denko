@@ -4,8 +4,9 @@ module Denko
       include Behaviors::MultiPin
       include Behaviors::BusController
       include Behaviors::Reader
+      include Behaviors::Lifecycle
 
-      def initialize_pins(options={})
+      before_initialize do
         # Allow pin aliases.
         pins[:input]  = pins[:input]  || pins[:poci] || pins[:miso]
         pins[:output] = pins[:output] || pins[:pico] || pins[:mosi]
@@ -17,8 +18,9 @@ module Denko
         # Validate pins.
         raise ArgumentError, "either output or input pin required" unless pins[:input] || pins[:output]
         raise ArgumentError, "clock pin required" unless pins[:clock]
+      end
 
-        # Create proxies.
+      def initialize_pins(options={})
         proxy_pin :clock,   DigitalIO::CBitBang
         proxy_pin :output,  DigitalIO::CBitBang if pins[:output]
         proxy_pin :input,   DigitalIO::CBitBang if pins[:input]

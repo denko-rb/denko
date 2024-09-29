@@ -10,6 +10,10 @@ module Denko
 
       attr_reader :pin, :pins, :proxies
 
+      def proxies
+        @proxies ||= {}
+      end
+
       # Return a hash with the state of each proxy component.
       def proxy_states
         hash = {}
@@ -19,15 +23,9 @@ module Denko
         hash
       end
 
-      before_initialize do
-        # Get given pins early. Avoids giving them again to require or proxy.
-        self.pins = params[:pins]
-        self.proxies = {}
-      end
-
       def convert_pins(options={})
-        super(options)
-        self.pins.each { |key,pin| self.pins[key] = board.convert_pin(pin) }
+        self.pins = {}
+        params[:pins].each { |key,pin| self.pins[key] = board.convert_pin(pin) }
         pin_array = pins.values
         raise ArgumentError, "duplicate pins in: #{pins.inspect}" unless pin_array == pin_array.uniq
       end

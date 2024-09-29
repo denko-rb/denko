@@ -5,7 +5,7 @@ module Denko
       include Behaviors::Callbacks
       include Behaviors::Lifecycle
 
-      def initialize_pins(params={})
+      before_initialize do
         # Allow pins to be given as printed on common parts.
         unless params[:pins][:a]
           params[:pins][:a] = params[:pins][:clk] if params[:pins][:clk]
@@ -18,6 +18,9 @@ module Denko
 
         # But always refer to them as a and b internally.
         [:clk, :clock, :dt, :data].each { |key| params[:pins].delete(key) }
+      end
+
+      def initialize_pins(params={})
         proxy_pin :a, DigitalIO::Input
         proxy_pin :b, DigitalIO::Input
       end
