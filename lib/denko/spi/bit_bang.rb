@@ -3,6 +3,7 @@ module Denko
     class BitBang
       include Behaviors::MultiPin
       include Behaviors::Lifecycle
+      include BusCommon
 
       before_initialize do
         param_pins = params[:pins]
