@@ -7,17 +7,18 @@ module Denko
       include Behaviors::Lifecycle
 
       before_initialize do
+        init_pins = params[:pins]
         # Allow pin aliases.
-        params[:input]  = params[:input]  || params[:poci] || params[:miso]
-        params[:output] = params[:output] || params[:pico] || params[:mosi]
-        params[:clock]  = params[:clock]  || params[:sck]  || params[:clk]
+        param_pins[:input]  = param_pins[:input]  || param_pins[:poci] || param_pins[:miso]
+        param_pins[:output] = param_pins[:output] || param_pins[:pico] || param_pins[:mosi]
+        param_pins[:clock]  = param_pins[:clock]  || param_pins[:sck]  || param_pins[:clk]
 
         # Clean up the params hash.
-        [:poci, :miso, :pico, :mosi, :sck, :clk].each { |key| params.delete(key) }
+        [:poci, :miso, :pico, :mosi, :sck, :clk].each { |key| param_pins.delete(key) }
 
-        # Validate params.
-        raise ArgumentError, "either output or input pin required" unless params[:input] || params[:output]
-        raise ArgumentError, "clock pin required" unless params[:clock]
+        # Validate param_pins.
+        raise ArgumentError, "either output or input pin required" unless param_pins[:input] || param_pins[:output]
+        raise ArgumentError, "clock pin required" unless param_pins[:clock]
       end
 
       def initialize_pins(options={})
