@@ -165,7 +165,7 @@ class BoardMock < Denko::Board
   end
 
   def hw_i2c_exists(index)
-    return hw_i2c_devs[index]
+    return hw_i2c_comps[index]
     false
   end
 

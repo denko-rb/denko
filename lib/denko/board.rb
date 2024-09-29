@@ -97,7 +97,7 @@ module Denko
       match = pin.match /\AI2C(\d*)/
       if match
         dev_index = match[1].to_i
-        dev = hw_i2c_devs[dev_index]
+        dev = hw_i2c_comps[dev_index]
         dev.update(message) if dev
         return
       end

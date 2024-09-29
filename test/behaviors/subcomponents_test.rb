@@ -84,12 +84,12 @@ class SubcomponentsTest < Minitest::Test
     assert_equal [i2c0, i2c1], board.components
 
     # Have the right hash keys.
-    assert_equal i2c0, board.hw_i2c_devs[0]
-    assert_equal i2c1, board.hw_i2c_devs[1]
+    assert_equal i2c0, board.hw_i2c_comps[0]
+    assert_equal i2c1, board.hw_i2c_comps[1]
 
     # Get removed correctly.
     board.remove_component(i2c0)
     hash = { 1 => i2c1 }
-    assert_equal hash, board.hw_i2c_devs
+    assert_equal hash, board.hw_i2c_comps
   end
 end
