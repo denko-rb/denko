@@ -39,11 +39,6 @@ module Denko
         # Read the result, triggering callbacks.
         i2c_read(2, register: CONVERSION_ADDRESS)
       end
-
-      # Readings are 2 bytes big-endian.
-      def pre_callback_filter(bytes)
-        bytes.pack("C*").unpack("s>")[0]
-      end
     end
   end
 end

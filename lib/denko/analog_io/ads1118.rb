@@ -36,12 +36,6 @@ module Denko
         spi_read(2)
       end
 
-      # Pack the 2 bytes back into a string, then unpack as big-endian signed int16.
-      def pre_callback_filter(message)
-        bytes = message.split(",").map { |b| b.to_i }
-        bytes.pack("C*").unpack("s>")[0]
-      end
-
       def _temperature_read
         # Wrap in mutex to not interfere with other reads.
         mutex.synchronize do

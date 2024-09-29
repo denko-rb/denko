@@ -54,7 +54,10 @@ module Denko
 
       # Mimic Board#update, but inside a callback, wrapped by #update.
       def enable_proxy
-        self.add_callback(:board_proxy) do |value|
+        self.add_callback(:board_proxy) do |bytes|
+          # Pack the 2 bytes into a string, then unpack as big-endian int16.
+          value = bytes.pack("C*").unpack("s>")[0]
+
           components.each do |component|
             if active_pin == component.pin
               component.volts_per_bit = PGA_SETTINGS[active_gain]

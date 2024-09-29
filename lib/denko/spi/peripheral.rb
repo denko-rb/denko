@@ -41,11 +41,26 @@ module Denko
         def spi_stop
           bus.stop(select_pin)
         end
+
+        def pre_callback_filter(message)
+          if message.class == Array
+            # Byte array coming from PiBoard.
+            return message
+          else
+            # Split up comma delimited bytes coming from a microcontroller.
+            return message.split(",").map { |b| b.to_i }
+          end
+        end
       end
 
       module SinglePin
         include Core
-        include Behaviors::OutputPin
+        include Behaviors::SinglePin
+        include Behaviors::Lifecycle
+
+        before_initialize do
+          params[:mode] = :output
+        end
 
         def select_pin
           pin
@@ -55,14 +70,15 @@ module Denko
       module MultiPin
         include Core
         include Behaviors::MultiPin
-
-        def initialize_pins(options={})
-          super(options)
-          proxy_pin :select, DigitalIO::Output, board: bus.board
-        end
+        include Behaviors::Lifecycle
 
         def select_pin
           select.pin
+        end
+
+        after_initialize do
+          proxy_pin :select, DigitalIO::CBitBang, { board: bus.board, mode: :output }
+          select.add_callback(:peripheral_forwarder) { |data| self.update(data) }
         end
       end
     end
