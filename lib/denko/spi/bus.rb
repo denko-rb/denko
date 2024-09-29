@@ -20,6 +20,11 @@ module Denko
         args.unshift(spi_index)
         board.spi_listen(*args, **kwargs)
       end
+
+      # This is for WS2812 strips on PiBoard.
+      def show_ws2812(*args)
+        board.show_ws2812(*args, spi_index: spi_index)
+      end
     end
   end
 end
