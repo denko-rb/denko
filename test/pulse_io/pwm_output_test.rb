@@ -19,6 +19,18 @@ class PWMOutTest < Minitest::Test
     assert_equal (2**12-1), part2.pwm_high
   end
 
+  def test_duty
+    mock = Minitest::Mock.new
+    mock.expect :call, nil, [14, 0]
+    mock.expect :call, nil, [14, 128]
+    mock.expect :call, nil, [14, 255]
+    board.stub(:pwm_write, mock) do
+      part.duty = 0
+      part.duty = 50
+      part.duty = 100
+    end
+  end
+
   def test_pwm_write
     enable_mock = Minitest::Mock.new.expect :call, nil
     write_mock = Minitest::Mock.new

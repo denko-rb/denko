@@ -32,8 +32,8 @@ end
 # Or we can access the individual Leds through the #red, #green and #blue methods.
 # This makes an orange color with them.
 #
-rgb_led.red.write 255
-rgb_led.green.write 100
+rgb_led.red.duty = 100
+rgb_led.green.duty = 40
 rgb_led.blue.off
 print "Done. Changed to orange. Press Enter to continue..."; gets
 
@@ -47,10 +47,10 @@ potentiometer = Denko::AnalogIO::Potentiometer.new(pin: 'A0', board: board)
 require_relative 'rgb_mapping'
 potentiometer.on_change do |pot_value|
   # Use the mapping methods to calculate values and write them.
-  rgb_led.red.write   map_red(pot_value)
-  rgb_led.green.write map_green(pot_value)
-  rgb_led.blue.write  map_blue(pot_value)
-  
+  rgb_led.red.duty   = map_red(pot_value)
+  rgb_led.green.duty = map_green(pot_value)
+  rgb_led.blue.duty  = map_blue(pot_value)
+
   print "Potentiometer value: #{pot_value}   \r"
 end
 

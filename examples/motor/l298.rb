@@ -13,15 +13,15 @@ motor = Denko::Motor::L298.new board: board, pins: {direction1: 8, direction2: 9
 # motor.idle
 
 # Go forward at half speed for a while.
-motor.forward board.pwm_high / 2
+motor.forward(50)
 sleep 2
 
 # Change direction.
-motor.reverse board.pwm_high / 2
+motor.reverse(50)
 sleep 2
 
 # Speed up without changing direction.
-motor.speed = board.pwm_high
+motor.speed = 100
 sleep 2
 
 # Brake to stop quickly.
@@ -29,13 +29,13 @@ motor.brake
 sleep 1
 
 # Change from brake to forward, but 0 speed.
-motor.forward 0
+motor.forward(0)
 sleep 1
 
-# Gradually speed up.
+# Speed up in 5% increments.
 (1..20).each do |step|
   sleep 0.5
-  motor.speed = (board.pwm_high * (step / 20.0)).round
+  motor.speed = step * 5
 end
 
 # Turn it off.

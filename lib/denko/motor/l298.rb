@@ -17,7 +17,7 @@ module Denko
       end
 
       def speed=(value)
-        enable.write(value)
+        enable.duty = value
         @speed = value
       end
 
@@ -43,7 +43,7 @@ module Denko
       def brake
         direction1.high
         direction2.high
-        self.speed = board.pwm_high
+        self.speed = 100
       end
     end
   end

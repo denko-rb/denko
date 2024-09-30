@@ -8,10 +8,10 @@ board = Denko::Board.new(Denko::Connection::Serial.new)
 led = Denko::LED.new(board: board, pin: :LED_BUILTIN)
 
 min = 0
-max = 255
+max = 100
 values = (min..max).to_a + (min..max-1).to_a.reverse
 
 values.cycle do |value|
-  led.write(value)
+  led.duty = value
   sleep 0.005
 end
