@@ -77,7 +77,7 @@ module Denko
 
       def piboard_check
         if Object.const_defined?("Denko::PiBoard")
-          if board.class.ancestors.include(Denko::PiBoard)
+          if board.class.ancestors.include?(Denko::PiBoard)
             return true
           end
         end
