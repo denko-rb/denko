@@ -4,11 +4,11 @@
 require 'bundler/setup'
 require 'denko'
 
-BUTTON_PIN = 3
+PIN = 3
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
 button = Denko::DigitalIO::Button.new board: board,
-                                      pin:   BUTTON_PIN,
+                                      pin:   PIN,
                                       mode:  :input_pullup
 
 button.up   { puts "Button released at #{Time.now.strftime '%H:%M:%S'}" }

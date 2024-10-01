@@ -5,10 +5,10 @@
 require 'bundler/setup'
 require 'denko'
 
-RELAY_PIN = 6
+PIN = 6
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
-relay = Denko::DigitalIO::Relay.new(board: board, pin: RELAY_PIN)
+relay = Denko::DigitalIO::Relay.new(board: board, pin: PIN)
 
 relay.close
 sleep(0.500)

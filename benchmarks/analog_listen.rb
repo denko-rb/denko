@@ -1,8 +1,7 @@
 #
-# Simple benchmark to see how much analog listen throughput is
-# available from a Denko::Board instance.
+# Find how much analog listen throughput is available from a Board.
 #
-# To find the limit, add more pins and reduce the divider until
+# To find the limit, add more pins and/or reduce the divider until
 # the rate per input pin can't meet the target.
 #   Example: Rate per input pin is < 500 Hz when divider is 2 ms.
 #

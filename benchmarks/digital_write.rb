@@ -4,8 +4,7 @@
 require 'bundler/setup'
 require 'denko'
 
-# Because the protocol is still ASCII, a single-digit pin may
-# be faster than a double-digit, if serial I/O is the bottleneck.
+# Pins > 63 will not benefit from the single-byte message optimization.
 PIN          = 4
 TOTAL_WRITES = 200_000
 

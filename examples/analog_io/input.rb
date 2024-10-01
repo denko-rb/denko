@@ -1,32 +1,31 @@
 #
-# This example shows how to use your board's analog-to-digital-converter(ADC) pins,
-# through the AnalogIO::Input class. ADC inputs can be connected to sensors
-# which produce a variable output voltage, such as light dependent resistors,
-# or a simple temperature sensor like the TMP36.
+# Use your board's analog-to-digital-converter(ADC) pins with AnalogIO::Input.
+# ADC inputs can be connected to sensors that produce variable output voltage,
+# such as light dependent resistors, or a temperature sensor like the TMP36.
 #
 require 'bundler/setup'
 require 'denko'
 
-board = Denko::Board.new(Denko::Connection::Serial.new)
-input = Denko::AnalogIO::Input.new(pin: :A0, board: board)
+PIN = :A0
 
-# Single read that blocks the main thread. When a value is received, the given
-# code block runs only once, and then the main thread continues.
+board = Denko::Board.new(Denko::Connection::Serial.new)
+input = Denko::AnalogIO::Input.new(pin: PIN, board: board)
+
+# Single read. Blocks main thread during read, then runs given block with the value.
 input.read { |value| puts "#{Time.now} Single read #1: #{value}" }
 
-# Read (poll) the input every half second. This happens in a separate thread, 
-# so sleep the main thread for a while to get some values.
-# Given code block is added as a callback, and runs every time a value is received.
+# Poll repeatedly does single reads, in a separate thread, with an interval in seconds.
+# Given block is saved as a callback, and runs each time a value is received.
 input.poll(0.5) { |value| puts "#{Time.now} Polling: #{value}" }
-sleep 3
 
-# Stop polling. Automatically removes the #poll callback.
+# Does not block main thread, so wait for some values.
+sleep 3
+# Stop polling, automatically removing callback from #poll.
 input.stop
 
-# Listening is similar to polling. The board reads the input and sends the value
-# every time interval, except it's keeping time. We only send the initial command,
-# not one for each read. Smaller intervals like 32 milliseconds are possible.
-# Powers of 2 from 1 to 128 are supported for listener intervals.
+# "Listening" is where the Board keeps time, reading the ADC at a small interval
+# and continuously sends values, until #stop is called.
+# Powers of 2 from 1 to 128 (in milliseconds) are supported for listener intervals.
 input.listen(32) { |value| puts "#{Time.now} Listening: #{value}" }
 sleep 0.5
 
@@ -53,3 +52,5 @@ input.remove_callbacks(:test)
 
 # Remove all callbacks.
 input.remove_callbacks
+
+board.finish_write

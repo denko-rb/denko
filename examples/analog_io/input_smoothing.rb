@@ -4,8 +4,10 @@
 require 'bundler/setup'
 require 'denko'
 
+PIN = :A0
+
 board = Denko::Board.new(Denko::Connection::Serial.new)
-input = Denko::AnalogIO::Input.new(pin: :A0, board: board)
+input = Denko::AnalogIO::Input.new(pin: PIN, board: board)
 
 # Enable smoothing on the input using the last 16 values.
 input.smoothing = true
