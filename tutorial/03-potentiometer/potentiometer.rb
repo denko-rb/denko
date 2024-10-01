@@ -13,7 +13,7 @@ board = Denko::Board.new(Denko::Connection::Serial.new)
 # pins. On most boards these pins start with 'A' and can be given as strings.
 #
 # See potentiometer.pdf in this folder for a hook-up diagram.
-# 
+#
 potentiometer = Denko::AnalogIO::Potentiometer.new(pin: 'A0', board: board)
 
 #
@@ -33,7 +33,7 @@ potentiometer.remove_callbacks
 # The default resolution for Analog Input is 10-bits, so you should have seen
 # values from 0 - 1023. We can use the value to control the blinking
 # speed of the LED from the earlier example.
-# 
+#
 led = Denko::LED.new(board: board, pin: 13)
 
 # Helper method to calculate the blink time.
@@ -46,17 +46,21 @@ def map_pot_value(value)
   k = 5
   linearized = (fraction * (k + 1)) / ((k * fraction) + 1)
   # Use this for linear potentiometers instead.
-  # linearized = fraction 
-  
+  # linearized = fraction
+
   # Map to the 0.1 to 0.5 seconds range in reverse. Clockwise = faster.
   0.5 - (linearized * 0.4)
 end
+
+# Start blinking with interval of 0.3
+led.blink(0.3)
 
 # Callback that calculates the blink interval and tells the LED.
 potentiometer.on_change do |value|
   interval = map_pot_value(value)
   print "LED blink interval: #{interval.round(4)} seconds    \r"
-  led.blink(interval)
+  # Update the LED's blink interval without stopping the blink.
+  led.blink_interval = interval
 end
 puts "Turn potentiometer to control the LED blink. Press Ctrl+C to exit..."
 sleep

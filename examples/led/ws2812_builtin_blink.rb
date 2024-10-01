@@ -5,11 +5,12 @@
 require 'bundler/setup'
 require 'denko'
 
+PIN   = :LED_BUILTIN
 WHITE = [255, 255, 255]
-OFF = [0, 0, 0]
+OFF   = [0, 0, 0]
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
-strip = Denko::LED::WS2812.new(board: board, pin: :LED_BUILTIN, length: 1)
+strip = Denko::LED::WS2812.new(board: board, pin: PIN, length: 1)
 
 loop do
   strip[0] = WHITE

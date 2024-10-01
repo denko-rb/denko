@@ -4,11 +4,11 @@
 require 'bundler/setup'
 require 'denko'
 
-WS2812_PIN = 4
-PIXELS     = 8
+PIN    = 4
+PIXELS = 8
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
-strip = Denko::LED::WS2812.new(board: board, pin: WS2812_PIN, length: PIXELS)
+strip = Denko::LED::WS2812.new(board: board, pin: PIN, length: PIXELS)
 
 min = 0
 max = 255

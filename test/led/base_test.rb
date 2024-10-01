@@ -14,11 +14,12 @@ class BaseLEDTest < Minitest::Test
     assert_equal Denko::LED::Base, part.class
   end
 
-  def test_blink_runs_in_thread
+  def test_blink_runs_in_thread_and_sets_ivar
     mock = Minitest::Mock.new.expect :call, nil
     part.stub(:threaded_loop, mock) do
       part.blink(0.5)
     end
     mock.verify
+    assert_equal 0.5, part.blink_interval
   end
 end

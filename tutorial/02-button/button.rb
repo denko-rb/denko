@@ -25,7 +25,7 @@ button = Denko::DigitalIO::Button.new(board: board, pin: 7, mode: :input_pullup)
 # listening for changes to the physical button. When that happens, our button
 # object is notified. To catch these notifications, we have to use a callback.
 # button.add_callback saves a block of code to run each time the button state changes.
-# 
+#
 # The callback below checks if the state is 0 (the button went from up to down),
 # then counts and prints the number of times pressed.
 #
@@ -38,6 +38,7 @@ button.add_callback(:count_presses) do |state|
 end
 
 # Wait for the button to be pressed 3 times.
+puts "Press button 3 times to continue..."
 sleep 0.005 while presses < 3
 
 # Button keeps its callbacks in a Hash. We can be specific and use keys to add and remove.
@@ -56,7 +57,7 @@ button.remove_callbacks
 #
 led = Denko::LED.new(board: board, pin: 13)
 
-button.up   { led.off } 
+button.up   { led.off }
 button.down { led.on }
 
 puts "Press the button to turn on the LED... (Ctrl+C to exit)"
