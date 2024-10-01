@@ -53,14 +53,32 @@ module Denko
         end
       end
 
-      module SinglePin
-        include Core
+      module ChipSelectBehavior
         include Behaviors::SinglePin
+        include Behaviors::Callbacks
         include Behaviors::Lifecycle
 
         before_initialize do
+          # It actually functions as an output.
           params[:mode] = :output
+
+          # But we can't claim it on Linux (the SPI hardware handles it), so don't.
+          if Object.const_defined?("Denko::PiBoard")
+            bus = params[:bus] || params[:board]
+            if bus.board.class.ancestors.include?(Denko::PiBoard)
+              params[:mode] = nil
+            end
+          end
         end
+      end
+
+      class ChipSelect
+        include ChipSelectBehavior
+      end
+
+      module SinglePin
+        include Core
+        include ChipSelectBehavior
 
         def select_pin
           pin
@@ -77,7 +95,7 @@ module Denko
         end
 
         after_initialize do
-          proxy_pin :select, DigitalIO::CBitBang, { board: bus.board, mode: :output }
+          proxy_pin :select, ChipSelect, { board: bus.board, mode: :output }
           select.add_callback(:peripheral_forwarder) { |data| self.update(data) }
         end
       end
