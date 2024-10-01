@@ -4,10 +4,14 @@
 require 'bundler/setup'
 require 'denko'
 
-board = Denko::Board.new(Denko::Connection::Serial.new)
-button = Denko::DigitalIO::Button.new(board: board, pin: 5, mode: :input_pullup)
+BUTTON_PIN = 3
 
-button.up   { puts "Button released!" } 
-button.down { puts "Button pressed!" }
+board = Denko::Board.new(Denko::Connection::Serial.new)
+button = Denko::DigitalIO::Button.new board: board,
+                                      pin:   BUTTON_PIN,
+                                      mode:  :input_pullup
+
+button.up   { puts "Button released at #{Time.now.strftime '%H:%M:%S'}" }
+button.down { puts "Button pressed  at #{Time.now.strftime '%H:%M:%S'}" }
 
 sleep

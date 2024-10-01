@@ -8,8 +8,7 @@ module Denko
       include Behaviors::Lifecycle
 
       after_initialize do
-        @divider = 4
-        _listen
+        _listen(params[:divider] || 4)
       end
 
       def _read

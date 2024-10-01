@@ -1,14 +1,15 @@
 #
-# Example using a rotary encoder to control audio output volume on a Mac.
+# Example using a KY-040 (30 detent) rotary encoder as a mac volume control.
 #
 require 'bundler/setup'
 require 'denko'
 
-board = Denko::Board.new(Denko::Connection::Serial.new)
+PIN_A = 4
+PIN_B = 5
+
+board   = Denko::Board.new(Denko::Connection::Serial.new)
 encoder = Denko::DigitalIO::RotaryEncoder.new  board: board,
-                                              pins:{ clock: 4, data: 5 },
-                                              divider: 1,                # (default) read approx every divider ms
-                                              steps_per_revolution: 30   # (default)
+                                               pins:  { a: PIN_A, b: PIN_B }
 
 # Set up a pseudo terminal with osascript (AppleScript) in interactive mode.
 # Calling a separate script each update is too slow.
@@ -32,16 +33,20 @@ class AppleVolumeWrapper
   end
 end
 
-volume = AppleVolumeWrapper.new
-puts "Current volume: #{volume.get}%"
+volumeWrapper= AppleVolumeWrapper.new
+# volumeWrapper.get can return imprecise values.
+# Display those, but keep exact value in this variable.
+volume = volumeWrapper.get
+puts "Current volume: #{volume}%"
 
 encoder.add_callback do |update|
-  # Increase by 2% for every step so it responds faster.
-  value = (volume.get + (update[:change] * 2))
-  value = 0 if value < 0
-  value = 100 if value > 100
-  volume.set(value)
-  current_volume = volume.get
+  # update[:change] is always either +1 or -1.
+  volume = volume += update[:change]
+  volume = 0 if volume < 0
+  volume = 100 if volume > 100
+
+  volumeWrapper.set(volume)
+  current_volume = volumeWrapper.get
   puts "Current volume: #{current_volume}%"
 end
 
