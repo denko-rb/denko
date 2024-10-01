@@ -36,11 +36,11 @@ module Denko
       # BoardProxy interface
       #
       def digital_write(pin, value)
-        bit_write(pin, value)
+        bit_set(pin, value)
         write
       end
 
-      def bit_write(pin, value)
+      def bit_set(pin, value)
         state_mutex.synchronize { @state[pin] = value }
       end
 

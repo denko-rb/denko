@@ -248,14 +248,14 @@ module Denko
 
       def write4(bits)
         if board_is_register?
-          board.bit_write(d4.pin, bits[4].to_i)
-          board.bit_write(d5.pin, bits[5].to_i)
-          board.bit_write(d6.pin, bits[6].to_i)
+          board.bit_set(d4.pin, bits[4].to_i)
+          board.bit_set(d5.pin, bits[5].to_i)
+          board.bit_set(d6.pin, bits[6].to_i)
           d7.write bits[7].to_i
           pulse_enable
-          board.bit_write(d4.pin, bits[0].to_i)
-          board.bit_write(d5.pin, bits[1].to_i)
-          board.bit_write(d6.pin, bits[2].to_i)
+          board.bit_set(d4.pin, bits[0].to_i)
+          board.bit_set(d5.pin, bits[1].to_i)
+          board.bit_set(d6.pin, bits[2].to_i)
           d7.write bits[3].to_i
           pulse_enable
         else
@@ -274,13 +274,13 @@ module Denko
 
       def write8(bits)
         if board_has_write_bit?
-          board.bit_write(d0.pin, bits[0].to_i)
-          board.bit_write(d1.pin, bits[1].to_i)
-          board.bit_write(d2.pin, bits[2].to_i)
-          board.bit_write(d3.pin, bits[3].to_i)
-          board.bit_write(d4.pin, bits[4].to_i)
-          board.bit_write(d5.pin, bits[5].to_i)
-          board.bit_write(d6.pin, bits[6].to_i)
+          board.bit_set(d0.pin, bits[0].to_i)
+          board.bit_set(d1.pin, bits[1].to_i)
+          board.bit_set(d2.pin, bits[2].to_i)
+          board.bit_set(d3.pin, bits[3].to_i)
+          board.bit_set(d4.pin, bits[4].to_i)
+          board.bit_set(d5.pin, bits[5].to_i)
+          board.bit_set(d6.pin, bits[6].to_i)
           d7.write bits[7].to_i
           pulse_enable
         else
