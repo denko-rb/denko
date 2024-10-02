@@ -15,7 +15,7 @@ def print_reading(name, raw, voltage)
 end
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
-bus = Denko::I2C::Bus.new(board: board)
+bus   = Denko::I2C::Bus.new(board: board)
 
 # Unlike the ADS1115/1118, full-scale voltage depends on Vdd. Give during setup.
 # This works for my M5Stack ADC unit (0-12V) when checked against a multimeter.
@@ -31,12 +31,12 @@ ads = Denko::AnalogIO::ADS1100.new  bus: bus,
 #   Gain:         1 (default), 2,  4,  8
 #   Sample Rate:  8 (default), 16, 32, 128
 #
+ads.gain        = 1
 ads.sample_rate = 8
-ads.gain = 1
 
 # Configure smoothing.
 ads.smoothing       = true
-ads.smoothing_size  = 4
+ads.smoothing_size  = 8
 
 # Poll and print indefinitely.
 ads.poll(0.25) do |reading|

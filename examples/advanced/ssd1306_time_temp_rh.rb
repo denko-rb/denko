@@ -8,17 +8,16 @@ require 'bundler/setup'
 require 'denko'
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
-i2c = Denko::I2C::Bus.new(board: board, pin: :SDA)
+i2c   = Denko::I2C::Bus.new(board: board)
 
 # Get temperature and humidity every second.
 htu21d = Denko::Sensor::HTU21D.new(bus: i2c)
-htu21d.temperature.poll(1)
-htu21d.humidity.poll(1)
+htu21d.poll(2)
 
-oled = Denko::Display::SSD1306.new(bus: i2c, rotate: true)
+oled   = Denko::Display::SSD1306.new(bus: i2c, rotate: true)
 canvas = oled.canvas
-last_refresh = Time.now
 
+last_refresh = Time.now
 loop do
   elapsed = Time.now - last_refresh
 
@@ -29,15 +28,11 @@ loop do
     canvas.text_cursor = [0,0]
     canvas.print "Time:  #{Time.now.strftime("%H:%M:%S.%L")}"
 
-    if htu21d[:temperature]
-      canvas.text_cursor = [0,8]
-      canvas.print "Temp:     " + ('%.3f' % htu21d[:temperature]).rjust(7, " ") + " C"
-    end
+    canvas.text_cursor = [0,8]
+    canvas.print "Temp:     " + ('%.3f' % htu21d.temperature).rjust(7, " ") + " C"
 
-    if htu21d[:humidity]
-      canvas.text_cursor = [0,16]
-      canvas.print "Humidity: " + ('%.3f' % htu21d[:humidity]).rjust(7, " ") + " %"
-    end
+    canvas.text_cursor = [0,16]
+    canvas.print "Humidity: " + ('%.3f' % htu21d.humidity).rjust(7, " ") + " %"
 
     # Only refresh the area in use.
     oled.draw(0, 127, 0, 24)

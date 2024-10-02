@@ -1,10 +1,11 @@
 module Denko
   module Sensor
     class HTU21D
-      include Behaviors::Lifecycle
       include I2C::Peripheral
       include Behaviors::Poller
+      include Behaviors::Lifecycle
       include TemperatureHelper
+      include HumidityHelper
 
       I2C_ADDRESS = 0x40
 
@@ -122,7 +123,6 @@ module Denko
           reading[:temperature] = (175.72 * raw_value.to_f / 65536) - 46.8
         end
 
-        # Wait for both values to be read.
         return nil unless (reading[:temperature] && reading[:humidity])
 
         reading
@@ -134,7 +134,8 @@ module Denko
           @state[:humidity]    = reading[:humidity]
         end
         # Reset so pre_callback_filter can check for both values.
-        reading = { temperature: nil, humidity: nil }
+        reading[:temperature] = nil
+        reading[:humidity]    = nil
       end
 
       #

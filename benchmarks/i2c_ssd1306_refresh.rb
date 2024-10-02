@@ -47,17 +47,17 @@ require 'denko'
 
 # Settings
 # Must match speed in the sketch for UART briges. Doesn't matter for native USB.
-BAUD_RATE = 115_200
-FRAME_COUNT = 100
+BAUD_RATE     = 115_200
+FRAME_COUNT   = 100
 # Request 1 Mhz I2C frequency. Wire libraries will fall back to fastest available speed.
 I2C_FREQUENCY = 1_000_000
 # Use :SDA0 for RP2040
-I2C_PIN = :SDA
+I2C_PIN       = :SDA
 
 # Setup
-board = Denko::Board.new(Denko::Connection::Serial.new(baud: BAUD_RATE))
-bus = Denko::I2C::Bus.new(board: board, pin: I2C_PIN)
-oled = Denko::Display::SSD1306.new(bus: bus, rotate: true, i2c_frequency: I2C_FREQUENCY)
+board  = Denko::Board.new(Denko::Connection::Serial.new(baud: BAUD_RATE))
+bus    = Denko::I2C::Bus.new(board: board)
+oled   = Denko::Display::SSD1306.new(bus: bus, rotate: true, i2c_frequency: I2C_FREQUENCY)
 canvas = oled.canvas
 
 # Intro

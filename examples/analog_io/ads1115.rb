@@ -5,8 +5,8 @@ require 'bundler/setup'
 require 'denko'
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
-bus = Denko::I2C::Bus.new(board: board)
-ads = Denko::AnalogIO::ADS1115.new(bus: bus)
+bus   = Denko::I2C::Bus.new(board: board)
+ads   = Denko::AnalogIO::ADS1115.new(bus: bus)
 
 # Helper method so readings look nice.
 def print_reading(name, raw, voltage)

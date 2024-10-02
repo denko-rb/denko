@@ -84,7 +84,7 @@ module Denko
 
       def sample_rate=(rate)
         raise Argument Error "wrong sample_rate: #{sample_rate.inspect} given for ADS1100" unless SAMPLE_RATES.include?(rate)
-        self.sample_rate_mask = SAMPLE_RATES.index(rate)
+        @sample_rate_mask = SAMPLE_RATES.index(rate)
         config_register = (config_register & SAMPLE_RATE_CLEAR) | (sample_rate_mask << 2)
         @sample_rate = rate
       end
@@ -94,21 +94,24 @@ module Denko
       end
 
       def sample_rate
-        @sample_rate ||= 8
+        @sample_rate ||= params[:sample_rate] || 8
       end
 
       attr_writer :sample_rate_mask
 
       def gain=(gain)
         raise ArgumentError "wrong gain: #{gain.inspect} given for ADS1100" unless GAINS.include?(gain)
-        config_register = (config_register & GAIN_CLEAR) | GAINS.index(gain)
-        @gain = GAINS.index(gain)
+        @gain_mask = GAINS.index(gain)
+        config_register = (config_register & GAIN_CLEAR) | gain_mask
+        @gain      = gain
+      end
+
+      def gain_mask
+        @gain_mask ||= GAINS.index(gain)
       end
 
       def gain
-        # Default gain is 1.
-        self.gain = 1 unless @gain
-        GAINS[@gain]
+        @gain ||= params[:gain] || 1
       end
 
       # Unlike some ADS parts, full-scale voltage depends on supply (Vdd). User must specify.
@@ -117,7 +120,7 @@ module Denko
       end
 
       def volts_per_bit
-        full_scale_voltage / (GAINS[gain] * BIT_RANGES[sample_rate_mask]).to_f
+        full_scale_voltage / (GAINS[gain_mask] * BIT_RANGES[sample_rate_mask]).to_f
       end
     end
   end

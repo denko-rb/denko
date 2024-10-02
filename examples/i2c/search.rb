@@ -5,37 +5,17 @@
 require 'bundler/setup'
 require 'denko'
 
-# Method to let the user set I2C pins.
-def enter_pins
-  puts  "Please manually specify I2C pins..."
-  print "I2C SDA pin: "; sda = gets
-  print "I2C SCL pin: "; scl = gets
-  puts
-  [sda.to_i, scl.to_i]
-end
-
 board = Denko::Board.new(Denko::Connection::Serial.new)
 
-# If no board map, ask user to set pins manually.
-unless board.map
-  puts "Error: Pin map not available for this board"
-  sda, scl = enter_pins
-
-# Else get defaults from map.
-else
+# If board has a map, show the pins to the user.
+if board.map
   puts "Detected board: #{board.name}"
-
   sda = board.map[:SDA] || board.map[:SDA0]
   scl = board.map[:SCL] || board.map[:SCL0]
-
-  # If not in map, ask user to set manually.
-  unless sda && scl
-    puts "Error: I2C pins not found in this board's pin map"
-    sda, scl = enter_pins
-  end
+  puts "Using default I2C interface on pins #{sda} (SDA) and #{scl} (SCL)"
+else
+  puts "Pin map not available for this board. Using default interface, but SCL and SDA pins unknown"
 end
-
-puts "Using I2C interface on pins #{sda} (SDA) and #{scl} (SCL)"
 puts
 
 # Board's hardware I2C interface on predetermined pins.

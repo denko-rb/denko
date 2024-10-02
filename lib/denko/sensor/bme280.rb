@@ -6,6 +6,7 @@ module Denko
       include Behaviors::Lifecycle
       include TemperatureHelper
       include PressureHelper
+      include HumidityHelper
 
       I2C_ADDRESS = 0x76
 

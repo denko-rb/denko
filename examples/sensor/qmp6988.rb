@@ -3,9 +3,10 @@
 #
 require 'bundler/setup'
 require 'denko'
+require_relative 'neat_tph_readings'
 
-board = Denko::Board.new(Denko::Connection::Serial.new)
-bus = Denko::I2C::Bus.new(board: board)
+board  = Denko::Board.new(Denko::Connection::Serial.new)
+bus    = Denko::I2C::Bus.new(board: board)
 sensor = Denko::Sensor::QMP6988.new(bus: bus) # address: 0x70 default
 
 # Verify chip_id.
@@ -25,8 +26,8 @@ puts
 #
 # High accuracy settings from datasheet, with IIR of 2.
 sensor.temperature_samples = 2
-sensor.pressure_samples = 16
-sensor.iir_coefficient = 2
+sensor.pressure_samples    = 16
+sensor.iir_coefficient     = 2
 
 #
 # Change mode (default: forced_mode)
@@ -41,9 +42,6 @@ sensor.continuous_mode
 #   standby_time (given in ms) can be 1,5,20,250,500,1000,2000 or 4000 (default: 1)
 #
 # sensor.standby_time = 500
-
-# Get the shared #print_tph_reading method to print readings neatly.
-require_relative 'neat_tph_readings'
 
 # Poll it and print readings.
 sensor.poll(5) do |reading|

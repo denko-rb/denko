@@ -27,5 +27,11 @@ module Denko
         pressure / 100000.0
       end
     end
+
+    module HumidityHelper
+      def humidity
+        state[:humidity]
+      end
+    end
   end
 end

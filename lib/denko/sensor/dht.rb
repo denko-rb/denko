@@ -5,6 +5,7 @@ module Denko
       include Behaviors::Poller
       include Behaviors::Lifecycle
       include TemperatureHelper
+      include HumidityHelper
 
       def state
         state_mutex.synchronize { @state ||= { temperature: nil, humidity: nil } }

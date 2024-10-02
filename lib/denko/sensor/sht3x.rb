@@ -1,10 +1,11 @@
 module Denko
   module Sensor
     class SHT3X
-      include Behaviors::Lifecycle
       include I2C::Peripheral
       include Behaviors::Poller
+      include Behaviors::Lifecycle
       include TemperatureHelper
+      include HumidityHelper
 
       I2C_ADDRESS   = 0x44
 

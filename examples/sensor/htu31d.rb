@@ -1,11 +1,12 @@
 #
-# Example using HTU31D sensor over I2C, for temperature and humidity.
+# HTU31D sensor over I2C, for temperature and humidity.
 #
 require 'bundler/setup'
 require 'denko'
+require_relative 'neat_tph_readings'
 
-board = Denko::Board.new(Denko::Connection::Serial.new)
-bus = Denko::I2C::Bus.new(board: board)
+board  = Denko::Board.new(Denko::Connection::Serial.new)
+bus    = Denko::I2C::Bus.new(board: board)
 sensor = Denko::Sensor::HTU31D.new(bus: bus) # address: 0x40 default
 
 # Get and set heater state.
@@ -22,12 +23,9 @@ puts
 
 # Resolution goes from 0..3 separately for temperature and humidity. See datasheet.
 sensor.temperature_resolution = 3
-sensor.humidity_resolution = 3
+sensor.humidity_resolution    = 3
 
-# Get the shared #print_tph_reading method to print readings neatly.
-require_relative 'neat_tph_readings'
-
-# Unlike HTU21D, HTU31D works as a regular polled sensor.
+# Poll it and print readings.
 sensor.poll(5) do |reading|
   print_tph_reading(reading)
 end

@@ -1,11 +1,12 @@
 #
-# Example using HTU21D sensor over I2C, for temperature and humidity.
+# HTU21D sensor over I2C, for temperature and humidity.
 #
 require 'bundler/setup'
 require 'denko'
+require_relative 'neat_tph_readings'
 
-board = Denko::Board.new(Denko::Connection::Serial.new)
-bus = Denko::I2C::Bus.new(board: board)
+board  = Denko::Board.new(Denko::Connection::Serial.new)
+bus    = Denko::I2C::Bus.new(board: board)
 htu21d = Denko::Sensor::HTU21D.new(bus: bus) # address: 0x40 default
 
 # Get and set heater state.
@@ -33,9 +34,6 @@ puts
 htu21d.read
 puts "Temperature unit helpers: #{htu21d.temperature} \xC2\xB0C | #{htu21d.temperature_f} \xC2\xB0F | #{htu21d.temperature_k} K"
 puts
-
-# Get the shared #print_tph_reading method to print readings neatly.
-require_relative 'neat_tph_readings'
 
 # Poll it and print readings.
 htu21d.poll(5) do |reading|

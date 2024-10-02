@@ -3,8 +3,9 @@ module Denko
     class HTU31D
       include I2C::Peripheral
       include Behaviors::Poller
-      include TemperatureHelper
       include Behaviors::Lifecycle
+      include TemperatureHelper
+      include HumidityHelper
 
       I2C_ADDRESS = 0x40
 
