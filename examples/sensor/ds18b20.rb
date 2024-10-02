@@ -4,31 +4,22 @@
 require 'bundler/setup'
 require 'denko'
 
+PIN   = 4
+
 board = Denko::Board.new(Denko::Connection::Serial.new)
-bus = Denko::OneWire::Bus.new(pin:4, board: board)
+bus   = Denko::OneWire::Bus.new(board: board, pin: PIN)
 
-# The bus detects parasite power automatically when initialized.
-# It can tell that parasite power is in use, but not by WHICH devices.
-if bus.parasite_power
-  puts "Parasite power detected..."; puts
-end
-
-# Call #device_present to reset the bus and return presence pulse as a boolean.
-if bus.device_present?
-  puts "Devices present on bus..."; puts
-else
+unless bus.device_present?
   puts "No devices present on bus... Quitting..."
   return
 end
 
-# Calling #search finds connected devices and stores them in #found_devices.
-# Each hash contains a device's ROM address and matching Ruby class if one exists.
-bus.search
-count = bus.found_devices.count
-puts "Found #{count} device#{'s' if count > 1} on the bus:"
-puts bus.found_devices.inspect; puts
+if bus.parasite_power
+  puts "Parasite power detected..."; puts
+end
 
-# We can use the search results to setup instances of the device classes.
+# Search the bus and use results to set up DS18B20 instances.
+bus.search
 ds18b20s = []
 bus.found_devices.each do |d|
   if d[:class] == Denko::Sensor::DS18B20
@@ -36,7 +27,15 @@ bus.found_devices.each do |d|
   end
 end
 
-#  Format a reading for printing on a line.
+if ds18b20s.empty?
+  puts "No DS18B20 sensors found on the bus... Quitting...";
+else
+  puts "Found DS18B20 sensors with these serials:"
+  puts ds18b20s.map { |d| d.serial_number }
+  puts
+end
+
+# Format a reading for printing on a line.
 def print_reading(reading, sensor)
   print "#{Time.now.strftime '%Y-%m-%d %H:%M:%S'} - "
   print "Serial(HEX): #{sensor.serial_number} | Res: #{sensor.resolution} bits | "

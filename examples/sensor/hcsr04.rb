@@ -4,10 +4,13 @@
 require 'bundler/setup'
 require 'denko'
 
-board = Denko::Board.new(Denko::Connection::Serial.new)
-hcsr04 = Denko::Sensor::HCSR04.new(board: board, pins: {trigger: 6, echo: 7})
+TRIGGER_PIN = 6
+ECHO_PIN    = 7
 
-hcsr04.poll(0.05) do |distance|
+board = Denko::Board.new(Denko::Connection::Serial.new)
+hcsr04 = Denko::Sensor::HCSR04.new(board: board, pins: {trigger: TRIGGER_PIN, echo: ECHO_PIN})
+
+hcsr04.poll(0.50) do |distance|
   puts "Distance: #{distance} mm"
 end
 

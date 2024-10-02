@@ -13,8 +13,10 @@
 require 'bundler/setup'
 require 'denko'
 
-board = Denko::Board.new(Denko::Connection::Serial.new)
-sensor = Denko::Sensor::GenericPIR.new(board: board, pin: 8)
+PIN    = 8
+
+board  = Denko::Board.new(Denko::Connection::Serial.new)
+sensor = Denko::Sensor::GenericPIR.new(board: board, pin: PIN)
 
 sensor.on_motion_start { print "Motion detected!      \r" }
 sensor.on_motion_stop  { print "No motion detected... \r" }
