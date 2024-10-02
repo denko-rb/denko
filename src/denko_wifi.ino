@@ -11,7 +11,7 @@
 // #define WIFI_NINA
 
 // WiFi101 Boards
-#ifdef ARDUINO_SAMD_MKR1000
+#if defined(ARDUINO_SAMD_MKR1000) || defined(ADAFRUIT_FEATHER_M0)
   #define WIFI_101
 #endif
 
@@ -116,6 +116,11 @@ void setup() {
   // Wait for serial ready.
   DENKO_SERIAL_IF.begin(115200);
   while(!DENKO_SERIAL_IF);
+
+  // Adafruit Feather M0 Wi-Fi uses different pins.WiFi
+  #ifdef ADAFRUIT_FEATHER_M0
+    WiFi.setPins(8,7,4,2);
+  #endif
 
   // Attempt initial WiFi connection.
   connect();
