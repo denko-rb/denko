@@ -42,7 +42,7 @@ module Denko
           bus.stop(select_pin)
         end
 
-        def string_to_bytes(message)
+        def ensure_byte_array(message)
           if message.class == Array
             # Byte array coming from PiBoard.
             return message
@@ -53,8 +53,7 @@ module Denko
         end
 
         def update(message)
-          puts message
-          super(string_to_bytes(message))
+          super(ensure_byte_array(message))
         end
       end
 

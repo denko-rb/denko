@@ -78,9 +78,9 @@ module Denko
       # Override Callbacks#update to make sure we handle :force_update
       # within the main mutex lock.
       #
-      def update(byte_string)
-        # Make sure to call #pre_callback_filter since overriding #update.
-        byte_array = pre_callback_filter(byte_string)
+      def update(message)
+        # Since overriding update, make sure this is a byte array first.
+        byte_array = ensure_byte_array(message)
 
         bits = byte_array_to_bit_array(byte_array)
 
