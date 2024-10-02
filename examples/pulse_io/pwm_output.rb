@@ -1,12 +1,15 @@
 #
-# Example configuring PWM frequency and resolution. Only on ESP32 for now.
+# PWM (pulse width modulation) output demo.
+# Frequency and resolution are configurable (only on ESP32 and PiBoard/Linux for now).
 # Capture output with logic analyzer or oscilloscope to verify accuracy.
 #
 require 'bundler/setup'
 require 'denko'
 
+PIN = 2
+
 board = Denko::Board.new(Denko::Connection::Serial.new)
-pwm = Denko::PulseIO::PWMOutput.new(board: board, pin: 2)
+pwm = Denko::PulseIO::PWMOutput.new(board: board, pin: PIN)
 
 # Resolution test: ~1% duty at 1 kHz / 10-bit.
 # On and off approx. 10us and 990us respectively.

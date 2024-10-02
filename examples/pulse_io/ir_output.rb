@@ -18,6 +18,8 @@
 require 'bundler/setup'
 require 'denko'
 
+PIN = 4
+
 # Note: If testing with 2 boards on one computer, be explicit about which serial device
 # runs denko. Use the second Serial.new call below and modify device: as needed.
 # Monitor the receiver board in the Arduino (or some other) serial monitor.
@@ -31,7 +33,7 @@ board = Denko::Board.new(connection)
 # with other hardware or libraries. Try different pins. For more info:
 # https://github.com/Arduino-IRremote/Arduino-IRremote?#timer-and-pin-usage
 #
-ir = Denko::PulseIO::IROutput.new(board: board, pin: 4)
+ir = Denko::PulseIO::IROutput.new(board: board, pin: PIN)
 
 # NEC Raw-Data=0xF708FB04. LSBFIRST, so the binary for each hex digit below is backward.
 code =  [ 9000, 4500,                                 # Start bit
