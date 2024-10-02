@@ -20,10 +20,12 @@ bus = Denko::I2C::Bus.new(board: board)
 
 # I2C OLED, connected to I2C SDA and SCL.
 oled = Denko::Display::SSD1306.new(bus: bus, rotate: true) # address: 0x3C is default
+# oled = Denko::Display::SH1106.new(bus: bus,rotate: true) # address: 0x3C is default
 
 # SPI OLED, connected to SPI CLK and MOSI pins.
 # select: and dc: pins must be given. reset is optional (can be pulled high instead).
-# oled = Denko::Display::SSD1306.new(bus: bus, pins: {select: 10, dc: 7, reset: 8}, rotate: true)
+# oled = Denko::Display::SSD1306.new(bus: bus, pins: { select: 10, dc: 7, reset: 8 }, rotate: true)
+# oled = Denko::Display::SH1106.new(bus: bus, pins: { select: 10, dc: 7, reset: 8}, rotate: true)
 
 # Draw some text on the OLED's canvas (a Ruby memory buffer).
 canvas = oled.canvas

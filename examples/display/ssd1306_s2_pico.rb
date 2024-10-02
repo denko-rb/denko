@@ -10,8 +10,8 @@ board = Denko::Board.new(Denko::Connection::Serial.new)
 reset = Denko::DigitalIO::Output.new(board: board, pin: 18)
 reset.high
 
-bus = Denko::I2C::Bus.new(board: board, pin: :SDA)
-oled = Denko::Display::SSD1306.new(bus: bus, width: 128, height: 32)
+bus    = Denko::I2C::Bus.new(board: board, pin: :SDA)
+oled   = Denko::Display::SSD1306.new(bus: bus, width: 128, height: 32)
 canvas = oled.canvas
 
 # Draw some text on the OLED's canvas (a Ruby memory buffer).

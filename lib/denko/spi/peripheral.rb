@@ -42,7 +42,7 @@ module Denko
           bus.stop(select_pin)
         end
 
-        def pre_callback_filter(message)
+        def string_to_bytes(message)
           if message.class == Array
             # Byte array coming from PiBoard.
             return message
@@ -50,6 +50,11 @@ module Denko
             # Split up comma delimited bytes coming from a microcontroller.
             return message.split(",").map { |b| b.to_i }
           end
+        end
+
+        def update(message)
+          puts message
+          super(string_to_bytes(message))
         end
       end
 
@@ -91,11 +96,15 @@ module Denko
         include Behaviors::Lifecycle
 
         def select_pin
-          select.pin
+          self.select.pin
+        end
+
+        def initialize_pins(params={})
+          super(params)
+          proxy_pin :select, ChipSelect, { board: bus.board, mode: :output }
         end
 
         after_initialize do
-          proxy_pin :select, ChipSelect, { board: bus.board, mode: :output }
           select.add_callback(:peripheral_forwarder) { |data| self.update(data) }
         end
       end

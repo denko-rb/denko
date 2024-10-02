@@ -5,16 +5,8 @@ require 'bundler/setup'
 require 'denko'
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
-
-# Connect the ADS1118 pins to the board's default SPI pins.
-bus = Denko::SPI::Bus.new(board: board)
-
-# Or use a 2-way bit-bang SPI bus on any pins.
-# SPI_BIT_BANG_PINS   = { clock: 13, input: 12, output: 11 }
-# bus = Denko::SPI::BitBang.new(board: board, pins: SPI_BIT_BANG_PINS)
-
-# Connect chip select/enable pin of the ADS1118 to pin 9.
-ads = Denko::AnalogIO::ADS1118.new(bus: bus, pin: 9)
+bus   = Denko::SPI::Bus.new(board: board)
+ads   = Denko::AnalogIO::ADS1118.new(bus: bus, pin: 10)
 
 # Helper method so readings look nice.
 def print_reading(name, raw, voltage)
@@ -29,7 +21,7 @@ end
 #
 # Read the ADS1118 internal temperature sensor.
 # This always uses the 128 SPS mode, and there is no polling method for it.
-# 
+#
 temperature = ads.temperature_read
 puts "ADS1118 Temperature: #{temperature} \xC2\xB0C"
 puts
