@@ -13,7 +13,7 @@ max_byte = 255
 
 expected_result = (min_byte..max_byte).to_a.join(',') << ','
 
-waiting = false
+waiting    = false
 wait_mutex = Mutex.new
 
 echo.on_data do |data|
