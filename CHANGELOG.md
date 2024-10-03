@@ -12,7 +12,7 @@
 
 - ESP32 Boards
   - 3.0+ version of the ESP32 Arduino Core now required.
-  - USB-CDC (aka native USB) appears to be broken in the 3.0 core. Will eventually hang if sending a lot of data both directions at the same time. Use one of the standard UART interfaces until this is fixed.
+  - **USB-CDC (aka native USB) appears to be broken** in the 3.0 core. Will eventually hang if sending a lot of data both directions at the same time. Use one of the standard UART interfaces until this is fixed.
 
 - Raspberry Pi Pico (RP2040)
   - WS2812 LED strips work now.
@@ -22,7 +22,7 @@
 - Bit-Bang I2C:
   - Class: `Denko::I2C::BitBang`
   - Start a software bit-banged I2C bus on any 2 pins.
-  - Interchangeable with hardware bus, `Denko::I2C::Bus`, as far as I2C peripherals are concerned.
+  - Interchangeable with hardware bus (`Denko::I2C::Bus`), as far as I2C peripherals are concerned.
 
 - ADS1100 Analog-to-Digital Converter:
   - Class: `Denko::AnalogIO::ADS1100`
@@ -34,23 +34,25 @@
 
 - SSD1306 1-Color OLED
   - Added SPI version.
-  - Both versions use `Denko::Display::SSD1306`. Instances mutate to I2C or SPI on initialize, based on type of bus given.
+  - Both use `Denko::Display::SSD1306`. Instances mutate to I2C or SPI behavior, based on bus given.
 
 - SH1106 1-Color OLED
   - Class: `Denko::Display::SH1106`
   - Almost the same as SSD1306. Most driver code is shared between them.
-  - I2C and SPI versions both supported, in the same way as SSD1306 above.
+  - I2C and SPI versions both supported, as SSD1306 above.
 
 ### Peripheral Changes
 
 - All Peripherals:
-  - On CRuby, `@state_mutex` and `@callback_mutex` are now instances of `Denko::MutexStub`, which does nothing. This is a big performance boost, since time is only lost waiting for the GVL, not many smaller mutexes.
+  - On CRuby, `@state_mutex` and `@callback_mutex` are now instances of `Denko::MutexStub`, which just runs the given block when called with `#synchronize`.
+  - The options hash (now called params), given to `#initialize` is always available through the `#params` method.
+  - `#initialize` no longer accepts `pullup: true` or `pulldown: true`. Set mode explicitly, like `mode: :input_pullup`.
 
-- Temperature / Humidity / Pressure Sensors:
+- Temperature / Pressure / Humidity Sensors:
   - `DS18B20`, `DHT` and `HTU21D` readings now match all the others (Hash with same keys).
   - Readings standardized to be in ºC, %RH and Pascals. Callbacks always receive hash with these.
+  - `[]` access for `@state` removed removed. Use `#temperature`, `#pressure`, `#humidity` instead.
   - Added `#temperature_f` `#temperature_k` `#pressure_atm` `#pressure_bar` helper conversion methods.
-  - `[]` access for `@state` removed removed.
   - `#read` methods standardized to always read ALL sub-sensors. Affects `HTU21D` and `BMP180`.
 
 - `AnalogIO::Input`:
@@ -65,22 +67,26 @@
   - As a side-effect, makes sure 2 low-level bit-bang Components (eg. buses) can't use the same pin.
   - Always starts pins in `:input` mode. The bit-bang routine is expected to change them.
 
-- `DigitalIO::Input`:
-  - `#initialize` no longer accepts `pullup: true` or `pulldown: true`. Set mode explicitly, like `mode: :input_pullup`.
-
 - `DigitalIO::RotaryEncoder`:
   - Pin names standardized to `a:` and `b:`, but still accept `:clock`, `:data`, `:clk`, `:dt`.
   - `steps_per_revolution` changed to `counts_per_revolution`
   - Every level change is counted now (full-quadrature). Was half-quadrature before.
   - `counts_per_revolution` now defaults to 60 instead of 30 (generic 30-detent encoders).
-  - `state` and callback hash now store current count in the `:count` key instead of `:steps`.
+  - `state` and callback hash store `:count` instead of `:steps`.
+
+- `I2C::Bus`:
+  - No longer requires SDA pin to initialize.
+  - Accepts `index:` param (default 0) on initialize, specifying which I2C interface to use.
+    - Only works for PiBoard on Linux right now.
+  - `#update` accepts String of comma delimited ASCII numbers (Board), or Array of bytes (PiBoard).
 
 - `I2C::Peripheral`:
   - `#i2c_read` arg order changed from `(register, num_bytes)` to `(num_bytes, register: nil)`
 
 - `LED`:
   - `Base`, `RGB` and `SevenSegment` all inherit from `PulseIO::PWMOutput`, so see that below.
-  - `#write` MUST always be given a PWM duty if used, not `0` or `1`.
+  - `#write` MUST always be given a PWM value if used, not `0` or `1`.
+  - Prefer using `duty=` if possible, which is percentage based.
   - Alternatively, call `#digital_write` only to stay in faster digital mode.
 
 - `LED::RGB`:
@@ -88,27 +94,41 @@
   - `#color` only takes a symbol for one of the predefined colors (or `:off`) now.
 
 - `Motor::Stepper`:
-  - `#step_cc` changed to `#step_ccw`.
+  - `#step_cc` renamed to `#step_ccw`.
 
 - `OneWire::Bus`:
-  - `#update` now accepts either String of comma delimited bytes (ASCII), or Array of bytes (from `PiBoard` C extension).
+  - `#update` accepts String of comma delimited ASCII numbers (Board), or Array of bytes (PiBoard).
 
 - `PulseIO::IRTransmitter`:
     - Renamed to `PulseIO::IROutput` to be more consistent with other classes.
     - `#emit` renamed to `#write` for consistency.
 
 - `PulseIO::PWMOutput`:
-  - `#write` will never do `#digital_write` now, always `#pwm_write`.
-  - Starts with mode as `:output` instead of `:output_pwm`, conserving PWM channels.
+  - `#write` will never try to call `#digital_write`, always `#pwm_write`.
+  - Initial mode is `:output` instead of `:output_pwm`, saving MCU PWM channels until needed.
   - Mode change is lazy. Happens with first call to `#pwm_write`.
-  - Calling only `#digital_write` explicitly stays in `:output` (digital) mode, which is faster.
-  - Set resolution and frequency per `PWMOutput` instance (pin), instead of per `Board`:
-    - `#initialize` hash now takes `frequency:` and `resolution:` keys.
-    - Or call `#pwm_enable` explicitly with `frequency:` and `resolution:` kwargs.
-    - Only on ESP32 for now. Defaults to 1 kHz and 8-bit when not given.
+  - Call only `#digital_write` to stay in digital `:output` mode (faster).
+  - Added `#duty=`. Set duty cycle in percentage regardless of PWM resolution.
+  - Set resolution and frequency per `PWMOutput` instance (pin), instead of per `Board` instance:
+    - `#initialize` hash accepts `frequency:` and `resolution:` keys.
+    - Call `#pwm_enable` with `frequency:` and `resolution:` kwargs
+    - Or use `#resolution=` and `#frequency=` methods.
+    - Defaults are 1 kHz frequency and 8-bit resolution.
+    - **ONLY** works on ESP32 and `PiBoard` right now. Others still control at the Board level.
+    - Limited to 13-bit resolution on `Denko::Board` for now.
+
+- `SPI::Bus`:
+  - Accepts `index:` param (default 0) on initialize, specifying which SPI interface to use.
+    - Only works for PiBoard on Linux right now.
 
 - `SPI::Peripheral`:
   - Split into `SPI:Peripheral::SinglePin` and `Spi::Peripheral::MultiPin` to allow modeling more complex peripherals.
+  - `#update` accepts String of comma delimited ASCII numbers (Board), or Array of bytes (PiBoard).
+
+- `SPI::OutputRegister`:
+  - Removed automatic buffering of writes.
+  - Call `#set_bit(value)` instead to modify state in memory, without writing to the physical register.
+  - Call `#write` to send state to the register after modifying.
 
 ### Fiwmare Changes
 
@@ -124,16 +144,17 @@
 
 - Hardware I2C:
   - Message format changed so "value" isn't used. Will be used for differentiating multiple I2C interfaces in future.
+  - Responses now prefixed with `I2C{index}:` (index = I2C device integer, always 0 for now), instead of SDA pin number.
 
 - Hardware SPI:
-  - Transfers don't need a chip select pin now. This is for LED strips like APA102, but could also work for WS2812 @ 2.4 MHz.
+  - Transfers don't need a chip select pin now. This is for LED strips like APA102.
 
 - Bit-Bang I2C:
   - Newly added. Works similar to Bit-Bang SPI.
 
 ### Board Interface Changes
 
-- `Board#set_pin_mode` now takes a third argument, an `options={}` hash. Only used keys are `resolution:` and `frequency:` for setting PWM resolution. Only works on ESP32 boards so far.
+- `Board#set_pin_mode` now takes a third hash argument, `options={}`. Only used keys are `resolution:` and `frequency:` for setting PWM resolution. Only works on ESP32 boards and `PiBoard` on Linux.
 
 - Added `Board#set_pin_debounce`
   - Implemented for Linux GPIO alerts in `Denko::PiBoard` (denko-piboard gem).
