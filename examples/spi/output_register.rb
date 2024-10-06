@@ -12,17 +12,10 @@ REGISTER_SELECT_PIN = 10
 # LED pin (on register parallel outputs)
 LED_PIN = 0
 
+# Works on hardware or bit-bang SPI.
 board = Denko::Board.new(Denko::Connection::Serial.new)
-
-# 1-way (output) bit bang SPI interface on any pins (slower, but flexible).
-bus = Denko::SPI::BitBang.new(board: board, pins: SPI_BIT_BANG_PINS)
-
-# Use the default hardware SPI bus (faster, but predetermined pins).
 # bus = Denko::SPI::Bus.new(board: board)
-
-# Show the hardware SPI pins to aid connection.
-# MOSI = output | MISO = input | SCK = clock
-# puts board.map.select { |name, number| [:MOSI, :MISO, :SCK].include?(name) }
+bus = Denko::SPI::BitBang.new(board: board, pins: SPI_BIT_BANG_PINS)
 
 # OutputRegister needs a bus and its select pin.
 # Other options and their defaults:
@@ -33,13 +26,15 @@ bus = Denko::SPI::BitBang.new(board: board, pins: SPI_BIT_BANG_PINS)
 #
 register = Denko::SPI::OutputRegister.new(bus: bus, pin: REGISTER_SELECT_PIN)
 
-# We can turn the LED on by writing a 1 to the lowest bit (0) of the register.
-register.write(0b00000001)
+# Turn the LED on by setting the corresponding register bit to 1, then writing to it.
+register.bit_set(LED_PIN, 1)
+register.write
+sleep 2
 
-# OutputRegister implements enough of the Board interface that digital output
-# components can treat it as a Board. Do that with the LED instead.
+# OutputRegister is a BoardProxy, so DigitalOutput components can use
+# it in place of a board. Do that with the LED instead.
 #
-led = Denko::LED.new(board: register, pin: 0)
+led = Denko::LED.new(board: register, pin: LED_PIN)
 
 # Blink the LED and sleep the main thread.
 led.blink 0.5
