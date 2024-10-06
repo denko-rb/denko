@@ -15,10 +15,9 @@ PIXELS = 8
 # Move along the strip and back, one pixel at a time.
 positions = (0..PIXELS-1).to_a + (1..PIXELS-2).to_a.reverse
 
-board = Denko::Board.new(Denko::Connection::Serial.new)
-
 # Use the default hardware SPI bus.
-bus = Denko::SPI::Bus.new(board: board)
+board = Denko::Board.new(Denko::Connection::Serial.new)
+bus   = Denko::SPI::Bus.new(board: board)
 strip = Denko::LED::APA102.new(bus: bus, length: PIXELS)
 
 loop do
@@ -27,7 +26,7 @@ loop do
       strip.clear
       strip[index] = color
       strip.show
-      sleep 0.05
+      sleep 0.025
     end
   end
 end
