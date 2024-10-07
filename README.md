@@ -1,6 +1,6 @@
-# denko 0.14.0 [![Test Status](https://github.com/denko-rb/denko/actions/workflows/ruby.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/ruby.yml)
+# denko [![Test Status](https://github.com/denko-rb/denko/actions/workflows/ruby.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/ruby.yml)
 
-Use connected microcontrollers and peripherals in Ruby, without writing microcontroller code. Work with LEDs, buttons, sensors, and more, just like any Ruby object:
+Program real-life electronics in pure Ruby. LEDs, buttons, sensors (and more) work just like any Ruby object:
 
 ```ruby
 led.blink 0.5
@@ -14,25 +14,40 @@ button.down do
 end
 ```
 
-## How it Works
+## How It Works
 
-- The microcontroller runs a barebones Arduino firmware so it can be "remote controlled" over an IO stream. Ruby runs on any computer, exchanging messages with the MCU and doing all the higher level logic.
-- The physical MCUs and peripherals all map to Ruby objects, so you can focus on hardware and appplication logic, not the layers in between.
-- Peripheral drivers are easy to implement, since they're pure Ruby.
-- Multitasking works out of the box, even on single core microcontrollers.
-- Integrating multiple microcontrollers is seamless. You just get more Ruby objects.
+There are currently two ways to use denko. Both have the same user-friendly API, but the hardware can be very different. Here's a summary of each:
+
+### Connected Microcontroller
+- Flash a microcontroller with the denko C firmware, so it can be "remote controlled"
+- Run a Ruby program on a "real" computer with the microcontroller connected
+- The microcontroller appears as an instance of `Denko::Board`
+- Calling methods on it will exchange messages that manipulate the real microcontroller
+- The microcontroller can only do the bare minimum to send and receive signals
+- Everything from device drivers up happens in Ruby
+
+### Single-Board-Computer
+- Install [denko-piboard](https://github.com/denko-rb/denko-piboard) and some dependencies
+- Ruby a Ruby program on the SBC
+- The SBC's own GPIO header appears as a `Denko::PiBoard` instance
+- Everything runs self-contained on the SBC
+
+**Notes:**
+- Peripheral classes are only implemented in this gem, but should be compatible with both types of board, and both gems.
+- The [examples](examples) folder of this gem is (mostly) relevant to both gems.
+- If using denko-piboard, ignore the hardware and installation sections here.
 
 ## Supported Hardware
 
-Full list of supported mircocontrollers, interfaces, and peripherals is [here](HARDWARE.md).
+[Microcontroller & Peripheral Support](HARDWARE.md).
 
-## Getting Started
+## Installation
 
 **Note:** On Windows you can follow the Mac/Linux instructions in WSL, but it isn't recommended. Serial (COM port) forwarding isn't working on WSL2, which means you can't communicate with the board. There are workarounds, and it might work on WSL1, but the [RubyInstaller for Windows](https://rubyinstaller.org/) and Arduino IDE are recommended instead. A Linux virtual machine with USB passthrough works too.
 
 #### 1. Install the Gem
 
-```shell
+```console
 gem install denko
 ```
 
@@ -42,7 +57,7 @@ Get the Arduino IDE [here](http://arduino.cc/en/Main/Software) for a graphical i
 
 **CLI Installation with Homebrew on Mac or Linux:**
 
-```shell
+```console
 brew update
 brew install arduino-cli
 ```
@@ -60,7 +75,7 @@ The `denko` command is included with the gem. It will make the Arduino sketch fo
 
 **Example for ESP32 target on both serial and Wi-Fi:**
 
-```shell
+```console
 denko sketch serial --target esp32
 denko sketch wifi --target esp32 --ssid YOUR_SSID --password YOUR_PASSWORD
 
@@ -79,9 +94,9 @@ denko targets
 
 **Troubleshooting:**
 
-- If your serial port is in the list, but the board is wrong, select the serial port anyway, then you will be asked to manually select a board.
+- If your serial port is in the list, but the board is wrong, select the serial port anyway, then you can manually select a board.
 - If your board doesn't show up at all, make sure it is connected properly. Try disconnecting and reconnecting, use a different USB port or cable, or press the reset button after plugging it in.
-- Some boards may be in a state where you have to hold their "boot" button while cycling power (reconnect or reset) for them to enter firmware update mode. Eg. Raspberry Pi Pico, ESP32-S2/S3.
+- Some boards can end up in a state where you have to hold their "boot" button while cycling power (reconnect or reset) for them to enter firmware update mode. Eg. Raspberry Pi Pico, ESP32-S2/S3.
 
 #### 5b. CLI Flashing
 
@@ -89,13 +104,13 @@ denko targets
 - Connect the board to your computer with a USB cable.
 - Check if the CLI recognizes it:
 
-```shell
+```console
 arduino-cli board list
 ```
-  
+
 - Using the Port and FQBN (Fully Qualified Board Name) shown, compile and upload the sketch:
 
-```shell
+```console
 arduino-cli compile -b YOUR_FQBN YOUR_SKETCH_FOLDER
 arduino-cli upload -v -p YOUR_PORT -b YOUR_FQBN YOUR_SKETCH_FOLDER
 ```
@@ -104,13 +119,13 @@ arduino-cli upload -v -p YOUR_PORT -b YOUR_FQBN YOUR_SKETCH_FOLDER
 
 - Follow the same steps as the IDE method above. List all FQBNs using:
 
-```shell
+```console
 arduino-cli board listall
 ```
 
 #### 6. Test It
 
-Most boards have a regular LED on-board. Test it with the [blink](examples/led/builtin_blink.rb) example. If you have an on-board WS2812 LED (Neopixel), use the [WS2812 blink](examples/led/ws2812_builtin_blink.rb) example instead. If it starts blinking, you're ready for Ruby!
+Most boards have a regular LED on-board. Test with the [blink](examples/led/builtin_blink.rb) example. If you have an on-board WS2812 LED (Neopixel), use the [WS2812 blink](examples/led/ws2812_builtin_blink.rb) example instead. If it starts blinking, you're ready for Ruby!
 
 ## Examples and Tutorials
 
@@ -125,36 +140,10 @@ Most boards have a regular LED on-board. Test it with the [blink](examples/led/b
   - Current limiting resistors for LEDs
   - Breadboard
   - Jumper wires
-  
-  **Tip:** Kits are a good way to get started. They should include these parts and more, getting you beyond the tutorial.
+
+  **Tip:** Kits are a good way to get started. They include even more, and get you well beyond the tutorial.
 
 #### Included Examples
 
-- The [examples](examples) folder contains at least one example per supported peripheral, demonstrating its interface, and a few that use multiple peripherals together.
+- The [examples](examples) folder contains at least one example per peripheral, demonstrating its interface.
 - Each example should incldue a wiring diagram alongside its code (still incomplete).
-
-#### More Examples
-
-**Note:** This gem was renamed from `dino` to `denko`. Some of these examples use the old name.
-
-- Try [Getting Started with Arduino and Dino](http://tutorials.jumpstartlab.com/projects/arduino/introducing_arduino.html) from [Jumpstart Lab](http://jumpstartlab.com) (_ignore old install instructions_).
-- An example [rails app](https://github.com/austinbv/dino_rails_example) using Dino and Pusher.
-- For a Sinatra example, look at the [site](https://github.com/austinbv/dino_cannon) used to shoot the cannon at RubyConf2012.
-
-## Explanatory Talks
-
-- "Arduino the Ruby Way" at RubyConf 2012
-  - [Video by ConFreaks](https://www.youtube.com/watch?v=oUIor6GK-qA)
-  - [Slides on SpeakerDeck](https://speakerdeck.com/austinbv/arduino-the-ruby-way)
-
-## Related Projects
-
-### denko-piboard
-
-[denko-piboard](https://github.com/denko-rb/denko-piboard) adds a `Board`-compatible class for the built-in GPIO headers on single board computers (eg. Raspberry Pi). Connect peripherals directly to the SBC, and use classes from this gem.
-
-### mruby-denko
-
-A SBC (or computer + microcontroller combo) is great if you need the power anyway, but what if you don't? Why not run Ruby on the microcontroller itself?
-
-That's the goal of [mruby-denko](https://github.com/denko-rb/mruby-denko): run mruby on the ESP32, using peripheral classes as close to this gem as practical. Still early in development (limited features), but already usable.
