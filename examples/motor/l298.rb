@@ -1,12 +1,14 @@
 #
-# Example driving a DC motor with a L298 H-Bridge driver.
+# Drive a DC motor with the L298 H-Bridge driver.
 #
 require 'bundler/setup'
 require 'denko'
 board = Denko::Board.new(Denko::Connection::Serial.new)
 
+PINS = { direction1: 8, direction2: 9, enable: 10 }
+
 # This is only 1 channel of the driver. Make a new object for each channel.
-motor = Denko::Motor::L298.new board: board, pins: {direction1: 8, direction2: 9, enable: 10}
+motor = Denko::Motor::L298.new(board: board, pins: PINS)
 
 # Off without braking (initial state).
 # motor.off
