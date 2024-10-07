@@ -1,5 +1,5 @@
 #
-# Example that writes to TX pin of hardware UART1 and reads back on RX pin of same UART.
+# Write to Tx pin of hardware UART1 and read data back on its Rx pin.
 #
 require 'bundler/setup'
 require 'denko'

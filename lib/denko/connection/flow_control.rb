@@ -8,8 +8,8 @@ module Denko
         @transit_mutex.synchronize { @remote_buffer_size = size }
       end
 
-      def initialize(*args)
-        super(*args)
+      def initialize(*args, **kwargs)
+        super(*args, **kwargs)
         # Start with minimum known buffer size. Board will update after handshake.
         # WARNING: If not updated, and ack threshold on the board is > minimum,
         # FlowControl will stop sending data, and appear to hang. Fix this.
@@ -27,7 +27,7 @@ module Denko
           @tx_halt_points << @write_buffer.length if tx_halt_after
         end
       end
-      
+
       def writing?
         @write_buffer_mutex.synchronize { !@write_buffer.empty? }
       end
@@ -45,7 +45,7 @@ module Denko
           @tx_halt_points = []
         end
       end
-      
+
       def write_from_buffer
         fragment = nil
         halt_after_fragment = false
@@ -107,7 +107,7 @@ module Denko
 
       def read
         line = _read
-        
+
         if line
           case line[0..2]
           # Board read (freed) this many bytes from its input buffer.
@@ -139,7 +139,7 @@ module Denko
       end
 
       def tx_halt
-        @tx_ready_mutex.synchronize { @tx_ready = false } 
+        @tx_ready_mutex.synchronize { @tx_ready = false }
       end
 
       def tx_resume
@@ -147,7 +147,7 @@ module Denko
       end
 
       def remove_transit_bytes(value)
-        @transit_mutex.synchronize do 
+        @transit_mutex.synchronize do
           @transit_bytes = @transit_bytes - value
           @transit_bytes = 0 if @transit_bytes < 0
         end
