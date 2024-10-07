@@ -4,8 +4,8 @@ require File.expand_path('../lib/denko/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["vickash, Austinbv"]
   gem.email         = ["mail@vickash.com"]
-  gem.description   = %q{GPIO library for Ruby}
-  gem.summary       = %q{Use GPIO, I2C, SPI, UART and more on a connected microcontroller}
+  gem.description   = %q{Electronics programming in Ruby}
+  gem.summary       = %q{Use GPIO, PWM, I2C, SPI, and more, on a connected microcontroller, or single-board-computer}
   gem.homepage      = 'https://github.com/denko-rb/denko'
   gem.files         = `git ls-files`.split($\)
   gem.licenses      = ['MIT']
@@ -37,6 +37,8 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = Denko::VERSION
   gem.executables   = ["denko"]
+
+  gem.required_ruby_version = '>=2.7.8'
 
   gem.add_dependency 'observer',    '~> 0.1.2'
   gem.add_dependency 'rubyserial',  '~> 0.6'
