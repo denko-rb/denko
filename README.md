@@ -1,7 +1,7 @@
 # denko
 [![Test Status](https://github.com/denko-rb/denko/actions/workflows/ruby.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/ruby.yml)
 
-Program real-life electronics in pure Ruby. LEDs, buttons, sensors (and more) work just like any Ruby object:
+Program real-life electronics in Ruby. LEDs, buttons, sensors (and more) work just like any Ruby object:
 
 ```ruby
 led.blink 0.5
