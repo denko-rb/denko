@@ -1,6 +1,6 @@
 #
-# Example of 2 SPI devices on the same bus with different select pins.
-# Combination of input_register.rb and output_register.rb
+# 2 SPI registers (74HC595 and CD4021B) on the same bus, both acting as
+# BoardProxies for their Subcomponents.
 #
 require 'bundler/setup'
 require 'denko'
@@ -11,36 +11,30 @@ OUT_REGISTER_SELECT = 10
 IN_REGISTER_SELECT  = 9
 
 # LED and Button pins (on their respective registers' parallel pins)
-LED_PIN     = 0
-BUTTON_PIN  = 0
+LED_PIN    = 0
+BUTTON_PIN = 0
 
-board = Denko::Board.new(Denko::Connection::Serial.new)
-
-# 2-way bit bang SPI bus (slower, but use any pins).
-bus = Denko::SPI::BitBang.new(board: board, pins: SPI_BIT_BANG_PINS)
-
-# Use the default hardware SPI bus (faster, but predetermined pins).
-# bus = Denko::SPI::Bus.new(board: board)
-
-# Show the hardware SPI pins to aid connection.
-# MOSI = output | MISO = input | SCK = clock
-# puts board.map.select { |name, number| [:MOSI, :MISO, :SCK].include?(name) }
-
-# OutputRegister needs a bus and its select pin.
+board        = Denko::Board.new(Denko::Connection::Serial.new)
+bus          = Denko::SPI::BitBang.new(board: board, pins: SPI_BIT_BANG_PINS)
 out_register = Denko::SPI::OutputRegister.new(bus: bus, pin: OUT_REGISTER_SELECT)
-
-# InputRegister needs a bus and its select pin. The CD4021 likes SPI mode 2.
-in_register = Denko::SPI::InputRegister.new(bus: bus, pin: IN_REGISTER_SELECT, spi_mode: 2)
+in_register  = Denko::SPI::InputRegister.new(bus: bus, pin: IN_REGISTER_SELECT, spi_mode: 2)
 
 # LED connected to the output register.
-led = Denko::LED.new(board: out_register, pin: LED_PIN)                                 
+led = Denko::LED.new(board: out_register, pin: LED_PIN)
 
 # Button connected to the input register.
 button = Denko::DigitalIO::Button.new(board: in_register, pin: BUTTON_PIN)
 
 # Button callbacks.
-button.down { led.on;  puts "Button pressed"  }
-button.up   { led.off; puts "Button released" }
+button.down do
+  led.on
+  puts "Button pressed"
+end
 
-# Sleep the main thread. Press the button and callbacks will run.
+button.up do
+  led.off
+  puts "Button released"
+end
+
+# Keep main thread alive.
 sleep

@@ -32,7 +32,7 @@ register.write
 sleep 2
 
 # OutputRegister is a BoardProxy, so DigitalOutput components can use
-# it in place of a board. Do that with the LED instead.
+# it in place of a board. Use it with an LED instance.
 #
 led = Denko::LED.new(board: register, pin: LED_PIN)
 

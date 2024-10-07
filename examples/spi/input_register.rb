@@ -1,6 +1,5 @@
 #
-# Example of a Button connected through an input shift register (CD4021B).
-# Can be used over either a bit bang or hardware SPI interface.
+# Button connected through input shift register (CD4021B).
 #
 require 'bundler/setup'
 require 'denko'
@@ -13,16 +12,7 @@ REGISTER_SELECT_PIN = 9
 BUTTON_PIN = 0
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
-
-# 1-way (input) bit bang SPI interface on any pins (slower, but flexible).
-bus = Denko::SPI::BitBang.new(board: board, pins: SPI_BIT_BANG_PINS)
-
-# Use the default hardware SPI bus (faster, but predetermined pins).
-# bus = Denko::SPI::Bus.new(board: board)
-
-# Show the hardware SPI pins to aid connection.
-# MOSI = output | MISO = input | SCK = clock
-# puts board.map.select { |name, number| [:MOSI, :MISO, :SCK].include?(name) }
+bus   = Denko::SPI::BitBang.new(board: board, pins: SPI_BIT_BANG_PINS)
 
 # InputRegister needs a bus and its select pin. The CD4021 likes SPI mode 2.
 # Other options and their defaults:
@@ -33,18 +23,18 @@ bus = Denko::SPI::BitBang.new(board: board, pins: SPI_BIT_BANG_PINS)
 #
 register = Denko::SPI::InputRegister.new(bus: bus, pin: REGISTER_SELECT_PIN, spi_mode: 2)
 
-# InputRegister implements enough of the Board interface that digital input
-# components can treat it as a Board. Do that with the Button.
+# InputRegister is a BoardProxy, so DigitalInput components can can use
+# it in place of a board. Use it with a Button instance.
 #
-# button starts listening automatically, which triggers register to start listening,
-# so it can update button as needed. Registers listen with an 8ms interval by default,
-# compared to the 4ms default for a Button directly connected to a Board.
+# button starts listening automatically, which tells register to start listening.
+# On Denko::Board, InputRegisters listen with an 8ms interval by default, compared
+# to 1ms default for a Button directly connected to a Board.
 #
-button = Denko::DigitalIO::Button.new(pin: 0, board: register)
+button = Denko::DigitalIO::Button.new(pin: BUTTON_PIN, board: register)
 
 # Button callbacks.
 button.down { puts "Button pressed"  }
 button.up   { puts "Button released" }
 
-# Sleep the main thread. Press the button and callbacks will run.
+# Keep main thread alive.
 sleep

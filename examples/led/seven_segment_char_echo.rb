@@ -1,5 +1,5 @@
 #
-# Echo last pressed keyboard key to a seven segment LED.
+# Echo pressed keys to a seven segment LED.
 #
 require 'bundler/setup'
 require 'denko'
