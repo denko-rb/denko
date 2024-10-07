@@ -1,4 +1,5 @@
-# denko [![Test Status](https://github.com/denko-rb/denko/actions/workflows/ruby.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/ruby.yml)
+# denko
+[![Test Status](https://github.com/denko-rb/denko/actions/workflows/ruby.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/ruby.yml)
 
 Program real-life electronics in pure Ruby. LEDs, buttons, sensors (and more) work just like any Ruby object:
 
@@ -33,13 +34,13 @@ There are currently two ways to use denko. Both have the same user-friendly API,
 - Everything runs self-contained on the SBC
 
 **Notes:**
-- Peripheral classes are only implemented in this gem, but should be compatible with both types of board, and both gems.
-- The [examples](examples) folder of this gem is (mostly) relevant to both gems.
+- Peripheral classes are only in this gem, but are compatible with both types of board, and both gems.
+- That makes the [examples](examples) folder of this gem (mostly) relevant to both gems.
 - If using denko-piboard, ignore the hardware and installation sections here.
 
 ## Supported Hardware
 
-[Microcontroller & Peripheral Support](HARDWARE.md).
+[Microcontroller & Peripheral Support List](HARDWARE.md)
 
 ## Installation
 
@@ -96,7 +97,7 @@ denko targets
 
 - If your serial port is in the list, but the board is wrong, select the serial port anyway, then you can manually select a board.
 - If your board doesn't show up at all, make sure it is connected properly. Try disconnecting and reconnecting, use a different USB port or cable, or press the reset button after plugging it in.
-- Some boards can end up in a state where you have to hold their "boot" button while cycling power (reconnect or reset) for them to enter firmware update mode. Eg. Raspberry Pi Pico, ESP32-S2/S3.
+- Some boards can get into a state where you have to hold their "boot" button while cycling power (reconnect or reset) for them to enter firmware update mode. Eg. Raspberry Pi Pico, ESP32-S2/S3.
 
 #### 5b. CLI Flashing
 

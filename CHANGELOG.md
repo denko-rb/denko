@@ -2,6 +2,11 @@
 
 ## 0.14.0
 
+### Known Issues
+
+- ESP32 Boards
+  - **USB-CDC (aka native USB) appears to be broken** in the 3.0 core. Will eventually hang if sending a lot of data both directions at the same time. Use one of the standard UART interfaces until this is fixed.
+
 ### New Boards
 
 - ESP32-H2 and ESP32-C6 variants (`--target esp32`):
@@ -12,7 +17,6 @@
 
 - ESP32 Boards
   - 3.0+ version of the ESP32 Arduino Core now required.
-  - **USB-CDC (aka native USB) appears to be broken** in the 3.0 core. Will eventually hang if sending a lot of data both directions at the same time. Use one of the standard UART interfaces until this is fixed.
 
 - Raspberry Pi Pico (RP2040)
   - WS2812 LED strips work now.
