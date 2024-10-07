@@ -23,17 +23,18 @@ There are currently two ways to use denko. Both have the same user-friendly API,
 - Flash a microcontroller with the denko C firmware, so it can be "remote controlled"
 - Run a Ruby program on a "real" computer with the microcontroller connected
 - The microcontroller appears as an instance of `Denko::Board`
-- Calling methods on it will exchange messages that manipulate the real microcontroller
-- The microcontroller can only do the bare minimum to send and receive signals
-- Everything from peripheral drivers up happens in Ruby
+- Calling its methods will send/receive message to manipulate the real microcontroller
+- The microcontroller does only the bare minimum to send and receive signals
+- Everything from peripheral drivers and up happens in Ruby, on the computer
 
 ### Single-Board-Computer
-- Ruby a Ruby program on the SBC
-- The SBC's own GPIO header appears as a `Denko::PiBoard` instance
+- Install [denko-piboard](https://github.com/denko-rb/denko-piboard) on your SBC
+- Use it in a Ruby program, running on the SBC
+- The SBC's GPIO header becomes a `Denko::PiBoard` instance, compatible with `Denko::Board`
 - Everything runs self-contained on the SBC
 
 **Notes:**
-- Peripheral classes are only in this gem, but are compatible with both types of board, and both gems.
+- Peripheral classes are implemented only in this gem, but work with both types of board, and both gems.
 - That makes the [examples](examples) folder of this gem (mostly) relevant to both.
 - If using denko-piboard, ignore the hardware and installation sections here.
 
