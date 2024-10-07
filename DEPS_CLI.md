@@ -24,7 +24,6 @@ arduino-cli lib install WiFi
 arduino-cli lib install WiFi101
 arduino-cli lib install WiFiNINA
 arduino-cli lib install IRremote@4.4.1
-arduino-cli lib install IRremoteESP8266@2.8.6
 arduino-cli lib install ESP32Servo
 arduino-cli lib install "Adafruit NeoPixel"
 ````
