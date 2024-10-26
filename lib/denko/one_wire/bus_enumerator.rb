@@ -44,17 +44,14 @@ module Denko
       def parse_search_result(result)
         address, complement = split_search_result(result)
 
-        if (address & complement) > 0
-          raise "OneWire device not connected or disconnected during search"
-        end
-
+        raise "OneWire device not connected, or disconnected during search" if (address & complement) > 0
         raise "CRC error during OneWire search" unless Helper.crc(address)
 
         # Gives 0 at every discrepancy we didn't write 1 for on this search.
         new_discrepancies = address ^ complement
 
         high_discrepancy = -1
-        (0..63).each { |i| high_discrepancy = i if new_discrepancies[i] == 0 }
+        (0..63).each { |i| high_discrepancy = i if ((new_discrepancies >> i) & 0b1 == 0) }
 
         # LSByte of address is product family.
         klass = family_lookup(address & 0xFF)
@@ -64,14 +61,12 @@ module Denko
 
       # Result is 16 bytes, 8 byte address and complement interleaved LSByte first.
       def split_search_result(data)
-        address = 0
+        address    = 0
         complement = 0
-
         data.reverse.each_slice(2) do |comp_byte, addr_byte|
-          address = (address << 8) | addr_byte
+          address    = (address << 8)    | addr_byte
           complement = (complement << 8) | comp_byte
         end
-
         [address, complement]
       end
 
