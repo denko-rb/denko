@@ -16,7 +16,7 @@ module Denko
       end
 
       def _read
-        board.pulse_read(pin, reset: board.low, reset_time: 20000, pulse_limit: 84, timeout: 100)
+        board.pulse_read(pin, reset: board.low, reset_time: 10_000, pulse_limit: 84, timeout: 100)
       end
 
       def pre_callback_filter(data)
