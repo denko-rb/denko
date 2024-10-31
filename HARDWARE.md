@@ -114,9 +114,10 @@ Polling and reading follow a call and response pattern.
 | Name             | Status         | Interface    | Component Class            | Notes |
 | :--------------- | :------:       | :--------    | :---------------           |------ |
 | Button           | :green_heart:  | Digital In   | `DigitalIO::Button`        |
+| Relay            | :green_heart:  | Digital Out  | `DigitalIO::Relay`         |
 | Rotary Encoder   | :green_heart:  | Digital In   | `DigitalIO::RotaryEncoder` | Listens every 1ms
 | Potentiometer    | :green_heart:  | Analog In    | `AnalogIO::Potentiometer`  | Smoothing on by default
-| Relay            | :green_heart:  | Digital Out  | `DigitalIO::Relay`         |
+| Joystick         | :green_heart:  | Analog In    | `AnalogIO::Joystick`       |
 
 ### LEDs
 
