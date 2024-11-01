@@ -12,6 +12,7 @@ joystick = Denko::AnalogIO::Joystick.new  board: board,
                                           pins: {x: X_PIN, y: Y_PIN},
                                           invert_x: true,
                                           invert_y: true,
+                                          # swap_axes: true,
                                           # maxzone: 98,   # as percentage
                                           deadzone: 2      # as percentage
 
