@@ -14,6 +14,7 @@ module Denko
     autoload :QMP6988,     "#{__dir__}/sensor/qmp6988"
     autoload :RCWL9620,    "#{__dir__}/sensor/rcwl9620"
     autoload :HCSR04,      "#{__dir__}/sensor/hcsr04"
+    autoload :JSNSR04T,    "#{__dir__}/sensor/jsnsr04t"
     autoload :GenericPIR,  "#{__dir__}/sensor/generic_pir"
   end
 end

@@ -128,7 +128,7 @@ Polling and reading follow a call and response pattern.
 | 7 Segment Display  | :yellow_heart:     | Digital Out       | `LED::SevenSegment`   | No decimal point
 | 8x8 LED (MAX7219)  | :heart:            | SPI               | `LED::MAX7219`        |
 | TM1637             | :heart:            | BitBang SPI       | `LED::TM1637`         | 4x 7 Segment + Colon
-| Neopixel / WS2812B | :yellow_heart:     | Adafruit Library  | `LED::WS2812`         | Not working on RP2040
+| Neopixel / WS2812B | :green_heart:      | Adafruit Library  | `LED::WS2812`         |
 | Dotstar / APA102   | :green_heart:      | SPI               | `LED::APA102`         |
 
 ### Displays
@@ -226,6 +226,7 @@ Polling and reading follow a call and response pattern.
 | :--------------- | :------:       | :--------    | :---------------   |------ |
 | HC-SR04          | :green_heart:  | Digi In/Out  | `Sensor::HCSR04`   | Ultrasonic, 20-4000mm
 | RCWL-9620        | :green_heart:  | I2C          | `Sensor::RCWL9260` | Ultrasonic, 20-4500mm
+| JSN-SR04T        | :green_heart:  | UART         | `Sensor::JSNSR04T` | Mode 2 ONLY. Use HC-SR04 driver for mode 0 or 4.
 | VL53L0X          | :heart:        | I2C          | `Sensor::VL53L0X`  | Laser, 30 - 1000mm
 | GP2Y0E03         | :heart:        | I2C          | `Sensor::GP2Y0E03` | Infrared, 40 - 500mm
 
