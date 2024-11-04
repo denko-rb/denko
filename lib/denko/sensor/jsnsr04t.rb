@@ -15,7 +15,7 @@ module Denko
       attr_reader :uart
 
       after_initialize do
-        unless (params[:uart] && UART_CLASSES.include?(params[:uart].class))
+        unless params[:uart] && UART_CLASSES.include?(params[:uart].class)
           raise ArgumentError, "JSN-SR04T driver only works in mode 2, and expects a UART in the :uart key"
         end
 
@@ -27,7 +27,6 @@ module Denko
       def _read
         # Trigger read
         uart.write("U")
-        sleep 0.100
 
         # Get line from UART
         start = Time.now
@@ -40,13 +39,11 @@ module Denko
         # Extract mm as integer
         if line && match = line.match(MATCHER)
           value = match[1].to_i
-          if value
-            self.update(value)
-            return value
-          end
-        else
-          return nil
+          self.update(value)
+          return value
         end
+
+        return nil
       end
     end
   end
