@@ -42,6 +42,10 @@ module Denko
       def i2c_read(num_bytes, register: nil)
         bus._read(i2c_address, register, num_bytes, i2c_frequency, i2c_repeated_start)
       end
+
+      def i2c_read_blocking(*args, **kwargs)
+        read_using -> { i2c_read(*args, **kwargs) }
+      end
     end
   end
 end

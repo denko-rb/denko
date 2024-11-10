@@ -227,7 +227,7 @@ Polling and reading follow a call and response pattern.
 | HC-SR04          | :green_heart:  | Digi In/Out  | `Sensor::HCSR04`   | Ultrasonic, 20-4000mm
 | RCWL-9620        | :green_heart:  | I2C          | `Sensor::RCWL9260` | Ultrasonic, 20-4500mm
 | JSN-SR04T        | :green_heart:  | UART         | `Sensor::JSNSR04T` | Mode 2 ONLY. Use HC-SR04 driver for mode 0 or 4.
-| VL53L0X          | :heart:        | I2C          | `Sensor::VL53L0X`  | Laser, 30 - 1000mm
+| VL53L0X          | :yellow_heart: | I2C          | `Sensor::VL53L0X`  | Laser, 20 - 2000mm. Continuous mode only. No configuration.
 | GP2Y0E03         | :heart:        | I2C          | `Sensor::GP2Y0E03` | Infrared, 40 - 500mm
 
 ### Inertial Measurement Units

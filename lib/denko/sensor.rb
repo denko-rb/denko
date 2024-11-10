@@ -16,5 +16,6 @@ module Denko
     autoload :HCSR04,      "#{__dir__}/sensor/hcsr04"
     autoload :JSNSR04T,    "#{__dir__}/sensor/jsnsr04t"
     autoload :GenericPIR,  "#{__dir__}/sensor/generic_pir"
+    autoload :VL53L0X,     "#{__dir__}/sensor/vl53l0x"
   end
 end
