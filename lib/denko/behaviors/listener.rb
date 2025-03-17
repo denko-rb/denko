@@ -5,6 +5,10 @@ module Denko
       
       attr_reader :divider
 
+      #
+      # These delegate to #_listen and #_stop_listener,
+      # which should be defined in the including class.
+      #
       def listen(divider=nil, &block)
         @divider = divider || @listener
         stop
