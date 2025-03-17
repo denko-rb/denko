@@ -42,8 +42,7 @@ module Denko
       end
 
       def _read
-        raise NotImplementedError
-          .new("#{self.class.name}#_read is not defined.")
+        raise NotImplementedError.new("#{self.class.name}#_read is not defined.")
       end
     end
   end
