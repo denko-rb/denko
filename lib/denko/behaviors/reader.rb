@@ -4,7 +4,7 @@ module Denko
       include Callbacks
 
       #
-      # Defalt behavior for #read is to delegate to #_read.
+      # Default behavior for #read is to delegate to #_read.
       # Define #_read in including classes.
       #
       def read(*args, **kwargs, &block)
