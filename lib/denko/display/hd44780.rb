@@ -273,7 +273,7 @@ module Denko
       end
 
       def write8(bits)
-        if board_has_write_bit?
+        if board_is_register?
           board.bit_set(d0.pin, bits[0].to_i)
           board.bit_set(d1.pin, bits[1].to_i)
           board.bit_set(d2.pin, bits[2].to_i)
