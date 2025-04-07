@@ -284,7 +284,7 @@ module Denko
 
       # No humidity on the BMP280.
       def humidity_available?
-        !self.class.to_s.match(/bmp/i)
+        self.class.name.split('::').last.downcase[0..2] == "bme"
       end
 
       #
