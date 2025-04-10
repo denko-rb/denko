@@ -127,23 +127,31 @@ Polling and reading follow a call and response pattern.
 | RGB LED            | :green_heart:      | Digi/Ana Out      | `LED::RGB`            |
 | 7 Segment Display  | :yellow_heart:     | Digital Out       | `LED::SevenSegment`   | No decimal point
 | 8x8 LED (MAX7219)  | :heart:            | SPI               | `LED::MAX7219`        |
-| TM1637             | :heart:            | BitBang SPI       | `LED::TM1637`         | 4x 7 Segment + Colon
+| TM1637             | :heart:            | SPI               | `LED::TM1637`         | 4x 7 Segment + Colon
+| TM1652             | :heart:            | SPI               | `LED::TM1652`         | 4x 7 Segment w/ decimal point + Colon
 | Neopixel / WS2812B | :green_heart:      | Adafruit Library  | `LED::WS2812`         |
 | Dotstar / APA102   | :green_heart:      | SPI               | `LED::APA102`         |
 
 ### Displays
 
-| Name                     | Status         | Interface                    | Component Class     | Notes |
-| :---------------         | :------:       | :--------                    | :---------------    |------ |
-| HD44780 LCD              | :green_heart:  | Digital Out, Output Register | `Display::HD44780`  |
-| SSD1306 OLED             | :yellow_heart: | I2C or SPI                   | `Display::SSD1306`  | 1 font, some graphics
-| SH1106  OLED             | :yellow_heart: | I2C or SPI                   | `Display::SH1106`   | Works same as SSD1306
-| ST7565R (128x64 Mono)    | :heart:        | SPI                          | `Display::ST7565R`  |
-| ST7735S (160x128 RGB)    | :heart:        | SPI                          | `Display::ST7735S`  |
-| ILI9341 (240x320 RGB)    | :heart:        | SPI                          | `Display::ILI9341`  |
-| GC9107 (128x128 RGB)     | :heart:        | SPI                          | `Display::GC9107`   |
-| GC9A01 (240x240 Round)   | :heart:        | SPI                          | `Display::GCA9A01`  |
-| IL0373 (212x104 E-Paper) | :heart:        | SPI                          | `Display::IL0373`   |
+| Name                | Status         | Interface                    | Component Class     | Notes |
+| :---------------    | :------:       | :--------                    | :---------------    |------ |
+| Canvas              | :yellow_heart: | -                            | `Display::Canvas`   | Mono graphics in Ruby
+| HD44780 LCD         | :green_heart:  | Digital Out, Output Register | `Display::HD44780`  |
+| SSD1306 OLED        | :green_heart:  | I2C or SPI                   | `Display::SSD1306`  | Mono OLED: 128x64, 128x32
+| SH1106 OLED         | :green_heart:  | I2C or SPI                   | `Display::SH1106`   | Works same as SSD1306
+| SH1107 OLED         | :heart:        | I2C                          | `Display::SH1107`   | 128x128 Mono OLED
+| LS027B7DH01         | :heart:        | SPI                          | `Display::SharpLCD` | 400x240 Mono Reflective LCD
+| ST7565R             | :heart:        | SPI                          | `Display::ST7565R`  | 128x64 Mono LCD
+| ST7302              | :heart:        | SPI                          | `Display::ST7302`   | 250x122 Mono Reflective LCD
+| ST7735S             | :heart:        | SPI                          | `Display::ST7735S`  | 160x128 RGB LCD
+| ST7789V             | :heart:        | SPI                          | `Display::ST7789V`  | 240x135 RGB LCD (TTGO)
+| ILI9341             | :heart:        | SPI                          | `Display::ILI9341`  | 240x320 RGB LCD
+| GC9107              | :heart:        | SPI                          | `Display::GC9107`   | 128x128 RGB LCD
+| GC9A01              | :heart:        | SPI                          | `Display::GCA9A01`  | 240x240 Round RGB LCD
+| SSD1681             | :heart:        | SPI                          | `Display::SSD1681`  | 200x200 E-Paper (1.54")
+| SSD1680             | :heart:        | SPI                          | `Display::SSD1680`  | 296x128 3C E-Paper (2.9")
+| IL0373              | :heart:        | SPI                          | `Display::IL0373`   | 212x104 E-Paper (2.13")
 
 ### Sound
 
@@ -161,6 +169,7 @@ Polling and reading follow a call and response pattern.
 | L298N                | :green_heart:  | Digi + PWM Out | `Motor::L298`      | H-Bridge DC motor driver
 | DRV8833              | :heart:        | Digi + PWM Out | `Motor::DRV8833`   | H-Bridge DC motor driver
 | TB6612               | :heart:        | Digi + PWM Out | `Motor::TB6612`    | H-Bridge DC motor driver
+| AT8236               | :heart:        | Digi + PWM Out | `Motor::AT8236`    | H-Bridge DC motor driver
 | A3967                | :green_heart:  | Digital Out    | `Motor::Stepper`   | 1-ch microstepper (EasyDriver)
 | A4988                | :yellow_heart: | DigitalOut     | `Motor::Stepper`   | 1-ch microstepper
 | TMC2209              | :heart:        | -              | -                  | 1-ch silent stepper driver
@@ -199,10 +208,13 @@ Polling and reading follow a call and response pattern.
 | HTU31D           | :green_heart:  | I2C         | `Sensor::HTU31D`   | Temp / RH                | No diagnostic read
 | AHT10/15         | :green_heart:  | I2C         | `Sensor::AHT10`    | Temp / RH                |
 | AHT20/21/25      | :green_heart:  | I2C         | `Sensor::AHT20`    | Temp / RH                |
+| AHT30            | :heart:        | I2C         | `Sensor::AHT30`    | Temp / RH                |
+| HDC1080          | :heart:        | I2C         | `Sensor::HDC1080`  | Temp / RH                |
 | ENS160           | :heart:        | I2C         | `Sensor::ENS160`   | eCO2 / TVOC / AQI        |
 | AGS02MA          | :heart:        | I2C         | `Sensor::AGS02MA`  | TVOC                     |
 | SCD40            | :heart:        | I2C         | `Sensor::SDC40`    | Temp / Press / CO2       |
 | CCS811           | :heart:        | I2C         | `Sensor::CCS811`   | eCO2                     |
+| MICS5524         | :heart:        | Analog In   | `Sensor::MICS5524` | CO/Alcohol/VOC           |
 
 ### Light Sensors
 
@@ -242,6 +254,11 @@ Polling and reading follow a call and response pattern.
 | BMI160           | :heart:        | I2C       | `Sensor::BMI160`   | Gyro + Accelerometer
 | LSM6DS3          | :heart:        | I2C       | `Sensor:LSM6DS3`   | Gyro + Accelerometer
 
+### Misc Sensors
+| Name             | Status         | Interface | Component Class    | Notes |
+| :--------------- | :------:       | :-------- | :---------------   |------ |
+| INA219           | :heart:        | I2C       | `Sensor::INA219`   | DC Current Sensor
+
 ### Real Time Clocks
 
 | Name             | Status         | Interface | Component Class   | Notes |
@@ -262,4 +279,5 @@ Polling and reading follow a call and response pattern.
 | Name             | Status         | Interface  | Component Class      | Notes |
 | :--------------- | :------:       | :--------  | :---------------     |------ |
 | Board EEPROM     | :green_heart:  | Built-In   | `EEPROM::BuiltIn`    | Arduino ARM boards have no EEPROM
+| AT24C128/256     | :heart:        | I2C        | `EEPROM::AT24C`      | I2C EEPROM
 | MFRC522          | :heart:        | SPI/I2C    | `DigitalIO::MFRC522` | RFID tag reader / writer
