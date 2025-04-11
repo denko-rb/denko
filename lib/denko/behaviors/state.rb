@@ -3,27 +3,26 @@ module Denko
     module State
       include Lifecycle
 
-      # Force state initialization.
+      # Force state and mutex initialization.
       after_initialize do
+        @state_mutex = Denko.cruby? ? Denko::MutexStub.new : Mutex.new
         state
       end
 
-      def state_mutex
-        @state_mutex ||= Denko.cruby? ? Denko::MutexStub.new : Mutex.new
-        @state_mutex
-      end
-
       def state
-        state_mutex.lock
+        @state_mutex.lock
         value = @state
-        state_mutex.unlock
+        @state_mutex.unlock
         value
       end
 
       protected
 
       def state=(value)
-        state_mutex.synchronize { @state = value }
+        @state_mutex.lock
+        @state = value
+        @state_mutex.unlock
+        @state
       end
 
       def update_state(value)

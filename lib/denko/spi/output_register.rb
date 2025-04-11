@@ -14,8 +14,8 @@ module Denko
       #
       def write
         bytes = []
-        state_mutex.synchronize do
-          return if @previous_state == @state
+        @state_mutex.lock
+        if @state != @previous_state
           @state.each_slice(8) do |slice|
             # Convert nils in the slice to zero.
             zeroed = slice.map { |bit| bit.to_i }
@@ -27,9 +27,11 @@ module Denko
             # Pack bytes in reverse order.
             bytes.unshift byte
           end
+          spi_write(bytes)
           @previous_state = @state.dup
         end
-        spi_write(bytes)
+        @state_mutex.unlock
+        @state
       end
 
       #
@@ -41,7 +43,10 @@ module Denko
       end
 
       def bit_set(pin, value)
-        state_mutex.synchronize { @state[pin] = value }
+        @state_mutex.lock
+        @state[pin] = value
+        @state_mutex.unlock
+        value
       end
 
       def digital_read(pin)

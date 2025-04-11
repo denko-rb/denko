@@ -104,7 +104,10 @@ module Denko
       def pre_callback_filter(step)
         step = -step if reversed
 
-        state_mutex.synchronize { reading[:count] = @state[:count] + step }
+        @state_mutex.lock
+        reading[:count] = @state[:count] + step
+        @state_mutex.unlock
+
         reading[:change] = step
         reading[:angle]  = reading[:count] * degrees_per_count % 360
 
@@ -115,10 +118,11 @@ module Denko
       # After callbacks, set state to the hash from before, except change.
       #
       def update_state(reading)
-        state_mutex.synchronize do
-          @state[:count] = reading[:count]
-          @state[:angle] = reading[:angle]
-        end
+        @state_mutex.lock
+        @state[:count] = reading[:count]
+        @state[:angle] = reading[:angle]
+        @state_mutex.lock
+        @state
       end
     end
   end

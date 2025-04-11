@@ -196,14 +196,12 @@ module Denko
       end
 
       def update_state(reading)
-        # Checking for Hash ignores calibration data and nil.
-        if reading.class == Hash
-          state_mutex.synchronize do
-            @state[:temperature] = reading[:temperature]
-            @state[:pressure]    = reading[:pressure]
-            @state[:humidity]    = reading[:humidity]
-          end
-        end
+        @state_mutex.lock
+        @state[:temperature] = reading[:temperature]
+        @state[:pressure]    = reading[:pressure]
+        @state[:humidity]    = reading[:humidity]
+        @state_mutex.unlock
+        @state
       end
 
       #

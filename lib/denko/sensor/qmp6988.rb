@@ -212,10 +212,11 @@ module Denko
       end
 
       def update_state(reading)
-        state_mutex.synchronize do
-          @state[:temperature] = reading[:temperature]
-          @state[:pressure]    = reading[:pressure]
-        end
+        @state_mutex.lock
+        @state[:temperature] = reading[:temperature]
+        @state[:pressure]    = reading[:pressure]
+        @state_mutex.unlock
+        @state
       end
 
       def get_config_registers

@@ -43,9 +43,10 @@ module Denko
       end
 
       def update_state(reading)
-        state_mutex.synchronize do
-          @state[:temperature] = reading[:temperature]
-        end
+        @state_mutex.lock
+        @state[:temperature] = reading[:temperature]
+        @state_mutex.unlock
+        @state
       end
 
       def decode_resolution(bytes)

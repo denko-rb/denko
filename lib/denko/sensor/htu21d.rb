@@ -129,13 +129,16 @@ module Denko
       end
 
       def update_state(reading)
-        state_mutex.synchronize do
-          @state[:temperature] = reading[:temperature]
-          @state[:humidity]    = reading[:humidity]
-        end
+        @state_mutex.lock
+        @state[:temperature] = reading[:temperature]
+        @state[:humidity]    = reading[:humidity]
+        @state_mutex.unlock
+
         # Reset so pre_callback_filter can check for both values.
         reading[:temperature] = nil
         reading[:humidity]    = nil
+
+        @state
       end
 
       #

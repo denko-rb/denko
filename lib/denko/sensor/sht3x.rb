@@ -72,10 +72,11 @@ module Denko
       end
 
       def update_state(reading)
-        state_mutex.synchronize do
-          @state[:temperature] = reading[:temperature]
-          @state[:humidity]    = reading[:humidity]
-        end
+        @state_mutex.lock
+        @state[:temperature] = reading[:temperature]
+        @state[:humidity]    = reading[:humidity]
+        @state_mutex.unlock
+        @state
       end
 
       def reset

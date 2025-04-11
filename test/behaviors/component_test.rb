@@ -32,9 +32,9 @@ class ComponentTest < Minitest::Test
 
   def test_state_mutex_is_correct_class
     if (RUBY_ENGINE == "ruby")
-      assert_equal Denko::MutexStub, part.state_mutex.class
+      assert_equal Denko::MutexStub, part.instance_variable_get(:@state_mutex).class
     else
-      assert_equal Mutex, part.state_mutex.class
+      assert_equal Mutex, part.instance_variable_get(:@state_mutex).class
     end
   end
 
@@ -43,15 +43,25 @@ class ComponentTest < Minitest::Test
     assert_equal part.state, 10
   end
 
+  # ONLY for pass by value states. If state is Hash or Array, ignore mutex.
   def test_state_through_mutex
-    mock = Minitest::Mock.new
-    2.times {mock.expect(:call, nil)}
+    lock_mock = Minitest::Mock.new
+    2.times { lock_mock.expect(:call, nil) }
 
-    part.state_mutex.stub(:synchronize, mock) do
-      part.state
-      part.send(:state=, nil)
+    unlock_mock = Minitest::Mock.new
+    2.times { unlock_mock.expect(:call, nil) }
+
+    mutex = part.instance_variable_get(:@state_mutex)
+    mutex.stub(:lock, lock_mock) do
+      mutex.stub(:unlock, unlock_mock) do
+        part.state
+        part.send(:state=, 20)
+      end
     end
-    mock.verify
+
+    lock_mock.verify
+    unlock_mock.verify
+    assert_equal 20, part.state
   end
 
   def test_micro_delay
