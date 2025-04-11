@@ -121,7 +121,7 @@ module Denko
         @state_mutex.lock
         @state[:count] = reading[:count]
         @state[:angle] = reading[:angle]
-        @state_mutex.lock
+        @state_mutex.unlock
         @state
       end
     end
