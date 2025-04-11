@@ -1,7 +1,17 @@
 module Denko
   module Behaviors
     module Reader
+      include Lifecycle
       include Callbacks
+
+      #
+      # DO NOT REPLACE WITH MutexStub!
+      # Even on CRuby with GIL, small chance this could cause misordered readings if
+      # two threads are reading.
+      #
+      after_initialize do
+        @reader_mutex = Mutex.new
+      end
 
       READ_WAIT_TIME = 0.001
       #
@@ -46,11 +56,11 @@ module Denko
       # callbacks, and @state is set. DOES NOT BLOCK calling thread.
       #
       def read_nb(*args, **kwargs, &block)
-        reader_mutex.lock
+        @reader_mutex.lock
         sleep READ_WAIT_TIME while read_busy?
         @reading_normally = true
         _read(*args, **kwargs, &block)
-        reader_mutex.unlock
+        @reader_mutex.unlock
       end
 
       #
@@ -75,7 +85,7 @@ module Denko
       #
       def read_using(reader, *args, **kwargs, &block)
         # Lock, THEN wait for other normal reads to finish.
-        reader_mutex.lock
+        @reader_mutex.lock
         sleep READ_WAIT_TIME while read_busy?
         @reading_normally = true
 
@@ -85,7 +95,7 @@ module Denko
         add_callback(:read, &block) if block_given?
 
         reader.call(*args, **kwargs)
-        reader_mutex.unlock
+        @reader_mutex.unlock
 
         # Wait for #update to remove the :read callbacks (return_value is set).
         sleep READ_WAIT_TIME while callbacks[:read]
@@ -102,7 +112,7 @@ module Denko
         raise StandardError, "#read_raw unavailable while listening" if @listening
 
         # Lock, THEN wait for any normal read to finish.
-        reader_mutex.lock
+        @reader_mutex.lock
         sleep READ_WAIT_TIME while read_busy?
         @reading_raw = true
 
@@ -113,22 +123,13 @@ module Denko
         # Call reader, but block and keep the lock until :read_raw callback gets run.
         reader.call(*args, **kwargs)
         sleep READ_WAIT_TIME while callbacks[:read_raw]
-        reader_mutex.unlock
+        @reader_mutex.unlock
 
         return_value
       end
 
       def read_busy?
         @reading_normally || @reading_raw
-      end
-
-      #
-      # DO NOT REPLACE WITH MutexStub!
-      # Even on CRuby with GIL, small chance this could cause misordered readings if
-      # two threads are reading.
-      #
-      def reader_mutex
-        @reader_mutex ||= Mutex.new
       end
     end
   end

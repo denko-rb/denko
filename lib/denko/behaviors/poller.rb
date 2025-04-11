@@ -14,12 +14,12 @@ module Denko
 
         threaded_loop do
           # Lock, THEN wait for other normal reads to finish.
-          reader_mutex.lock
+          @reader_mutex.lock
           sleep 0.001 while read_busy?
           @reading_normally = true
 
           method.call(*args)
-          reader_mutex.unlock
+          @reader_mutex.unlock
 
           sleep interval
         end
