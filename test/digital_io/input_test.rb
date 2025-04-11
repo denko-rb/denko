@@ -16,7 +16,7 @@ class DigitalIOInputTest < Minitest::Test
     end
     mock.verify
   end
-  
+
   def test_converts_to_integer
     part
     part.update("1")
@@ -26,7 +26,7 @@ class DigitalIOInputTest < Minitest::Test
   def test__read
     mock = Minitest::Mock.new.expect :call, nil, [14]
     board.stub(:digital_read, mock) do
-      part._read
+      part.read_nb
     end
     mock.verify
   end

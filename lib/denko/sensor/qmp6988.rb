@@ -164,8 +164,8 @@ module Denko
 
       def chip_id
         return @chip_id if @chip_id
-        i2c_read(1, register: CHIP_ID_REGISTER)
-        sleep 0.001 while !@chip_id
+        bytes = i2c_read_raw(1, register: CHIP_ID_REGISTER)
+        @chip_id = bytes[0] if bytes
         @chip_id
       end
 
@@ -184,19 +184,8 @@ module Denko
       end
 
       def pre_callback_filter(bytes)
-        if bytes.length == DATA_LENGTH
-          return process_reading(bytes)
-        elsif bytes.length == CONFIG_LENGTH
-          process_config(bytes)
-        elsif bytes.length == CALIBRATION_LENGTH
-          process_calibration(bytes)
-        elsif bytes.length == CHIP_ID_LENGTH
-          @chip_id = bytes[0]
-        end
-        return nil
-      end
+        return nil unless bytes.length == DATA_LENGTH
 
-      def process_reading(bytes)
         # Temperature and pressure are 24-bits long each, and need 2^23 subtracted.
         dt = ((bytes[3] << 16) + (bytes[4] << 8) + bytes[5]) - (0b1 << 23)
         dp = ((bytes[0] << 16) + (bytes[1] << 8) + bytes[2]) - (0b1 << 23)
@@ -230,14 +219,10 @@ module Denko
       end
 
       def get_config_registers
-        @registers = {}
-        i2c_read(CONFIG_LENGTH, register: IIR_REGISTER)
-        sleep 0.001 while @registers.empty?
-        @registers
-      end
-
-      def process_config(bytes)
-        @registers = { f1: bytes[0], f2: bytes[1], f3: bytes[2], f4: bytes[3], f5: bytes[4] }
+        bytes = i2c_read_raw(CONFIG_LENGTH, register: IIR_REGISTER)
+        if bytes
+          @registers = { f1: bytes[0], f2: bytes[1], f3: bytes[2], f4: bytes[3], f5: bytes[4] }
+        end
       end
       attr_reader :registers
 
@@ -262,10 +247,8 @@ module Denko
       }
 
       def get_calibration_data
-        i2c_read(CALIBRATION_LENGTH, register: CALIBRATION_REGISTER)
-      end
+        bytes = i2c_read_raw(CALIBRATION_LENGTH, register: CALIBRATION_REGISTER)
 
-      def process_calibration(bytes)
         if bytes
           # These 2 values are 20-bit instead of 16-bit, so can't combine them with #pack.
           a0_unsigned  = (bytes[18] << 12) + (bytes[19] << 4) + (bytes[24] & 0b00001111)

@@ -37,7 +37,7 @@ class DS3231Test < Minitest::Test
     board.inject_read_for_i2c(0, "104-0,0,0,6,1,1,48")
 
     mock = Minitest::Mock.new.expect :call, nil, [part.address, 0x00, 7, 100000, false]
-    bus.stub(:_read, mock) do
+    bus.stub(:read_nb, mock) do
       part.time
     end
     mock.verify
@@ -45,6 +45,7 @@ class DS3231Test < Minitest::Test
 
   def test_pre_callback_filter
     mock = Minitest::Mock.new.expect :call, nil, [Time.new(2000, 1, 1, 0, 0, 0.0)]
+    part.read_nb
     part.stub(:update_state, mock) do
       bus.send(:update, "104-0,0,0,6,1,1,48")
     end

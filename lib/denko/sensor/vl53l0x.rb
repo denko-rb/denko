@@ -21,11 +21,11 @@ module Denko
 
       after_initialize do
         # Verify reference registerrs
-        reference_regs = i2c_read_blocking(REFERENCE_VALUES.length, register: REFERENCE_REGISTER_START)
+        reference_regs = i2c_read_raw(REFERENCE_VALUES.length, register: REFERENCE_REGISTER_START)
         raise "reference registers do not match. May not be VL53L0X" unless reference_regs == REFERENCE_VALUES
 
         # Initialization sequence
-        @stop_variable = i2c_read_blocking(1, register: INTERNAL_TUNING_1)[0]
+        @stop_variable = i2c_read_raw(1, register: INTERNAL_TUNING_1)[0]
         i2c_write [POWER_MANAGEMENT_GO1_POWER_FORCE, 0x01]
         i2c_write [INTERNAL_TUNING_2, 0x01]
         i2c_write [SYSRANGE_START, 0x00]
@@ -35,7 +35,7 @@ module Denko
         i2c_write [POWER_MANAGEMENT_GO1_POWER_FORCE, 0x00]
 
         # Wait for initialization to complete.
-        sleep 0.010 while (i2c_read_blocking(1, register: SYSRANGE_START)[0] & 0b01 > 0)
+        sleep 0.010 while (i2c_read_raw(1, register: SYSRANGE_START)[0] & 0b01 > 0)
 
         # Go into continuous mode.
         i2c_write [SYSRANGE_START, 0x02]

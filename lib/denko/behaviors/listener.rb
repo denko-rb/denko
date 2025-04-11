@@ -2,7 +2,7 @@ module Denko
   module Behaviors
     module Listener
       include Callbacks
-      
+
       attr_reader :divider
 
       #
@@ -10,16 +10,18 @@ module Denko
       # which should be defined in the including class.
       #
       def listen(divider=nil, &block)
-        @divider = divider || @listener
+        @divider = divider
         stop
         add_callback(:listen, &block) if block_given?
         _listen(@divider)
+        @listening = true
       end
 
       def stop
         super if defined?(super)
         _stop_listener
         remove_callbacks :listen
+        @listening = false
       end
     end
   end

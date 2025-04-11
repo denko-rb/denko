@@ -12,7 +12,7 @@ class AnalogIOInputTest < Minitest::Test
   def test__read
     mock = Minitest::Mock.new.expect :call, nil, [14, nil, nil, nil]
     board.stub(:analog_read, mock) do
-      part._read
+      part.read_nb
     end
     mock.verify
   end

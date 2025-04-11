@@ -120,9 +120,6 @@ module Denko
           @raw_bytes[3] = data[1]
           @raw_bytes[4] = data[2]
           return decode_reading(@raw_bytes)
-        # Calibration data is 22 bytes.
-        elsif data.length == 22
-          process_calibration(data)
         end
 
         # Anything other than pressure avoids callbacks.
@@ -199,8 +196,8 @@ module Denko
       attr_reader :calibration_data_loaded
 
       def get_calibration_data
-        #  Calibration data is 22 bytes starting at address 0xAA.
-        read_using -> { i2c_read(22, register: 0xAA) }
+        bytes = i2c_read_raw(22, register: 0xAA)
+        process_calibration(bytes) if bytes
       end
 
       def process_calibration(bytes)

@@ -150,7 +150,7 @@ class BoardMock < Denko::Board
     @read_injection_mutex = Mutex.new
   end
 
-  WAITING_ON_READ_KEYS = [:read, :bus_controller, :board_proxy, :force_udpate]
+  WAITING_ON_READ_KEYS = [:read, :read_raw, :bus_controller, :board_proxy, :force_udpate]
 
   def waiting_on_read(component)
     WAITING_ON_READ_KEYS.each do |key|

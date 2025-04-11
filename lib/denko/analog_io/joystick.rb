@@ -69,7 +69,7 @@ module Denko
 
       def read
         # Blocking read only for last axis read.
-        x._read
+        x.read_nb
         y.read
         state
       end

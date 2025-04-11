@@ -4,7 +4,7 @@ class OneWireBusTest < Minitest::Test
   def board
     @board ||= BoardMock.new
   end
-  
+
   def part
     return @part if @part
     # Respond with disabled parasite power.
@@ -62,7 +62,7 @@ class OneWireBusTest < Minitest::Test
   end
 
   def test_device_present_in_mutex
-    # part.device_present calls #reset which expects a response. 
+    # part.device_present calls #reset which expects a response.
     board.inject_read_for_component(part, 1, "1")
 
     mock = Minitest::Mock.new.expect(:call, nil)
@@ -76,12 +76,12 @@ class OneWireBusTest < Minitest::Test
     mock = Minitest::Mock.new
     mock.expect(:call, nil, [1])
     mock.expect(:call, nil, [1])
-    
+
     part.stub(:reset, mock) do
       # Give 0 for first reading, device present
       board.inject_read_for_component(part, 1, "0")
       assert part.device_present
-      
+
       # Give 1 for second reading, no device
       board.inject_read_for_component(part, 1,  "1")
       refute part.device_present
@@ -107,12 +107,12 @@ class OneWireBusTest < Minitest::Test
     end
     mock.verify
   end
-  
+
   def test__read
     part
     mock = Minitest::Mock.new.expect :call, nil, [1, 4]
     board.stub(:one_wire_read, mock) do
-      part._read(4)
+      part.read_nb(4)
     end
     mock.verify
   end
@@ -124,16 +124,16 @@ class OneWireBusTest < Minitest::Test
     mock.expect :call, nil, [1, true,  [255, 177, 0x48]]
     mock.expect :call, nil, [1, false, [255, 177, 0x55]]
     mock.expect :call, nil, [1, false, [255, 177, 0x44]]
-    
+
     board.stub(:one_wire_write, mock) do
       # Parasite power on and parasite power functions.
       part.instance_variable_set(:@parasite_power, true)
       part.write [255, 177, 0x44]
       part.write [255, 177, 0x48]
-      
+
       # Parasite power on and not parasite power functions.
       part.write [255, 177, 0x55]
-      
+
       # Parasite power off and would-be parasite power function.
       part.instance_variable_set(:@parasite_power, false)
       part.write [255, 177, 0x44]
