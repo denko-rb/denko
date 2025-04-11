@@ -5,12 +5,12 @@ module Denko
       include Callbacks
 
       #
-      # DO NOT REPLACE WITH MutexStub!
-      # Even on CRuby with GIL, small chance this could cause misordered readings if
-      # two threads are reading.
+      # DO NOT REPLACE with MutexStub on CRuby!
+      # Even with GIL, misordered readings possible with multiple threads.
       #
       after_initialize do
-        @reader_mutex = Mutex.new
+        # mruby doesn't have Thread or Mutex, so only stub there.
+        @reader_mutex = Denko.mruby? ? Denko::MutexStub.new : Mutex.new
       end
 
       READ_WAIT_TIME = 0.001

@@ -3,7 +3,7 @@ module Denko
     module Common
       def initialize_buffer
         @buffer       = ""
-        @buffer_mutex = Mutex.new
+        @buffer_mutex = Denko.gil? ? Denko::MutexStub.new : Mutex.new
         self.add_callback(:buffer) do |data|
           @buffer_mutex.lock
           @buffer = "#{@buffer}#{data}"

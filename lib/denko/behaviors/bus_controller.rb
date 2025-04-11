@@ -5,7 +5,8 @@ module Denko
       include Subcomponents
 
       def mutex
-        @mutex ||= Mutex.new
+        # mruby doesn't have Thread or Mutex, so only stub there.
+        @mutex ||= Denko.mruby? ? Denko::MutexStub.new : Mutex.new
       end
     end
   end

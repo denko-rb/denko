@@ -5,7 +5,7 @@ module Denko
 
       # Force state and mutex initialization.
       after_initialize do
-        @state_mutex = Denko.cruby? ? Denko::MutexStub.new : Mutex.new
+        @state_mutex = Denko.gil? ? Denko::MutexStub.new : Mutex.new
         state
       end
 

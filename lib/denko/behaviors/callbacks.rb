@@ -5,7 +5,7 @@ module Denko
       include State
 
       after_initialize do
-        @callback_mutex = Denko.cruby? ? Denko::MutexStub.new : Mutex.new
+        @callback_mutex = Denko.gil? ? Denko::MutexStub.new : Mutex.new
         callbacks
       end
 

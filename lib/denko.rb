@@ -5,8 +5,12 @@ module Denko
     File.expand_path '../..', __FILE__
   end
 
-  def self.cruby?
-    RUBY_ENGINE == "ruby"
+  def self.gil?
+    ["mruby", "ruby"].include? RUBY_ENGINE
+  end
+
+  def self.mruby?
+    RUBY_ENGINE == "mruby"
   end
 end
 
