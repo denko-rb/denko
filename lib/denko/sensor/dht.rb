@@ -8,7 +8,7 @@ module Denko
       include HumidityHelper
 
       def state
-        state_mutex.synchronize { @state ||= { temperature: nil, humidity: nil } }
+        @state ||= { temperature: nil, humidity: nil }
       end
 
       def reading

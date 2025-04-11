@@ -14,7 +14,7 @@ module Denko
       end
 
       def state
-        state_mutex.synchronize { @state }
+        @state
       end
 
       protected

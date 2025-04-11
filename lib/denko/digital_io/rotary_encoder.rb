@@ -65,7 +65,7 @@ module Denko
       end
 
       def state
-        state_mutex.synchronize { @state ||= { count: 0, angle: 0 } }
+        @state ||= { count: 0, angle: 0 }
       end
 
       def reading

@@ -16,7 +16,7 @@ module Denko
       end
 
       def state
-        state_mutex.synchronize { @state ||= Array.new(board.eeprom_length, nil) }
+        @state ||= Array.new(board.eeprom_length, nil)
       end
 
       def load

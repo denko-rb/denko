@@ -30,7 +30,7 @@ module Denko
       # pin as a 0 or 1 in an array that is (@bytes * 8) long.
       #
       def state
-        state_mutex.synchronize { @state ||= Array.new(bytes*8) { 0 } }
+        @state ||= Array.new(bytes*8) { 0 }
       end
     end
   end

@@ -6,7 +6,7 @@ module Denko
       FAMILY_CODE = 0x28
 
       def state
-        state_mutex.synchronize { @state ||= { temperature: nil } }
+        @state ||= { temperature: nil }
       end
 
       def reading

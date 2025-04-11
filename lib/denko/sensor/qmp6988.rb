@@ -90,7 +90,7 @@ module Denko
       end
 
       def state
-        state_mutex.synchronize { @state ||= { temperature: nil, pressure: nil } }
+        @state ||= { temperature: nil, pressure: nil }
       end
 
       def reading
