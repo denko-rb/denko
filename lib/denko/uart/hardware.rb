@@ -4,6 +4,7 @@ module Denko
       include Behaviors::SinglePin
       include Behaviors::Callbacks
       include Behaviors::Lifecycle
+      include Common
 
       attr_reader :index, :baud
 
@@ -21,32 +22,6 @@ module Denko
       after_initialize do
         initialize_buffer
         start(params[:baud] ||= 9600)
-      end
-
-      def initialize_buffer
-        @buffer       = ""
-        @buffer_mutex = Mutex.new
-        self.add_callback(:buffer) do |data|
-          @buffer_mutex.synchronize do
-            @buffer = "#{@buffer}#{data}"
-          end
-        end
-      end
-
-      def gets
-        @buffer_mutex.synchronize do
-          newline = @buffer.index("\n")
-          return nil unless newline
-          line = @buffer[0..newline-1]
-          @buffer = @buffer[newline+1..-1]
-          return line
-        end
-      end
-
-      def flush
-        @buffer_mutex.synchronize do
-          @buffer = ""
-        end
       end
 
       def start(baud)
