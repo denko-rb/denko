@@ -14,7 +14,10 @@ module Denko
       end
 
       def state
-        @state
+        state_mutex.lock
+        value = @state
+        state_mutex.unlock
+        value
       end
 
       protected
