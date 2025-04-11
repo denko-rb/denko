@@ -205,7 +205,7 @@ class BoardMock < Denko::Board
 
   def inject_read(component, string)
     # Wait for the component to have a "WAITING_ON_READ" callback.
-    sleep(0.001) while !component.callback_mutex
+    # sleep(0.001) while !component.instance_variable_get(:@callback_mutex)
     sleep(0.001) while !component.callbacks
     sleep(0.001) while !waiting_on_read(component)
 

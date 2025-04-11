@@ -29,23 +29,33 @@ class CallbacksTest < Minitest::Test
 
   def callback_mutex_is_correct_class
     if (RUBY_ENGINE == "ruby")
-      assert_equal Denko::MutexStub, part.callback_mutex.class
+      assert_equal Denko::MutexStub, part.instance_variable_get(:@callback_mutex).class
     else
-      assert_equal Mutex, part.callback_mutex.class
+      assert_equal Mutex, part.instance_variable_get(:@callback_mutex).class
     end
   end
 
   def test_callback_mutex
     callback = Proc.new{}
-    mock = Minitest::Mock.new
-    3.times {mock.expect(:call, nil)}
+    lock_mock = Minitest::Mock.new
+    2.times {lock_mock.expect(:call, nil)}
 
-    part.callback_mutex.stub(:synchronize, mock) do
-      part.callbacks
-      part.add_callback(:key, &callback)
-      part.remove_callbacks(:key)
+    unlock_mock = Minitest::Mock.new
+    2.times {unlock_mock.expect(:call, nil)}
+
+    mutex = part.instance_variable_get(:@callback_mutex)
+    mutex.stub(:lock, lock_mock) do
+      mutex.stub(:unlock, unlock_mock) do
+        part.callbacks
+        assert_equal({}, part.callbacks)
+        part.add_callback(:key, &callback)
+        assert part.callbacks[:key]
+        part.remove_callbacks(:key)
+        assert_equal({}, part.callbacks)
+      end
     end
-    mock.verify
+    lock_mock.verify
+    unlock_mock.verify
   end
 
   def test_add_callback

@@ -84,10 +84,8 @@ module Denko
 
         bits = byte_array_to_bit_array(byte_array)
 
-        callback_mutex.synchronize {
-          break unless @callbacks
-          break if @callbacks.empty?
-
+        @callback_mutex.lock
+        if @callbacks && !@callbacks.empty?
           # Arduino doesn't de-duplicate state. Do it, but honor :force_update callbacks.
           if (bits != state) || @callbacks[:force_update]
             @callbacks.each_value do |array|
@@ -98,7 +96,9 @@ module Denko
           # Remove both :read and :force update while inside the lock.
           @callbacks.delete(:read)
           @callbacks.delete(:force_update)
-        }
+        end
+        @callback_mutex.unlock
+
         self.state = bits
       end
 
@@ -107,7 +107,7 @@ module Denko
         if listening_pins[pin] && (value != state[pin])
           part.update(value)
         # Also update if the component forced a read.
-        # Always called inside callback_mutex, so @callbacks, not callbacks
+        # Always called inside @callback_mutex, so @callbacks, not callbacks
         elsif reading_pins[pin] && @callbacks[:force_update]
           part.update(value)
         end
