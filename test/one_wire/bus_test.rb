@@ -18,24 +18,25 @@ class OneWireBusTest < Minitest::Test
     assert bus2.parasite_power
   end
 
-  def test_read_power_supply_locks_mutex
-    mock = Minitest::Mock.new.expect(:call, nil)
-    part.mutex.stub(:synchronize, mock) do
-      part.read_power_supply
-    end
-    mock.verify
-  end
-
   def test_read_power_supply
-    part
+    board.inject_read_for_component(part, 1, "0")
+
+    lock_mock = Minitest::Mock.new.expect(:call, nil)
+    unlock_mock = Minitest::Mock.new.expect(:call, nil)
+
+    part.mutex.stub(:lock, lock_mock) do
+      part.mutex.stub(:unlock, unlock_mock) do
+        part.read_power_supply
+      end
+    end
+
+    lock_mock.verify
+    unlock_mock.verify
+    assert part.parasite_power
 
     board.inject_read_for_component(part, 1, "1")
     part.read_power_supply
     refute part.parasite_power
-
-    board.inject_read_for_component(part, 1, "0")
-    part.read_power_supply
-    assert part.parasite_power
   end
 
   def test_read_power_supply_sends_board_commands
@@ -65,11 +66,17 @@ class OneWireBusTest < Minitest::Test
     # part.device_present calls #reset which expects a response.
     board.inject_read_for_component(part, 1, "1")
 
-    mock = Minitest::Mock.new.expect(:call, nil)
-    part.mutex.stub(:synchronize, mock) do
-      part.device_present
+    lock_mock = Minitest::Mock.new.expect(:call, nil)
+    unlock_mock = Minitest::Mock.new.expect(:call, nil)
+
+    part.mutex.stub(:lock, lock_mock) do
+      part.mutex.stub(:unlock, unlock_mock) do
+        part.device_present
+      end
     end
-    mock.verify
+
+    lock_mock.verify
+    unlock_mock.verify
   end
 
   def test_set_device_present

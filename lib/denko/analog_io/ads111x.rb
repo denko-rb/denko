@@ -71,29 +71,32 @@ module Denko
 
       def analog_read(pin, negative_pin=nil, gain=nil, sample_rate=nil)
         # Wrap in mutex so calls and callbacks are atomic.
-        mutex.synchronize do
-          # Default gain and sample rate.
-          gain        ||= 0b010
-          sample_rate ||= 0b100
+        mutex.lock
 
-          # Set these for callbacks.
-          self.active_pin   = pin
-          self.active_gain  = gain
+        # Default gain and sample rate.
+        gain        ||= 0b010
+        sample_rate ||= 0b100
 
-          # Set gain in upper config register.
-          raise ArgumentError "wrong gain: #{gain.inspect} given for ADS111X" unless PGA_RANGE.include?(gain)
-          config_register[0] = self.class::BASE_MSB | (gain << 1)
+        # Set these for callbacks.
+        self.active_pin   = pin
+        self.active_gain  = gain
 
-          # Set mux bits in upper config register.
-          mux_bits = pins_to_mux_bits(pin, negative_pin)
-          config_register[0] = config_register[0] | (mux_bits << 4)
+        # Set gain in upper config register.
+        raise ArgumentError "wrong gain: #{gain.inspect} given for ADS111X" unless PGA_RANGE.include?(gain)
+        config_register[0] = self.class::BASE_MSB | (gain << 1)
 
-          # Set sample rate in lower config_register.
-          raise ArgumentError "wrong sample_rate: #{sample_rate.inspect} given for ADS111X" unless SAMPLE_RATE_RANGE.include?(sample_rate)
-          config_register[1] = self.class::BASE_LSB | (sample_rate << 5)
+        # Set mux bits in upper config register.
+        mux_bits = pins_to_mux_bits(pin, negative_pin)
+        config_register[0] = config_register[0] | (mux_bits << 4)
 
-          read(config_register)
-        end
+        # Set sample rate in lower config_register.
+        raise ArgumentError "wrong sample_rate: #{sample_rate.inspect} given for ADS111X" unless SAMPLE_RATE_RANGE.include?(sample_rate)
+        config_register[1] = self.class::BASE_LSB | (sample_rate << 5)
+
+        result = read(config_register)
+        mutex.unlock
+
+        result
       end
 
       def pins_to_mux_bits(pin, negative_pin)

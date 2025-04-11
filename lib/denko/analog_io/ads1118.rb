@@ -37,10 +37,10 @@ module Denko
       end
 
       def _temperature_read
-        # Wrap in mutex to not interfere with other reads.
-        mutex.synchronize do
-          _read([0b10000001, 0b10011011])
-        end
+        # Don't interfere with subcomponent reads.
+        mutex.lock
+        _read([0b10000001, 0b10011011])
+        mutex.unlock
       end
 
       def temperature_read(&block)

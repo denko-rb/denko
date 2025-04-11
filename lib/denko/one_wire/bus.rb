@@ -14,26 +14,30 @@ module Denko
       end
 
       def read_power_supply
-        mutex.synchronize do
-          # Without driving low first, results are inconsistent.
-          board.set_pin_mode(self.pin, :output)
-          board.digital_write(self.pin, board.low)
-          sleep 0.1
+        mutex.lock
 
-          reset
-          write(SKIP_ROM, READ_POWER_SUPPLY)
+        # Without driving low first, results are inconsistent.
+        board.set_pin_mode(self.pin, :output)
+        board.digital_write(self.pin, board.low)
+        sleep 0.1
 
-          # Only LSBIT matters, but we can only read whole bytes.
-          byte = read(1)
-          @parasite_power = (byte[0] == 0) ? true : false
-        end
+        reset
+        write(SKIP_ROM, READ_POWER_SUPPLY)
+
+        # Only LSBIT matters, but we can only read whole bytes.
+        byte = read(1)
+        @parasite_power = (byte[0] == 0) ? true : false
+
+        mutex.unlock
+        @parasite_power
       end
 
       def device_present
-        mutex.synchronize do
-          byte = read_using -> { reset(1) }
-          (byte == 0) ? true : false
-        end
+        mutex.lock
+        byte = read_using -> { reset(1) }
+        presence = (byte == 0) ? true : false
+        mutex.unlock
+        presence
       end
       alias :device_present? :device_present
 
