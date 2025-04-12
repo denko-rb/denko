@@ -136,11 +136,11 @@ Polling and reading follow a call and response pattern.
 
 | Name                | Status         | Interface                    | Component Class     | Notes |
 | :---------------    | :------:       | :--------                    | :---------------    |------ |
-| Canvas              | :yellow_heart: | -                            | `Display::Canvas`   | Mono graphics in Ruby
 | HD44780 LCD         | :green_heart:  | Digital Out, Output Register | `Display::HD44780`  |
-| SSD1306 OLED        | :green_heart:  | I2C or SPI                   | `Display::SSD1306`  | Mono OLED: 128x64, 128x32
-| SH1106 OLED         | :green_heart:  | I2C or SPI                   | `Display::SH1106`   | Works same as SSD1306
-| SH1107 OLED         | :heart:        | I2C                          | `Display::SH1107`   | 128x128 Mono OLED
+| Canvas              | :yellow_heart: | -                            | `Display::Canvas`   | Mono graphics in Ruby
+| SSD1306             | :green_heart:  | I2C or SPI                   | `Display::SSD1306`  | Mono OLED: 128x64, 128x32
+| SH1106              | :green_heart:  | I2C or SPI                   | `Display::SH1106`   | Mono OLED: 128x64
+| SH1107              | :green_heart:  | I2C or SPI                   | `Display::SH1107`   | Mono OLED: 128x128
 | LS027B7DH01         | :heart:        | SPI                          | `Display::SharpLCD` | 400x240 Mono Reflective LCD
 | ST7565R             | :heart:        | SPI                          | `Display::ST7565R`  | 128x64 Mono LCD
 | ST7302              | :heart:        | SPI                          | `Display::ST7302`   | 250x122 Mono Reflective LCD

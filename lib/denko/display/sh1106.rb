@@ -1,20 +1,21 @@
 module Denko
   module Display
-    class SH1106 < SSD1306
+    class SH1106
+      include MonoOLED
       #
-      # Unlike the SSD1306, SH1106 only supports page addressing mode.
+      # SH1106/SH1107 only support page addressing mode.
       # Can't send all data as sequential pages and let page index auto-increment,
       # like with horizontal addressing on the SSD1306.
       #
       ADDRESSING_MODE_DEFAULT = 0x02
+      #
+      # SH1106 has RAM for 132 columns, but only 128 pixels, so offset by 2 to center.
+      def ram_x_offset
+        2
+      end
 
-      def draw(x_min=0, x_max=(@columns-1), y_min=0, y_max=(@rows-1))
-        # Convert y-coords to page coords.
-        p_min = y_min / 8
-        p_max = y_max / 8
-
-        # Offset x_min by 2, since SH1106 has RAM for 132 columns, but we only use 128, then convert to nibbles.
-        x = x_min + 2
+      def draw_partial(buffer, x_min, x_max, p_min, p_max)
+        x = x_min + ram_x_offset
         x_lower = (x & 0b00001111)
         x_upper = (x & 0b11110000) >> 4
 
