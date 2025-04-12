@@ -1,6 +1,6 @@
 module Denko
   module Sensor
-    class AHT10
+    class AHT1X
       include I2C::Peripheral
       include Behaviors::Poller
       include Behaviors::Lifecycle
@@ -104,14 +104,8 @@ module Denko
         @state
       end
     end
-  end
-end
 
-module Denko
-  module Sensor
-    class AHT20 < AHT10
-      include I2C::Peripheral
-      include Behaviors::Poller
+    class AHT2X < AHT1X
       #
       # Changed constants compared to AHT10. Always access with self.class::CONSTANT_NAME
       # in shared methods coming from the superclass.
@@ -157,6 +151,12 @@ module Denko
         # Limit CRC size to 8 bits.
         crc = crc & 0xFF
       end
+    end
+
+    #
+    # AHT3X and AHT2X have different specs, but work the same.
+    #
+    class AHT3X < AHT2X
     end
   end
 end
