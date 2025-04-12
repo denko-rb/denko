@@ -3,13 +3,11 @@ module Denko
     module SinglePin
       include Component
       attr_reader :pin, :mode
-      
-      def mode=(mode)          
+
+      def mode=(mode)
         board.set_pin_mode(pin, mode)
         @mode = mode
       end
-      
-    protected
 
       def convert_pins(options={})
         raise ArgumentError, 'a pin is required for this component' unless options[:pin]

@@ -24,7 +24,7 @@ module Denko
       end
 
       def convert_pins(options={})
-        self.pins = {}
+        @pins = {}
         params[:pins].each { |key,pin| self.pins[key] = board.convert_pin(pin) }
         pin_array = pins.values
         raise ArgumentError, "duplicate pins in: #{pins.inspect}" unless pin_array == pin_array.uniq
@@ -67,10 +67,6 @@ module Denko
       def require_pins(*array)
         [array].flatten.each { |name| require_pin(name) }
       end
-
-      private
-
-      attr_writer :pins, :proxies
     end
   end
 end

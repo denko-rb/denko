@@ -5,6 +5,8 @@ module Denko
       include Threaded
 
       def poll_using(method, interval, *args, &block)
+        mruby_thread_check
+
         unless [Integer, Float].include? interval.class
           raise ArgumentError, "wrong interval given to #poll : #{interval.inspect}"
         end
@@ -30,7 +32,7 @@ module Denko
       end
 
       def stop
-        super if defined?(super)
+        begin; super; rescue NoMethodError; end
         remove_callbacks :poll
       end
     end

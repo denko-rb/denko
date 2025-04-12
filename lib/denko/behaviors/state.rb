@@ -16,8 +16,6 @@ module Denko
         value
       end
 
-      protected
-
       def state=(value)
         @state_mutex.lock
         @state = value

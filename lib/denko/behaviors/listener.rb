@@ -18,7 +18,7 @@ module Denko
       end
 
       def stop
-        super if defined?(super)
+        begin; super; rescue NoMethodError; end
         _stop_listener
         remove_callbacks :listen
         @listening = false
