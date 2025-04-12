@@ -6,6 +6,10 @@ module Denko
     attr_reader :name, :version, :serial_buffer_size, :aux_limit, :eeprom_length, :i2c_limit
     attr_reader :low, :high, :analog_write_resolution, :analog_read_resolution, :analog_write_high, :analog_read_high
 
+    def platform
+      :arduino
+    end
+
     def initialize(connection, options={})
       # Shake hands
       @connection = connection

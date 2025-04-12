@@ -5,7 +5,7 @@ module Denko
     MAPS_FOLDER = File.join(Denko.root, "vendor/board-maps/yaml")
 
     attr_reader :map
-    
+
     def substitute_zero_pins
       ["SDA", "SCL", "MOSI", "MISO", "SCK", "SS"].each do |name|
         symbol      = name.to_sym
@@ -25,7 +25,7 @@ module Denko
     rescue
       raise StandardError, "error loading board map from file for board name: '#{board_name}'"
     end
-    
+
     def convert_pin(pin)
       # Convert non numerical strings to symbols.
       pin = pin.to_sym if (pin.class == String) && !(pin.match (/\A\d+\.*\d*/))
@@ -49,6 +49,10 @@ module Denko
         return pin.to_i
       rescue
         raise ArgumentError, "error in pin: #{pin.inspect}"
+      end
+
+      def pin_is_pwm?(pin)
+        false
       end
     end
   end

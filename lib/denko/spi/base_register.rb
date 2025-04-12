@@ -9,6 +9,10 @@ module Denko
       #
       include Behaviors::BoardProxy
 
+      def platform
+        :spi_register
+      end
+
       # Default registers to 1 byte, or 8 pins when used as Board Proxy.
       # Can be ignored if reading / writing the register directly.
       def bytes

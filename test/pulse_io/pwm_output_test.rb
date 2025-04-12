@@ -64,9 +64,9 @@ class PWMOutTest < Minitest::Test
     part
     mock = Minitest::Mock.new
     if (RUBY_VERSION.split(".")[0].to_i < 3)
-      mock.expect :call, nil, [14, :output_pwm], {frequency: 1000, resolution: 8}
+      mock.expect :call, nil, [14, :output_pwm], {frequency: 1000, :period=>1000000, resolution: 8}
     else
-      mock.expect :call, nil, [14, :output_pwm, {frequency: 1000, resolution: 8}]
+      mock.expect :call, nil, [14, :output_pwm, {frequency: 1000, :period=>1000000, resolution: 8}]
     end
 
     board.stub(:set_pin_mode, mock) do
@@ -81,9 +81,9 @@ class PWMOutTest < Minitest::Test
     part2
     mock = Minitest::Mock.new
     if (RUBY_VERSION.split(".")[0].to_i < 3)
-      mock.expect :call, nil, [6, :output_pwm], {frequency: 1000, resolution: 12}
+      mock.expect :call, nil, [6, :output_pwm], {frequency: 1000, :period=>1000000, resolution: 12}
     else
-      mock.expect :call, nil, [6, :output_pwm, {frequency: 1000, resolution: 12}]
+      mock.expect :call, nil, [6, :output_pwm, {frequency: 1000, :period=>1000000, resolution: 12}]
     end
 
     board.stub(:set_pin_mode, mock) do
@@ -98,9 +98,9 @@ class PWMOutTest < Minitest::Test
     part
     mock = Minitest::Mock.new
     if (RUBY_VERSION.split(".")[0].to_i < 3)
-      mock.expect :call, nil, [14, :output_pwm], {frequency: 500, resolution: 14}
+      mock.expect :call, nil, [14, :output_pwm], {frequency: 500, :period=>2000000, resolution: 14}
     else
-      mock.expect :call, nil, [14, :output_pwm, {frequency: 500, resolution: 14}]
+      mock.expect :call, nil, [14, :output_pwm, {frequency: 500, :period=>2000000, resolution: 14}]
     end
 
     board.stub(:set_pin_mode, mock) do

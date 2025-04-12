@@ -52,6 +52,10 @@ module Denko
       def digital_read(pin)
         state[pin]
       end
+
+      def pin_is_pwm?(pin)
+        false
+      end
     end
   end
 end

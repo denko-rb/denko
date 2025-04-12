@@ -5,19 +5,44 @@ module Denko
 
       interrupt_with :write, :pwm_write, :digital_write, :duty=
 
+      # Avoid setting :output mode if on PWM pin, and on a platform that muxes externally.
+      before_initialize do
+        b = params[:board]
+        p = params[:pin]
+        params[:mode] = :output_pwm if b.platform != :arduino && b.pin_is_pwm?(p)
+      end
+
+      # Call #pwm_enable immediately if params[:mode] was overriden to :output_pwm.
+      after_initialize do
+        pwm_enable if params[:mode] == :output_pwm
+      end
+
       def duty=(percent)
-        if board_is_piboard
-          pwm_write(percent)
+        if board.platform == :arduino
+          pwm_write((percent / 100.0 * pwm_high).round)
         else
-          pwm_write(((percent * pwm_high) / 100.0).round)
+          pwm_write((percent / 100.0 * period).round)
         end
       end
 
       def digital_write(value)
-        pwm_disable if pwm_enabled
-        super(value)
+        if pwm_enabled
+          if board.platform == :arduino
+            pwm_disable if pwm_enabled
+            super(value)
+          else
+            if value == 1
+              pwm_write(period)
+            else
+              pwm_write(0)
+            end
+          end
+        else
+          super(value)
+        end
       end
 
+      # Raw write. Takes nanoseconds on Linux, 0..pwm_high on Arduino.
       def pwm_write(value)
         pwm_enable unless pwm_enabled
         board.pwm_write(pin, value)
@@ -29,6 +54,10 @@ module Denko
         @frequency ||= params[:frequency] || 1000
       end
 
+      def period
+        @period ||= (1_000_000_000.0 / frequency).round
+      end
+
       def resolution
         @resolution ||= params[:resolution] || board.analog_write_resolution
       end
@@ -37,51 +66,44 @@ module Denko
         @pwm_high ||= (2**resolution-1)
       end
 
-      def frequency=(value)
+      def _frequency=(value)
         @frequency = value
+        @period    = nil
+      end
+
+      def _resolution=(value)
+        @resolution = value
+        @pwm_high   = nil
+      end
+
+      def frequency=(value)
+        self._frequency = value
         pwm_enable
       end
 
       def resolution=(value)
-        @resolution = value
-        @pwm_high   = (2**value-1)
+        self._resolution = value
         pwm_enable
       end
 
       def pwm_settings_hash
-        { frequency: frequency, resolution: resolution }
+        { frequency: frequency, period: period, resolution: resolution }
       end
 
       def pwm_enable(frequency: nil, resolution: nil)
-        @frequency  = frequency  if frequency
-        if resolution
-          @resolution = resolution
-          @pwm_high   = (2**resolution-1)
-        end
+        self._frequency  = frequency if frequency
+        self._resolution = resolution if resolution
 
         board.set_pin_mode(pin, :output_pwm, pwm_settings_hash)
         @mode = :output_pwm
       end
 
       def pwm_disable
-        self.mode = :output
+        self.mode = :output if board.platform == :arduino
       end
 
       def pwm_enabled
         mode == :output_pwm
-      end
-
-      def board_is_piboard
-        @board_is_piboard ||= piboard_check
-      end
-
-      def piboard_check
-        if Object.const_defined?("Denko::PiBoard")
-          if board.class.ancestors.include?(Denko::PiBoard)
-            return true
-          end
-        end
-        false
       end
     end
   end

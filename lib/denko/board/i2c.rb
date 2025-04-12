@@ -26,7 +26,7 @@ module Denko
 
     # CMD = 34
     def i2c_write(i2c_index, address, bytes, frequency=100000, repeated_start=false)
-      bytes = [bytes] unless bytes.class == Array
+      bytes = [bytes].flatten unless bytes.class == Array
       raise ArgumentError, "I2C write must be 1..#{i2c_limit} bytes long" if (bytes.length > i2c_limit || bytes.length < 1)
 
       # Use top bit of address to select stop condition (1), or repated start (0).

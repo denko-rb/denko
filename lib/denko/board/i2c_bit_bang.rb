@@ -13,7 +13,7 @@ module Denko
 
     # CMD = 31
     def i2c_bb_write(scl, sda, address, bytes, repeated_start=false)
-      bytes = [bytes] unless bytes.class == Array
+      bytes = [bytes].flatten unless bytes.class == Array
 
       # Use top bit of address to select stop condition (1), or repated start (0).
       send_stop = repeated_start ? 0 : 1
