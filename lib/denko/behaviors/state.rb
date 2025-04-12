@@ -9,18 +9,23 @@ module Denko
         state
       end
 
-      def state
-        @state_mutex.lock
-        value = @state
-        @state_mutex.unlock
-        value
-      end
+      # mruby optimization. Bypass state_mutex for simple states.
+      if Denko.mruby?
+        attr_accessor :state
+      else
+        def state
+          @state_mutex.lock
+          value = @state
+          @state_mutex.unlock
+          value
+        end
 
-      def state=(value)
-        @state_mutex.lock
-        @state = value
-        @state_mutex.unlock
-        @state
+        def state=(value)
+          @state_mutex.lock
+          @state = value
+          @state_mutex.unlock
+          @state
+        end
       end
 
       def update_state(value)

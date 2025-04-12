@@ -16,9 +16,17 @@ module Denko
         board_state.to_i
       end
 
-      def digital_write(value)
-        @board.digital_write(@pin, value)
-        self.state = value
+      # mruby optimization. Bypass #state= setter.
+      if Denko.mruby?
+        def digital_write(value)
+          @board.digital_write(@pin, value)
+          @state = value
+        end
+      else
+        def digital_write(value)
+          @board.digital_write(@pin, value)
+          self.state = value
+        end
       end
 
       alias :write :digital_write
