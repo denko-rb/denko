@@ -18,14 +18,12 @@ rgb_led = Denko::LED::RGB.new board: board,
   sleep 0.5
 end
 
-# Set duty cycle for each "sub LED".
+# RGB LED colors can be set as duty cycle (percentage) or 8-bit
+# values (0-255), regarldess of actuall PWM bit depth.
+#
 loop do
-  rgb_led.red.duty   = 100
-  rgb_led.green.duty = 50
-  rgb_led.blue.duty  = 0
+  rgb_led.write(100, 50, 0)
   sleep 0.5
-  rgb_led.red.duty   = 100
-  rgb_led.green.duty = 0
-  rgb_led.blue.duty  = 50
+  rgb_led.write_8_bit(255, 0, 128)
   sleep 0.5
 end

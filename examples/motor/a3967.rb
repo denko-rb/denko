@@ -7,7 +7,7 @@ require 'denko'
 PINS = { slp: 6, enable: 7, direction: 8, step: 10, ms1: 11, ms2: 12 }
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
-stepper = Denko::Motor::Stepper.new(board: board, pins: PINS)
+stepper = Denko::Motor::A3967.new(board: board, pins: PINS)
 
 # Default is 8 microsteps. Use 2 to move faster.
 stepper.microsteps = 2

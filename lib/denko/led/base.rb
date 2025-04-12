@@ -14,5 +14,10 @@ module Denko
       end
       attr_reader :blink_interval
     end
+
+    # Shortcut, so LED.new does LED::Base.new.
+    def self.new(options={})
+      self::Base.new(options)
+    end
   end
 end

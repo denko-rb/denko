@@ -170,7 +170,7 @@ Polling and reading follow a call and response pattern.
 | DRV8833              | :heart:        | Digi + PWM Out | `Motor::DRV8833`   | H-Bridge DC motor driver
 | TB6612               | :heart:        | Digi + PWM Out | `Motor::TB6612`    | H-Bridge DC motor driver
 | AT8236               | :heart:        | Digi + PWM Out | `Motor::AT8236`    | H-Bridge DC motor driver
-| A3967                | :green_heart:  | Digital Out    | `Motor::Stepper`   | 1-ch microstepper (EasyDriver)
+| A3967                | :green_heart:  | Digital Out    | `Motor::A3967`     | 1-ch microstepper (EasyDriver)
 | A4988                | :yellow_heart: | DigitalOut     | `Motor::Stepper`   | 1-ch microstepper
 | TMC2209              | :heart:        | -              | -                  | 1-ch silent stepper driver
 

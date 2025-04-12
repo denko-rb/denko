@@ -20,12 +20,8 @@ module Denko
         board.no_tone(pin)
       end
 
-      # Kill the thread if running, and send no_tone.
-      def stop
-        stop_thread
-        board.no_tone(pin)
-      end
-      alias :off :stop
+      alias :stop :no_tone
+      alias :off  :no_tone
     end
   end
 end

@@ -13,6 +13,7 @@ module Denko
       after_initialize do
         # Data received for the SDA pin is really for the bus.
         sda.add_callback(:bus_forwarder) { |data| self.update(data) }
+        board.i2c_bb_setup(pins[:scl], pins[:sda])
       end
 
       def _search

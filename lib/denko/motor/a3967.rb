@@ -1,6 +1,6 @@
 module Denko
   module Motor
-    class Stepper
+    class A3967
       include Behaviors::MultiPin
       include Behaviors::Lifecycle
 

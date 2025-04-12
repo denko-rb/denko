@@ -9,6 +9,10 @@ PIN = :A0
 board = Denko::Board.new(Denko::Connection::Serial.new)
 pot = Denko::AnalogIO::Potentiometer.new(pin: PIN, board: board)
 
+# Tell connected Board to send a value every 8ms (default), and enable smoothing.
+pot.listen
+pot.smoothing = true
+
 last_percent = nil
 pot.on_data do |reading|
   # Map reading to a decimal between 0 and 1.

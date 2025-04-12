@@ -15,19 +15,19 @@ class AnalogIOPotentiometerTest < Minitest::Test
       part
     end
 
-    assert part.smoothing
     assert_equal 8,   part.divider
     assert_equal [],  part.smoothing_set
   end
 
   def test_smoothing_on
+    part.smoothing = true
     7.times do
       part.update(10)
     end
     part.update(50)
 
     # 120/8 = 15
-    assert_equal part.state, 15
+    assert_equal 15, part.state
   end
 
   def test_smoothing_off

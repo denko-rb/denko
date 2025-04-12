@@ -11,20 +11,26 @@ module Denko
 
       # Format: [R, G, B]
       COLORS = {
-        red:     [255, 000, 000],
-        green:   [000, 255, 000],
-        blue:    [000, 000, 255],
-        cyan:    [000, 255, 255],
-        yellow:  [255, 255, 000],
-        magenta: [255, 000, 255],
-        white:   [255, 255, 255],
+        red:     [100, 000, 000],
+        green:   [000, 100, 000],
+        blue:    [000, 000, 100],
+        cyan:    [000, 100, 100],
+        yellow:  [100, 100, 000],
+        magenta: [100, 000, 100],
+        white:   [100, 100, 100],
         off:     [000, 000, 000]
       }
 
       def write(r, g, b)
-        red.write(r)
-        green.write(g)
-        blue.write(b)
+        red.duty   = r
+        green.duty = g
+        blue.duty  = b
+      end
+
+      def write_8_bit(r, g, b)
+        red.duty   = ((r / 255.0) * 100).round
+        green.duty = ((g / 255.0) * 100).round
+        blue.duty  = ((b / 255.0) * 100).round
       end
 
       def color=(color)

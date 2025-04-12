@@ -1,5 +1,3 @@
-require_relative 'canvas'
-
 module Denko
   module Display
     class SSD1306

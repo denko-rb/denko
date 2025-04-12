@@ -16,6 +16,7 @@ end
 
 # For method delegation.
 require 'forwardable'
+require 'bcd'
 
 # Bypass mutexes where possible for CRuby.
 require_relative 'denko/mutex_stub'

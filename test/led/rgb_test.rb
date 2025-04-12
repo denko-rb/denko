@@ -20,14 +20,14 @@ class RGBLEDTest < Minitest::Test
   end
 
   def test_write
-    red_mock = Minitest::Mock.new.expect :write, nil, [0]
-    green_mock = Minitest::Mock.new.expect :write, nil, [128]
-    blue_mock = Minitest::Mock.new.expect :write, nil, [0]
+    red_mock = Minitest::Mock.new.expect :duty=, nil, [0]
+    green_mock = Minitest::Mock.new.expect :duty=, nil, [50]
+    blue_mock = Minitest::Mock.new.expect :duty=, nil, [0]
 
     part.stub(:red, red_mock) do
       part.stub(:green, green_mock) do
         part.stub(:blue, blue_mock) do
-          part.write(0, 128, 0)
+          part.write(0, 50, 0)
         end
       end
     end

@@ -16,6 +16,10 @@ board = Denko::Board.new(Denko::Connection::Serial.new)
 #
 potentiometer = Denko::AnalogIO::Potentiometer.new(pin: 'A0', board: board)
 
+# Tell connected Board to send a value every 8ms (default), and enable smoothing.
+pot.listen
+pot.smoothing = true
+
 #
 # Like with Button, the Board starts reading the Potentiometer value immediately,
 # but we need to add a callback to do something with it.

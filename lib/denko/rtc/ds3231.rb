@@ -1,5 +1,3 @@
-require 'bcd'
-
 module Denko
   module RTC
     class DS3231
@@ -27,10 +25,13 @@ module Denko
 
       # Convert Time object to 7 byte BCD sequence.
       def time_to_bcd(time)
+        wday = time.wday
+        wday = 7 if wday == 0
+
         [ BCD.decode(time.sec),
           BCD.decode(time.min),
           BCD.decode(time.hour),
-          BCD.decode(time.strftime('%u').to_i),
+          BCD.decode(wday),
           BCD.decode(time.day),
           BCD.decode(time.month),
           BCD.decode(time.year - 1970) ]

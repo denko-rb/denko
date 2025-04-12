@@ -58,7 +58,7 @@ Denko::LED::WS2812
 # Motor
 Denko::Motor::L298
 Denko::Motor::Servo
-Denko::Motor::Stepper
+Denko::Motor::A3967
 
 # OneWire
 Denko::OneWire::Bus

@@ -129,7 +129,9 @@ module Denko
       end
 
       def read_busy?
-        @reading_normally || @reading_raw
+        # mruby gets stuck waiting somewhere, but doesn't have threads
+        # so it can never really be busy.
+        !Denko.mruby? && (@reading_normally || @reading_raw)
       end
     end
   end

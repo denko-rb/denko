@@ -1,12 +1,12 @@
 require_relative '../test_helper'
 
-class StepperMotorTest < Minitest::Test
+class A3967MotorTest < Minitest::Test
   def board
     @board ||= BoardMock.new
   end
 
   def part
-    @part ||= Denko::Motor::Stepper.new board: board,
+    @part ||= Denko::Motor::A3967.new board: board,
                                             pins: {step: 9, direction: 10}
   end
 

@@ -1,5 +1,3 @@
-require_relative 'ssd1306'
-
 module Denko
   module Display
     class SH1106 < SSD1306
@@ -32,7 +30,7 @@ module Denko
           # Send all bytes at once if within limit, or split into chunks.
           if buffer.length < (bus.board.i2c_limit - 1)
             data(buffer)
-          else  
+          else
             buffer.each_slice(bus.board.i2c_limit - 1) { |slice| data(slice) }
           end
         end
