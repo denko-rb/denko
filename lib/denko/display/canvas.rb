@@ -4,7 +4,7 @@ module Denko
       include Denko::Fonts
 
       attr_reader :columns, :rows, :framebuffer, :font
-    
+
       def initialize(columns, rows)
         raise ArgumentError, "bitmap height must be divisible by 8" unless (rows % 8 == 0)
 
@@ -118,7 +118,7 @@ module Denko
         start = points[0]
         (1..points.length-1).each do |i|
           finish = points[i]
-          line(start[0], start[1], finish[0], finish[1])
+          line(start[0], start[1], finish[0], finish[1], color)
           start = finish
         end
       end
@@ -165,7 +165,7 @@ module Denko
         # Stroke the polygon anyway. Floating point math misses thin areas.
         polygon(points, color)
       end
-      
+
       # Triangle with 3 points as 6 flat args.
       def triangle(x1, y1, x2, y2, x3, y3, color=1)
         polygon([[x1,y1], [x2,y2], [x3,y3]], color)
@@ -288,7 +288,7 @@ module Denko
         byte_index = (@columns * page) + text_cursor[0]
 
         # Replace those bytes in the framebuffer with the character.
-        byte_array.each do |byte| 
+        byte_array.each do |byte|
           @framebuffer[byte_index] = byte
           byte_index += 1
         end
@@ -301,7 +301,7 @@ module Denko
         x = text_cursor[0]
         # Offset by scaled height, since bottom left of char starts at text cursor.
         y = text_cursor[1] + 1 - (@font_height * @font_scale)
-        
+
         if @font_height > 8
           slices = byte_array.each_slice(@font_width)
         else
