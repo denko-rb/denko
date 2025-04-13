@@ -260,10 +260,14 @@ module Denko
         index = 0 if (index < 0 || index > 94)
         char_map = FONT_6x8[index]
 
-        raw_char(char_map)
+        if (text_cursor[1] % 8) == 7
+          raw_char_aligned(char_map)
+        else
+          raw_char_arbitrary(char_map)
+        end
       end
 
-      def raw_char(byte_array)
+      def raw_char_aligned(byte_array)
         # Get the starting byte index.
         page = text_cursor[1] / 8
         byte_index = (@columns * page) + text_cursor[0]
@@ -272,6 +276,24 @@ module Denko
         byte_array.each do |byte| 
           @framebuffer[byte_index] = byte
           byte_index += 1
+        end
+
+        # Increment the text cursor.
+        self.text_cursor[0] += byte_array.length
+      end
+
+      def raw_char_arbitrary(byte_array)
+        x = text_cursor[0]
+        # -8 since bottom left of char starts at text cursor.
+        y = text_cursor[1] - 8
+        
+        # Each byte (column) in the char
+        byte_array.each_with_index do |byte, col_offset|
+          # Each bit in the byte
+          8.times do |bit|
+            # Set or unset the pixel
+            pixel(x + col_offset, y + bit, (byte & (1 << bit)))
+          end
         end
 
         # Increment the text cursor.
