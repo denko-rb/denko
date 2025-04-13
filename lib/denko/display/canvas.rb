@@ -10,6 +10,7 @@ module Denko
 
         @columns     = columns
         @rows        = rows
+        @text_scale  = 1
 
         # Use a byte array for the framebuffer. Each byte is 8 pixels arranged vertically.
         # Each slice @columns long represents an area @columns wide * 8 pixels tall.
@@ -248,6 +249,11 @@ module Denko
         @text_cursor ||= [0, 7]
       end
 
+      def text_scale=(scale)
+        raise ArgumentError, "text scale must be a positive integer" unless (scale.class == Integer) && scale > 0
+        @text_scale = scale
+      end
+
       def print(str)
         str.to_s.split("").each do |char|
           print_char(char)
@@ -260,10 +266,12 @@ module Denko
         index = 0 if (index < 0 || index > 94)
         char_map = FONT_6x8[index]
 
-        if (text_cursor[1] % 8) == 7
+        if (text_cursor[1] % 8) == 7 && @text_scale == 1
           raw_char_aligned(char_map)
-        else
+        elsif @text_scale == 1
           raw_char_arbitrary(char_map)
+        else
+          raw_char_arbitrary_scaled(char_map)
         end
       end
 
@@ -298,6 +306,28 @@ module Denko
 
         # Increment the text cursor.
         self.text_cursor[0] += byte_array.length
+      end
+
+      def raw_char_arbitrary_scaled(byte_array)
+        x = text_cursor[0]
+        # Offset by total height, since bottom left of char starts at text cursor.
+        y = text_cursor[1] - 8 * @text_scale
+        
+        # Each byte (column) in the char
+        byte_array.each_with_index do |byte, col_offset|
+          # Each bit in the byte
+          8.times do |bit|
+            pixel_value = (byte & (1 << bit))
+            @text_scale.times do |x_offset|
+              @text_scale.times do |y_offset|
+                pixel(x + (col_offset * @text_scale) + x_offset, y + (bit * @text_scale) + y_offset, pixel_value)
+              end
+            end
+          end
+        end
+
+        # Increment the text cursor, scaling width.
+        self.text_cursor[0] += byte_array.length * @text_scale
       end
     end
   end
