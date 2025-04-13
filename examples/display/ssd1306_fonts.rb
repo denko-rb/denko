@@ -1,5 +1,5 @@
 #
-# Example using an SSD1306 driven OLED screen over I2C.
+# Font usage example on 128x64 SSD1306 OLED over I2C.
 #
 require 'bundler/setup'
 require 'denko'
@@ -29,20 +29,37 @@ oled = Denko::Display::SSD1306.new(bus: bus, rotate: true) # address: 0x3C is de
 # oled = Denko::Display::SH1106.new(bus: bus, pins: { select: 10, dc: 7, reset: 8}, rotate: true)
 
 canvas = oled.canvas
-baseline = 42
 
-# Draw some text on the OLED's canvas (a Ruby memory buffer).
-canvas.text_cursor = [27,baseline+15]
-canvas.print("Hello World!")
+y = 10
+canvas.text_cursor = [1,y]
+canvas.font = Denko::Fonts::LED_5x7
+canvas.print("LED_5x7")
 
-# Add some shapes to the canvas.
-canvas.rectangle(10, baseline, 30, -30)
-canvas.circle(66, baseline - 15, 15)
-canvas.triangle(87, baseline, 117, baseline, 102, baseline - 30)
+y += 10
+canvas.text_cursor = [0,y]
+canvas.font = Denko::Fonts::LED_6x8
+canvas.print("LED_6x8 (Default)")
 
-# 1px border to test screen edges.
-canvas.rectangle(0, 0, oled.columns-1, oled.rows-1)
+y += 18
+canvas.text_cursor = [1,y]
+canvas.font = Denko::Fonts::LED_8x16
+canvas.print("LED_8x16")
 
-# Send the canvas to the OLED's graphics RAM so it shows.
+y += 20
+canvas.text_cursor = [0,y]
+canvas.font = Denko::Fonts::LED_6x8
+canvas.font_scale = 2
+canvas.print("LED_6x8")
+
+canvas.font_scale = 1
+canvas.text_cursor = [86,y-8]
+canvas.print(" (2x) ")
+canvas.text_cursor = [84,y]
+canvas.print(" scale ")
+
 oled.draw
 board.finish_write
+
+# Digit only fonts also included:
+# Denko::Fonts::COURIER_NEW_DIGITS_11x17
+# Denko::Fonts::COMIC_SANS_DIGITS_24x32 

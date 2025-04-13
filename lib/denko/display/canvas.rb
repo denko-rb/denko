@@ -3,14 +3,15 @@ module Denko
     class Canvas
       include Denko::Fonts
 
-      attr_reader :columns, :rows, :framebuffer
+      attr_reader :columns, :rows, :framebuffer, :font
     
       def initialize(columns, rows)
         raise ArgumentError, "bitmap height must be divisible by 8" unless (rows % 8 == 0)
 
         @columns     = columns
         @rows        = rows
-        @text_scale  = 1
+        @font_scale  = 1
+        self.font    = Denko::Fonts::LED_6x8
 
         # Use a byte array for the framebuffer. Each byte is 8 pixels arranged vertically.
         # Each slice @columns long represents an area @columns wide * 8 pixels tall.
@@ -249,9 +250,17 @@ module Denko
         @text_cursor ||= [0, 7]
       end
 
-      def text_scale=(scale)
+      def font_scale=(scale)
         raise ArgumentError, "text scale must be a positive integer" unless (scale.class == Integer) && scale > 0
-        @text_scale = scale
+        @font_scale = scale
+      end
+
+      def font=(font)
+        @font = font
+        @font_height = font[:height]
+        @font_width = font[:width]
+        @font_characters = font[:characters]
+        @font_last_character = @font_characters.length - 1
       end
 
       def print(str)
@@ -261,17 +270,15 @@ module Denko
       end
 
       def print_char(char)
-        # 0th character in font is SPACE. Offset and limit to printable chars.
+        # 0th character in font is SPACE. Offset ASCII code and show ? if character doesn't exist in font.
         index = char.ord - 32
-        index = 0 if (index < 0 || index > 94)
-        char_map = FONT_6x8[index]
+        index = 31 if (index < 0 || index > @font_last_character)
+        char_map = @font_characters[index]
 
-        if (text_cursor[1] % 8) == 7 && @text_scale == 1
+        if (text_cursor[1] % 8) == 7 && @font_scale == 1 && @font_height <= 8 # && @rotation == 0
           raw_char_aligned(char_map)
-        elsif @text_scale == 1
-          raw_char_arbitrary(char_map)
         else
-          raw_char_arbitrary_scaled(char_map)
+          raw_char_arbitrary(char_map)
         end
       end
 
@@ -292,42 +299,33 @@ module Denko
 
       def raw_char_arbitrary(byte_array)
         x = text_cursor[0]
-        # -8 since bottom left of char starts at text cursor.
-        y = text_cursor[1] - 8
+        # Offset by scaled height, since bottom left of char starts at text cursor.
+        y = text_cursor[1] + 1 - (@font_height * @font_scale)
         
-        # Each byte (column) in the char
-        byte_array.each_with_index do |byte, col_offset|
-          # Each bit in the byte
-          8.times do |bit|
-            # Set or unset the pixel
-            pixel(x + col_offset, y + bit, (byte & (1 << bit)))
-          end
+        if @font_height > 8
+          slices = byte_array.each_slice(@font_width)
+        else
+          slices = [byte_array]
         end
 
-        # Increment the text cursor.
-        self.text_cursor[0] += byte_array.length
-      end
-
-      def raw_char_arbitrary_scaled(byte_array)
-        x = text_cursor[0]
-        # Offset by total height, since bottom left of char starts at text cursor.
-        y = text_cursor[1] - 8 * @text_scale
-        
-        # Each byte (column) in the char
-        byte_array.each_with_index do |byte, col_offset|
-          # Each bit in the byte
-          8.times do |bit|
-            pixel_value = (byte & (1 << bit))
-            @text_scale.times do |x_offset|
-              @text_scale.times do |y_offset|
-                pixel(x + (col_offset * @text_scale) + x_offset, y + (bit * @text_scale) + y_offset, pixel_value)
+        slices.each do |slice|
+          # Each byte (column) in the char
+          slice.each_with_index do |byte, col_offset|
+            # Each bit in the byte
+            8.times do |bit|
+              pixel_value = (byte & (1 << bit))
+              @font_scale.times do |x_offset|
+                @font_scale.times do |y_offset|
+                  pixel(x + (col_offset * @font_scale) + x_offset, y + (bit * @font_scale) + y_offset, pixel_value)
+                end
               end
             end
           end
+          y = y + (8 * @font_scale)
         end
 
         # Increment the text cursor, scaling width.
-        self.text_cursor[0] += byte_array.length * @text_scale
+        self.text_cursor[0] += @font_width * @font_scale
       end
     end
   end
