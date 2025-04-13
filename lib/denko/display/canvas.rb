@@ -126,7 +126,7 @@ module Denko
       # Close paths by repeating the start value at the end.
       def polygon(points=[], color=1)
         points << points[0]
-        path(points)
+        path(points, color)
       end
 
       # Filled polygon using horizontal ray casting + stroked polygon.
