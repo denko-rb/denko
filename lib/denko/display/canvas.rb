@@ -64,7 +64,7 @@ module Denko
       end
 
       def clear_pixel(x, y)
-        pixel(x, y, 1)
+        pixel(x, y, 0)
       end
 
       # Draw a line based on Bresenham's line algorithm.
