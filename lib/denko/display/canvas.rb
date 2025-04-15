@@ -73,7 +73,7 @@ module Denko
         dy = y2 - y1
         dx = x2 - x1
 
-        # Catch vertical lines to avoid division by 0.
+        # Optimize vertical lines, and avoid division by 0.
         if (dx == 0)
           # Ensure y1 < y2.
           y1, y2 = y2, y1 if (y2 < y1)
@@ -83,32 +83,47 @@ module Denko
           return
         end
 
-        gradient = dy.to_f / dx
-
-        # Gradient magnitude <= 45 degrees: find y for each x.
-        if (gradient >= -1) && (gradient <= 1)
+        # Optimize horizontal lines.
+        if (dy == 0)
           # Ensure x1 < x2.
-          x1, y1, x2, y2 = x2, y2, x1, y1 if (x2 < x1)
-
-          # When x increments, add gradient to y.
-          y = y1
-          y_step = gradient
+          x1, x2 = x2, x1 if (x2 < x1)
           (x1..x2).each do |x|
-            pixel(x, y.round, color)
-            y = y + y_step
+            pixel(x, y1, color)
           end
+          return
+        end
 
-        # Gradient magnitude > 45 degrees: find x for each y.
-        else
-          # Ensure y1 < y2.
-          x1, y1, x2, y2 = x2, y2, x1, y1 if (y2 < y1)
+        # Bresenham's algorithm for sloped lines.
+        # Slope calculations
+        step_axis   = (dx.abs > dy.abs) ? :x : :y
+        step_count  = (step_axis == :x)  ? dx.abs : dy.abs
+        x_step      = (dx > 0) ? 1 : -1
+        y_step      = (dy > 0) ? 1 : -1
 
-          # When y increments, add inverse of gradient to x.
-          x = x1
-          x_step = 1 / gradient
-          (y1..y2).each do |y|
-            pixel(x.round, y, color)
-            x = x + x_step
+        # Error calculations
+        error_step      = (step_axis == :x) ? dy.abs : dx.abs
+        error_threshold = (step_axis == :x) ? dx.abs : dy.abs
+
+        x = x1
+        y = y1
+        error = 0
+        (0..step_count).each do |i|
+          pixel(x, y, color)
+
+          if (step_axis == :x)
+            x += x_step
+            error += error_step
+            if (error >= error_threshold)
+              y += y_step
+              error -= error_threshold
+            end
+          else
+            y += y_step
+            error += error_step
+            if (error >= error_threshold)
+              x += x_step
+              error -= error_threshold
+            end
           end
         end
       end
