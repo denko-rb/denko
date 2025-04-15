@@ -12,6 +12,11 @@ module Denko
         @rows        = rows
         @font_scale  = 1
         self.font    = Denko::Fonts::LED_6x8
+        @rotation    = 0
+        @swap_xy     = false
+        @invert_x    = false
+        @invert_y    = false
+        compute_limits
 
         # Use a byte array for the framebuffer. Each byte is 8 pixels arranged vertically.
         # Each slice @columns long represents an area @columns wide * 8 pixels tall.
@@ -34,10 +39,18 @@ module Denko
       end
 
       def pixel(x, y, color=0)
-        return nil if (x < 0 || y < 0 || x > @columns-1 || y > @rows -1)
+        xt = (@invert_x) ? @x_max - x : x
+        yt = (@invert_y) ? @y_max - y : y
+        if (@swap_xy)
+          tt = xt
+          xt = yt
+          yt = tt
+        end
 
-        byte = ((y / 8) * @columns) + x
-        bit  = y % 8
+        return nil if (xt < 0 || yt < 0 || xt > @columns-1 || yt > @rows -1)
+
+        byte = ((yt / 8) * @columns) + xt
+        bit  = yt % 8
 
         if (color == 0)
           @framebuffer[byte] &= ~(0b1 << bit)
@@ -253,6 +266,47 @@ module Denko
 
       def text_cursor
         @text_cursor ||= [0, 7]
+      end
+
+      def rotate(degrees)
+        raise ArgumentError, "canvas can only be rotated by multiples of 90 degrees" unless (degrees % 90 == 0)
+        old_rotation = @rotation
+        @rotation = (old_rotation + degrees) % 360
+        change = @rotation - old_rotation
+
+        (change / 90).times do
+          @swap_xy = !@swap_xy
+          if (!@invert_x && !@invert_y)
+            @invert_x = true
+            @invert_y = false
+          elsif (@invert_x && !@invert_y)
+            @invert_x = true
+            @invert_y = true
+          elsif (@invert_x && @invert_y)
+            @invert_x = false
+            @invert_y = true
+          elsif (!@invert_x && @invert_y)
+            @invert_x = false
+            @invert_y = false
+          end
+        end
+        compute_limits
+      end
+
+      def reflect(axis)
+        raise ArgumentError "invalid axis for canvas reflection. Only :x or :y accepted" unless [:x, :y].include? (axis)
+        (axis == :x) ? @invert_x = !@invert_x : @invert_y = !@invert_y
+        compute_limits
+      end
+
+      def compute_limits
+        if @swap_xy
+          @x_max = @rows - 1
+          @y_max = @columns - 1
+        else
+          @x_max = @columns - 1
+          @y_max = @rows - 1
+        end
       end
 
       def font_scale=(scale)
