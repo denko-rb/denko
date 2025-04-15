@@ -33,20 +33,25 @@ module Denko
         (@framebuffer[byte] >> bit) & 0b00000001
       end
 
-      def set_pixel(x, y)
+      def pixel(x, y, color=0)
+        return nil if (x < 0 || y < 0 || x > @columns-1 || y > @rows -1)
+
         byte = ((y / 8) * @columns) + x
         bit  = y % 8
-        @framebuffer[byte] |= (0b1 << bit)
+
+        if (color == 0)
+          @framebuffer[byte] &= ~(0b1 << bit)
+        else
+          @framebuffer[byte] |= (0b1 << bit)
+        end
+      end
+
+      def set_pixel(x, y)
+        pixel(x, y, 1)
       end
 
       def clear_pixel(x, y)
-        byte = ((y / 8) * @columns) + x
-        bit  = y % 8
-        @framebuffer[byte] &= ~(0b1 << bit)
-      end
-
-      def pixel(x, y, state=0)
-        (state == 0) ? clear_pixel(x, y) : set_pixel(x, y)
+        pixel(x, y, 1)
       end
 
       # Draw a line based on Bresenham's line algorithm.
@@ -274,30 +279,10 @@ module Denko
         index = char.ord - 32
         index = 31 if (index < 0 || index > @font_last_character)
         char_map = @font_characters[index]
-
-        if (text_cursor[1] % 8) == 7 && @font_scale == 1 && @font_height <= 8 # && @rotation == 0
-          raw_char_aligned(char_map)
-        else
-          raw_char_arbitrary(char_map)
-        end
+        raw_char(char_map)
       end
 
-      def raw_char_aligned(byte_array)
-        # Get the starting byte index.
-        page = text_cursor[1] / 8
-        byte_index = (@columns * page) + text_cursor[0]
-
-        # Replace those bytes in the framebuffer with the character.
-        byte_array.each do |byte|
-          @framebuffer[byte_index] = byte
-          byte_index += 1
-        end
-
-        # Increment the text cursor.
-        self.text_cursor[0] += byte_array.length
-      end
-
-      def raw_char_arbitrary(byte_array)
+      def raw_char(byte_array)
         x = text_cursor[0]
         # Offset by scaled height, since bottom left of char starts at text cursor.
         y = text_cursor[1] + 1 - (@font_height * @font_scale)
