@@ -1,6 +1,8 @@
 # denko
 [![Test Status](https://github.com/denko-rb/denko/actions/workflows/ruby.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/ruby.yml)
 
+<img src="images/demo.gif" width="540" height="360" alt="Milk-V mruby GPIO demo">
+
 Program real-life electronics in Ruby. LEDs, buttons, sensors (and more) work just like any Ruby object:
 
 ```ruby
