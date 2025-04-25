@@ -1,5 +1,75 @@
 # Changelog
 
+## 0.15.0
+
+### New Peripherals
+
+- `AnalogIO::Joystick`:
+  - Is a MultiPin component
+  - Requires `x:` and `y:` inside `:pins` of params hash. Both must be `AnalogIO::Input` capable.
+  - Inversion configurable, per axis
+  - Axes are swappable
+  - Deadzone and maxzone configurable, _NOT_ per axis
+
+- `Display::SH1107`:
+  - Practically the same as `SH1106` but 128x128 pixels instead of 128x64.
+
+- `Sensor::AHT3X`:
+  - Exactly the same interface as `AHT2X` but more accurate
+
+- `Sensor::JSNSR04T`:
+  - Waterproof ultrasonic distance sensor, similar to HC-SR04
+  - _ONLY_ supported in mode 2 (UART mode)
+  - Requires `board:` AND `uart:` in params hash for initialize
+  - UART must be set up beforehand and requires 9600 baud
+
+- `Sensor::SHT4X`:
+  - Very similar to `SHT3X`
+
+- `Sensor::VL53L0X`:
+  - Laser distance sensor over I2C bus
+  - 20 - 2000mm range
+  - Only continuous mode implemented. No configuration yet.
+
+### Peripheral Changes
+- `Display::Canvas`:
+  - Fonts can be any size and don't need to align to Y axis pages now
+  - Added more fonts
+  - Fonts have integer scaling now
+  - Added `Canvas#rotate`
+  - Added `Canvas#reflect`
+  - Optimized `Canvas#line` to use only integer math, avoid float, for mruby
+
+- `Sensor::DHT` reset pulse changed from 20ms to 10ms. Within spec, and appears more reliable in testing.
+
+### Behavior Changes
+- Raw Read Rework
+  - `Behavior::State`, `Behavior::Callbacks`, `Behavior::Reader`, `Behavior::Poller`, and `Behavior::Listener` have received a combined rework, to allow "raw_reads" which bypass the "update pathway": `#pre_callback_filter`, and `#update`, which runs callbacks and updates component state.
+  - This simplifies development of drivers for things like sensors, where config and calibration data needs to be passed back and forth sometimes, but can't hit the update pathway. But it still leaves the old behavior availabel, which is great for actual data values.
+  - `#_read` is still a required delegate method, and should ALWAYS be defined to get data out of the component, that will hit the update pathway.
+  - `#_read` should _NEVER_ be called directly now. Will private `#_read`s in future, now that mruby supports it.
+  - Always use `#read_nb` to trigger an async read. Delegates to `#_read` but in a way that won't interfere with pending `#read_raw` calls.
+  - `#read` is the same as `#read_nb`, except blocks until the read completes.
+  - `#read_raw` _always_ blocks. Use it if you want the raw data (no `#pre_callback_filter`), and to NOT hit the update pathway.
+  - `#read_raw` _CANNOT_ be called if the component is currently listening. No way to gaurantee message order. Stop listening first.
+  - `#read_raw` requires a block or Proc. It does _NOT_ delegate to `#_read`, since that is supposed to read data values.
+
+- Mutex Rework
+  - `Mutex#lock` and `Mutex#unlock` now preferred over `Mutex#synchronize`, so mruby doesn't waste resources passing a block around.
+  - `Component#state` is no longer protected by a mutex, unless it's a simple Integer. No point in protecting Hash or Array.
+
+### Driver convergence with mruby
+- Many classes had small changes made to avoid using CRuby features not available or expensive in mruby. These include:
+  - Avoid using `Integer#[]` to get specific bits
+  - Avoid using `Array#pack`
+  - Avoid using regexes entirely
+  - Avoid `super if defined?(supoer)`. Use `begin; super; rescue NoMethodError; end`.
+
+### Bug Fixes
+- Fixed bug where HD444780 would try to call `#board_has_write_bit?` instead of `#board_is_register?`.
+- Fixed a bug with multiple enviro sensors where calling `#state` would reset the values of all keys to `nil`.
+- Fixed bug where `Canvas#polygon` and `#path` were not passing through color to sub-methods.
+
 ## 0.14.0
 
 ### Known Issues
