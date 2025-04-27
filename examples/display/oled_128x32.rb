@@ -1,17 +1,19 @@
 #
-# Example using the SSD1306 OLED built into the LOLIN ES32-S2 PICO
+# Generic example for 128x64 OLEDs, usually only SSD1306.
+# Also covers the one built into the Lolin ESP32-S2 Pico
 #
 require 'bundler/setup'
 require 'denko'
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
 
-# The OLED's reset pin on this board isn't tied high. Do it manually.
-reset = Denko::DigitalIO::Output.new(board: board, pin: 18)
-reset.high
+# Modules usually have reset always tied high.
+# Lolin ESP32-P2 has it connected to pin 18. Do it manually.
+# reset = Denko::DigitalIO::Output.new(board: board, pin: 18)
+# reset.high
 
-bus    = Denko::I2C::Bus.new(board: board, pin: :SDA)
-oled   = Denko::Display::SSD1306.new(bus: bus, width: 128, height: 32)
+bus    = Denko::I2C::Bus.new(board: board, index: 0)
+oled   = Denko::Display::SSD1306.new(bus: bus, width: 128, height: 32, rotate: true)
 canvas = oled.canvas
 
 # Draw some text on the OLED's canvas (a Ruby memory buffer).

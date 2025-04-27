@@ -1,18 +1,13 @@
 #
-# Example using an SSD1306 driven OLED screen over I2C.
+# Generic example for 128x64 OLEDs. This covers both I2C and SPI versions of
+# SSD1306 and SH1106 at this pixel size.
 #
 require 'bundler/setup'
 require 'denko'
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
 
-# The SSD1306 OLED connects to either an I2C or SPI bus, depending on the model you have.
-# Bus setup exampels in order:
-#   I2C Hardware
-#   I2C Bit-Bang
-#   SPI Hardware
-#   SPI Bit-Bang
-#
+# The OLED connects to either an I2C or SPI bus, depending on the model you have.
 bus = Denko::I2C::Bus.new(board: board)
 # bus = Denko::I2C::BitBang.new(board: board, pins: {scl: 4, sda: 5})
 # bus = Denko::SPI::Bus.new(board: board)
@@ -21,7 +16,6 @@ bus = Denko::I2C::Bus.new(board: board)
 # I2C OLED, connected to I2C SDA and SCL.
 oled = Denko::Display::SSD1306.new(bus: bus, rotate: true) # address: 0x3C is default
 # oled = Denko::Display::SH1106.new(bus: bus,rotate: true) # address: 0x3C is default
-# oled = Denko::Display::SH1107.new(bus: bus,rotate: false) # address: 0x3C is default
 
 # SPI OLED, connected to SPI CLK and MOSI pins.
 # select: and dc: pins must be given. reset is optional (can be pulled high instead).

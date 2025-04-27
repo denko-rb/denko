@@ -2,6 +2,8 @@
 
 ## HD44780
 
+<img src="photos/hd44780.jpg" width="540" alt="HD44780 Backlit Character LCD">
+
 **Type:** Backlit Character LCD\
 **Colors:** Mono, multiple colors available\
 **Size:** Multiple sizes available\
@@ -9,6 +11,8 @@
 **Interface:** Digital Output
 
 ## SSD1306
+
+<img src="photos/ssd1306_128x32.jpg" width="540" alt="SSD1306 128x32 OLED">
 
 **Type:** OLED\
 **Colors:** Mono, multiple colors available\
@@ -18,6 +22,8 @@
 
 ## SH1106
 
+<img src="photos/sh1106.jpg" width="540" alt="SH1106 OLED">
+
 **Type:** OLED\
 **Colors:** Mono, multiple colors available\
 **Size:** Multiple sizes available, 0.96 to 2.42 inch most common\
@@ -25,6 +31,8 @@
 **Interface:** I2C and SPI versions available
 
 ## SH1107
+
+<img src="photos/sh1107.jpg" width="540" alt="SH1107 OLED">
 
 **Type:** OLED\
 **Colors:** Mono\
