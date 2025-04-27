@@ -5,8 +5,8 @@
 ### New Peripherals
 
 - `AnalogIO::Joystick` -
-  - Is a MultiPin component
-  - Requires `x:` and `y:` inside `:pins` of params hash. Both must be `AnalogIO::Input` capable.
+  - MultiPin. Requires `x:` and `y:` in `:pins` of params hash
+  - Both pins must be `AnalogIO::Input` capable
   - Inversion configurable, per axis
   - Axes are swappable
   - Deadzone and maxzone configurable, _NOT_ per axis
@@ -14,14 +14,20 @@
 - `Display::SH1107` -
   - Practically the same as `SH1106` but 128x128 pixels instead of 128x64.
 
+- `Display::ST7302` -
+  - 250 x 122 pixel mono reflective LCD
+  - Uses the standard `Display::Canvas` class, so same drawing features.
+  - Display inversion and frame rate configurable.
+
 - `Sensor::AHT3X` -
-  - Exactly the same interface as `AHT2X` but more accurate
+  - Exactly the same interface as `AHT2X`, but more accurate
 
 - `Sensor::JSNSR04T` -
   - Waterproof ultrasonic distance sensor, similar to HC-SR04
-  - _ONLY_ supported in mode 2 (UART mode)
+  - Mode 1 supported by `Sensor::HCSR04` class
+  - This new class only supports mode 2 (UART mode)
   - Requires `board:` AND `uart:` in params hash for initialize
-  - UART must be set up beforehand and requires 9600 baud
+  - UART must be set up beforehand, running at 9600 baud
 
 - `Sensor::SHT4X` -
   - Very similar to `SHT3X`
@@ -52,11 +58,12 @@
   - `#read` is the same as `#read_nb`, except blocking until the read completes.
   - `#read_raw` _always_ blocks. Use it to get raw data (no `#pre_callback_filter`), and _not_ hit the update pathway.
   - `#read_raw` _cannot_ be called if the component is currently listening. No way to gaurantee message order. Stop listening first.
-  - `#read_raw` requires a block or Proc. It does _not_ delegate to `#_read`, since that is supposed to read data values.
+  - `#read_raw` takes a method symbol or Proc. It does _not_ delegate to `#_read`, since that reads data values.
 
 - Mutex Rework
   - `Mutex#lock` and `Mutex#unlock` now preferred over `Mutex#synchronize`, so mruby doesn't waste resources passing a block around.
-  - `Component#state` is no longer protected by a mutex, unless it's a simple Integer. No point in protecting Hash or Array.
+  - `Component#state` (reading) is no longer protected by a mutex, unless it's a simple Integer.
+  - `Component#state=` (writing) is still portected by `@state_mutex`.
 
 ### Driver convergence with mruby
 - Many classes had small changes made to avoid using CRuby features not available or expensive in mruby. These include:
