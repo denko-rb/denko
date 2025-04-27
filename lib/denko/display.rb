@@ -6,5 +6,6 @@ module Denko
     autoload :SSD1306,  "#{__dir__}/display/ssd1306"
     autoload :SH1106,   "#{__dir__}/display/sh1106"
     autoload :SH1107,   "#{__dir__}/display/sh1107"
+    autoload :ST7302,   "#{__dir__}/display/st7302"
   end
 end

@@ -136,14 +136,14 @@ Polling and reading follow a call and response pattern.
 
 | Name                | Status         | Interface                    | Component Class     | Notes |
 | :---------------    | :------:       | :--------                    | :---------------    |------ |
-| HD44780 LCD         | :green_heart:  | Digital Out, Output Register | `Display::HD44780`  |
-| Canvas              | :yellow_heart: | -                            | `Display::Canvas`   | Mono graphics in Ruby
+| HD44780 LCD         | :green_heart:  | Digital Out, Output Register | `Display::HD44780`  | Character LCD
+| Canvas              | :yellow_heart: | -                            | `Display::Canvas`   | Mono 2D graphics
 | SSD1306             | :green_heart:  | I2C or SPI                   | `Display::SSD1306`  | Mono OLED: 128x64, 128x32
 | SH1106              | :green_heart:  | I2C or SPI                   | `Display::SH1106`   | Mono OLED: 128x64
 | SH1107              | :green_heart:  | I2C or SPI                   | `Display::SH1107`   | Mono OLED: 128x128
 | LS027B7DH01         | :heart:        | SPI                          | `Display::SharpLCD` | 400x240 Mono Reflective LCD
 | ST7565R             | :heart:        | SPI                          | `Display::ST7565R`  | 128x64 Mono LCD
-| ST7302              | :heart:        | SPI                          | `Display::ST7302`   | 250x122 Mono Reflective LCD
+| ST7302              | :green_heart:  | SPI                          | `Display::ST7302`   | 250x122 Mono Reflective LCD
 | ST7735S             | :heart:        | SPI                          | `Display::ST7735S`  | 160x128 RGB LCD
 | ST7789V             | :heart:        | SPI                          | `Display::ST7789V`  | 240x135 RGB LCD (TTGO)
 | ILI9341             | :heart:        | SPI                          | `Display::ILI9341`  | 240x320 RGB LCD
@@ -198,7 +198,7 @@ Polling and reading follow a call and response pattern.
 | DS18B20          | :green_heart:  | OneWire     | `Sensor::DS18B20`  | Temp                     |
 | DHT11/21/22      | :green_heart:  | Digi In/Out | `Sensor::DHT`      | Temp / RH                |
 | SHT30/31/35      | :green_heart:  | I2C         | `Sensor::SHT3X`    | Temp / RH                | M5Stack ENV III, one-shot only
-| SHT40/41         | :heart:        | I2C         | `Sensor::SHT4X`    | Temp / RH                |
+| SHT40/41         | :green_heart:  | I2C         | `Sensor::SHT4X`    | Temp / RH                |
 | QMP6988          | :green_heart:  | I2C         | `Sensor::QMP6988`  | Temp / Press             | M5Stack ENV III
 | BMP180           | :green_heart:  | I2C         | `Sensor::BMP180`   | Temp / Press             |
 | BMP280           | :green_heart:  | I2C         | `Sensor::BMP280`   | Temp / Press             |

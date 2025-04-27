@@ -6,16 +6,17 @@ module Denko
       attr_reader :columns, :rows, :framebuffer, :font
 
       def initialize(columns, rows)
-        raise ArgumentError, "bitmap height must be divisible by 8" unless (rows % 8 == 0)
+        @columns = columns
+        @rows = rows
+        @rows = ((rows / 8.0).ceil * 8).to_i if (rows % 8 != 0)
 
-        @columns     = columns
-        @rows        = rows
-        @font_scale  = 1
         self.font    = Denko::Fonts::LED_6x8
-        @rotation    = 0
+        @font_scale  = 1
+
         @swap_xy     = false
         @invert_x    = false
         @invert_y    = false
+        @rotation    = 0
         compute_limits
 
         # Use a byte array for the framebuffer. Each byte is 8 pixels arranged vertically.
