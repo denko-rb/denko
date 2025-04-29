@@ -1,5 +1,5 @@
 #
-# Generic example for 128x29 OLEDs, usually only SSD1306 over I2C.
+# Generic example for 128x32 OLEDs, usually only SSD1306 over I2C.
 # Also covers the one built into the Lolin ESP32-S2 Pico.
 #
 require 'bundler/setup'

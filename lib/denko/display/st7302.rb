@@ -3,6 +3,8 @@ module Denko
     class ST7302
       include SPI::Peripheral::MultiPin
       include Behaviors::Lifecycle
+      include DCPin
+      include ResetPin
 
       # Commands
       SWRESET     = 0x01
@@ -38,22 +40,6 @@ module Denko
       # for a 122 pixel wide display, the first used column is 25.
       RAM_COLUMN_START = 25
 
-      def initialize_pins(options={})
-        super(options)
-        proxy_pin :dc,    DigitalIO::Output, board: bus.board
-        proxy_pin :reset, DigitalIO::Output, board: bus.board
-      end
-
-      def command(bytes)
-        dc.low
-        spi_write(bytes)
-      end
-
-      def data(bytes)
-        dc.high
-        spi_write(bytes)
-      end
-
       def columns
         @columns ||= params[:columns] || 250
       end
@@ -67,7 +53,7 @@ module Denko
       end
 
       after_initialize do
-        reset.high
+        reset.high if reset
         dc.high
         sleep 0.1
 

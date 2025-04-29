@@ -201,25 +201,8 @@ module Denko
       def mutate_spi
         singleton_class.class_eval do
           include SPI::Peripheral::MultiPin
-
-          def initialize_pins(options={})
-            super(options)
-            proxy_pin :dc,    DigitalIO::Output, board: bus.board
-            proxy_pin :reset, DigitalIO::Output, board: bus.board, optional: true
-            reset.high if reset
-          end
-
-          # Commands are SPI bytes written while DC pin low.
-          def command(bytes)
-            dc.low
-            spi_write(bytes)
-          end
-
-          # Data are SPI SPI bytes written while DC pin high.
-          def data(bytes)
-            dc.high
-            spi_write(bytes)
-          end
+          include DCPin
+          include ResetPin
         end
       end
     end

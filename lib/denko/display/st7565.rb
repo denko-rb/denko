@@ -3,22 +3,8 @@ module Denko
     class ST7565
       include SPI::Peripheral::MultiPin
       include Behaviors::Lifecycle
-
-      def initialize_pins(options={})
-        super(options)
-        proxy_pin :dc,    DigitalIO::Output, board: bus.board
-        proxy_pin :reset, DigitalIO::Output, board: bus.board
-      end
-
-      def command(bytes)
-        dc.low
-        spi_write(bytes)
-      end
-
-      def data(bytes)
-        dc.high
-        spi_write(bytes)
-      end
+      include DCPin
+      include ResetPin
 
       def columns
         @columns ||= params[:columns] || 128
@@ -140,9 +126,9 @@ module Denko
 
       after_initialize do
         # Reset sequence.
-        reset.low
+        reset.low if reset
         sleep 0.001
-        reset.high
+        reset.high if reset
         command [RESET]
 
         # Enable all power circuits:

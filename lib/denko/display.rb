@@ -1,5 +1,7 @@
 module Denko
   module Display
+    autoload :DCPin,    "#{__dir__}/display/dc_pin"
+    autoload :ResetPin, "#{__dir__}/display/reset_pin"
     autoload :HD44780,  "#{__dir__}/display/hd44780"
     autoload :Canvas,   "#{__dir__}/display/canvas"
     autoload :MonoOLED, "#{__dir__}/display/mono_oled"
