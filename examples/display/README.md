@@ -50,7 +50,7 @@
 **Pixels:** 250 x 122\
 **Interface:** SPI
 
-## ST7302
+## ST7565
 
 <img src="photos/st7565.jpg" width="540" alt="ST7565 128x64 Backlit LCD">
 
