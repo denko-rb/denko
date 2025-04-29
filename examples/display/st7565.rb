@@ -14,6 +14,9 @@ lcd = Denko::Display::ST7565.new(bus: bus, pins: { select: 10, dc: 9, reset: 8 }
 lcd.rotate
 lcd.invert
 
+# Initial draw to clear display RAM
+lcd.draw
+
 # Other options
 # lcd.reflect_x
 # lcd.reflect_y
