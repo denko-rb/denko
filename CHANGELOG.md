@@ -16,8 +16,15 @@
 
 - `Display::ST7302` -
   - 250 x 122 pixel mono reflective LCD
-  - Uses the standard `Display::Canvas` class, so same drawing features.
-  - Display inversion and frame rate configurable.
+  - SPI Interface
+  - Uses the standard `Display::Canvas` class for drawing features.
+  - Display inversion and frame rate configurable in hardware.
+
+- `Display::ST7565` -
+  - 128 x 64 pixel backlit LCD
+  - SPI Interface
+  - Uses the standard `Display::Canvas` class for drawing features.
+  - Inversion, reflection, rotation, and brightness configurable in hardware.
 
 - `Sensor::AHT3X` -
   - Exactly the same interface as `AHT2X`, but more accurate

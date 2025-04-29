@@ -49,3 +49,13 @@
 **Size:** 2.13 inch\
 **Pixels:** 250 x 122\
 **Interface:** SPI
+
+## ST7302
+
+<img src="photos/st7565.jpg" width="540" alt="ST7565 128x64 Backlit LCD">
+
+**Type:** Backlit LCD\
+**Colors:** Mono\
+**Size:** 2.1 inch viewable\
+**Pixels:** 128 x 64\
+**Interface:** SPI
