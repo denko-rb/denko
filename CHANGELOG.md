@@ -29,6 +29,12 @@
 - `Sensor::AHT3X` -
   - Exactly the same interface as `AHT2X`, but more accurate
 
+- `Sensor::HDC1080` -
+  - Temperature + Relative Humidity sensor
+  - Can also monitor battery level. `#battery_low?` is true when VCC < 2.8V.
+  - I2C interface
+  - Similar to HTU21D
+
 - `Sensor::JSNSR04T` -
   - Waterproof ultrasonic distance sensor, similar to HC-SR04
   - Mode 1 supported by `Sensor::HCSR04` class

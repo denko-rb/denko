@@ -6,6 +6,7 @@ module Denko
     autoload :BMP180,      "#{__dir__}/sensor/bmp180"
     autoload :BME280,      "#{__dir__}/sensor/bme280"
     autoload :BMP280,      "#{__dir__}/sensor/bme280"
+    autoload :HDC1080,     "#{__dir__}/sensor/hdc1080"
     autoload :HTU21D,      "#{__dir__}/sensor/htu21d"
     autoload :HTU31D,      "#{__dir__}/sensor/htu31d"
     autoload :AHT1X,       "#{__dir__}/sensor/aht"

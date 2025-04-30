@@ -204,12 +204,12 @@ Polling and reading follow a call and response pattern.
 | BMP280           | :green_heart:  | I2C         | `Sensor::BMP280`   | Temp / Press             |
 | BME280           | :green_heart:  | I2C         | `Sensor::BME280`   | Temp / Press / RH        |
 | BME680           | :heart:        | I2C         | `Sensor::BME680`   | Temp / Press / RH / TVOC |
+| HDC1080          | :green_heart:  | I2C         | `Sensor::HDC1080`  | Temp / RH                |
 | HTU21D           | :green_heart:  | I2C         | `Sensor::HTU21D`   | Temp / RH                | No user register read
 | HTU31D           | :green_heart:  | I2C         | `Sensor::HTU31D`   | Temp / RH                | No diagnostic read
 | AHT10/15         | :green_heart:  | I2C         | `Sensor::AHT1X`    | Temp / RH                |
 | AHT20/21/25      | :green_heart:  | I2C         | `Sensor::AHT2X`    | Temp / RH                |
 | AHT30            | :green_heart:  | I2C         | `Sensor::AHT3X`    | Temp / RH                |
-| HDC1080          | :heart:        | I2C         | `Sensor::HDC1080`  | Temp / RH                |
 | ENS160           | :heart:        | I2C         | `Sensor::ENS160`   | eCO2 / TVOC / AQI        |
 | AGS02MA          | :heart:        | I2C         | `Sensor::AGS02MA`  | TVOC                     |
 | SCD40            | :heart:        | I2C         | `Sensor::SDC40`    | Temp / Press / CO2       |

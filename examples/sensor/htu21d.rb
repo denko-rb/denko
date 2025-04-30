@@ -27,8 +27,8 @@ htu21d.reset
 #   0x81 = 11-bit temperature, 11-bit humidity
 #
 htu21d.resolution = 0x81
-puts "Temperature resolution: #{htu21d.resolution[:temperature]} bits"
-puts "Humidity resolution:    #{htu21d.resolution[:humidity]} bits"
+puts "Temperature resolution: #{htu21d.temperature_resolution} bits"
+puts "Humidity resolution:    #{htu21d.humidity_resolution} bits"
 puts
 
 htu21d.read

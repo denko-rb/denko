@@ -73,7 +73,7 @@ module Denko
       }
 
       def resolution=(setting)
-        raise ArgumentError, "wrong resolution setting given: #{mask}" unless RESOLUTIONS.keys.include? setting
+        raise ArgumentError, "wrong resolution setting given: #{setting}" unless RESOLUTIONS.keys.include? setting
         @config &= ~RESOLUTION_MASK
         @config |= setting
         write_config
@@ -83,6 +83,14 @@ module Denko
         resolution_bits = @config & RESOLUTION_MASK
         raise StandardError, "cannot get resolution from config register: #{@config}" unless RESOLUTIONS[resolution_bits]
         RESOLUTIONS[resolution_bits]
+      end
+
+      def temperature_resolution
+        resolution[:temperature]
+      end
+
+      def humidity_resolution
+        resolution[:humidity]
       end
 
       # Workaround for :read callbacks getting automatically removed on first reading.
