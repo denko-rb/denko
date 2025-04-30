@@ -69,18 +69,18 @@ module Denko
         (config[0] & BATTERY_MASK) > 0
       end
 
-      # Conversion times used are ~5x those given in datasheet.
+      # Conversion times used are ~10x those given in datasheet.
       TEMPERATURE_RESOLUTION_MASK = 0b00000100
       TEMPERATURE_RESOLUTIONS = {
-        14 => { bits: 0b0, conversion_time: 0.035 },
-        11 => { bits: 0b1, conversion_time: 0.020 }
+        14 => { bits: 0b0, conversion_time: 0.065 },
+        11 => { bits: 0b1, conversion_time: 0.040 }
       }
 
       HUMIDITY_RESOLUTION_MASK = 0b00000011
       HUMIDITY_RESOLUTIONS = {
-        14 => { bits: 0b00, conversion_time: 0.035 },
-        11 => { bits: 0b01, conversion_time: 0.020 },
-        8  => { bits: 0b10, conversion_time: 0.012 },
+        14 => { bits: 0b00, conversion_time: 0.065 },
+        11 => { bits: 0b01, conversion_time: 0.040 },
+        8  => { bits: 0b10, conversion_time: 0.025 },
       }
 
       attr_reader :temperature_resolution, :humidity_resolution
@@ -129,32 +129,44 @@ module Denko
         }
       end
 
+      # Workaround for :read callbacks getting automatically removed on first reading.
+      def read(*args, **kwargs, &block)
+        read_using(self.method(:_read_temperature), *args, **kwargs)
+        read_using(self.method(:_read_humidity), *args, **kwargs, &block)
+      end
+
+      def _read
+        _read_temperature
+        _read_humidity
+      end
+
       # Writing either the temperature or humidity register address seems to trigger
       # start of conversion, so can't do it ion the same i2c_read call. Do separately,
       # wait for conversion time and then read.
-      def _read
-        @currently_reading = :temperature
+      def _read_temperature
+        @reading_temperature = true
         i2c_write [TEMPERATURE_ADDRESS]
         sleep TEMPERATURE_RESOLUTIONS[@temperature_resolution][:conversion_time]
         i2c_read(2)
-        sleep 0.001 while (@currently_reading == :temperature)
+      end
 
-        @currently_reading = :humidity
+      def _read_humidity
+        @reading_humidity = true
         i2c_write [HUMIDITY_ADDRESS]
         sleep HUMIDITY_RESOLUTIONS[@humidity_resolution][:conversion_time]
         i2c_read(2)
-        sleep 0.001 while (@currently_reading == :humidity)
       end
 
       def pre_callback_filter(bytes)
         raw_value = bytes[0] << 8 | bytes[1]
 
-        if @currently_reading == :temperature
+        if @reading_temperature
           reading[:temperature] = ((raw_value.to_f / 2 ** 16) * 165) - 40
-        else
+          @reading_temperature = false
+        elsif @reading_humidity
           reading[:humidity] = (raw_value.to_f / 2 ** 16) * 100
+          @reading_humidity = false
         end
-        @currently_reading = nil
 
         # Both readings not ready yet.
         return nil unless (reading[:temperature] && reading[:humidity])

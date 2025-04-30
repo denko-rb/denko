@@ -1,5 +1,5 @@
 #
-# Example using the reflective ST7302 reflective LCD over SPI.
+# Example using the ST7565 LCD over SPI.
 #
 require 'bundler/setup'
 require 'denko'
