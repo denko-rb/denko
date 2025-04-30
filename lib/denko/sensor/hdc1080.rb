@@ -30,13 +30,12 @@ module Denko
 
       after_initialize do
         reset
-        # heater_off
       end
 
       def reset
         @config = CONFIG_DEFAULT
         @temperature_resolution = 14
-        @humidity_resolution = 14
+        @humidity_resolution    = 14
         write_config(@config | RESET_MASK)
         sleep 0.010
       end
