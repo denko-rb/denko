@@ -129,46 +129,25 @@ module Denko
         }
       end
 
-      # Workaround for :read callbacks getting automatically removed on first reading.
-      def read(*args, **kwargs, &block)
-        read_using(self.method(:_read_temperature), *args, **kwargs)
-        read_using(self.method(:_read_humidity), *args, **kwargs, &block)
-      end
-
       def _read
-        _read_temperature
-        _read_humidity
-      end
-
-      # Writing either the temperature or humidity register address seems to trigger
-      # start of conversion, so can't do it ion the same i2c_read call. Do separately,
-      # wait for conversion time and then read.
-      def _read_temperature
-        @reading_temperature = true
+        # Writing to temperature register triggers both reads.
         i2c_write [TEMPERATURE_ADDRESS]
-        sleep TEMPERATURE_RESOLUTIONS[@temperature_resolution][:conversion_time]
-        i2c_read(2)
-      end
 
-      def _read_humidity
-        @reading_humidity = true
-        i2c_write [HUMIDITY_ADDRESS]
+        # Wait for both conversions.
+        sleep TEMPERATURE_RESOLUTIONS[@temperature_resolution][:conversion_time]
         sleep HUMIDITY_RESOLUTIONS[@humidity_resolution][:conversion_time]
-        i2c_read(2)
+
+        # Read 2 bytes each for temperature and humidity.
+        i2c_read(4)
       end
 
       def pre_callback_filter(bytes)
-        raw_value = bytes[0] << 8 | bytes[1]
+        raw_t = bytes[0] << 8 | bytes[1]
+        raw_h = bytes[2] << 8 | bytes[3]
 
-        if @reading_temperature
-          reading[:temperature] = ((raw_value.to_f / 2 ** 16) * 165) - 40
-          @reading_temperature = false
-        elsif @reading_humidity
-          reading[:humidity] = (raw_value.to_f / 2 ** 16) * 100
-          @reading_humidity = false
-        end
+        reading[:temperature] = ((raw_t.to_f / 2 ** 16) * 165) - 40
+        reading[:humidity]    =  (raw_h.to_f / 2 ** 16) * 100
 
-        # Both readings not ready yet.
         return nil unless (reading[:temperature] && reading[:humidity])
 
         reading
