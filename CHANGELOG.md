@@ -26,6 +26,12 @@
   - Uses the standard `Display::Canvas` class for drawing features.
   - Inversion, reflection, rotation, and brightness configurable in hardware.
 
+- `EEPROM::AT24C` -
+  - I2C interface EEPROM
+  - Tested with 256 kib version
+  - Should also work for 32 kib, 64 kib and 128 kib versions
+  - Direct read/write with interface similar to Array. `#[]` and `#[]=`
+
 - `Sensor::AHT3X` -
   - Exactly the same interface as `AHT2X`, but more accurate
 

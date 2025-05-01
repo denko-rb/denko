@@ -279,5 +279,5 @@ Polling and reading follow a call and response pattern.
 | Name             | Status         | Interface  | Component Class      | Notes |
 | :--------------- | :------:       | :--------  | :---------------     |------ |
 | Board EEPROM     | :green_heart:  | Built-In   | `EEPROM::BuiltIn`    | Arduino ARM boards have no EEPROM
-| AT24C128/256     | :heart:        | I2C        | `EEPROM::AT24C`      | I2C EEPROM
+| AT24C            | :green_heart:  | I2C        | `EEPROM::AT24C`      | I2C EEPROM (32, 64, 128 or 256 kib)
 | MFRC522          | :heart:        | SPI/I2C    | `DigitalIO::MFRC522` | RFID tag reader / writer
