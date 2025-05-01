@@ -46,4 +46,18 @@ sensor.poll(5) do |reading|
   print_tph_reading(reading)
 end
 
+=begin
+# To avoid blocking for 200 ms on mruby:
+sensor.add_callback do |reading|
+  print_tph_reading(reading)
+end
+
+loop do
+  sensor._start_conversion
+  sleep 0.200 # Do something else in your main loop here
+  sensor._read_values
+  sleep 4.800
+end
+=end
+
 sleep

@@ -68,18 +68,18 @@ module Denko
         (config[0] & BATTERY_MASK) > 0
       end
 
-      # Conversion times used are ~10x those given in datasheet.
+      # Conversion times from datasheet, but not really used.
       TEMPERATURE_RESOLUTION_MASK = 0b00000100
       TEMPERATURE_RESOLUTIONS = {
-        14 => { bits: 0b0, conversion_time: 0.065 },
-        11 => { bits: 0b1, conversion_time: 0.040 }
+        14 => { bits: 0b0, conversion_time: 0.007 },
+        11 => { bits: 0b1, conversion_time: 0.004 },
       }
 
       HUMIDITY_RESOLUTION_MASK = 0b00000011
       HUMIDITY_RESOLUTIONS = {
-        14 => { bits: 0b00, conversion_time: 0.065 },
-        11 => { bits: 0b01, conversion_time: 0.040 },
-        8  => { bits: 0b10, conversion_time: 0.025 },
+        14 => { bits: 0b00, conversion_time: 0.007 },
+        11 => { bits: 0b01, conversion_time: 0.004 },
+        8  => { bits: 0b10, conversion_time: 0.003 },
       }
 
       attr_reader :temperature_resolution, :humidity_resolution
@@ -129,13 +129,18 @@ module Denko
       end
 
       def _read
+        _start_conversion
+        # This is way more than given conversion times, but unreliable without.
+        sleep 0.200
+        _read_values
+      end
+
+      def _start_conversion
         # Writing to temperature register triggers both reads.
         i2c_write [TEMPERATURE_ADDRESS]
+      end
 
-        # Wait for both conversions.
-        sleep TEMPERATURE_RESOLUTIONS[@temperature_resolution][:conversion_time]
-        sleep HUMIDITY_RESOLUTIONS[@humidity_resolution][:conversion_time]
-
+      def _read_values
         # Read 2 bytes each for temperature and humidity.
         i2c_read(4)
       end
