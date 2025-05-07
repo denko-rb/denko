@@ -82,10 +82,11 @@
   - `#read` is the same as `#read_nb`, except blocking until the read completes.
   - `#read_raw` _always_ blocks. Use it to get raw data (no `#pre_callback_filter`), and _not_ hit the update pathway.
   - `#read_raw` _cannot_ be called if the component is currently listening. No way to gaurantee message order. Stop listening first.
-  - `#read_raw` takes a method symbol or Proc. It does _not_ delegate to `#_read`, since that reads data values.
+  - `#read_raw` takes a method object or Proc. It does _not_ delegate to `#_read`, since that reads data values.
 
 - Mutex Rework
   - `Mutex#lock` and `Mutex#unlock` now preferred over `Mutex#synchronize`, so mruby doesn't waste resources passing a block around.
+  - `Mutex` instances are all replaced with `MutexStub` instances in mruby.
   - `Component#state` (reading) is no longer protected by a mutex, unless it's a simple Integer.
   - `Component#state=` (writing) is still portected by `@state_mutex`.
 
