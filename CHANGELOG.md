@@ -65,6 +65,11 @@
   - Added `Canvas#reflect`
   - Optimized `Canvas#line` to use only integer math, avoid float, for mruby
 
+- `EEPROM::BuiltIn` -
+  - Simplified interface, matching `EEPROM::AT24C`
+  - Only provides `[]` and `[]=`, for individual values or ranges
+  - Both block, and read/write hardware immediately, rather than caching state
+
 - `Sensor::DHT` reset pulse changed from 20ms to 10ms. Within spec, and appears more reliable in testing.
 
 ### Behavior Changes
