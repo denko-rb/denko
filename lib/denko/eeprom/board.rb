@@ -1,6 +1,6 @@
 module Denko
   module EEPROM
-    class BuiltIn
+    class Board
       include Behaviors::Component
       include Behaviors::Reader
 

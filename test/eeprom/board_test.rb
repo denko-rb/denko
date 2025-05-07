@@ -17,7 +17,7 @@ class BoardMock < Denko::Board
   end
 end
 
-class BuiltInEEPROMTest < Minitest::Test
+class EEPROMBoardTest < Minitest::Test
   def board
     @board ||= BoardMock.new
   end

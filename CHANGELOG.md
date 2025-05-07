@@ -73,7 +73,8 @@
   - Added `Canvas#reflect`
   - Optimized `Canvas#line` to use only integer math, avoid float, for mruby
 
-- `EEPROM::BuiltIn` -
+- `EEPROM::Board` -
+  - Renamed from `EEPROM::BuiltIn`
   - Simplified interface, matching `EEPROM::AT24C`
   - Only provides `[]` and `[]=`, for individual values or ranges
   - Both block, and read/write hardware immediately, rather than caching state

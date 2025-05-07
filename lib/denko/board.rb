@@ -117,7 +117,7 @@ module Denko
     #
     def eeprom
       raise StandardError, 'board has no built-in EEPROM, or EEPROM disabled in sketch' if @eeprom_length == 0
-      @eeprom ||= EEPROM::BuiltIn.new(board: self)
+      @eeprom ||= EEPROM::Board.new(board: self)
     end
   end
 end

@@ -42,7 +42,7 @@ Denko::Display::HD44780
 Denko::Display::SSD1306
 
 # EEPROM
-Denko::EEPROM::BuiltIn
+Denko::EEPROM::Board
 
 # I2C
 Denko::I2C::Bus

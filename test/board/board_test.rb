@@ -42,13 +42,13 @@ class BoardTest < Minitest::Test
     assert_equal 0, board.low
     assert_equal 1, board.high
   end
-  
+
   def test_analog_resolution
     assert_equal 255, board.analog_write_high
     assert_equal 8,   board.analog_write_resolution
     assert_equal 1023, board.analog_read_high
     assert_equal 10,   board.analog_read_resolution
-    
+
     mock = Minitest::Mock.new
     mock.expect(:call, nil, [Denko::Message.encode(command:96, value:12)])
     mock.expect(:call, nil, [Denko::Message.encode(command:97, value:12)])
@@ -57,17 +57,17 @@ class BoardTest < Minitest::Test
       board.analog_read_resolution = 12
     end
     mock.verify
-    
+
     assert_equal 0,    board.low
     assert_equal 12,   board.analog_write_resolution
     assert_equal 4095, board.analog_write_high
     assert_equal 12,   board.analog_read_resolution
     assert_equal 4095, board.analog_read_high
   end
-  
+
   def test_eeprom
     mock = Minitest::Mock.new.expect(:call, "test eeprom", [], board: board)
-    Denko::EEPROM::BuiltIn.stub(:new, mock) do
+    Denko::EEPROM::Board.stub(:new, mock) do
       board.eeprom
     end
     mock.verify
@@ -85,16 +85,16 @@ class BoardTest < Minitest::Test
   def test_update_passes_messages_to_correct_components
     mock1 = Minitest::Mock.new.expect(:update, nil, ["data"])
     3.times { mock1.expect(:pin, 1) }
-    
+
     # Make sure lines are split only on the first colon.
     # Tests for string based pine names too.
     mock2 = Minitest::Mock.new.expect(:update, nil, ["with:colon"])
     3.times { mock2.expect(:pin, 14) }
-    
+
     # Special EEPROM mock.
     mock3 = Minitest::Mock.new.expect(:update, nil, ["bytes"])
     3.times { mock3.expect(:pin, 254) }
-     
+
     board.add_component(mock1)
     board.add_component(mock2)
     board.add_component(mock3)
