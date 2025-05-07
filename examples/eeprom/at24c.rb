@@ -19,7 +19,7 @@ print "EEPROM address #{address1} contains "
 puts eeprom[address1]
 
 # Write an entire array, giving only the start address.
-address2 = 555
+address2 = 444
 data = [1, 2, 3, 4, 5, 6]
 eeprom[address2] = data
 
