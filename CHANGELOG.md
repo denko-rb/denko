@@ -11,6 +11,14 @@
   - Axes are swappable
   - Deadzone and maxzone configurable, _NOT_ per axis
 
+- `Display::PCD8544` -
+  - 84 x 48 pixel backlit mono LCD
+  - SPI interface
+  - Old design from Nokia phones in late 90's and early 00's
+  - Uses standard `Display::Canvas` for drawing features
+  - Display inversion, contrast (Vop), and bias configurable in hardware
+  - Gotcha: Pixels appear to have an aspect ratio of about 0.8.
+
 - `Display::SH1107` -
   - Practically the same as `SH1106` but 128x128 pixels instead of 128x64.
 
