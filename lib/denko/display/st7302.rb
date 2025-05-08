@@ -5,6 +5,7 @@ module Denko
       include Behaviors::Lifecycle
       include DCPin
       include ResetPin
+      include SPILimit
 
       # Commands
       SWRESET     = 0x01
@@ -213,8 +214,8 @@ module Denko
           command [CASET]; data [ram_page, ram_page+1]
           command [RASET]; data [ram_x_min, ram_x_max]
           command [RAMWR]
-          upper_page.each_slice(255) { |slice| data(slice) }
-          lower_page.each_slice(255) { |slice| data(slice) }
+          upper_page.each_slice(transfer_limit) { |slice| data(slice) }
+          lower_page.each_slice(transfer_limit) { |slice| data(slice) }
 
           # Advance 3 framebuffer pages since taking 24 rows each loop.
           page += 3

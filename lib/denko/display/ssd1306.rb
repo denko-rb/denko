@@ -7,14 +7,8 @@ module Denko
         # Limit auto-incrementing GRAM address to the rectangle being drawn.
         command [ COLUMN_ADDRESS_RANGE, x_min, x_max, PAGE_ADDRESS_RANGE, p_min, p_max ]
 
-        # Send all the bytes at once if within board I2C limit.
-        if buffer.length < (bus.board.i2c_limit - 1)
-          data(buffer)
-
-        # Or split into chunks.
-        else
-          buffer.each_slice(bus.board.i2c_limit - 1) { |slice| data(slice) }
-        end
+        # Send in chunks up to maximum transfer size.
+        buffer.each_slice(transfer_limit) { |slice| data(slice) }
       end
     end
   end

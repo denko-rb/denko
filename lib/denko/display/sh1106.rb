@@ -28,12 +28,8 @@ module Denko
           src_end   = (@columns * page) + x_max
           buffer    = canvas.framebuffer[src_start..src_end]
 
-          # Send all bytes at once if within limit, or split into chunks.
-          if buffer.length < (bus.board.i2c_limit - 1)
-            data(buffer)
-          else
-            buffer.each_slice(bus.board.i2c_limit - 1) { |slice| data(slice) }
-          end
+          # Send in chunks up to maximum transfer size.
+          buffer.each_slice(transfer_limit) { |slice| data(slice) }
         end
       end
     end

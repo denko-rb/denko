@@ -195,6 +195,11 @@ module Denko
           def data(bytes)
             i2c_write([0x40] + bytes)
           end
+
+          # Data prefix always takes one byte, so subtract that.
+          def transfer_limit
+            @transfer_limit ||= bus.board.i2c_limit - 1
+          end
         end
       end
 
@@ -203,6 +208,7 @@ module Denko
           include SPI::Peripheral::MultiPin
           include DCPin
           include ResetPin
+          include SPILimit
         end
       end
     end
