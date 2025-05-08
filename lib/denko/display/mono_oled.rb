@@ -1,7 +1,6 @@
 module Denko
   module Display
     module MonoOLED
-      include Behaviors::BusPeripheral
       include Behaviors::Lifecycle
 
       # I2C Defaults
@@ -67,8 +66,6 @@ module Denko
       # Valid widths and heights for displays
       WIDTHS  = [64,96,128]
       HEIGHTS = [16,32,48,64,128]
-
-      attr_accessor :canvas
 
       # Default to a 128x64 display.
       def columns
@@ -137,8 +134,6 @@ module Denko
         ]
         end
 
-        # Create a new blank canvas and draw it.
-        self.canvas = Canvas.new(columns, rows)
         draw
       end
 
@@ -155,29 +150,6 @@ module Denko
         command [CONTRAST, value]
       end
 
-      def draw(x_min=0, x_max=(columns-1), y_min=0, y_max=(rows-1))
-        # Convert y-coords to page coords.
-        p_min = y_min / 8
-        p_max = y_max / 8
-
-        # If drawing the whole frame (default), bypass temp buffer to save time.
-        if (x_min == 0) && (x_max == columns-1) && (p_min == 0) && (p_max == rows/8)
-          draw_partial(canvas.framebuffer, x_min, x_max, p_min, p_max)
-
-        # Copy bytes for the given rectangle into a temp buffer.
-        else
-          temp_buffer = []
-          (p_min..p_max).each do |page|
-            src_start = (columns * page) + x_min
-            src_end   = (columns * page) + x_max
-            temp_buffer += canvas.framebuffer[src_start..src_end]
-          end
-
-          # And draw them.
-          draw_partial(temp_buffer, x_min, x_max, p_min, p_max)
-        end
-      end
-
       def draw_partial(buffer, x_min, x_max, p_min, p_max)
         raise NotImplementedError, "#draw_partial must be implemented for each class including MonoOLED"
       end
@@ -185,6 +157,7 @@ module Denko
       def mutate_i2c
         singleton_class.class_eval do
           include I2C::Peripheral
+          include PixelCommon
 
           # Commands are I2C messages prefixed with 0x00.
           def command(bytes)
@@ -205,10 +178,7 @@ module Denko
 
       def mutate_spi
         singleton_class.class_eval do
-          include SPI::Peripheral::MultiPin
-          include DCPin
-          include ResetPin
-          include SPILimit
+          include SPICommon
         end
       end
     end

@@ -1,11 +1,8 @@
 module Denko
   module Display
     class ST7302
-      include SPI::Peripheral::MultiPin
       include Behaviors::Lifecycle
-      include DCPin
-      include ResetPin
-      include SPILimit
+      include SPICommon
 
       # Commands
       SWRESET     = 0x01
@@ -47,10 +44,6 @@ module Denko
 
       def rows
         @rows ||= params[:rows] || 122
-      end
-
-      def canvas
-        @canvas ||= Canvas.new(columns, rows)
       end
 
       after_initialize do

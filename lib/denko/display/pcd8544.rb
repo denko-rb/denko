@@ -1,11 +1,8 @@
 module Denko
   module Display
     class PCD8544
-      include SPI::Peripheral::MultiPin
       include Behaviors::Lifecycle
-      include DCPin
-      include ResetPin
-      include SPILimit
+      include SPICommon
 
       def columns
         @columns ||= params[:columns] || 84
@@ -13,10 +10,6 @@ module Denko
 
       def rows
         @rows ||= params[:rows] || 48
-      end
-
-      def canvas
-        @canvas ||= Canvas.new(columns, rows)
       end
 
       FUNCTION_SET = 0b00100000
@@ -137,29 +130,6 @@ module Denko
         self.bias = 4
         self.invert = false
         self.temperature_coefficient = 0
-      end
-
-      def draw(x_min=0, x_max=(columns-1), y_min=0, y_max=(rows-1))
-        # Convert y-coords to page coords.
-        p_min = y_min / 8
-        p_max = y_max / 8
-
-        # If drawing the whole frame (default), bypass temp buffer to save time.
-        if (x_min == 0) && (x_max == columns-1) && (p_min == 0) && (p_max == rows/8)
-          draw_partial(canvas.framebuffer, x_min, x_max, p_min, p_max)
-
-        # Copy bytes for the given rectangle into a temp buffer.
-        else
-          temp_buffer = []
-          (p_min..p_max).each do |page|
-            src_start = (columns * page) + x_min
-            src_end   = (columns * page) + x_max
-            temp_buffer += canvas.framebuffer[src_start..src_end]
-          end
-
-          # And draw them.
-          draw_partial(temp_buffer, x_min, x_max, p_min, p_max)
-        end
       end
 
       def draw_partial(buffer, x_min, x_max, p_min, p_max)
