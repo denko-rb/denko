@@ -4,7 +4,9 @@ module Denko
       include Behaviors::Component
       include Behaviors::Reader
 
-      MAX_EEPROM_TXN = 128
+      def max_eeperom_txn
+        @max_eeeprom_txn ||= board.aux_limit - 3
+      end
 
       def length
         board.eeprom_length
@@ -21,7 +23,7 @@ module Denko
           result    = []
 
           while remaining > 0
-            size = (MAX_EEPROM_TXN < remaining) ? MAX_EEPROM_TXN : remaining
+            size = (max_eeperom_txn < remaining) ? max_eeperom_txn : remaining
             end_address = index + size - 1
             raise ArgumentError, "EEPROM address #{end_address} out of range" if (end_address >= length)
 
@@ -43,7 +45,7 @@ module Denko
           dst_start = loc
 
           while remaining > 0
-            size = (MAX_EEPROM_TXN < remaining) ? MAX_EEPROM_TXN : remaining
+            size = (max_eeperom_txn < remaining) ? max_eeperom_txn : remaining
             src_end = src_start + size - 1
             raise ArgumentError, "EEPROM address #{src_end} out of range" if (src_end >= length)
 

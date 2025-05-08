@@ -11,7 +11,7 @@ module Denko
     # CMD = 8
     def eeprom_write(address, bytes)
       address = pack :uint16, address
-      bytes  = pack :uint8, bytes, min: 1, max: 128
+      bytes   = pack :uint8,  bytes
       write Message.encode  command: 8,
                             value: bytes.length,
                             aux_message: address + bytes
