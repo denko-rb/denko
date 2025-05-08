@@ -4,13 +4,8 @@ module Denko
       include Behaviors::Lifecycle
       include SPICommon
 
-      def columns
-        @columns ||= params[:columns] || 84
-      end
-
-      def rows
-        @rows ||= params[:rows] || 48
-      end
+      COLUMNS = 84
+      ROWS    = 48
 
       FUNCTION_SET = 0b00100000
       # OR these options into lowest 3 bits:

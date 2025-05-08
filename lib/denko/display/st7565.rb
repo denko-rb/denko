@@ -4,13 +4,8 @@ module Denko
       include Behaviors::Lifecycle
       include SPICommon
 
-      def columns
-        @columns ||= params[:columns] || 128
-      end
-
-      def rows
-        @rows ||= params[:rows] || 64
-      end
+      COLUMNS = 128
+      ROWS    = 64
 
       # Overall commands
       RESET                 = 0b11100010

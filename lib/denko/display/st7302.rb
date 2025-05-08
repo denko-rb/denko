@@ -38,13 +38,9 @@ module Denko
       # for a 122 pixel wide display, the first used column is 25.
       RAM_COLUMN_START = 25
 
-      def columns
-        @columns ||= params[:columns] || 250
-      end
-
-      def rows
-        @rows ||= params[:rows] || 122
-      end
+      # Treat memory rows as columns, and columns as rows. Bytes will fall properly.
+      COLUMNS = 250
+      ROWS    = 122
 
       after_initialize do
         reset.high if reset

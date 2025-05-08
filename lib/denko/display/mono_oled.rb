@@ -68,13 +68,8 @@ module Denko
       HEIGHTS = [16,32,48,64,128]
 
       # Default to a 128x64 display.
-      def columns
-        @columns ||= params[:columns] || params[:width] || 128
-      end
-
-      def rows
-        @rows ||= params[:rows] || params[:height] || 64
-      end
+      COLUMNS = 128
+      ROWS    = 64
 
       def rotated
         return @rotated unless @rotated.nil?

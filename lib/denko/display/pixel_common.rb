@@ -1,6 +1,21 @@
 module Denko
   module Display
     module PixelCommon
+      def columns
+        return @columns if @columns
+        @columns = self.class.const_get("COLUMNS") if self.class.const_defined?("COLUMNS")
+        @columns = params[:columns] if params[:columns]
+        @columns
+      end
+      alias :cols :columns
+
+      def rows
+        return @rows if @rows
+        @rows = self.class.const_get("ROWS") if self.class.const_defined?("ROWS")
+        @rows = params[:rows] if params[:rows]
+        @rows
+      end
+
       def canvas
         @canvas ||= Canvas.new(columns, rows)
       end
