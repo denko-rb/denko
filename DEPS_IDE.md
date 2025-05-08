@@ -33,19 +33,19 @@ All platforms will require libraries to be installed. To install a library do th
     Arduino SAMD Boards (32-bits ARM Cortex-M0+)
     Arduino UNO R4 Boards
     ESP8266 Boards
-    ESP32 Boards @ v3.0.5
+    ESP32 Boards @ 3.2.0
     Raspberry Pi Pico/RP2040
-    ````
+    ````r
   * Libraries:
     ````
-    Servo                      by Michael Margolis, Arduino
-    Ethernet                   by Various
-    WiFi                       by Arduino
-    WiFi101                    by Arduino
-    WiFiNINA                   by Arduino
-    IRremote         @ v4.4.1  by shirriff, z3to, ArminJo
-    ESP32Servo                 by Kevin Harrington, John K. Bennett
-    Adafruit NeoPixel          by Adafruit
+    Servo                       by Michael Margolis, Arduino
+    Ethernet                    by Various
+    WiFi                        by Arduino
+    WiFi101                     by Arduino
+    WiFiNINA                    by Arduino
+    ESP32Servo                  by Kevin Harrington, John K. Bennett
+    IRremote          @ 4.4.1   by shirriff, z3to, ArminJo
+    Adafruit NeoPixel @ 1.12.5  by Adafruit
     ````
 
 **AVR-based Arduinos & Clones Only:**
@@ -55,12 +55,12 @@ All platforms will require libraries to be installed. To install a library do th
     ````
   * Libraries:
     ````
-    Servo                      by Michael Margolis, Arduino
-    Ethernet                   by Various
-    WiFi                       by Arduino
-    WiFiNINA                   by Arduino
-    IRremote         @ v4.4.1  by shirriff, z3to, ArminJo
-    Adafruit NeoPixel          by Adafruit
+    Servo                       by Michael Margolis, Arduino
+    Ethernet                    by Various
+    WiFi                        by Arduino
+    WiFiNINA                    by Arduino
+    IRremote          @ 4.4.1   by shirriff, z3to, ArminJo
+    Adafruit NeoPixel @ 1.12.5  by Adafruit
     ````
 
 **ARM-based Arduinos & Clones Only:**
@@ -72,13 +72,13 @@ All platforms will require libraries to be installed. To install a library do th
     ````
   * Libraries:
     ````
-    Servo                      by Michael Margolis, Arduino
-    Ethernet                   by Various
-    WiFi                       by Arduino
-    WiFi101                    by Arduino
-    WiFiNINA                   by Arduino
-    IRremote         @ v4.4.1  by shirriff, z3to, ArminJo
-    Adafruit NeoPixel          by Adafruit
+    Servo                       by Michael Margolis, Arduino
+    Ethernet                    by Various
+    WiFi                        by Arduino
+    WiFi101                     by Arduino
+    WiFiNINA                    by Arduino
+    IRremote          @ 4.4.1   by shirriff, z3to, ArminJo
+    Adafruit NeoPixel @ 1.12.5  by Adafruit
     ````
 
 **ESP8266 Only:**
@@ -92,8 +92,8 @@ All platforms will require libraries to be installed. To install a library do th
     ````
   * Libraries:
     ````
-    IRremote         @ v4.4.1  by shirriff, z3to, ArminJo
-    Adafruit NeoPixel          by Adafruit
+    IRremote          @ 4.4.1   by shirriff, z3to, ArminJo
+    Adafruit NeoPixel @ 1.12.5  by Adafruit
     ````
 
 **ESP32 Only:**
@@ -103,13 +103,13 @@ All platforms will require libraries to be installed. To install a library do th
     ````
   * Boards (latest version unless specified):
     ````
-    ESP32 Boards @ v3.0.5
+    ESP32 Boards @ v3.2.0
     ````
   * Libraries (latest version unless specified):
     ````
-    IRremote         @ v4.4.1  by shirriff, z3to, ArminJo
-    ESP32Servo                 by Kevin Harrington, John K. Bennett
-    Adafruit NeoPixel          by Adafruit
+    ESP32Servo                  by Kevin Harrington, John K. Bennett
+    IRremote          @ 4.4.1   by shirriff, z3to, ArminJo
+    Adafruit NeoPixel @ 1.12.5  by Adafruit
     ````
 
 **RP2040 Only:**
@@ -123,5 +123,6 @@ All platforms will require libraries to be installed. To install a library do th
     ````
   * Libraries:
     ````
-    IRremote         @ v4.4.1  by shirriff, z3to, ArminJo
+    IRremote          @ 4.4.1   by shirriff, z3to, ArminJo
+    Adafruit NeoPixel @ 1.12.5  by Adafruit
     ````

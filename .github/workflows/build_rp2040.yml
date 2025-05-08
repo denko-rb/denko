@@ -34,11 +34,12 @@ jobs:
                 source-url: https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
             libraries: |
               - name: Servo
+              - name: Ethernet
+              - name: WiFi
               - name: IRremote
                 version: 4.4.1
               - name: Adafruit NeoPixel
-              - name: Ethernet
-              - name: WiFi
+                version: 1.12.5
 
     steps:
       - name: Checkout

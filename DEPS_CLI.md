@@ -16,16 +16,16 @@ arduino-cli core install arduino:sam
 arduino-cli core install arduino:samd
 arduino-cli core install arduino:renesas_uno
 arduino-cli core install esp8266:esp8266
-arduino-cli core install esp32:esp32@3.0.5
+arduino-cli core install esp32:esp32@3.2.0
 arduino-cli core install rp2040:rp2040
 arduino-cli lib install Servo
 arduino-cli lib install Ethernet
 arduino-cli lib install WiFi
 arduino-cli lib install WiFi101
 arduino-cli lib install WiFiNINA
+arduino-cli lib install ESP32Servo@3.0.6
 arduino-cli lib install IRremote@4.4.1
-arduino-cli lib install ESP32Servo
-arduino-cli lib install "Adafruit NeoPixel"
+arduino-cli lib install "Adafruit NeoPixel"@1.12.5
 ````
 
 **AVR-based Arduinos & Clones Only:**
@@ -37,7 +37,7 @@ arduino-cli lib install Ethernet
 arduino-cli lib install WiFi
 arduino-cli lib install WiFiNINA
 arduino-cli lib install IRremote@4.4.1
-arduino-cli lib install "Adafruit NeoPixel"
+arduino-cli lib install "Adafruit NeoPixel"@1.12.5
 ````
 
 **ARM-based Arduinos & Clones Only:**
@@ -52,7 +52,7 @@ arduino-cli lib install WiFi
 arduino-cli lib install WiFi101
 arduino-cli lib install WiFiNINA
 arduino-cli lib install IRremote@4.4.1
-arduino-cli lib install "Adafruit NeoPixel"
+arduino-cli lib install "Adafruit NeoPixel"@1.12.5
 ````
 
 **ESP8266 Only:**
@@ -62,7 +62,7 @@ arduino-cli config add board_manager.additional_urls https://arduino.esp8266.com
 arduino-cli core update-index
 arduino-cli core install esp8266:esp8266
 arduino-cli lib install IRremote@4.4.1
-arduino-cli lib install "Adafruit NeoPixel"
+arduino-cli lib install "Adafruit NeoPixel"@1.12.5
 ````
 
 **ESP32 Only:**
@@ -70,10 +70,10 @@ arduino-cli lib install "Adafruit NeoPixel"
 arduino-cli config init
 arduino-cli config add board_manager.additional_urls https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
 arduino-cli core update-index
-arduino-cli core install esp32:esp32@3.0.5
-arduino-cli lib install ESP32Servo
+arduino-cli core install esp32:esp32@3.2.0
+arduino-cli lib install ESP32Servo@3.0.6
 arduino-cli lib install IRremote@4.4.1
-arduino-cli lib install "Adafruit NeoPixel"
+arduino-cli lib install "Adafruit NeoPixel"@1.12.5
 ````
 
 **RP2040 Only:**
@@ -83,5 +83,5 @@ arduino-cli config add board_manager.additional_urls https://github.com/earlephi
 arduino-cli core update-index
 arduino-cli core install rp2040:rp2040
 arduino-cli lib install IRremote@4.4.1
-arduino-cli lib install "Adafruit NeoPixel"
+arduino-cli lib install "Adafruit NeoPixel"@1.12.5
 ````

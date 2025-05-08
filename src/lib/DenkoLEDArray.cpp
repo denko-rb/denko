@@ -10,9 +10,6 @@
 //
 #ifdef DENKO_LED_WS2812
   #include <Adafruit_NeoPixel.h>
-  #ifdef ESP32
-    #include <esp.c>
-  #endif
 
   #ifdef ARDUINO_ARCH_RP2040
     Adafruit_NeoPixel ledArray;
@@ -32,12 +29,8 @@
 #define WS2812_DATA_OFFSET 8
 //
 void Denko::showLEDArray() {
-  // Avoid memcpy on ESP32 by calling espShow() directly.
-  #ifdef ESP32
-    espShow(pin, &auxMsg[WS2812_DATA_OFFSET], val, true);
-
   // Pre-init instance (one PIO) on Pi Pico.
-  #elif defined(ARDUINO_ARCH_RP2040)
+  #ifdef ARDUINO_ARCH_RP2040
     ledArray.setPin(pin);
     ledArray.updateLength(val);
     memcpy(ledArray.getPixels(), &auxMsg[WS2812_DATA_OFFSET], val);

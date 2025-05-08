@@ -36,6 +36,7 @@ jobs:
               - name: Ethernet
               - name: WiFi
               - name: Adafruit NeoPixel
+                version: 1.12.5
 
     steps:
       - name: Checkout
