@@ -19,26 +19,30 @@ end
 
 ## How It Works
 
-There are currently two ways to use denko. Both have the same user-friendly API, but the hardware can be very different. Here's a summary of each:
+<img src="images/layer_diagram.jpg" width="820" height="540" alt="Denko Layer Diagram">
+
+Denko aims to provide a Ruby API for you to to directly control physical peripherals, while abstracting all the hardware and software complexity in between. There are currently 3 supported "stacks":
 
 ### Connected Microcontroller
-- Flash a microcontroller with the denko C firmware, so it can be "remote controlled"
-- Run a Ruby program on a "real" computer with the microcontroller connected
-- The microcontroller appears as an instance of `Denko::Board`
-- Calling its methods will send/receive message to manipulate the real microcontroller
-- The microcontroller does only the bare minimum to send and receive signals
-- Everything from peripheral drivers and up happens in Ruby, on the computer
+- Flash a [supported microcontroller](HARDWARE.md#Microcontroller) with the Denko firmware
+- Connect it to a PC running Ruby, over Serial, Ethernet or Wi-Fi
+- The microcontroller does the "low-level" signal work, appearing as an instance of `Denko::Board` in Ruby
+- Ruby peripheral drivers, running on the PC, do the "high-level" work
 
 ### Single-Board-Computer
-- Install [denko-piboard](https://github.com/denko-rb/denko-piboard) on your SBC
-- Use it in a Ruby program, running on the SBC
-- The SBC's GPIO header becomes a `Denko::PiBoard` instance, compatible with `Denko::Board`
+- Install [denko-piboard](https://github.com/denko-rb/denko-piboard) on a Linux SBC
+- The included C extention makes the SBC's GPIO/PWM/I2C/SPI available via a `Denko::PiBoard` instance
 - Everything runs self-contained on the SBC
 
+### mruby on Milk-V Duo
+- Download `mruby` and/or `mirb` binaries from the [mruby-denko-milkv-duo](https://github.com/denko-rb/mruby-denko-milkv-duo) repo onto a Milk-V Duo
+- Everything is included. Write scripts and run them self-contained on the Milk-V Duo
+- Work-in-progress, but will release soon.
+
 **Notes:**
-- Peripheral classes are implemented only in this gem, but work with both types of board, and both gems.
-- That makes the [examples](examples) folder of this gem (mostly) relevant to both.
-- If using denko-piboard, ignore the hardware and installation sections here.
+- Peripheral drivers are implemented __only__ in this gem, and the same source files are used by __all__ stacks
+- That makes the [examples folder](examples) in this gem relveant to all stacks, ignoring hardware incompatibilities
+- If using `denko-piboard` or `mruby-denko-milkv-duo`, ignore the hardware and installation sections here
 
 ## Supported Hardware
 
