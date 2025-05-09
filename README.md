@@ -19,7 +19,7 @@ end
 
 ## How It Works
 
-<img src="images/layer_diagram.jpg" width="820" height="540" alt="Denko Layer Diagram">
+<img src="images/layer_diagram.png" width="820" height="540" alt="Denko Layer Diagram">
 
 Denko aims to provide a Ruby API for you to to directly control physical peripherals, while abstracting all the hardware and software complexity in between. There are currently 3 supported "stacks":
 
