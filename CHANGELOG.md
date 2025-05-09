@@ -22,6 +22,14 @@
 - `Display::SH1107` -
   - Practically the same as `SH1106` but 128x128 pixels instead of 128x64.
 
+- `Display::SSD1681` -
+  - 250 x 200 pixel E-Paper display
+  - SPI Interface
+  - Uses the standard `Display::Canvas` class for drawing features.
+  - TODO:
+    - Support Black/White/Red version
+    - Add methods for inversion and 1 axis reflection in hardware
+
 - `Display::ST7302` -
   - 250 x 122 pixel mono reflective LCD
   - SPI Interface
