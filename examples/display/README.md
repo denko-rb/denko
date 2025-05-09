@@ -46,7 +46,7 @@
 
 ## LCDs
 
-### PCD8544
+### PCD8544 (aka Nokia 5110 / 3310)
 
 <img src="photos/pcd8544.jpg" width="540" alt="PCD8544 84x48 Backlit LCD">
 
@@ -83,7 +83,7 @@
 <img src="photos/ssd1681.jpg" width="540" alt="SSD1681 200x200 E-Paper">
 
 **Type:** E-Paper\
-**Colors:** Black and White OR Black, Red, White\
+**Colors:** Black/White, or Black/Red/White\
 **Size:** 1.54"\
 **Pixels:** 200x200\
 **Interface:** SPI
