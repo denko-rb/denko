@@ -23,7 +23,7 @@ button.listen
 Denko aims to provide a Ruby API for you to directly control physical peripherals, while abstracting all the hardware and software complexity in between. There are currently 3 supported "stacks":
 
 ### Connected Microcontroller
-- Flash a [supported microcontroller](HARDWARE.md#Microcontroller) with the Denko firmware
+- Flash a [supported microcontroller](MICROCONTROLLERS.md) with the Denko firmware
 - Connect it to a PC running Ruby, over Serial, Ethernet, or Wi-Fi
 - The microcontroller does the "low-level" signal work, appearing as an instance of `Denko::Board` in Ruby
 - Ruby peripheral drivers, running on the PC, do the "high-level" work
@@ -45,7 +45,15 @@ Denko aims to provide a Ruby API for you to directly control physical peripheral
 
 ## Supported Hardware
 
-[Microcontroller & Peripheral Support List](HARDWARE.md)
+In this gem:
+  - [Microcontrollers](MICROCONTROLLERS.md)
+  - [Peripherals](PERIPHERALS.md)
+
+In `denko-piboard`:
+  - [Single Board Computers](https://github.com/denko-rb/denko-piboard?tab=readme-ov-file#support)
+
+In `mruby-denko-milkv`:
+  - [Milk-V Duo Boards](https://github.com/denko-rb/mruby-denko-milkv-duo?tab=readme-ov-file#supported-hardware)
 
 ## Installation
 
@@ -138,7 +146,7 @@ Most boards have a regular LED on-board. Test with the [blink](examples/led/buil
 #### Tutorial
 
 - [Here](tutorial) you will find a beginner-friendly tutorial, that goes through the basics, using commented examples and diagrams. Read the comments and try modifying the code. You will need the following:
-  - 1 compatible microcontroller (see [supported hardware](HARDWARE.md))
+  - 1 [compatible microcontroller](MICROCONTROLLERS.md)
   - 1 button or momentary switch
   - 1 potentiometer (any value)
   - 1 external RGB LED (4 legs common cathode, not a Neopixel or individually addressable)
