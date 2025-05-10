@@ -48,9 +48,9 @@
 
 |    Chip        | Status          | Products         | Notes |
 | :--------      | :------:        | :--------------- |------ |
-| ATSAM3X8E      | :yellow_heart:  | Due | Uses Native USB. Tone and IR Out don't work.
+| ATSAM3X8E      | :green_heart:   | Due | Native USB. Tone and infrared not supported
 | ATSAMD21       | :green_heart:   | Zero, M0 Series, Nano 33 IOT, MKR WiFi 1010 | Native USB
-| RA4M1          | :yellow_heart:  | Uno R4 Minima, Uno R4 WiFi | IR and WS2812 libraries don't support this yet
+| RA4M1          | :green_heart:   | Uno R4 Minima, Uno R4 WiFi | Infrared not supported
 
 ## Arduino Networking
 
