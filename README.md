@@ -44,16 +44,10 @@ Denko aims to provide a Ruby API for you to directly control physical peripheral
 - If using `denko-piboard` or `mruby-denko-milkv-duo`, ignore the hardware and installation sections here
 
 ## Supported Hardware
-
-In this gem:
-  - [Microcontrollers](MICROCONTROLLERS.md)
-  - [Peripherals](PERIPHERALS.md)
-
-In `denko-piboard`:
-  - [Single Board Computers](https://github.com/denko-rb/denko-piboard?tab=readme-ov-file#support)
-
-In `mruby-denko-milkv`:
-  - [Milk-V Duo Boards](https://github.com/denko-rb/mruby-denko-milkv-duo?tab=readme-ov-file#supported-hardware)
+- [Peripherals](PERIPHERALS.md)
+- [Microcontrollers](MICROCONTROLLERS.md)
+- [Single Board Computers](https://github.com/denko-rb/denko-piboard?tab=readme-ov-file#support)
+- [Milk-V Duo Boards](https://github.com/denko-rb/mruby-denko-milkv-duo?tab=readme-ov-file#supported-hardware)
 
 ## Installation
 
