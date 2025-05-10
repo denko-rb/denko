@@ -2,34 +2,7 @@
 
 :green_heart: Full support :yellow_heart: Partial support :heart: Planned. No support yet
 
-### Interfaces
-
-| Name                  | Status          | HW/SW | Component Class          | Notes |
-| :---------------      | :------:        | :---  | :--------------          | :---- |
-| Digital In            | :green_heart:   | H     | `DigitalIO::Input`       | 1ms - 128ms (4ms default) listen, poll, or read
-| Analog In (ADC)       | :green_heart:   | H     | `AnalogIO::Input`        | 1ms - 128ms (16ms default) listen, poll, or read
-| Digital Out           | :green_heart:   | H     | `DigitalIO::Output`      |
-| Analog Out (DAC)      | :green_heart:   | H     | `AnalogIO::Output`       | **Only** SAM3X, SAMD21, RA4M1, ESP32, ESP32-S2
-| PWM Out               | :green_heart:   | H     | `PulseIO::PWMOutput`     |
-| Servo/ESC Motor Drive | :green_heart:   | H     | See Motor Driver Table   | Depends on PWM
-| Tone Out (Sq. Wave)   | :green_heart:   | H     | `PulseIO::Buzzer`        | Except SAM3X. Uses PWM
-| I2C                   | :green_heart:   | H     | `I2C::Bus`               | Predetermined pins per board
-| I2C Bit-Bang          | :green_heart:   | S     | `I2C::BitBang`           | Any pins
-| SPI                   | :green_heart:   | H     | `SPI::Bus`               | Predetermined pins per board
-| SPI Bit-Bang          | :green_heart:   | S     | `SPI::BitBang`           | Any pins
-| UART                  | :green_heart:   | H     | `UART::Hardware`         | **Except** Atmega328, ATmega168
-| UART Bit-Bang         | :green_heart:   | S     | `UART::BitBang`          | **Only** ATmega328
-| Maxim OneWire         | :green_heart:   | S     | `OneWire::Bus`           | No overdrive
-| Infrared Output       | :green_heart:   | S     | `PulseIO::IROutput`      | **Except** SAM3X, RA4M1
-| Infrared Input        | :heart:         | S     | `PulseIO::IRInput`       | Doable with existing library
-| WS2812 RGB LEDs       | :green_heart:   | S     | `LED::WS2812`            | **Except** RA4M1
-| ESP32-PCNT            | :heart:         | H     | -                        | **Only** ESP32. Pulse and encoder counter
-| ESP32-MCPWM           | :heart:         | H     | -                        | **Only** ESP32. Motor control PWM
-
-**Note:** When listening, the board checks the pin's value every **_2^n_** milliseconds (**_n_** from **_0_** to **_7_**), without further commands.
-Polling and reading follow a call and response pattern.
-
-### Basic Input/Output
+## Digital and Analog Input and Output
 
 | Name             | Status         | Interface    | Component Class            | Notes |
 | :--------------- | :------:       | :--------    | :---------------           |------ |
@@ -39,7 +12,7 @@ Polling and reading follow a call and response pattern.
 | Potentiometer    | :green_heart:  | Analog In    | `AnalogIO::Potentiometer`  | Smoothing on by default
 | Joystick         | :green_heart:  | Analog In    | `AnalogIO::Joystick`       |
 
-### LEDs
+## LED
 
 | Name               | Status             | Interface         | Component Class       | Notes |
 | :---------------   | :------:           | :--------         | :---------------      |------ |
@@ -52,7 +25,7 @@ Polling and reading follow a call and response pattern.
 | Neopixel / WS2812B | :green_heart:      | Adafruit Library  | `LED::WS2812`         |
 | Dotstar / APA102   | :green_heart:      | SPI               | `LED::APA102`         |
 
-### Displays
+## Display
 
 | Name                | Status         | Interface                    | Component Class     | Notes |
 | :---------------    | :------:       | :--------                    | :---------------    |------ |
@@ -74,13 +47,13 @@ Polling and reading follow a call and response pattern.
 | GC9107              | :heart:        | SPI                          | `Display::GC9107`   | 128x128 RGB LCD
 | GC9A01              | :heart:        | SPI                          | `Display::GCA9A01`  | 240x240 Round RGB LCD
 
-### Sound
+## Sound
 
 | Name             | Status         | Interface    | Component Class            | Notes |
 | :--------------- | :------:       | :--------    | :---------------           |------ |
 | Piezo Buzzer     | :green_heart:  | Tone Out     | `PulseIO::Buzzer`          | Frequency > 30Hz
 
-### Motors / Motor Drivers
+## Motors and Motor Drivers
 
 | Name                 | Status         | Interface      | Component Class    | Notes |
 | :---------------     | :------:       | :--------      | :---------------   |------ |
@@ -95,7 +68,7 @@ Polling and reading follow a call and response pattern.
 | A4988                | :yellow_heart: | DigitalOut     | `Motor::Stepper`   | 1-ch microstepper
 | TMC2209              | :heart:        | -              | -                  | 1-ch silent stepper driver
 
-### I/O Expansion
+## I/O Expansion
 
 | Name             | Status         | Interface  | Component Class      | Notes |
 | :--------------- | :------:       | :--------  | :---------------     |------ |
@@ -110,7 +83,7 @@ Polling and reading follow a call and response pattern.
 | MCP4725 DAC      | :heart:        | I2C        | `AnalogIO::MCP4275`  | 1-ch, 12-bit DAC
 | PCA9548 I2C Mux  | :heart:        | I2C        | `I2C::PCA9548`       | 8-way I2C multiplexer
 
-### Environmental Sensors
+## Environmental Sensors
 
 | Name             | Status         | Interface   | Component Class    | Type                     | Notes                  |
 | :--------------- | :------:       | :--------   | :---------------   |---------------           | ---------------------- |
@@ -137,7 +110,7 @@ Polling and reading follow a call and response pattern.
 | CCS811           | :heart:        | I2C         | `Sensor::CCS811`   | eCO2                     |
 | MICS5524         | :heart:        | Analog In   | `Sensor::MICS5524` | CO/Alcohol/VOC           |
 
-### Light Sensors
+## Light Sensors
 
 | Name             | Status         | Interface    | Component Class    | Notes |
 | :--------------- | :------:       | :--------    | :---------------   |------ |
@@ -145,7 +118,7 @@ Polling and reading follow a call and response pattern.
 | TCS34725         | :heart:        | I2C          | `Sensor::TCS34725` | RGB
 | APDS9960         | :heart:        | I2C          | `Sensor::APDS9960` | Proximity, RGB, Gesture
 
-### PIR Motion Sensors
+## PIR Motion Sensors
 | Name             | Status         | Interface    | Component Class      | Notes |
 | :--------------- | :------:       | :--------    | :---------------     |------ |
 | HC-SR501         | :green_heart:  | Digital In   | `Sensor::GenericPIR` |
@@ -153,7 +126,7 @@ Polling and reading follow a call and response pattern.
 | AS312            | :green_heart:  | Digital In   | `Sensor::GenericPIR` |
 | AM312            | :yellow_heart: | Digital In   | `Sensor::GenericPIR` |
 
-### Distance Sensors
+## Distance Sensors
 
 | Name             | Status         | Interface    | Component Class    | Notes |
 | :--------------- | :------:       | :--------    | :---------------   |------ |
@@ -163,7 +136,7 @@ Polling and reading follow a call and response pattern.
 | VL53L0X          | :yellow_heart: | I2C          | `Sensor::VL53L0X`  | Laser, 20 - 2000mm. Continuous mode only. No configuration.
 | GP2Y0E03         | :heart:        | I2C          | `Sensor::GP2Y0E03` | Infrared, 40 - 500mm
 
-### Inertial Measurement Units
+## Inertial Measurement Units
 
 | Name             | Status         | Interface | Component Class    | Notes |
 | :--------------- | :------:       | :-------- | :---------------   |------ |
@@ -175,12 +148,12 @@ Polling and reading follow a call and response pattern.
 | BMI160           | :heart:        | I2C       | `Sensor::BMI160`   | Gyro + Accelerometer
 | LSM6DS3          | :heart:        | I2C       | `Sensor:LSM6DS3`   | Gyro + Accelerometer
 
-### Misc Sensors
+## Misc Sensors
 | Name             | Status         | Interface | Component Class    | Notes |
 | :--------------- | :------:       | :-------- | :---------------   |------ |
 | INA219           | :heart:        | I2C       | `Sensor::INA219`   | DC Current Sensor
 
-### Real Time Clocks
+## Real Time Clocks
 
 | Name             | Status         | Interface | Component Class   | Notes |
 | :--------------- | :------:       | :-------- | :---------------  |------ |
@@ -189,13 +162,13 @@ Polling and reading follow a call and response pattern.
 | DS3231           | :green_heart:  | I2C       | `RTC::DS3231`     | Alarms not implemented
 | PCF8563          | :heart:        | I2C       | `RTC::PCF8563`    |
 
-### GPS
+## GPS
 
 | Name             | Status         | Interface | Component Class   | Notes |
 | :--------------- | :------:       | :-------- | :---------------  |------ |
 | GT-U7            | :heart:        | UART      | -                 |
 
-### Miscellaneous
+## Miscellaneous
 
 | Name             | Status         | Interface  | Component Class      | Notes |
 | :--------------- | :------:       | :--------  | :---------------     |------ |

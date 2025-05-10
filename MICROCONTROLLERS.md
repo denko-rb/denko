@@ -2,7 +2,7 @@
 
 :green_heart: Full support :yellow_heart: Partial support :heart: Planned. No support yet :question: Works in theory. Untested in real hardware.
 
-### Espressif Chips with Wi-Fi (Except H2)
+## Espressif Chips with Wi-Fi (Except H2)
 [![ESP8266 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp8266.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp8266.yml)
 [![ESP32 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32.yml)
 [![ESP32-C3 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32c3.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32c3.yml)
@@ -26,7 +26,7 @@
 
 **Note:** Since Arduino ESP32 Core version 3.0+, USB-CDC is very unreliable when sending lots of data both directions (something denko can do). It's a known issue in the core. Use a regular UART until it's fixed.
 
-### AVR/MegaAVR Based Arduino Products (and Clones)
+## AVR/MegaAVR Based Arduino Products (and Clones)
 [![AVR Build Status](https://github.com/denko-rb/denko/actions/workflows/build_atmega_avr.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_atmega_avr.yml)
 [![MegaAVR Build Status](https://github.com/denko-rb/denko/actions/workflows/build_atmega_megaavr.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_atmega_megaavr.yml)
 
@@ -41,7 +41,7 @@
 
 **Note:** Only USB boards listed. Any board with a supported chip should work, once you can flash it and connect to serial.
 
-### ARM Based Arduino Products (and Clones)
+## ARM Based Arduino Products (and Clones)
 [![SAM3X Build Satus](https://github.com/denko-rb/denko/actions/workflows/build_atsam3x.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_atsam3x.yml)
 [![SAMD Build Satus](https://github.com/denko-rb/denko/actions/workflows/build_atsamd21.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_atsamd21.yml)
 [![RA4M1 Build Satus](https://github.com/denko-rb/denko/actions/workflows/build_ra4m1.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_ra4m1.yml)
@@ -52,7 +52,7 @@
 | ATSAMD21       | :green_heart:   | Zero, M0 Series, Nano 33 IOT, MKR WiFi 1010 | Native USB
 | RA4M1          | :yellow_heart:  | Uno R4 Minima, Uno R4 WiFi | IR and WS2812 libraries don't support this yet
 
-### Arduino Networking
+## Arduino Networking
 
 |    Chip               | Status          | Products         | Notes |
 | :--------             | :------:        | :--------------- |------ |
@@ -61,15 +61,42 @@
 | ATWINC1500            | :green_heart:   | MKR1000, WiFi Shield 101 | #define WIFI_101 for shield. Automatic for MKR1000
 | u-blox NINA-W102      | :question:      | Uno WiFi Rev 2, MKR WiFi 1010, Nano 33 IOT | Should work. No hardware
 
-### AVR Chips from [MightyCore](https://github.com/MCUdude/MightyCore)
+## AVR Chips from [MightyCore](https://github.com/MCUdude/MightyCore)
 
 |    Chip        | Status          | Products         | Notes |
 | :--------      | :------:        | :--------------- |------ |
 | ATmega1284     | :heart:         | Used in many 8-bit 3D printer boards. |
 
-### Raspberry Pi Microcontrollers
+## Raspberry Pi Microcontrollers
 [![RP2040 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_rp2040.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_rp2040.yml)
 
 |    Chip        | Status          | Board Tested          | Notes |
 | :--------      | :------:        | :---------------      |------ |
 | RP2040         | :green_heart:   | Raspberry Pi Pico (W) |
+
+## Implemented Interfaces
+
+| Name                  | Status          | HW/SW | Component Class          | Notes |
+| :---------------      | :------:        | :---  | :--------------          | :---- |
+| Digital In            | :green_heart:   | H     | `DigitalIO::Input`       | 1ms - 128ms (4ms default) listen, poll, or read
+| Analog In (ADC)       | :green_heart:   | H     | `AnalogIO::Input`        | 1ms - 128ms (16ms default) listen, poll, or read
+| Digital Out           | :green_heart:   | H     | `DigitalIO::Output`      |
+| Analog Out (DAC)      | :green_heart:   | H     | `AnalogIO::Output`       | **Only** SAM3X, SAMD21, RA4M1, ESP32, ESP32-S2
+| PWM Out               | :green_heart:   | H     | `PulseIO::PWMOutput`     |
+| Servo/ESC Motor Drive | :green_heart:   | H     | See Motor Driver Table   | Depends on PWM
+| Tone Out (Sq. Wave)   | :green_heart:   | H     | `PulseIO::Buzzer`        | Except SAM3X. Uses PWM
+| I2C                   | :green_heart:   | H     | `I2C::Bus`               | Predetermined pins per board
+| I2C Bit-Bang          | :green_heart:   | S     | `I2C::BitBang`           | Any pins
+| SPI                   | :green_heart:   | H     | `SPI::Bus`               | Predetermined pins per board
+| SPI Bit-Bang          | :green_heart:   | S     | `SPI::BitBang`           | Any pins
+| UART                  | :green_heart:   | H     | `UART::Hardware`         | **Except** Atmega328, ATmega168
+| UART Bit-Bang         | :green_heart:   | S     | `UART::BitBang`          | **Only** ATmega328
+| Maxim OneWire         | :green_heart:   | S     | `OneWire::Bus`           | No overdrive
+| Infrared Output       | :green_heart:   | S     | `PulseIO::IROutput`      | **Except** SAM3X, RA4M1
+| Infrared Input        | :heart:         | S     | `PulseIO::IRInput`       | Doable with existing library
+| WS2812 RGB LEDs       | :green_heart:   | S     | `LED::WS2812`            | **Except** RA4M1
+| ESP32-PCNT            | :heart:         | H     | -                        | **Only** ESP32. Pulse and encoder counter
+| ESP32-MCPWM           | :heart:         | H     | -                        | **Only** ESP32. Motor control PWM
+
+**Note:** When listening, the board checks the pin's value every **_2^n_** milliseconds (**_n_** from **_0_** to **_7_**), without further commands.
+Polling and reading follow a call and response pattern.
