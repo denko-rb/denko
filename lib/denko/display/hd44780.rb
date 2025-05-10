@@ -160,15 +160,15 @@ module Denko
         micro_delay(2000)
       end
 
-      def set_cursor(col, row)
+      def text_cursor(col, row)
         # Limit to the highest row, 0 indexed.
         row = (rows - 1) if row > (rows - 1)
         command(LCD_SETDDRAMADDR | (col + row_offsets[row]))
       end
-      alias :move_to :set_cursor
+      alias :move_to :text_cursor
 
-      def print(text)
-        text.each_byte { |b| write b }
+      def text(str)
+        str.each_byte { |b| write b }
       end
 
       #

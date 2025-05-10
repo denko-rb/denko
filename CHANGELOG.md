@@ -74,12 +74,17 @@
 
 ### Peripheral Changes
 - `Display::Canvas` -
+  - `#print` changed to `#text`
+  - `#print_char` changed to `#show_char`
   - Fonts can be any size and don't need to align to Y axis pages now
   - Added more fonts
   - Fonts have integer scaling now
   - Added `Canvas#rotate`
   - Added `Canvas#reflect`
   - Optimized `Canvas#line` to use only integer math, avoid float, for mruby
+
+- `Display::HD44780` -
+  - `#print` changed to `#text`, and `#set_cursor` to `#text_cursor` for consistency with `Display::Canvas`
 
 - `EEPROM::Board` -
   - Renamed from `EEPROM::BuiltIn`

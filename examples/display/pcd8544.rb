@@ -40,7 +40,7 @@ lcd.draw
 #
 baseline = 28
 canvas.text_cursor = [7, baseline+12]
-canvas.print("Hello World!")
+canvas.text "Hello World!"
 
 # Add some shapes to the canvas.
 canvas.rectangle(3, baseline, 20, -16)

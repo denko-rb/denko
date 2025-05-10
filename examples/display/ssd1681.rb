@@ -16,7 +16,7 @@ baseline = 110
 canvas.text_cursor = [8,baseline+35]
 canvas.font = Denko::Fonts::LED_8x16
 canvas.font_scale = 2
-canvas.print("Hello World!")
+canvas.text "Hello World!"
 
 # Add some shapes.
 canvas.rectangle(10, baseline, 50, -50)

@@ -30,7 +30,7 @@ canvas = lcd.canvas
 # Draw some text on the canvas (a Ruby memory buffer).
 baseline = 42
 canvas.text_cursor = [27,baseline+15]
-canvas.print("Hello World!")
+canvas.text "Hello World!"
 
 # Add some shapes to the canvas.
 canvas.rectangle(10, baseline, 30, -30)

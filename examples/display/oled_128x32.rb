@@ -19,7 +19,7 @@ canvas = oled.canvas
 
 # Draw some text on the OLED's canvas (a Ruby memory buffer).
 canvas.text_cursor = [27,31]
-canvas.print("Hello World!")
+canvas.text "Hello World!"
 
 # Add some shapes to the canvas.
 baseline = 15

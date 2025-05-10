@@ -338,13 +338,11 @@ module Denko
         @font_last_character = @font_characters.length - 1
       end
 
-      def print(str)
-        str.to_s.split("").each do |char|
-          print_char(char)
-        end
+      def text(str)
+        str.to_s.split("").each { |char| show_char(char) }
       end
 
-      def print_char(char)
+      def show_char(char)
         # 0th character in font is SPACE. Offset ASCII code and show ? if character doesn't exist in font.
         index = char.ord - 32
         index = 31 if (index < 0 || index > @font_last_character)
