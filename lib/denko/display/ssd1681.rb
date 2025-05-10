@@ -143,7 +143,7 @@ module Denko
       def set_display_update_control
         # Need to invert black. Ignore red for now.
         command [DISPLAY_UPDATE_CTL1]
-        data    [0b01000_1000]
+        data    [0b0100_1000]
       end
 
       def set_display_update_sequence(value=0x80)
