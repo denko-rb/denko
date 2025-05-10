@@ -2,6 +2,11 @@
 
 ## 0.15.0
 
+### Board Changes
+
+- Arduino Uno R4 (Minima and Wi-Fi)
+  - WS2812 RGB LEDs are now supported for the RA4M1 chips used in these
+
 ### New Peripherals
 
 - `AnalogIO::Joystick` -

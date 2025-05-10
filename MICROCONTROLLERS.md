@@ -56,23 +56,24 @@
 
 |    Chip               | Status          | Products         | Notes |
 | :--------             | :------:        | :--------------- |------ |
-| Wiznet W5100/5500     | :green_heart:   | Ethernet Shield  | Wired Ethernet for Uno/Mega pin-compatibles
-| HDG204 + AT32UC3      | :question:      | WiFi Shield      | Compiles, but no hardware
-| ATWINC1500            | :green_heart:   | MKR1000, WiFi Shield 101 | #define WIFI_101 for shield. Automatic for MKR1000
-| u-blox NINA-W102      | :question:      | Uno WiFi Rev 2, MKR WiFi 1010, Nano 33 IOT | Should work. No hardware
+| Wiznet W5100/5500     | :green_heart:   | Ethernet Shield  | Wired Ethernet shield
+| HDG204 + AT32UC3      | :question:      | WiFi Shield      | Compiles. No test hardware
+| ATWINC1500            | :green_heart:   | MKR1000, WiFi Shield 101 | #define WIFI_101 for shield
+| u-blox NINA-W102      | :question:      | Uno WiFi Rev 2, MKR WiFi 1010, Nano 33 IOT | Compiles. No test hardware
+
+## Raspberry Pi Microcontrollers
+[![RP2040 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_rp2040.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_rp2040.yml)
+
+|    Chip        | Status          | Board Tested            | Notes |
+| :--------      | :------:        | :---------------        |------ |
+| RP2040         | :green_heart:   | Raspberry Pi Pico (W)   |
+| RP2350         | :heart:         | Raspberry Pi Pico 2 (W) |
 
 ## AVR Chips from [MightyCore](https://github.com/MCUdude/MightyCore)
 
 |    Chip        | Status          | Products         | Notes |
 | :--------      | :------:        | :--------------- |------ |
 | ATmega1284     | :heart:         | Used in many 8-bit 3D printer boards. |
-
-## Raspberry Pi Microcontrollers
-[![RP2040 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_rp2040.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_rp2040.yml)
-
-|    Chip        | Status          | Board Tested          | Notes |
-| :--------      | :------:        | :---------------      |------ |
-| RP2040         | :green_heart:   | Raspberry Pi Pico (W) |
 
 ## Implemented Interfaces
 
