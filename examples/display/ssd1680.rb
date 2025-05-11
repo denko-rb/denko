@@ -9,6 +9,7 @@ bus = Denko::SPI::Bus.new(board: board)
 
 # Must be connected to SPI bus CLK and MOSI pins, plus select, dc, reset and busy.
 # Give colors: as total number of colors NOT including blank/white. Red and black = 2.
+# When giving colors: 0 = clear, 1 = black, 2 = red
 epaper = Denko::Display::SSD1680.new(bus: bus, pins: { select: 10, dc: 9, reset: 8 , busy: 7}, colors: 2)
 canvas = epaper.canvas
 
@@ -20,13 +21,14 @@ canvas.font_scale = 2
 canvas.text "Hello World!"
 
 # Add some shapes.
-canvas.rectangle(20, baseline, 76, -76, 2)
-canvas.circle(148, baseline -38, 38, 2)
-triangle_x = 200
-canvas.triangle(triangle_x, baseline, triangle_x+76, baseline, triangle_x+38, baseline-76, 2)
+canvas.rectangle  20,  baseline, 76, -76, color: 2
+canvas.circle     148, baseline-38, 38,   color: 2
+tri_x = 200
+canvas.triangle   tri_x, baseline, tri_x+76, baseline, tri_x+38, baseline-76,
+                  color: 2
 
-# 1px border to test screen edges.
-canvas.rectangle(0, 0, canvas.columns-1, canvas.rows-1)
+# 1px black border at screen edges. color: 1 when not given.
+canvas.rectangle  0, 0, canvas.columns-1, canvas.rows-1
 
 # Show it
 epaper.draw

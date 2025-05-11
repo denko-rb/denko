@@ -3,7 +3,7 @@ module Denko
     class Canvas
       include Denko::Fonts
 
-      attr_reader :columns, :rows, :framebuffer, :framebuffers, :colors, :font
+      attr_reader :columns, :rows, :framebuffer, :framebuffers, :colors, :font, :x_max, :y_max
 
       def initialize(columns, rows, colors: 1)
         @columns = columns
@@ -50,7 +50,7 @@ module Denko
         @framebuffers.map { |fb| (fb[byte] >> bit) & 0b00000001 }
       end
 
-      def pixel(x, y, color=fill_color)
+      def pixel(x, y, color: fill_color)
         xt = (@invert_x) ? @x_max - x : x
         yt = (@invert_y) ? @y_max - y : y
         if (@swap_xy)
@@ -75,16 +75,16 @@ module Denko
         end
       end
 
-      def set_pixel(x, y, color=fill_color)
-        pixel(x, y, color)
+      def set_pixel(x, y, color: fill_color)
+        pixel(x, y, color: color)
       end
 
       def clear_pixel(x, y)
-        pixel(x, y, 0)
+        pixel(x, y, color: 0)
       end
 
       # Draw a line based on Bresenham's line algorithm.
-      def line(x1, y1, x2, y2, color=fill_color)
+      def line(x1, y1, x2, y2, color: fill_color)
         # Deltas in each axis.
         dy = y2 - y1
         dx = x2 - x1
@@ -94,7 +94,7 @@ module Denko
           # Ensure y1 < y2.
           y1, y2 = y2, y1 if (y2 < y1)
           (y1..y2).each do |y|
-            pixel(x1, y, color)
+            pixel(x1, y, color: color)
           end
           return
         end
@@ -104,7 +104,7 @@ module Denko
           # Ensure x1 < x2.
           x1, x2 = x2, x1 if (x2 < x1)
           (x1..x2).each do |x|
-            pixel(x, y1, color)
+            pixel(x, y1, color: color)
           end
           return
         end
@@ -124,7 +124,7 @@ module Denko
         y = y1
         error = 0
         (0..step_count).each do |i|
-          pixel(x, y, color)
+          pixel(x, y, color: color)
 
           if (step_axis == :x)
             x += x_step
@@ -145,41 +145,41 @@ module Denko
       end
 
       # Rectangles and squares as a combination of lines.
-      def rectangle(x, y, width, height, color=fill_color)
-        line(x,       y,        x+width, y,        color)
-        line(x+width, y,        x+width, y+height, color)
-        line(x+width, y+height, x,       y+height, color)
-        line(x,       y+height, x,       y,        color)
+      def rectangle(x, y, width, height, color: fill_color)
+        line(x,       y,        x+width, y,        color: color)
+        line(x+width, y,        x+width, y+height, color: color)
+        line(x+width, y+height, x,       y+height, color: color)
+        line(x,       y+height, x,       y,        color: color)
       end
 
       # Draw a vertical line for every x value to get a filled rectangle.
-      def filled_rectangle(x, y_start, width, height, color=fill_color)
+      def filled_rectangle(x, y_start, width, height, color: fill_color)
         y_end = y_start + height
         y_start, y_end = y_end, y_start if (y_end < y_start)
         (y_start..y_end).each do |y|
-          line(x, y, x+width, y, color)
+          line(x, y, x+width, y, color: color)
         end
       end
 
       # Open ended path
-      def path(points=[], color=fill_color)
+      def path(points=[], color: fill_color)
         return unless points
         start = points[0]
         (1..points.length-1).each do |i|
           finish = points[i]
-          line(start[0], start[1], finish[0], finish[1], color)
+          line(start[0], start[1], finish[0], finish[1], color: color)
           start = finish
         end
       end
 
       # Close paths by repeating the start value at the end.
-      def polygon(points=[], color=fill_color)
+      def polygon(points=[], color: fill_color)
         points << points[0]
-        path(points, color)
+        path(points, color: color)
       end
 
       # Filled polygon using horizontal ray casting + stroked polygon.
-      def filled_polygon(points=[], color=fill_color)
+      def filled_polygon(points=[], color: fill_color)
         # Get all the X and Y coordinates from the points as floats.
         coords_x = points.map { |point| point.first.to_f }
         coords_y = points.map { |point| point.last.to_f  }
@@ -207,7 +207,7 @@ module Denko
           # between even then odd nodes, which are outside the polygon.
           nodes.each_slice(2) do |pair|
             next if pair.length < 2
-            line(pair.first, y,  pair.last, y, color)
+            line(pair.first, y,  pair.last, y, color: color)
           end
         end
 
@@ -216,17 +216,17 @@ module Denko
       end
 
       # Triangle with 3 points as 6 flat args.
-      def triangle(x1, y1, x2, y2, x3, y3, color=fill_color)
-        polygon([[x1,y1], [x2,y2], [x3,y3]], color)
+      def triangle(x1, y1, x2, y2, x3, y3, color: fill_color)
+        polygon([[x1,y1], [x2,y2], [x3,y3]], color: color)
       end
 
       # Filled triangle with 3 points as 6 flat args.
-      def filled_triangle(x1, y1, x2, y2, x3, y3, color=fill_color)
-        filled_polygon([[x1,y1], [x2,y2], [x3,y3]], color)
+      def filled_triangle(x1, y1, x2, y2, x3, y3, color: fill_color)
+        filled_polygon([[x1,y1], [x2,y2], [x3,y3]], color: color)
       end
 
       # Midpoint ellipse / circle based on Bresenham's circle algorithm.
-      def ellipse(x_center, y_center, a, b, color=fill_color, filled=false)
+      def ellipse(x_center, y_center, a, b, color: fill_color, filled: false)
         # Start position
         x = -a
         y = 0
@@ -244,9 +244,9 @@ module Denko
         # Since starting at max negative X, continue until x is 0.
         while (x <= 0)
           if filled
-            fill_quadrants(x_center, y_center, x, y, color)
+            fill_quadrants(x_center, y_center, x, y, color: color)
           else
-            stroke_quadrants(x_center, y_center, x, y, color)
+            stroke_quadrants(x_center, y_center, x, y, color: color)
           end
 
           e2 = 2 * e1
@@ -265,30 +265,30 @@ module Denko
         # Continue if y hasn't reached the vertical size.
         while (y < b)
           y += 1
-          pixel(x_center, y_center + y, color)
-          pixel(x_center, y_center - y, color)
+          pixel(x_center, y_center + y, color: color)
+          pixel(x_center, y_center - y, color: color)
         end
       end
 
-      def stroke_quadrants(x_center, y_center, x, y, color)
+      def stroke_quadrants(x_center, y_center, x, y, color: fill_color)
         # Quadrants in order as if y-axis is reversed and going counter-clockwise from +ve X.
-        pixel(x_center - x, y_center - y, color)
-        pixel(x_center + x, y_center - y, color)
-        pixel(x_center + x, y_center + y, color)
-        pixel(x_center - x, y_center + y, color)
+        pixel(x_center - x, y_center - y, color: color)
+        pixel(x_center + x, y_center - y, color: color)
+        pixel(x_center + x, y_center + y, color: color)
+        pixel(x_center - x, y_center + y, color: color)
       end
 
-      def fill_quadrants(x_center, y_center, x, y, color)
-        line(x_center - x, y_center + y, x_center + x, y_center + y, color)
-        line(x_center - x, y_center - y, x_center + x, y_center - y, color)
+      def fill_quadrants(x_center, y_center, x, y, color: fill_color)
+        line(x_center - x, y_center + y, x_center + x, y_center + y, color: color)
+        line(x_center - x, y_center - y, x_center + x, y_center - y, color: color)
       end
 
-      def circle(x_center, y_center, radius, color=fill_color, filled=false)
-        ellipse(x_center, y_center, radius, radius, color, filled)
+      def circle(x_center, y_center, radius, color: fill_color, filled: false)
+        ellipse(x_center, y_center, radius, radius, color: color, filled: filled)
       end
 
-      def filled_circle(x_center, y_center, radius, color=fill_color)
-        ellipse(x_center, y_center, radius, radius, color, true)
+      def filled_circle(x_center, y_center, radius, color: fill_color)
+        ellipse(x_center, y_center, radius, radius, color: color, filled: true)
       end
 
       def text_cursor=(array=[])
@@ -362,19 +362,19 @@ module Denko
         @fill_color = color
       end
 
-      def text(str, color=fill_color)
-        str.to_s.split("").each { |char| show_char(char, color) }
+      def text(str, color: fill_color)
+        str.to_s.split("").each { |char| show_char(char, color: color) }
       end
 
-      def show_char(char, color=fill_color)
+      def show_char(char, color: fill_color)
         # 0th character in font is SPACE. Offset ASCII code and show ? if character doesn't exist in font.
         index = char.ord - 32
         index = 31 if (index < 0 || index > @font_last_character)
         char_map = @font_characters[index]
-        raw_char(char_map, color)
+        raw_char(char_map, color: color)
       end
 
-      def raw_char(byte_array, color=fill_color)
+      def raw_char(byte_array, color: fill_color)
         x = text_cursor[0]
         # Offset by scaled height, since bottom left of char starts at text cursor.
         y = text_cursor[1] + 1 - (@font_height * @font_scale)
@@ -393,7 +393,7 @@ module Denko
               color_val = ((byte & (1 << bit)) > 0) ? color : 0
               @font_scale.times do |x_offset|
                 @font_scale.times do |y_offset|
-                  pixel(x + (col_offset * @font_scale) + x_offset, y + (bit * @font_scale) + y_offset, color_val)
+                  pixel(x + (col_offset * @font_scale) + x_offset, y + (bit * @font_scale) + y_offset, color: color_val)
                 end
               end
             end
