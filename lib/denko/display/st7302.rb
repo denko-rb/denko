@@ -149,34 +149,34 @@ module Denko
         result
       end
 
-      def draw(x_min=0, x_max=(columns-1), y_min=0, y_max=(rows-1))
+      def draw(x_start=x_min, x_finish=x_max, y_start=y_min, y_finish=y_max)
         # Arbitrary y values to framebuffer page indices (8 px tall).
-        p_min = (y_min / 8)
-        p_max = (y_max / 8)
+        p_start  = y_start  / 8
+        p_finish = y_finish / 8
 
         # Controller does 2 pixels for each memory line. Ensure start on even.
-        x_min = (x_min / 2.0).floor * 2
+        x_start = (x_start / 2.0).floor * 2
 
-        draw_partial(canvas.framebuffer, x_min, x_max, p_min, p_max)
+        draw_partial(canvas.framebuffer, x_start, x_finish, p_start, p_finish)
       end
 
-      def draw_partial(buffer, x_min, x_max, p_min, p_max)
+      def draw_partial(buffer, x_start, x_finish, p_start, p_finish)
         # Because of weird RAM layout, always start partials on a framebuffer page divisible by 3.
         # This corresponds to row divisible by 24, so a RAM column (12 px tall) divisible by 2.
         # Always write to RAM in pairs of pages. Avoids keeping track of separated nibbles from buffer.
         # Don't care to optimize this further.
-        page = (p_min / 3.0).floor * 3
+        page = (p_start / 3.0).floor * 3
 
         # Each RAM column address is really 2 canvas columns.
-        ram_x_min = x_min / 2
-        ram_x_max = (x_max / 2.0).floor
+        ram_x_start = x_start / 2
+        ram_x_finish = (x_finish / 2.0).floor
 
-        while (page <= p_max) do
+        while (page <= p_finish) do
           upper_page = []
           lower_page = []
 
-          x = x_min
-          while (x <= x_max) do
+          x = x_start
+          while (x <= x_finish) do
             # Take 6 bytes from the Canvas buffer, 2 columns across, 3 pages (24 rows) down.
             a1_index = (page * columns)     + x
             a2_index = ((page+1) * columns) + x
@@ -201,7 +201,7 @@ module Denko
 
           # Write two temp pages into 2 controller RAM columns.
           command [CASET]; data [ram_page, ram_page+1]
-          command [RASET]; data [ram_x_min, ram_x_max]
+          command [RASET]; data [ram_x_start, ram_x_finish]
           command [RAMWR]
           upper_page.each_slice(transfer_limit) { |slice| data(slice) }
           lower_page.each_slice(transfer_limit) { |slice| data(slice) }

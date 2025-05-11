@@ -7,22 +7,6 @@ module Denko
       COLUMNS = 200
       ROWS    = 200
 
-      def x_start
-        @x_start ||= 0
-      end
-
-      def x_finish
-        @x_finish ||= columns - 1
-      end
-
-      def y_start
-        @y_start ||= 0
-      end
-
-      def y_finish
-        @y_finish ||= (rows / 8) - 1
-      end
-
       # Typical Commands
       SW_RESET                = 0x12
       DRIVER_OUTPUT_CTL       = 0x01 # +3 data
@@ -92,30 +76,31 @@ module Denko
       end
 
       def set_data_entry_mode
-        # Bit 2 = 1 : update Y address first (after each byte), then update X at Y limit. (0 would update X first)
+        # Bit 2 = 1 : update hardware Y (software X) address first (after each byte),
+        # then update hardware X (software P) on overflow. (0 would update hardware X / software P first)
         # Bit 1 = 1 : increment Y (0 would decrement)
         # Bit 0 = 1 : increment Y (0 would decrement)
         command [DATA_ENTRY_MODE_SET]
         data    [0b111]
       end
 
-      # X and Y commands swapped in these 4 methods, since it treats direction parallel to a framebuffer byte as X.
-      def set_range_x(start=x_start, finish=x_finish)
+      # Treating hardware X axis as page (P) axis, and hardware Y axis as X axis to match framebuffer.
+      def set_range_x(start=x_min, finish=x_max)
         command [RAM_Y_RANGE_SET]
         data    [start & 0xFF, (start >> 8) & 0b1, finish & 0xFF, (finish >> 8) & 0b1]
       end
 
-      def set_range_y(start=y_start, finish=y_finish)
+      def set_range_p(start=p_min, finish=p_max)
         command [RAM_X_RANGE_SET]
         data    [start, finish]
       end
 
-      def set_address_x(addr=x_start)
+      def set_address_x(addr=x_min)
         command [RAM_Y_ADDR_SET]
         data    [addr & 0xFF, (addr >> 8) & 0b1]
       end
 
-      def set_address_y(addr=y_start)
+      def set_address_p(addr=p_min)
         command [RAM_X_ADDR_SET]
         data    [addr]
       end
@@ -200,18 +185,18 @@ module Denko
         busy_wait
       end
 
-      def draw(x_min=0, x_max=0, y_min=0, y_max=0)
-        draw_partial(canvas.framebuffer, x_min, x_max, y_min, y_max)
+      def draw(x_start=x_min, x_finish=x_max, y_start=y_min, y_finish=y_max)
+        draw_partial(canvas.framebuffer, x_start, x_finish, y_start, y_finish)
       end
 
-      def draw_partial(buffer, x_min=0, x_max=0, y_min=0, y_max=0)
+      def draw_partial(buffer, x_start, x_finish, p_start, p_finish)
         # Args in canvas-space. Accept to avoid breakage, but write entire buffer to RAM anyway.
         # E-paper wont't refresh fast enough to justify complexity of partial udpates.
         #
         set_range_x
-        set_range_y
+        set_range_p
         set_address_x
-        set_address_y
+        set_address_p
 
         command [RAM_WRITE_BW]
         # Reverse bytes since the display treats bit 7 as the top pixel, but Canvas framebuffer treats

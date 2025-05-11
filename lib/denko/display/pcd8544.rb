@@ -127,21 +127,18 @@ module Denko
         self.temperature_coefficient = 0
       end
 
-      def draw_partial(buffer, x_min, x_max, p_min, p_max)
+      def draw_partial(buffer, x_start, x_finish, p_start, p_finish)
         # Always use horizontal addressing mode.
         basic_instruction_mode
 
-        (p_min..p_max).each do |page|
+        page_length = (x_start..x_finish).count
+
+        page = p_start
+        buffer.each_slice(page_length) do |page_bytes|
           # Set start page and column.
-          command [RAM_X_SET | x_min, RAM_Y_SET | page]
-
-          # Get needed bytes for this page only.
-          src_start = (@columns * page) + x_min
-          src_end   = (@columns * page) + x_max
-          buffer    = canvas.framebuffer[src_start..src_end]
-
-          # Send in chunks up to maximum transfer size.
-          buffer.each_slice(transfer_limit) { |slice| data(slice) }
+          command [RAM_X_SET | x_start, RAM_Y_SET | page]
+          page_bytes.each_slice(transfer_limit) { |slice| data(slice) }
+          page += 1
         end
       end
     end

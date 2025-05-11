@@ -8,6 +8,7 @@ board = Denko::Board.new(Denko::Connection::Serial.new)
 bus = Denko::SPI::Bus.new(board: board)
 
 # Must be connected to SPI bus CLK and MOSI pins, plus select, dc and reset.
+# On some modules reset: is marked as "RSE" and dc: as "RS".
 lcd = Denko::Display::ST7565.new(bus: bus, pins: { select: 10, dc: 9, reset: 8 })
 
 # Rotate it 180 degrees and invert colors.

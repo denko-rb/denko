@@ -14,18 +14,18 @@ module Denko
         2
       end
 
-      def draw_partial(buffer, x_min, x_max, p_min, p_max)
-        x = x_min + ram_x_offset
+      def draw_partial(buffer, x_start, x_finish, p_start, p_finish)
+        x = x_start + ram_x_offset
         x_lower = (x & 0b00001111)
         x_upper = (x & 0b11110000) >> 4
 
-        (p_min..p_max).each do |page|
+        (p_start..p_finish).each do |page|
           # Set the page and column to start writing at.
           command [PAGE_START | page, COLUMN_START_LOWER | x_lower, COLUMN_START_UPPER | x_upper]
 
           # Get needed bytes for this page only.
-          src_start = (@columns * page) + x_min
-          src_end   = (@columns * page) + x_max
+          src_start = (@columns * page) + x_start
+          src_end   = (@columns * page) + x_finish
           buffer    = canvas.framebuffer[src_start..src_end]
 
           # Send in chunks up to maximum transfer size.

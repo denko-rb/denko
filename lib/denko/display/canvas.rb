@@ -8,7 +8,7 @@ module Denko
       def initialize(columns, rows)
         @columns = columns
         @rows = rows
-        @rows = ((rows / 8.0).ceil * 8).to_i if (rows % 8 != 0)
+        @rows = ((rows / 8.0).ceil * 8) if (rows % 8 != 0)
 
         self.font    = Denko::Fonts::LED_6x8
         @font_scale  = 1

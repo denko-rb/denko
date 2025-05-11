@@ -16,30 +16,54 @@ module Denko
         @rows
       end
 
+      def x_min
+        @x_min ||= 0
+      end
+
+      def x_max
+        @x_max ||= columns - 1
+      end
+
+      def y_min
+        @y_min ||= 0
+      end
+
+      def y_max
+        @y_max ||= rows - 1
+      end
+
+      def p_min
+        @p_min ||= 0
+      end
+
+      def p_max
+        @p_max ||= (rows / 8.0).ceil - 1
+      end
+
       def canvas
         @canvas ||= Canvas.new(columns, rows)
       end
 
-      def draw(x_min=0, x_max=(columns-1), y_min=0, y_max=(rows-1))
+      def draw(x_start=x_min, x_finish=x_max, y_start=y_min, y_finish=y_max)
         # Convert y-coords to page coords.
-        p_min = y_min / 8
-        p_max = y_max / 8
+        p_start  = y_start  / 8
+        p_finish = y_finish / 8
 
         # If drawing the whole frame (default), bypass temp buffer to save time.
-        if (x_min == 0) && (x_max == columns-1) && (p_min == 0) && (p_max == rows/8)
-          draw_partial(canvas.framebuffer, x_min, x_max, p_min, p_max)
+        if (x_start == x_min) && (x_finish == x_max) && (p_start == p_min) && (p_finish == p_max)
+          draw_partial(canvas.framebuffer, x_start, x_finish, p_start, p_finish)
 
-        # Copy bytes for the given rectangle into a temp buffer.
         else
+          # Copy bytes for the given rectangle into a temp buffer.
           temp_buffer = []
-          (p_min..p_max).each do |page|
-            src_start = (columns * page) + x_min
-            src_end   = (columns * page) + x_max
+          (p_start..p_finish).each do |page|
+            src_start = (columns * page) + x_start
+            src_end   = (columns * page) + x_finish
             temp_buffer += canvas.framebuffer[src_start..src_end]
           end
 
           # And draw them.
-          draw_partial(temp_buffer, x_min, x_max, p_min, p_max)
+          draw_partial(temp_buffer, x_start, x_finish, p_start, p_finish)
         end
       end
     end

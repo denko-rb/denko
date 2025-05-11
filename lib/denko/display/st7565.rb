@@ -141,25 +141,23 @@ module Denko
         wake
       end
 
-      def draw_partial(buffer, x_min, x_max, p_min, p_max)
-        x = x_min + x_ram_offset
+      def draw_partial(buffer, x_start, x_finish, p_start, p_finish)
+        x = x_start + x_ram_offset
         x_lower4 = (x & 0b00001111)
         x_upper4 = (x & 0b11110000) >> 4
 
-        (p_min..p_max).each do |page|
+        page_length = (x_start..x_finish).count
+
+        page = p_start
+        buffer.each_slice(page_length) do |page_bytes|
           command [RMW_WRITE]
           # Set start page and column.
           command [PASET | page, CASET_LOWER | x_lower4, CASET_UPPER | x_upper4]
 
-          # Get needed bytes for this page only.
-          src_start = (@columns * page) + x_min
-          src_end   = (@columns * page) + x_max
-          buffer    = canvas.framebuffer[src_start..src_end]
-
-          # Send in chunks up to maximum transfer size.
-          buffer.each_slice(transfer_limit) { |slice| data(slice) }
+          page_bytes.each_slice(transfer_limit) { |slice| data(slice) }
 
           command [RMW_END]
+          page += 1
         end
       end
     end
