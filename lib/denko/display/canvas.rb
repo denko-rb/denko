@@ -303,7 +303,7 @@ module Denko
         raise ArgumentError, "canvas can only be rotated by multiples of 90 degrees" unless (degrees % 90 == 0)
         old_rotation = @rotation
         @rotation = (old_rotation + degrees) % 360
-        change = @rotation - old_rotation
+        change = (@rotation - old_rotation) % 360
 
         (change / 90).times do
           @swap_xy = !@swap_xy
