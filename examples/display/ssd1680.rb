@@ -10,9 +10,6 @@ bus = Denko::SPI::Bus.new(board: board)
 # Must be connected to SPI bus CLK and MOSI pins, plus select, dc, reset and busy.
 epaper = Denko::Display::SSD1680.new(bus: bus, pins: { select: 10, dc: 9, reset: 8 , busy: 7})
 canvas = epaper.canvas
-canvas.fill
-epaper.draw
-canvas.clear
 
 # Draw some text on the canvas (a Ruby memory buffer).21
 baseline = 85
