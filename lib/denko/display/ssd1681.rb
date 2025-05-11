@@ -7,9 +7,6 @@ module Denko
       # On this display, each byte is 8 horizontal pixels, not vertical, like framebuffer. Swap
       # columns and rows to deal with this, then rotate framebuffer 90 degrees by default to compensate.
       #
-      # RAM to pixel mapping doesn't match the framebuffer either, so invert both address ranges,
-      # set them to decrement (not increment), and just send the frame bytes reversed.
-      #
       # REMINDER: ROWS is always the count of pixels in the direction parallel to a single byte of
       #           8 framebuffer pixels being displayed. COLUMNS is the other direction.
       #
@@ -17,19 +14,19 @@ module Denko
       ROWS    = 200
 
       def x_start
-        @x_start ||= (rows / 8) - 1
+        @x_start ||= 0
       end
 
       def x_finish
-        @x_finish ||= 0
+        @x_finish ||= (rows / 8) - 1
       end
 
       def y_start
-        @y_start ||= columns - 1
+        @y_start ||= 0
       end
 
       def y_finish
-        @y_finish ||= 0
+        @y_finish ||= columns - 1
       end
 
       # Typical Commands
@@ -95,17 +92,17 @@ module Denko
         # Third byte is all 0s for default. Not implemented yet:
         #   Bit 2: toggles gate scan interleave order
         #   Bit 1: enables gate scan interleaving
-        #   Bit 0: flips gate scan direction, mirroring display in 1 axis (must be 1 for us)
+        #   Bit 0: flips gate scan direction, mirroring display in 1 axis (must be 1, or output is flipped horizontally)
         command [DRIVER_OUTPUT_CTL]
         data    [mux & 0xFF, (mux >> 8) & 0b1, 0b001]
       end
 
       def set_data_entry_mode
-        # Bit 2 = 1 : update Y address first (after each byte), then update X at Y limit. (0 would swap X and Y)
-        # Bit 1 = 0 : decrement Y (1 would increment)
-        # Bit 0 = 0 : decrement Y (1 would increment)
+        # Bit 2 = 1 : update Y address first (after each byte), then update X at Y limit. (0 would update X first)
+        # Bit 1 = 1 : increment Y (0 would decrement)
+        # Bit 0 = 1 : increment Y (0 would decrement)
         command [DATA_ENTRY_MODE_SET]
-        data    [0b100]
+        data    [0b111]
       end
 
       def set_range_x(start=x_start, finish=x_finish)
@@ -225,6 +222,8 @@ module Denko
         set_address_y
 
         command [RAM_WRITE_BW]
+        # Reverse bytes since the display treats bit 7 as the top pixel, but Canvas framebuffer treats
+        # bit 0 as top. Effectively rotates output by 180 degrees. Counter with Canvas#rotate as needed.
         buffer.reverse.each_slice(transfer_limit) { |slice| data(slice) }
 
         booster_soft_start
