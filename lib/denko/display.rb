@@ -20,7 +20,8 @@ module Denko
     autoload :ST7565,   "#{__dir__}/display/st7565"
 
     # E-paper
-    autoload :SSD1681,  "#{__dir__}/display/ssd1681"
+    autoload :SSD168X,  "#{__dir__}/display/ssd168x"
     autoload :SSD1680,  "#{__dir__}/display/ssd1680"
+    autoload :SSD1681,  "#{__dir__}/display/ssd1681"
   end
 end

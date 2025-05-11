@@ -3,9 +3,9 @@ module Denko
     class Canvas
       include Denko::Fonts
 
-      attr_reader :columns, :rows, :framebuffer, :font
+      attr_reader :columns, :rows, :framebuffer, :framebuffers, :colors, :font
 
-      def initialize(columns, rows)
+      def initialize(columns, rows, colors: 1)
         @columns = columns
         @rows = rows
         @rows = ((rows / 8.0).ceil * 8) if (rows % 8 != 0)
@@ -22,24 +22,35 @@ module Denko
         # Use a byte array for the framebuffer. Each byte is 8 pixels arranged vertically.
         # Each slice @columns long represents an area @columns wide * 8 pixels tall.
         @bytes       = @columns * (@rows / 8)
-        @framebuffer = Array.new(@bytes) { 0x00 }
+
+        # Create a separate 1-bit framebuffer for each color.
+        # For mono LCDs, OLEDs e-paper, or e-paper with 2 or 3 colors + white.
+        @colors = colors
+        @framebuffers = []
+        @colors.times { @framebuffers << Array.new(@bytes) { 0x00 } }
+        # Default framebuffer when 1 color.
+        @framebuffer = @framebuffers.first
       end
 
       def fill
-        @framebuffer.fill(0xFF)
+        # Clear all other buffers, and fill the first one.
+        # This should be black on e-paper, and default color on other displays.
+        clear
+        @framebuffers.first.fill 0xFF
       end
 
       def clear
-        @framebuffer.fill(0x00)
+        @framebuffers.each { |fb| fb.fill 0x00 }
       end
 
       def get_pixel(x, y)
         byte = ((y / 8) * @columns) + x
         bit  = y % 8
-        (@framebuffer[byte] >> bit) & 0b00000001
+        # Array with state per color.
+        @framebuffers.map { |fb| (fb[byte] >> bit) & 0b00000001 }
       end
 
-      def pixel(x, y, color=0)
+      def pixel(x, y, color=fill_color)
         xt = (@invert_x) ? @x_max - x : x
         yt = (@invert_y) ? @y_max - y : y
         if (@swap_xy)
@@ -48,20 +59,24 @@ module Denko
           yt = tt
         end
 
+        # Bounds check
         return nil if (xt < 0 || yt < 0 || xt > @columns-1 || yt > @rows -1)
+        return nil if (color < 0) || (color > colors)
 
         byte = ((yt / 8) * @columns) + xt
         bit  = yt % 8
 
         if (color == 0)
-          @framebuffer[byte] &= ~(0b1 << bit)
+          # Clear pixel in all buffers when set to 0.
+          @framebuffers.each { |fb| fb[byte] &= ~(0b1 << bit) }
         else
-          @framebuffer[byte] |= (0b1 << bit)
+          # Set pixel only in that color's buffer.
+          @framebuffers[color-1][byte] |= (0b1 << bit)
         end
       end
 
-      def set_pixel(x, y)
-        pixel(x, y, 1)
+      def set_pixel(x, y, color=fill_color)
+        pixel(x, y, color)
       end
 
       def clear_pixel(x, y)
@@ -69,7 +84,7 @@ module Denko
       end
 
       # Draw a line based on Bresenham's line algorithm.
-      def line(x1, y1, x2, y2, color=1)
+      def line(x1, y1, x2, y2, color=fill_color)
         # Deltas in each axis.
         dy = y2 - y1
         dx = x2 - x1
@@ -130,7 +145,7 @@ module Denko
       end
 
       # Rectangles and squares as a combination of lines.
-      def rectangle(x, y, width, height, color=1)
+      def rectangle(x, y, width, height, color=fill_color)
         line(x,       y,        x+width, y,        color)
         line(x+width, y,        x+width, y+height, color)
         line(x+width, y+height, x,       y+height, color)
@@ -138,7 +153,7 @@ module Denko
       end
 
       # Draw a vertical line for every x value to get a filled rectangle.
-      def filled_rectangle(x, y_start, width, height, color=1)
+      def filled_rectangle(x, y_start, width, height, color=fill_color)
         y_end = y_start + height
         y_start, y_end = y_end, y_start if (y_end < y_start)
         (y_start..y_end).each do |y|
@@ -147,7 +162,7 @@ module Denko
       end
 
       # Open ended path
-      def path(points=[], color=1)
+      def path(points=[], color=fill_color)
         return unless points
         start = points[0]
         (1..points.length-1).each do |i|
@@ -158,13 +173,13 @@ module Denko
       end
 
       # Close paths by repeating the start value at the end.
-      def polygon(points=[], color=1)
+      def polygon(points=[], color=fill_color)
         points << points[0]
         path(points, color)
       end
 
       # Filled polygon using horizontal ray casting + stroked polygon.
-      def filled_polygon(points=[], color=1)
+      def filled_polygon(points=[], color=fill_color)
         # Get all the X and Y coordinates from the points as floats.
         coords_x = points.map { |point| point.first.to_f }
         coords_y = points.map { |point| point.last.to_f  }
@@ -201,17 +216,17 @@ module Denko
       end
 
       # Triangle with 3 points as 6 flat args.
-      def triangle(x1, y1, x2, y2, x3, y3, color=1)
+      def triangle(x1, y1, x2, y2, x3, y3, color=fill_color)
         polygon([[x1,y1], [x2,y2], [x3,y3]], color)
       end
 
       # Filled triangle with 3 points as 6 flat args.
-      def filled_triangle(x1, y1, x2, y2, x3, y3, color=1)
+      def filled_triangle(x1, y1, x2, y2, x3, y3, color=fill_color)
         filled_polygon([[x1,y1], [x2,y2], [x3,y3]], color)
       end
 
       # Midpoint ellipse / circle based on Bresenham's circle algorithm.
-      def ellipse(x_center, y_center, a, b, color=1, filled=false)
+      def ellipse(x_center, y_center, a, b, color=fill_color, filled=false)
         # Start position
         x = -a
         y = 0
@@ -268,11 +283,11 @@ module Denko
         line(x_center - x, y_center - y, x_center + x, y_center - y, color)
       end
 
-      def circle(x_center, y_center, radius, color=1, filled=false)
+      def circle(x_center, y_center, radius, color=fill_color, filled=false)
         ellipse(x_center, y_center, radius, radius, color, filled)
       end
 
-      def filled_circle(x_center, y_center, radius, color=1)
+      def filled_circle(x_center, y_center, radius, color=fill_color)
         ellipse(x_center, y_center, radius, radius, color, true)
       end
 
@@ -338,19 +353,28 @@ module Denko
         @font_last_character = @font_characters.length - 1
       end
 
-      def text(str)
-        str.to_s.split("").each { |char| show_char(char) }
+      def fill_color
+        @fill_color ||= 1
       end
 
-      def show_char(char)
+      def fill_color=(color)
+        raise Argument error, "invalid color" if (color < 0) || (color > colors)
+        @fill_color = color
+      end
+
+      def text(str, color=fill_color)
+        str.to_s.split("").each { |char| show_char(char, color) }
+      end
+
+      def show_char(char, color=fill_color)
         # 0th character in font is SPACE. Offset ASCII code and show ? if character doesn't exist in font.
         index = char.ord - 32
         index = 31 if (index < 0 || index > @font_last_character)
         char_map = @font_characters[index]
-        raw_char(char_map)
+        raw_char(char_map, color)
       end
 
-      def raw_char(byte_array)
+      def raw_char(byte_array, color=fill_color)
         x = text_cursor[0]
         # Offset by scaled height, since bottom left of char starts at text cursor.
         y = text_cursor[1] + 1 - (@font_height * @font_scale)
@@ -366,10 +390,10 @@ module Denko
           slice.each_with_index do |byte, col_offset|
             # Each bit in the byte
             8.times do |bit|
-              pixel_value = (byte & (1 << bit))
+              color_val = ((byte & (1 << bit)) > 0) ? color : 0
               @font_scale.times do |x_offset|
                 @font_scale.times do |y_offset|
-                  pixel(x + (col_offset * @font_scale) + x_offset, y + (bit * @font_scale) + y_offset, pixel_value)
+                  pixel(x + (col_offset * @font_scale) + x_offset, y + (bit * @font_scale) + y_offset, color_val)
                 end
               end
             end
