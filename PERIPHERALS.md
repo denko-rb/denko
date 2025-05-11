@@ -39,7 +39,7 @@
 | ST7302              | :green_heart:  | SPI                          | `Display::ST7302`   | 250x122 Mono Reflective LCD
 | LS027B7DH01         | :heart:        | SPI                          | `Display::SharpLCD` | 400x240 Mono Reflective LCD
 | SSD1681             | :yellow_heart: | SPI                          | `Display::SSD1681`  | 200x200 E-Paper (1.54") Red RAM not supported yet.
-| SSD1680             | :heart:        | SPI                          | `Display::SSD1680`  | 296x128 3C E-Paper (2.9")
+| SSD1680             | yellow_heart:  | SPI                          | `Display::SSD1680`  | 296x128 3C E-Paper (2.9") Red RAM not supported yet.
 | IL0373              | :heart:        | SPI                          | `Display::IL0373`   | 212x104 E-Paper (2.13")
 | ST7735S             | :heart:        | SPI                          | `Display::ST7735S`  | 160x128 RGB LCD
 | ST7789V             | :heart:        | SPI                          | `Display::ST7789V`  | 240x135 RGB LCD (TTGO)

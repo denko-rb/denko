@@ -21,5 +21,6 @@ module Denko
 
     # E-paper
     autoload :SSD1681,  "#{__dir__}/display/ssd1681"
+    autoload :SSD1680,  "#{__dir__}/display/ssd1680"
   end
 end

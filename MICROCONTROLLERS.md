@@ -95,7 +95,7 @@
 | Maxim OneWire         | :green_heart:   | S     | `OneWire::Bus`           | No overdrive
 | Infrared Output       | :green_heart:   | S     | `PulseIO::IROutput`      | **Except** SAM3X, RA4M1
 | Infrared Input        | :heart:         | S     | `PulseIO::IRInput`       | Doable with existing library
-| WS2812 RGB LEDs       | :green_heart:   | S     | `LED::WS2812`            | **Except** RA4M1
+| WS2812 RGB LEDs       | :green_heart:   | S     | `LED::WS2812`            |
 | ESP32-PCNT            | :heart:         | H     | -                        | **Only** ESP32. Pulse and encoder counter
 | ESP32-MCPWM           | :heart:         | H     | -                        | **Only** ESP32. Motor control PWM
 

@@ -78,6 +78,16 @@
 
 ## E-Paper
 
+### SSD1680
+
+<img src="photos/ssd1680.jpg" width="540" alt="SSD1680 296x128 E-Paper">
+
+**Type:** E-Paper\
+**Colors:** Black/White, or Black/Red/White\
+**Size:** 2.9"\
+**Pixels:** 296x128\
+**Interface:** SPI
+
 ### SSD1681
 
 <img src="photos/ssd1681.jpg" width="540" alt="SSD1681 200x200 E-Paper">
