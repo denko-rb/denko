@@ -148,10 +148,10 @@ module Denko
       def booster_soft_start
         command [BOOSTER_CTL]
         data [
-          0b1000_1011, # phase 1
-          0b1001_1100, # phase 2
-          0b1001_0110, # phase 3
-          0b0000_0000, # duration
+          0b1010_0011, # phase 1
+          0b1100_0111, # phase 2
+          0b1100_0011, # phase 3
+          0b0000_0001, # duration
         ]
       end
 
@@ -198,9 +198,6 @@ module Denko
         set_display_update_sequence
         master_activate
         busy_wait
-
-        # Rotate 90 by default, since treating columns as rows and vice versa.
-        canvas.rotate(90)
       end
 
       def draw(x_min=0, x_max=0, y_min=0, y_max=0)
