@@ -13,6 +13,10 @@ bus = Denko::SPI::Bus.new(board: board)
 epaper = Denko::Display::SSD1680.new(bus: bus, pins: { select: 10, dc: 9, reset: 8 , busy: 7}, colors: 2)
 canvas = epaper.canvas
 
+# Hardware features
+# epaper.reflect_x
+# epaper.invert_black
+
 # Draw some text on the canvas (a Ruby memory buffer).21
 baseline = 85
 canvas.text_cursor = [56,baseline+35]
@@ -32,4 +36,5 @@ canvas.rectangle  0, 0, canvas.columns-1, canvas.rows-1
 
 # Show it
 epaper.draw
+epaper.deep_sleep
 board.finish_write

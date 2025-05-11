@@ -64,22 +64,29 @@ module Denko
       NOP                     = 0x7F
 
       def set_driver_output_control(gate_lines=columns)
-        mux = gate_lines - 1
         # First data byte is lowest 8 bits of MUX value.
-        # Second byte is 9th bit.
-        # Third byte is all 0s for default. Not implemented yet:
+        # Second data byte is 9th bit.
+        mux = gate_lines - 1
+
+        # Third byte:
         #   Bit 2: toggles gate scan interleave order
         #   Bit 1: enables gate scan interleaving
-        #   Bit 0: flips gate scan direction, mirroring display in 1 axis (must be 1, or output is flipped horizontally)
+        #   Bit 0: flips gate scan direction, mirroring display in 1 axis
+        third_byte = @reflect_x ? 0b000 : 0b001
+
         command [DRIVER_OUTPUT_CTL]
-        data    [mux & 0xFF, (mux >> 8) & 0b1, 0b001]
+        data    [mux & 0xFF, (mux >> 8) & 0b1, third_byte]
+      end
+
+      def reflect_x
+        @reflect_x = !@reflect_x
       end
 
       def set_data_entry_mode
         # Bit 2 = 1 : update hardware Y (software X) address first (after each byte),
         # then update hardware X (software P) on overflow. (0 would update hardware X / software P first)
-        # Bit 1 = 1 : increment Y (0 would decrement)
-        # Bit 0 = 1 : increment Y (0 would decrement)
+        # Bit 1 = 1 : increment hardware Y (0 would decrement)
+        # Bit 0 = 1 : increment hardware X (0 would decrement)
         command [DATA_ENTRY_MODE_SET]
         data    [0b111]
       end
@@ -118,14 +125,21 @@ module Denko
       end
 
       def set_display_update_control
-        if colors == 1
-          value = 0b0100_1000 # bypass red, invert black buffer
-        else
-          value = 0b0000_1000 # normal red, invert black buffer
-        end
+        # In hardware:
+        #   0b1000: display inverted
+        #   0b0100: bypass
+        #   0b0000: display normally
+        #
+        # For black only, hardware treats 1 as blank, 0 as filled. Opposite of Canvas.
+        black = @invert_black ? 0b0000 : 0b1000
+        red   = (colors == 1) ? 0b0100 : 0b0000
 
         command [DISPLAY_UPDATE_CTL1]
-        data    [value]
+        data    [red << 4 | black]
+      end
+
+      def invert_black
+        @invert_black = !@invert_black
       end
 
       def set_display_update_sequence(value=0x80)
@@ -168,7 +182,7 @@ module Denko
         sleep 0.005 while busy.read == 1
       end
 
-      after_initialize do
+      def wake
         # Reset Sequence
         sleep 0.010
         if reset
@@ -188,6 +202,10 @@ module Denko
         set_display_update_sequence
         master_activate
         busy_wait
+      end
+
+      after_initialize do
+        wake
       end
 
       def draw(x_start=x_min, x_finish=x_max, y_start=y_min, y_finish=y_max)
@@ -232,6 +250,8 @@ module Denko
 
       def refresh
         booster_soft_start
+        set_driver_output_control
+        set_display_update_control
         set_display_update_sequence(0xF7)
         master_activate
         busy_wait
