@@ -3,13 +3,7 @@ module Denko
     class SSD1681
       include Behaviors::Lifecycle
       include SPICommon
-      #
-      # On this display, each byte is 8 horizontal pixels, not vertical, like framebuffer. Swap
-      # columns and rows to deal with this, then rotate framebuffer 90 degrees by default to compensate.
-      #
-      # REMINDER: ROWS is always the count of pixels in the direction parallel to a single byte of
-      #           8 framebuffer pixels being displayed. COLUMNS is the other direction.
-      #
+
       COLUMNS = 200
       ROWS    = 200
 
@@ -18,7 +12,7 @@ module Denko
       end
 
       def x_finish
-        @x_finish ||= (rows / 8) - 1
+        @x_finish ||= columns - 1
       end
 
       def y_start
@@ -26,7 +20,7 @@ module Denko
       end
 
       def y_finish
-        @y_finish ||= columns - 1
+        @y_finish ||= (rows / 8) - 1
       end
 
       # Typical Commands
@@ -85,7 +79,7 @@ module Denko
       READ_RAM_OPTION         = 0x41 # +1 data
       NOP                     = 0x7F
 
-      def set_driver_output_control(gate_lines=rows)
+      def set_driver_output_control(gate_lines=columns)
         mux = gate_lines - 1
         # First data byte is lowest 8 bits of MUX value.
         # Second byte is 9th bit.
@@ -105,24 +99,25 @@ module Denko
         data    [0b111]
       end
 
+      # X and Y commands swapped in these 4 methods, since it treats direction parallel to a framebuffer byte as X.
       def set_range_x(start=x_start, finish=x_finish)
-        command [RAM_X_RANGE_SET]
-        data    [start, finish]
-      end
-
-      def set_range_y(start=y_start, finish=y_finish)
         command [RAM_Y_RANGE_SET]
         data    [start & 0xFF, (start >> 8) & 0b1, finish & 0xFF, (finish >> 8) & 0b1]
       end
 
+      def set_range_y(start=y_start, finish=y_finish)
+        command [RAM_X_RANGE_SET]
+        data    [start, finish]
+      end
+
       def set_address_x(addr=x_start)
-        command [RAM_X_ADDR_SET]
-        data    [addr]
+        command [RAM_Y_ADDR_SET]
+        data    [addr & 0xFF, (addr >> 8) & 0b1]
       end
 
       def set_address_y(addr=y_start)
-        command [RAM_Y_ADDR_SET]
-        data    [addr & 0xFF, (addr >> 8) & 0b1]
+        command [RAM_X_ADDR_SET]
+        data    [addr]
       end
 
       def set_panel_border
