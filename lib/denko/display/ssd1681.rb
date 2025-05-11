@@ -185,24 +185,26 @@ module Denko
         busy_wait
       end
 
-      def draw(x_start=x_min, x_finish=x_max, y_start=y_min, y_finish=y_max)
-        draw_partial(canvas.framebuffer, x_start, x_finish, y_start, y_finish)
-      end
-
       def draw_partial(buffer, x_start, x_finish, p_start, p_finish)
-        # Args in canvas-space. Accept to avoid breakage, but write entire buffer to RAM anyway.
-        # E-paper wont't refresh fast enough to justify complexity of partial udpates.
-        #
-        set_range_x
-        set_range_p
-        set_address_x
-        set_address_p
+        # These displays treat bit 7 of a byte as the top pixel, but canvas uses bit 0 as top.
+        # Bytes are sent reversed to fix this, essentially rotating the image by 180 degrees byte-wise.
+        # Transform framebuffer coordinates to rotated hardware coordinates before sending.
+        x1 = x_max - x_finish
+        x2 = x_max - x_start
+        p1 = p_max - p_finish
+        p2 = p_max - p_start
 
+        # Set hardware addresses
+        set_range_x x1, x2
+        set_range_p p1, p2
+        set_address_x x1
+        set_address_p p1
+
+        # Send
         command [RAM_WRITE_BW]
-        # Reverse bytes since the display treats bit 7 as the top pixel, but Canvas framebuffer treats
-        # bit 0 as top. Effectively rotates output by 180 degrees. Counter with Canvas#rotate as needed.
         buffer.reverse.each_slice(transfer_limit) { |slice| data(slice) }
 
+        # Show
         booster_soft_start
         set_display_update_sequence(0xF7)
         master_activate
