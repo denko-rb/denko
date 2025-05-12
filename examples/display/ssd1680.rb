@@ -17,7 +17,7 @@ canvas = epaper.canvas
 # epaper.reflect_x
 # epaper.invert_black
 
-# Draw some text on the canvas (a Ruby memory buffer).21
+# Draw some text on the canvas (a Ruby memory buffer).
 baseline = 85
 canvas.text_cursor = [56,baseline+35]
 canvas.font = Denko::Fonts::LED_8x16

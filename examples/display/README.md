@@ -78,6 +78,16 @@
 
 ## E-Paper
 
+### IL0373
+
+<img src="photos/il0373.jpg" width="540" alt="IL0373 212x104 E-Paper">
+
+**Type:** E-Paper\
+**Colors:** Black/White, or Black/Red/White\
+**Size:** 2.13"\
+**Pixels:** 212x104\
+**Interface:** SPI
+
 ### SSD1680
 
 <img src="photos/ssd1680.jpg" width="540" alt="SSD1680 296x128 E-Paper">

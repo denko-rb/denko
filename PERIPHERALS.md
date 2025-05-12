@@ -40,7 +40,7 @@
 | LS027B7DH01         | :heart:        | SPI                          | `Display::SharpLCD` | 400x240 Mono Reflective LCD
 | SSD1680             | :green_heart:  | SPI                          | `Display::SSD1680`  | 296x128 Black/(Red)/White E-Paper (2.9")
 | SSD1681             | :green_heart:  | SPI                          | `Display::SSD1681`  | 200x200 Black/(Red)/White E-Paper (1.54")
-| IL0373              | :heart:        | SPI                          | `Display::IL0373`   | 212x104 E-Paper (2.13")
+| IL0373              | :green_heart:  | SPI                          | `Display::IL0373`   | 212x104 Black/(Red)/White E-Paper (2.13")
 | ST7735S             | :heart:        | SPI                          | `Display::ST7735S`  | 160x128 RGB LCD
 | ST7789V             | :heart:        | SPI                          | `Display::ST7789V`  | 240x135 RGB LCD (TTGO)
 | ILI9341             | :heart:        | SPI                          | `Display::ILI9341`  | 240x320 RGB LCD

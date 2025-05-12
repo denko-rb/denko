@@ -4,9 +4,10 @@ module Denko
     autoload :HD44780,  "#{__dir__}/display/hd44780"
 
     # Pixel display mixins and helpers
-    autoload :PixelCommon,  "#{__dir__}/display/pixel_common"
-    autoload :SPICommon,    "#{__dir__}/display/spi_common"
-    autoload :Canvas,       "#{__dir__}/display/canvas"
+    autoload :PixelCommon,      "#{__dir__}/display/pixel_common"
+    autoload :SPICommon,        "#{__dir__}/display/spi_common"
+    autoload :SPIEPaperCommon,  "#{__dir__}/display/spi_epaper_common"
+    autoload :Canvas,           "#{__dir__}/display/canvas"
 
     # OLEDs
     autoload :MonoOLED, "#{__dir__}/display/mono_oled"
@@ -20,6 +21,7 @@ module Denko
     autoload :ST7565,   "#{__dir__}/display/st7565"
 
     # E-paper
+    autoload :IL0373,   "#{__dir__}/display/il0373"
     autoload :SSD168X,  "#{__dir__}/display/ssd168x"
     autoload :SSD1680,  "#{__dir__}/display/ssd1680"
     autoload :SSD1681,  "#{__dir__}/display/ssd1681"

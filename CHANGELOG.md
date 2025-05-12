@@ -16,6 +16,13 @@
   - Axes are swappable
   - Deadzone and maxzone configurable, _NOT_ per axis
 
+- `Display::IL0373` -
+  - 212 x 104 pixel E-Paper display
+  - SPI Interface
+  - Uses the standard `Display::Canvas` class for drawing features.
+  - Black/White and Black/Red/White versions supported (B/R/W version not tested in hardware)
+  - Black channel inversion, horizontal/vertical reflection, rotation supported in hardware
+
 - `Display::PCD8544` -
   - 84 x 48 pixel backlit mono LCD
   - SPI interface
