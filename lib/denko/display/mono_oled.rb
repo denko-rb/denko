@@ -1,6 +1,7 @@
 module Denko
   module Display
     module MonoOLED
+      include Behaviors::BusPeripheral
       include Behaviors::Lifecycle
 
       # I2C Defaults
