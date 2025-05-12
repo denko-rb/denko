@@ -10,7 +10,7 @@ bus = Denko::SPI::Bus.new(board: board)
 # Must be connected to SPI bus CLK and MOSI pins, plus select, dc, reset and busy.
 # Give colors: as total number of colors NOT including blank/white. Red and black = 2.
 # When giving colors: 0 = clear, 1 = black, 2 = red
-epaper = Denko::Display::SSD1680.new(bus: bus, pins: { select: 10, dc: 9, reset: 8 , busy: 7}, colors: 2)
+epaper = Denko::Display::SSD1680.new(bus: bus, pins: { select: 10, dc: 9, reset: 8, busy: 7}, colors: 2)
 canvas = epaper.canvas
 
 # Hardware features

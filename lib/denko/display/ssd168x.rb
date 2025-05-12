@@ -2,10 +2,10 @@ module Denko
   module Display
     class SSD168X
       include Behaviors::Lifecycle
-      include SPICommon
+      include SPIEPaperCommon
 
-      COLUMNS = 200
-      ROWS    = 200
+      # Used by #hw_reset
+      RESET_TIME = 0.010
 
       # Typical Commands
       SW_RESET                = 0x12
@@ -171,25 +171,8 @@ module Denko
         data    [sleep_mode]
       end
 
-      def initialize_pins(options={})
-        super(options)
-        proxy_pin :busy, DigitalIO::Input, board: bus.board
-        busy.stop
-      end
-
-      def busy_wait
-        # Could use listener here, but #read is more compatible.
-        sleep 0.005 while busy.read == 1
-      end
-
       def wake
-        # Reset Sequence
-        sleep 0.010
-        if reset
-          reset.low
-          sleep 0.1
-          reset.high
-        end
+        hw_reset
         command [SW_RESET]
         sleep 0.020
 
@@ -208,26 +191,9 @@ module Denko
         wake
       end
 
-      def draw(x_start=x_min, x_finish=x_max, y_start=y_min, y_finish=y_max)
-        # Convert y-coords to page coords.
-        p_start  = y_start  / 8
-        p_finish = y_finish / 8
-
-        # Always draw black buffer
-        black_buffer = get_partial_buffer(canvas.framebuffers[0], x_start, x_finish, p_start, p_finish)
-        draw_partial(black_buffer, x_start, x_finish, p_start, p_finish, 1)
-
-        # Draw red buffer if enabled
-        if (colors == 2)
-          red_buffer = get_partial_buffer(canvas.framebuffers[1], x_start, x_finish, p_start, p_finish)
-          draw_partial(red_buffer, x_start, x_finish, p_start, p_finish, 2)
-        end
-
-        # Refresh the display
-        refresh
-      end
-
       def draw_partial(buffer, x_start, x_finish, p_start, p_finish, color=1)
+        partial_buffer = get_partial_buffer(buffer, x_start, x_finish, p_start, p_finish)
+
         # These displays treat bit 7 of a byte as the top pixel, but canvas uses bit 0 as top.
         # Bytes are sent reversed to fix this, essentially rotating the image by 180 degrees byte-wise.
         # Transform framebuffer coordinates to rotated hardware coordinates before sending.
@@ -245,7 +211,7 @@ module Denko
         # Send as black by default, or red if specified
         ram_select = (color == 2) ? RAM_WRITE_RED : RAM_WRITE_BW
         command [ram_select]
-        buffer.reverse.each_slice(transfer_limit) { |slice| data(slice) }
+        partial_buffer.reverse.each_slice(transfer_limit) { |slice| data(slice) }
       end
 
       def refresh
