@@ -102,17 +102,22 @@ module Denko
         @temperature_coefficient ||= 0
       end
 
+      def set_display_control(value)
+        command [DISPLAY_CONTROL_SET | value]
+      end
+
       def blank
-        command [DISPLAY_CONTROL_SET | DISPLAY_BLANK]
+        set_display_control(DISPLAY_BLANK)
       end
 
       def all_segments_on
-        command [DISPLAY_CONTROL_SET | DISPLAY_ALL_SEGS]
+        set_display_control(DISPLAY_ALL_SEGS)
       end
 
-      def invert=(inversion_state)
-        value = inversion_state ? DISPLAY_INVERT : DISPLAY_NORMAL
-        command [DISPLAY_CONTROL_SET | value]
+      def invert
+        @inverted = !@inverted
+        value = @inverted ? DISPLAY_INVERT : DISPLAY_NORMAL
+        set_display_control(value)
       end
 
       after_initialize do
@@ -123,22 +128,25 @@ module Denko
 
         self.vop = 56
         self.bias = 4
-        self.invert = false
+        set_display_control(DISPLAY_NORMAL)
         self.temperature_coefficient = 0
       end
 
-      def draw_partial(buffer, x_start, x_finish, p_start, p_finish)
+      def draw_partial(buffer, x_start, x_finish, p_start, p_finish, color=1)
         # Always use horizontal addressing mode.
         basic_instruction_mode
 
-        page_length = (x_start..x_finish).count
-
-        page = p_start
-        buffer.each_slice(page_length) do |page_bytes|
+        (p_start..p_finish).each do |page|
           # Set start page and column.
           command [RAM_X_SET | x_start, RAM_Y_SET | page]
-          page_bytes.each_slice(transfer_limit) { |slice| data(slice) }
-          page += 1
+
+          # Get needed bytes for this page only.
+          src_start       = (columns * page) + x_start
+          src_end         = (columns * page) + x_finish
+          partial_buffer  = buffer[src_start..src_end]
+
+          # Send in chunks up to maximum transfer size.
+          partial_buffer.each_slice(transfer_limit) { |slice| data(slice) }
         end
       end
     end

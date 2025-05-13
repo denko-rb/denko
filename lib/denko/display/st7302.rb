@@ -149,18 +149,10 @@ module Denko
         result
       end
 
-      def draw(x_start=x_min, x_finish=x_max, y_start=y_min, y_finish=y_max)
-        # Arbitrary y values to framebuffer page indices (8 px tall).
-        p_start  = y_start  / 8
-        p_finish = y_finish / 8
-
+      def draw_partial(buffer, x_start, x_finish, p_start, p_finish, color=1)
         # Controller does 2 pixels for each memory line. Ensure start on even.
         x_start = (x_start / 2.0).floor * 2
 
-        draw_partial(canvas.framebuffer, x_start, x_finish, p_start, p_finish)
-      end
-
-      def draw_partial(buffer, x_start, x_finish, p_start, p_finish)
         # Because of weird RAM layout, always start partials on a framebuffer page divisible by 3.
         # This corresponds to row divisible by 24, so a RAM column (12 px tall) divisible by 2.
         # Always write to RAM in pairs of pages. Avoids keeping track of separated nibbles from buffer.

@@ -48,6 +48,9 @@ module Denko
         @canvas ||= Canvas.new(columns, rows, colors: colors)
       end
 
+      def refresh
+      end
+
       def get_partial_buffer(buffer, x_start, x_finish, p_start, p_finish)
         # If bounds == max bounds, just return the buffer.
         return buffer if (x_start == x_min) && (x_finish == x_max) && (p_start == p_min) && (p_finish == p_max)
@@ -67,8 +70,11 @@ module Denko
         p_start  = y_start  / 8
         p_finish = y_finish / 8
 
-        temp_buffer = get_partial_buffer(canvas.framebuffer, x_start, x_finish, p_start, p_finish)
-        draw_partial(temp_buffer, x_start, x_finish, p_start, p_finish)
+        colors.times do |i|
+          draw_partial(canvas.framebuffers[i], x_start, x_finish, p_start, p_finish, i+1)
+        end
+
+        refresh
       end
     end
   end

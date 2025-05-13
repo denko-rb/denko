@@ -30,7 +30,7 @@ lcd.draw
 # lcd.temperature_coefficient = 0
 #
 # Inversion in hardware. Bias=2 looks best while inverted.
-# lcd.invert = true
+# lcd.invert # happens immediately, not on next #draw, like other displays.
 # lcd.bias = 2
 
 # Draw some text on the canvas (a Ruby memory buffer).

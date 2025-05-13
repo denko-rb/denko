@@ -8,16 +8,9 @@ board = Denko::Board.new(Denko::Connection::Serial.new)
 
 # The OLED connects to either an I2C or SPI bus, depending on the model you have.
 bus = Denko::I2C::Bus.new(board: board)
-# bus = Denko::I2C::BitBang.new(board: board, pins: {scl: 4, sda: 5})
-# bus = Denko::SPI::Bus.new(board: board)
-# bus = Denko::SPI::BitBang.new(board: board, pins: {clock: 13, output: 11})
 
 # I2C OLED, connected to I2C SDA and SCL.
-oled = Denko::Display::SH1107.new(bus: bus,rotate: false) # address: 0x3C is default
-
-# SPI OLED, connected to SPI CLK and MOSI pins.
-# select: and dc: pins must be given. reset is optional (can be pulled high instead).
-# oled = Denko::Display::SH1107.new(bus: bus, pins: { select: 10, dc: 7, reset: 8}, rotate: false)
+oled = Denko::Display::SH1107.new(bus: bus, rotate: false) # address: 0x3C is default
 
 canvas = oled.canvas
 baseline = 76
