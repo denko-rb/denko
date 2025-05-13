@@ -165,7 +165,7 @@ module Denko
       end
 
       def config_register_bits
-        str = ""
+        str = String.new
         @registers.each_key do |key|
           str << "0x#{key.upcase}: #{@registers[key].to_s(2).rjust(8, '0')}\n"
         end

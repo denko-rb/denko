@@ -178,15 +178,15 @@ module Denko
       # Eg. #display_on and #display_off.
       #
       CONTROL_TOGGLES = {
-        display: LCD_DISPLAYON,
-        cursor: LCD_CURSORON,
-        blink: LCD_BLINKON,
+        "display" => LCD_DISPLAYON,
+        "cursor"  =>  LCD_CURSORON,
+        "blink"   =>  LCD_BLINKON,
       }
       CONTROL_TOGGLES.each_key do |key|
-        define_method (key.to_s << "_off").to_sym do
+        define_method (key + "_off") do
           command LCD_DISPLAYCONTROL | (self.control &= ~CONTROL_TOGGLES[key])
         end
-        define_method (key.to_s << "_on") do
+        define_method (key + "_on") do
           command LCD_DISPLAYCONTROL | (self.control |= CONTROL_TOGGLES[key])
         end
       end

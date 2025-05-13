@@ -6,10 +6,10 @@ module Denko
       BAUD = 115200
 
       def initialize(options={})
-        @device = options[:device]
-        @baud = options[:baud] || BAUD
-        @rx_buffer = ""
-        @rx_line = ""
+        @device     = options[:device]
+        @baud       = options[:baud] || BAUD
+        @rx_buffer  = String.new
+        @rx_line    = String.new
         @rx_escaped = false
       end
 
@@ -36,7 +36,7 @@ module Denko
           else
             if (char == "\n")
               line = @rx_line
-              @rx_line = ""
+              @rx_line = String.new
               return line
             elsif (char == "\\")
               @rx_escaped = true

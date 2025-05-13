@@ -65,7 +65,7 @@ class BoardSimulator
   end
 
   def search(branch_mask)
-    output_string = ""
+    output_string = String.new
     (0..7).each do |i|
       addr = 0
       comp = 0

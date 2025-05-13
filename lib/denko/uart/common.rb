@@ -2,7 +2,7 @@ module Denko
   module UART
     module Common
       def initialize_buffer
-        @buffer       = ""
+        @buffer       = String.new
         @buffer_mutex = Denko.gil? ? Denko::MutexStub.new : Mutex.new
         self.add_callback(:buffer) do |data|
           @buffer_mutex.lock

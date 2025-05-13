@@ -41,7 +41,7 @@ module Denko
 
         @write_buffer_mutex ||= Mutex.new
         @write_buffer_mutex.synchronize do
-          @write_buffer = ""
+          @write_buffer = String.new
           @tx_halt_points = []
         end
       end
