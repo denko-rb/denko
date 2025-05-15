@@ -7,7 +7,7 @@ module Denko
       alias  :bus :board
 
       before_initialize do
-        params[:board] ||= params[:bus]
+        params[:board] = params[:bus] if params[:bus]
       end
 
       def atomically(&block)
