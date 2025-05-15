@@ -20,10 +20,6 @@ module Denko
         board.micro_delay(duration)
       end
 
-      def board_is_register?
-        @board_is_register ||= board.class.ancestors.include?(SPI::BaseRegister)
-      end
-
       protected
 
       def initialize_board

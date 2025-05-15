@@ -169,6 +169,10 @@ class BoardMock < Denko::Board
     false
   end
 
+  def is_a_register?
+    false
+  end
+
   #
   # Inject a message into the Board instance as if it were coming from the phsyical board.
   # Use this to mock input data for the blocking #read pattern in the Reader behavior.
