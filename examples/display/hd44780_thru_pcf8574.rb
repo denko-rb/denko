@@ -18,17 +18,14 @@ board    = Denko::Board.new(Denko::Connection::Serial.new)
 i2c      = Denko::I2C::Bus.new(board: board, index: 0)
 expander = Denko::DigitalIO::PCF8574.new  bus: i2c
 lcd      = Denko::Display::HD44780.new    board: expander,
-                                          pins: { rs: RS, rw: RW, enable: EN, d4: D4, d5: D5, d6: D6, d7: D7 },
+                                          pins: { rs: RS, rw: RW, enable: EN, backlight: BL, d4: D4, d5: D5, d6: D6, d7: D7 },
                                           cols: 16,
                                           rows: 2
-
-backlight = Denko::DigitalIO::Output.new(board: expander, pin: BL)
-backlight.on
 
 # Bitmap for a custom character. 5 bits wide x 8 high.
 # Useful for generating these: https://omerk.github.io/lcdchargen/
 heart = [
-		  0b00000,
+          0b00000,
           0b00000,
           0b01010,
           0b11111,
@@ -36,7 +33,7 @@ heart = [
           0b01110,
           0b00100,
           0b00000
-		]
+        ]
 
 # Define the character in CGRAM address 2. 0-7 are usable.
 lcd.create_char(2, heart)

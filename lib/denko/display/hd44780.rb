@@ -97,9 +97,13 @@ module Denko
           proxy_pin(symbol, DigitalIO::Output, optional: lower_bits_optional)
         end
 
-        # RW pin can be hard-wired to GND, or given. Will be always pulled low.
-        proxy_pin(:rw, DigitalIO::Output, optional: true)
-      end 
+        # RW pin can be hardwired to GND, or given. Will be always pulled low.
+        proxy_pin :rw, DigitalIO::Output, optional: true
+
+        # Backlight can be hardwired, given here, or modeled as a separate component.
+        # If HD44780 is on a digital register, and PWM is desired, use a separate component.
+        proxy_pin :backlight, LED::Base, optional: true
+      end
 
       after_initialize do
         # Switch to 8-bit mode if d0-d3 are present.
@@ -142,6 +146,7 @@ module Denko
 
         display_on
         clear
+        backlight.on if backlight
 
         # Write entry mode.
         command(LCD_ENTRYMODESET | entry_mode)
