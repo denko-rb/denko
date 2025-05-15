@@ -16,13 +16,9 @@ module Denko
       # Default registers to 1 byte, or 8 pins when used as Board Proxy.
       # Can be ignored if reading / writing the register directly.
       def bytes
-        @bytes ||= 1
+        @bytes = params[:bytes] || 1
       end
       attr_writer :bytes
-
-      before_initialize do
-        self.bytes = params[:bytes] if params[:bytes]
-      end
 
       # Select pin is active-low. Disable.
       after_initialize do
