@@ -29,7 +29,7 @@
 
 | Name                | Status         | Interface                    | Component Class     | Notes |
 | :---------------    | :------:       | :--------                    | :---------------    |------ |
-| HD44780 LCD         | :green_heart:  | Digital Out, Output Register | `Display::HD44780`  | Character LCD
+| HD44780 LCD         | :green_heart:  | Digital Out, Output Register | `Display::HD44780`  | Char LCD. Also works through PCF8574
 | Canvas              | :yellow_heart: | -                            | `Display::Canvas`   | Mono 2D graphics
 | SSD1306             | :green_heart:  | I2C or SPI                   | `Display::SSD1306`  | Mono OLED: 128x64, 128x32
 | SH1106              | :green_heart:  | I2C or SPI                   | `Display::SH1106`   | Mono OLED: 128x64
@@ -74,7 +74,7 @@
 | :--------------- | :------:       | :--------  | :---------------     |------ |
 | Input Register   | :green_heart:  | SPI        | `SPI::InputRegister` | Tested on CD4021B
 | Output Register  | :green_heart:  | SPI        | `SPI::OutputRegister`| Tested on 74HC595
-| PCF8574 Expander | :heart:        | I2C        | `DigitalIO::PCF8574` | 8-ch bi-directional digital I/O
+| PCF8574 Expander | :green_heart:  | I2C        | `DigitalIO::PCF8574` | 8-ch digital I/O. Commonly found on HD44780
 | ADS1100 ADC      | :green_heart:  | I2C        | `AnalogIO::ADS1100`  | 1-ch, 16-bit ADC. No continuous mode.
 | ADS1115 ADC      | :green_heart:  | I2C        | `AnalogIO::ADS1115`  | 4-ch, 16-bit ADC. Comparator not implemented.
 | ADS1118 ADC      | :green_heart:  | SPI        | `AnalogIO::ADS1118`  | 4-ch, 16-bit ADC + temperature

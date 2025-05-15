@@ -16,6 +16,12 @@
   - Axes are swappable
   - Deadzone and maxzone configurable, _NOT_ per axis
 
+- `DigitalIO::PCF8574` -
+  - 8-bit (channel) bi-directional I/O expander
+  - I2C interface
+  - Implements `BoardProxy` so arbitrary digital I/O components can treat it as a `Board`. Not recommended for fast inputs.
+  - Commonly found on I2C "backpacks" attached to HD44780 LCDs. See [example](examples/display/hd44780_thru_pcf8574.rb)
+
 - `Display::IL0373` -
   - 212 x 104 pixel E-Paper display
   - SPI Interface
@@ -32,6 +38,7 @@
   - Gotcha: Pixels appear to have an aspect ratio of about 0.8.
 
 - `Display::SH1107` -
+  - I2C or SPI interface mono OLED
   - Practically the same as `SH1106` but 128x128 pixels instead of 128x64.
 
 - `Display::SSD1680` -
@@ -64,12 +71,14 @@
   - Direct read/write with interface similar to Array. `#[]` and `#[]=`
 
 - `Sensor::AHT3X` -
+  - Temperature + Relative Humidity sensor
+  - I2C interface
   - Exactly the same interface as `AHT2X`, but more accurate
 
 - `Sensor::HDC1080` -
   - Temperature + Relative Humidity sensor
-  - Can also monitor battery level. `#battery_low?` is true when VCC < 2.8V.
   - I2C interface
+  - Can also monitor battery level. `#battery_low?` is true when VCC < 2.8V.
   - Similar to HTU21D
 
 - `Sensor::JSNSR04T` -
@@ -80,10 +89,13 @@
   - UART must be set up beforehand, running at 9600 baud
 
 - `Sensor::SHT4X` -
+  - Temperature + Relative Humidity sensor
+  - I2C interface
   - Very similar to `SHT3X`
 
 - `Sensor::VL53L0X` -
-  - Laser distance sensor over I2C bus
+  - Laser distance sensor
+  - I2C interface
   - 20 - 2000mm range
   - Only continuous mode implemented. No configuration yet.
 
@@ -112,8 +124,8 @@
 ### Behavior Changes
 - Raw Read Rework
   - `Behavior::State`, `Behavior::Callbacks`, `Behavior::Reader`, `Behavior::Poller`, and `Behavior::Listener` have received a combined rework, to allow "raw_reads" which bypass the "update pathway": `#pre_callback_filter`, and `#update`, which runs callbacks and updates component state.
-  - This simplifies development of drivers for things like sensors, where config and calibration data needs to be passed back and forth sometimes, but can't hit the update pathway. But it still leaves the old behavior available, which is great for actual data values.
-  - `#_read` is still a delegate method, and should _always_ be defined to get data out of the component, expected to hit the update pathway.
+  - This simplifies development of drivers for things like sensors, where config and calibration data needs to be passed back and forth sometimes, but can't hit the update pathway. It still leaves the old behavior available, which is great for actual readings.
+  - `#_read` is still a delegate method, and should be defined to get readings from the component, expected to hit the update pathway.
   - `#_read` should _never_ be called directly now. Will make `#_read`s private in future, now that mruby supports it.
   - Use `#read_nb` to trigger an async read. Delegates to `#_read` in a way that won't interfere with pending `#read_raw` calls.
   - `#read` is the same as `#read_nb`, except blocking until the read completes.
@@ -123,7 +135,7 @@
 
 - Mutex Rework
   - `Mutex#lock` and `Mutex#unlock` now preferred over `Mutex#synchronize`, so mruby doesn't waste resources passing a block around.
-  - `Mutex` instances are all replaced with `MutexStub` instances in mruby.
+  - `Mutex` instances are all replaced with `MutexStub` instances in mruby, as in CRuby.
   - `Component#state` (reading) is no longer protected by a mutex, unless it's a simple Integer.
   - `Component#state=` (writing) is still portected by `@state_mutex`.
 
@@ -136,7 +148,7 @@
     - Use `begin; super; rescue NoMethodError; end`
 
 ### Bug Fixes
-- Fixed bug where `Display::HD44780` would try to call `#board_has_write_bit?` instead of `#board_is_register?`.
+- Fixed bug where `Display::HD44780` would try to call `#board_has_write_bit?` instead of `#board.is_register?`.
 - Fixed a bug with multiple enviro sensors where calling `#state` would reset the values of all keys to `nil`.
 - Fixed bug where `Canvas#polygon` and `#path` were not passing through color to sub-methods.
 

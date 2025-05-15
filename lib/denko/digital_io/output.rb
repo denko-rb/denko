@@ -9,7 +9,7 @@ module Denko
       interrupt_with :digital_write
 
       after_initialize do
-        @board.digital_read(pin) unless @board.platform == :linux_milkv_duo
+        board.digital_read(pin) unless @board.platform == :linux_milkv_duo
       end
 
       def pre_callback_filter(board_state)

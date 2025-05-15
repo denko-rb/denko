@@ -47,8 +47,8 @@ module Denko
       LCD_5x10DOTS = 0x04
       LCD_5x8DOTS  = 0x00
 
-      def bits
-        @bits ||= 4
+      def data_lines
+        @data_lines ||= 4
       end
 
       # Default to 16x2 display if columns and rows given.
@@ -83,7 +83,7 @@ module Denko
         @entry_mode ||= LCD_ENTRYLEFT | LCD_ENTRYSHIFTDECREMENT
       end
 
-      attr_writer :columns, :rows, :function, :bits, :row_offsets, :control, :entry_mode
+      attr_writer :columns, :rows, :function, :data_lines, :row_offsets, :control, :entry_mode
 
       def initialize_pins(options={})
         # All the required pins.
@@ -97,14 +97,14 @@ module Denko
           proxy_pin(symbol, DigitalIO::Output, optional: lower_bits_optional)
         end
 
-        # RW pin is mostly hard-wired to ground, but can given.
+        # RW pin can be hard-wired to GND, or given. Will be always pulled low.
         proxy_pin(:rw, DigitalIO::Output, optional: true)
-      end
+      end 
 
       after_initialize do
         # Switch to 8-bit mode if d0-d3 are present.
         if (d0 && d1 && d2 && d3)
-          self.bits = 8
+          self.data_lines = 8
           self.function |= LCD_8BITMODE
         end
 
@@ -119,7 +119,7 @@ module Denko
         enable.low; rs.low; rw.low if rw
 
         # Start in 4-bit mode.
-        if bits == 4
+        if data_lines == 4
           # Keep setting 8-bit mode until ready.
           command(0x03); micro_delay(4500)
           command(0x03); micro_delay(4500)
@@ -237,13 +237,12 @@ module Denko
       def send(byte, rs_level)
         # RS pin goes low to send commands, high to send data.
         rs.write(rs_level) unless rs.state == rs_level
-        rw.low if rw
 
         # Get the byte as a string of 0s and 1s, LSBFIRST.
         bits_from_byte = byte.to_s(2).rjust(8, "0").reverse
 
         # Write bits depending on connection.
-        bits == 8 ? write8(bits_from_byte) : write4(bits_from_byte)
+        data_lines == 8 ? write8(bits_from_byte) : write4(bits_from_byte)
       end
 
       def write4(bits)
