@@ -1,48 +1,39 @@
 Thread.abort_on_exception = true
 
+require 'forwardable'
+require 'bcd'
+
 module Denko
   def self.root
     File.expand_path '../..', __FILE__
   end
-
-  def self.gil?
-    ["mruby", "ruby"].include? RUBY_ENGINE
-  end
-
-  def self.mruby?
-    RUBY_ENGINE == "mruby"
-  end
 end
 
-# For method delegation.
-require 'forwardable'
-require 'bcd'
+# Top-level class helpers
+require_relative 'denko/helpers'
 
-# Bypass mutexes where possible for CRuby.
-require_relative 'denko/mutex_stub'
-
-# Component support stuff.
+# Component support stuff
 require_relative 'denko/version'
 require_relative 'denko/behaviors'
 require_relative 'denko/fonts'
 
-# Board stuff.
+# Board stuff
 require_relative 'denko/message'
 require_relative 'denko/connection'
 require_relative 'denko/board'
 
-# Basic IO components.
+# Basic IO components
 require_relative 'denko/digital_io'
 require_relative 'denko/analog_io'
 require_relative 'denko/pulse_io'
 
-# Buses and interfaces.
+# Buses and interfaces
 require_relative 'denko/uart'
 require_relative 'denko/spi'
 require_relative 'denko/i2c'
 require_relative 'denko/one_wire'
 
-# Everything else.
+# Everything else
 require_relative 'denko/display'
 require_relative 'denko/eeprom'
 require_relative 'denko/led'
