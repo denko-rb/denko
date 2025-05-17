@@ -28,29 +28,18 @@
 
 // Define number of pins to set up listener storage.
 #if defined(ESP32)
-  #define PIN_COUNT 45
-#elif defined(ESP8266)
-  #define PIN_COUNT 18
-#elif defined(ARDUINO_ARCH_RP2040)
-  #define PIN_COUNT 30
-// These may have more physical pins, but limited to 54 by the Arduino cores.
-#elif defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__) || defined(__SAM3X8E__)
-  #define PIN_COUNT 54
-// Very small optimization for the 328P/UNO.
-#elif defined(__AVR_ATmega328P__) || defined(__AVR_ATmega328__)
-  #define PIN_COUNT 20
-// This catches ATmega32u4, SAMD21, RA4M1 etc.
+  #define PIN_COUNT SOC_GPIO_PIN_COUNT
 #else
-  #define PIN_COUNT 22
+  #if defined(PINS_COUNT)
+    #define PIN_COUNT PINS_COUNT
+  #else
+    #define PIN_COUNT NUM_DIGITAL_PINS
+  #endif
 #endif
 
 // Figure out how many LEDC channels are available on ESP32 boards.
 #ifdef ESP32
-  #if CONFIG_IDF_TARGET_ESP32
-    #define LEDC_CHANNEL_COUNT 16
-  #else
-    #define LEDC_CHANNEL_COUNT SOC_LEDC_CHANNEL_NUM
-  #endif
+  #define LEDC_CHANNEL_COUNT SOC_LEDC_CHANNEL_NUM
 #endif
 
 // Filter for boards that can set their analog write resolution.
@@ -72,7 +61,7 @@
     #elif defined(PIN_SERIAL_1_TX)
       #define DENKO_UARTS 1
     #endif
-  
+
   // ESP32 has either 1 or 2 extra UARTS enabled, depending on chip and board.
   #elif defined(ESP32)
     #define DENKO_UARTS (SOC_UART_NUM - 1)
