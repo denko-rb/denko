@@ -20,7 +20,7 @@ canvas = epaper.canvas
 # Draw some text on the canvas (a Ruby memory buffer).
 baseline = 66
 canvas.text_cursor = [14,baseline+34]
-canvas.font = Denko::Fonts::LED_8x16
+canvas.font = :bmp_8x16
 canvas.font_scale = 2
 canvas.text "Hello World!"
 

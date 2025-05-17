@@ -14,7 +14,7 @@ canvas = lcd.canvas
 # Draw some text on the canvas (a Ruby memory buffer).
 baseline = 75
 canvas.text_cursor = [32,baseline+35]
-canvas.font = Denko::Fonts::LED_8x16
+canvas.font = :bmp_8x16
 canvas.font_scale = 2
 canvas.text "Hello World!"
 

@@ -1,8 +1,6 @@
 module Denko
   module Display
     class Canvas
-      include Denko::Fonts
-
       attr_reader :columns, :rows, :framebuffer, :framebuffers, :colors, :font, :x_max, :y_max
 
       def initialize(columns, rows, colors: 1)
@@ -10,7 +8,7 @@ module Denko
         @rows = rows
         @rows = ((rows / 8.0).ceil * 8) if (rows % 8 != 0)
 
-        self.font    = Denko::Fonts::LED_6x8
+        self.font    = Denko::Display::Font::BMP_6X8
         @font_scale  = 1
 
         @swap_xy     = false
@@ -346,10 +344,15 @@ module Denko
       end
 
       def font=(font)
-        @font = font
-        @font_height = font[:height]
-        @font_width = font[:width]
-        @font_characters = font[:characters]
+        if font.class == Symbol
+          @font = Display::Font.const_get(font.to_s.upcase)
+        else
+          @font = font
+        end
+
+        @font_height = @font[:height]
+        @font_width = @font[:width]
+        @font_characters = @font[:characters]
         @font_last_character = @font_characters.length - 1
       end
 

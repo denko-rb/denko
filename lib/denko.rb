@@ -15,7 +15,6 @@ require_relative 'denko/helpers'
 # Component support stuff
 require_relative 'denko/version'
 require_relative 'denko/behaviors'
-require_relative 'denko/fonts'
 
 # Board stuff
 require_relative 'denko/message'

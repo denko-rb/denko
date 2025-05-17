@@ -7,6 +7,7 @@ module Denko
     autoload :PixelCommon,      "#{__dir__}/display/pixel_common"
     autoload :SPICommon,        "#{__dir__}/display/spi_common"
     autoload :SPIEPaperCommon,  "#{__dir__}/display/spi_epaper_common"
+    autoload :Font,             "#{__dir__}/display/font"
     autoload :Canvas,           "#{__dir__}/display/canvas"
 
     # OLEDs
