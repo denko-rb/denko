@@ -30,11 +30,7 @@
 #if defined(ESP32)
   #define PIN_COUNT SOC_GPIO_PIN_COUNT
 #else
-  #if defined(PINS_COUNT)
-    #define PIN_COUNT PINS_COUNT
-  #else
-    #define PIN_COUNT NUM_DIGITAL_PINS
-  #endif
+  #define PIN_COUNT NUM_DIGITAL_PINS
 #endif
 
 // Figure out how many LEDC channels are available on ESP32 boards.
