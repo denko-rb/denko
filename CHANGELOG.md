@@ -109,9 +109,14 @@
   - Added `Canvas#rotate`
   - Added `Canvas#reflect`
   - Optimized `Canvas#line` to use only integer math, avoid float, for mruby
+  - Can support multicolor e-paper displays now. Handled as array of 1-bit framebuffers, one per ink color. __Not__ meant for RGB.
 
 - `Display::HD44780` -
   - `#print` changed to `#text`, and `#set_cursor` to `#text_cursor` for consistency with `Display::Canvas`
+  - Added backlight as a subcomponent
+    - Give positive pin (anode) as `backlight:` inside `pins:` hash when initializing
+    - `HD44780#backlight` is an instance of `Denko::LED::Base`
+    - Use like: `lcd.backlight.on` / `lcd.backlight.off`, or (if connected to PWM) `lcd.backlight.duty=`
 
 - `EEPROM::Board` -
   - Renamed from `EEPROM::BuiltIn`
