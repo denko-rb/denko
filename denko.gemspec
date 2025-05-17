@@ -7,8 +7,13 @@ Gem::Specification.new do |gem|
   gem.description   = %q{Electronics programming in Ruby}
   gem.summary       = %q{Use GPIO, PWM, I2C, SPI, and more, on a connected microcontroller, or single-board-computer}
   gem.homepage      = 'https://github.com/denko-rb/denko'
-  gem.files         = `git ls-files`.split($\)
   gem.licenses      = ['MIT']
+
+  # Exclude benchmarks, examples, images and tutorial to keep gem size down.
+  `git ls-files`.split($\).each do |filename|
+    next if filename.start_with?('benchmarks/', 'examples/', 'images/', 'tutorial/')
+    gem.files << "#{filename}"
+  end
 
   # Copy full submodule contents into the gem when building.
   # Credit:
