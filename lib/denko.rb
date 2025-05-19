@@ -1,6 +1,5 @@
 Thread.abort_on_exception = true
 
-require 'forwardable'
 require 'bcd'
 
 module Denko

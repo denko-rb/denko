@@ -3,7 +3,6 @@ module Denko
     module BusCommon
       include Behaviors::BusController
       include Behaviors::Reader
-      extend Forwardable
 
       # Add peripheral to self and the board. It gets callbacks directly from the board.
       def add_component(component)
@@ -26,11 +25,18 @@ module Denko
       end
 
       # Forward pin control methods to the board, for select pin setup.
-      def_delegator :board, :convert_pin
-      def_delegator :board, :set_pin_mode
+      def convert_pin(*args, **kwargs)
+        board.convert_pin(*args, **kwargs)
+      end
+
+      def set_pin_mode(*args, **kwargs)
+        board.set_pin_mode(*args, **kwargs)
+      end
 
       # If a component calls #stop, that's just a call to Board#spi_stop giving its select pin.
-      def_delegator :board, :spi_stop, :stop
+      def stop(*args, **kwargs)
+        board.spi_stop(*args, **kwargs)
+      end
     end
   end
 end
