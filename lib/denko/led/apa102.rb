@@ -4,8 +4,6 @@ module Denko
       include Behaviors::BusPeripheral
       include Behaviors::Lifecycle
 
-      def pin; nil; end
-
       def length
         @length ||= params[:length] || 1
       end
@@ -94,7 +92,7 @@ module Denko
 
       def show
         data = start_frame + buffer + end_frame
-        bus.transfer(pin, write: data)
+        bus.transfer(nil, write: data)
       end
     end
   end

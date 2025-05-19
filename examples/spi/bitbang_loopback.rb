@@ -19,7 +19,7 @@ end
 
 # Create a simple test component class.
 class SPITester
-  include Denko::SPI::Peripheral::SinglePin
+  include Denko::SPI::Peripheral
 end
 spi_tester = SPITester.new(bus: bus, pin: SELECT_PIN)
 

@@ -1,7 +1,7 @@
 module Denko
   module SPI
     class BaseRegister
-      include SPI::Peripheral::SinglePin
+      include SPI::Peripheral
       include Behaviors::Lifecycle
       #
       # Registers can be a BoardProxy for components needing digital pins.

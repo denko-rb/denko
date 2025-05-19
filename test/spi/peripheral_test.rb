@@ -1,18 +1,22 @@
 require_relative '../test_helper'
 
-class SPITesterMulti
-  include Denko::SPI::Peripheral::MultiPin
+class SPITester
+  include Denko::SPI::Peripheral
 
   def initialize_pins(options={})
     super(options)
-    proxy_pin :other_pin, Denko::DigitalIO::Output, board: bus.board
+    proxy_pin :other_pin, Denko::DigitalIO::Output
   end
 
   def some_callback(data)
   end
 end
 
-class SPIPeripheralMultiPinTest < Minitest::Test
+class SPITesterSingle
+  include Denko::SPI::Peripheral
+end
+
+class SPIPeripheralTest < Minitest::Test
   def board
     @board ||= BoardMock.new
   end
@@ -26,7 +30,7 @@ class SPIPeripheralMultiPinTest < Minitest::Test
   end
 
   def part
-    @part ||= SPITesterMulti.new(options)
+    @part ||= SPITester.new(options)
   end
 
   def test_string_data_converts_to_bytes_for_callbacks
@@ -49,5 +53,21 @@ class SPIPeripheralMultiPinTest < Minitest::Test
       part.select.update([127,255])
     end
     mock.verify
+  end
+
+  def test_allows_pin_alone
+    part2 = SPITesterSingle.new(bus: bus, pin: 5)
+    assert bus.components.include?(part2)
+  end
+
+  def test_subcomponents_attach_to_board_not_bus
+    part
+    assert board, part.select.board
+    assert board, part.other_pin.board
+  end
+
+  def test_added_to_bus
+    part
+    assert bus.components.include?(part)
   end
 end

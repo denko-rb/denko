@@ -130,10 +130,10 @@ class InputRegisterTest < Minitest::Test
     refute part.any_listening
   end
 
-  def test_gets_reads_through_pin
+  def test_gets_reads_through_select
     mock = Minitest::Mock.new.expect :call, nil, ["127,255"]
     part.stub(:update, mock) do
-      board.update("#{part.pin}:127,255")
+      board.update("#{part.select.pin}:127,255")
     end
     mock.verify
   end

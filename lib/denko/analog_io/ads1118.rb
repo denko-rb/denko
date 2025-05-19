@@ -1,7 +1,7 @@
 module Denko
   module AnalogIO
     class ADS1118
-      include SPI::Peripheral::SinglePin
+      include SPI::Peripheral
       include Behaviors::Lifecycle
       include ADS111X
 

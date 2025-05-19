@@ -6,25 +6,16 @@ module Denko
 
       # Add peripheral to self and the board. It gets callbacks directly from the board.
       def add_component(component)
-        # Ignore components with no select pin. Mostly for APA102.
-        return unless component.pin
-
-        pins = components.map { |c| c.pin }
-        if pins.include? component.pin
-          raise ArgumentError, "duplicate select pin for #{component}"
-        end
-
+        # Don't check for select pin uniqueness. Board handles that.
         components << component
-        board.add_component(component)
       end
 
       # Remove peripheral from self and the board.
       def remove_component(component)
         components.delete(component)
-        board.remove_component(component)
       end
 
-      # Forward pin control methods to the board, for select pin setup.
+      # Pass through to the real board for converting select/other pins.
       def convert_pin(*args, **kwargs)
         board.convert_pin(*args, **kwargs)
       end

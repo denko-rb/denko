@@ -1,11 +1,7 @@
 require_relative '../test_helper'
 
 class TempSpiPeripheral
-  def initialize(pin)
-    @pin = pin
-  end
-
-  attr_reader :pin
+  include Denko::SPI::Peripheral
 end
 
 class SPIBusTest < Minitest::Test
@@ -19,6 +15,22 @@ class SPIBusTest < Minitest::Test
 
   PIN = 9
   OPTIONS = { read: 2, frequency: 800000, mode: 2, bit_order: :lsbfirst }
+
+  def test_automatically_adds_and_removes_component
+    obj = TempSpiPeripheral.new(bus: part, pin: 1)
+    assert part.components.include?(obj)
+
+    part.remove_component(obj)
+    refute part.components.include?(obj)
+  end
+
+  def test_unique_select_pins
+    TempSpiPeripheral.new(bus: part, pin: 1)
+
+    assert_raises do
+      TempSpiPeripheral.new(bus: part, pin: 1)
+    end
+  end
 
   def test_transfer
     mock = Minitest::Mock.new.expect :call, nil, [5, PIN], **OPTIONS
@@ -36,7 +48,7 @@ class SPIBusTest < Minitest::Test
     mock.verify
   end
 
-  def test_stop
+  def test_stop_forwarded
     mock = Minitest::Mock.new.expect :call, nil, [PIN]
     board.stub(:spi_stop, mock) do
       part.stop(PIN)
@@ -44,33 +56,11 @@ class SPIBusTest < Minitest::Test
     mock.verify
   end
 
-  def test_add_and_remove_component
-    obj = TempSpiPeripheral.new(1)
-    part.add_component(obj)
-    assert board.components.include?(obj)
-
-    part.remove_component(obj)
-    refute board.components.include?(obj)
-  end
-
-  def test_set_pin_mode
+  def test_set_pin_mode_forwarded
     mock = Minitest::Mock.new.expect :call, nil, [9, :output]
     board.stub(:set_pin_mode, mock) do
       part.set_pin_mode(9, :output)
     end
     mock.verify
-  end
-
-  def test_unique_select_pins
-    part.add_component TempSpiPeripheral.new(1)
-
-    assert_raises do
-      part.add_component TempSpiPeripheral.new(1)
-    end
-  end
-
-  def test_no_select_pin
-    part.add_component TempSpiPeripheral.new(nil)
-    assert_empty part.components
   end
 end

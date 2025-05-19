@@ -1,7 +1,7 @@
 module Denko
   module Display
     module SPICommon
-      include SPI::Peripheral::MultiPin
+      include SPI::Peripheral
       include PixelCommon
 
       #
@@ -10,8 +10,8 @@ module Denko
       #
       def initialize_pins(options={})
         super(options)
-        proxy_pin :dc,    DigitalIO::Output, board: bus.board
-        proxy_pin :reset, DigitalIO::Output, board: bus.board, optional: true
+        proxy_pin :dc,    DigitalIO::Output
+        proxy_pin :reset, DigitalIO::Output, optional: true
         reset.high if reset
       end
 
