@@ -382,16 +382,8 @@ module Denko
         # Offset by scaled height, since bottom left of char starts at text cursor.
         y = text_cursor[1] + 1 - (@font_height * @font_scale)
 
-        if @font_height > 8
-          slices = byte_array.each_slice(@font_width)
-        else
-          slices = [byte_array]
-        end
-
-        slices.each do |slice|
-          # Each byte (column) in the char
+        byte_array.each_slice(@font_width) do |slice|
           slice.each_with_index do |byte, col_offset|
-            # Each bit in the byte
             8.times do |bit|
               color_val = ((byte & (1 << bit)) > 0) ? color : 0
               @font_scale.times do |x_offset|
