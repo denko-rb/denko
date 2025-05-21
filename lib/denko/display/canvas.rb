@@ -64,12 +64,14 @@ module Denko
         byte = ((yt / 8) * @columns) + xt
         bit  = yt % 8
 
-        if (color == 0)
-          # Clear pixel in all buffers when set to 0.
-          @framebuffers.each { |fb| fb[byte] &= ~(0b1 << bit) }
-        else
-          # Set pixel only in that color's buffer.
-          @framebuffers[color-1][byte] |= (0b1 << bit)
+        # Set pixel bit in that color's buffer. Clear in others.
+        # When color == 0, clears in all buffers and sets in none.
+        for i in 1..colors
+          if (color == i)
+            @framebuffers[color-1][byte] |= (0b1 << bit)
+          else
+            @framebuffers[color-1][byte] &= ~(0b1 << bit)
+          end
         end
       end
 
