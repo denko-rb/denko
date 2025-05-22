@@ -376,30 +376,32 @@ module Denko
         index = char.ord - 32
         index = 31 if (index < 0 || index > @font_last_character)
         char_map = @font_characters[index]
-        raw_char(char_map, color: color)
-      end
 
-      def raw_char(byte_array, color: fill_color)
-        x = text_cursor[0]
         # Offset by scaled height, since bottom left of char starts at text cursor.
+        x = text_cursor[0]
         y = text_cursor[1] + 1 - (@font_height * @font_scale)
 
-        byte_array.each_slice(@font_width) do |slice|
+        # Draw it
+        raw_char(char_map, x, y, @font_width, @font_scale, color: color)
+
+        # Increment the text cursor, scaling width.
+        self.text_cursor[0] += @font_width * @font_scale
+      end
+
+      def raw_char(byte_array, x, y, width, scale, color: fill_color)
+        byte_array.each_slice(width) do |slice|
           slice.each_with_index do |byte, col_offset|
             8.times do |bit|
-              color_val = ((byte & (1 << bit)) > 0) ? color : 0
-              @font_scale.times do |x_offset|
-                @font_scale.times do |y_offset|
-                  pixel(x + (col_offset * @font_scale) + x_offset, y + (bit * @font_scale) + y_offset, color: color_val)
+              color_val = (((byte >> bit) & 0b1) > 0) ? color : 0
+              scale.times do |x_offset|
+                scale.times do |y_offset|
+                  pixel(x + (col_offset * scale) + x_offset, y + (bit * scale) + y_offset, color: color_val)
                 end
               end
             end
           end
-          y = y + (8 * @font_scale)
+          y = y + (8 * scale)
         end
-
-        # Increment the text cursor, scaling width.
-        self.text_cursor[0] += @font_width * @font_scale
       end
     end
   end
