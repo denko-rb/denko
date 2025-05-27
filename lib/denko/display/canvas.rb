@@ -83,7 +83,7 @@ module Denko
         pixel(x, y, color: 0)
       end
 
-      # Draw a line based on Bresenham's line algorithm.
+      # Based on Bresenham's line algorithm.
       def line(x1, y1, x2, y2, color: fill_color)
         # Deltas in each axis.
         dy = y2 - y1
@@ -109,7 +109,6 @@ module Denko
           return
         end
 
-        # Bresenham's algorithm for sloped lines.
         # Slope calculations
         step_axis   = (dx.abs > dy.abs) ? :x : :y
         step_count  = (step_axis == :x)  ? dx.abs : dy.abs
@@ -144,21 +143,24 @@ module Denko
         end
       end
 
-      # Rectangles and squares as a combination of lines.
-      def rectangle(x, y, width, height, color: fill_color)
-        line(x,       y,        x+width, y,        color: color)
-        line(x+width, y,        x+width, y+height, color: color)
-        line(x+width, y+height, x,       y+height, color: color)
-        line(x,       y+height, x,       y,        color: color)
+      def rectangle(x, y, width, height, color: fill_color, filled: false)
+        if filled
+          y_start = y
+          y_end = y_start + height
+          y_start, y_end = y_end, y_start if (y_end < y_start)
+          (y_start..y_end).each do |y|
+            line(x, y, x+width, y, color: color)
+          end
+        else
+          line(x,       y,        x+width, y,        color: color)
+          line(x+width, y,        x+width, y+height, color: color)
+          line(x+width, y+height, x,       y+height, color: color)
+          line(x,       y+height, x,       y,        color: color)
+        end
       end
 
-      # Draw a vertical line for every x value to get a filled rectangle.
-      def filled_rectangle(x, y_start, width, height, color: fill_color)
-        y_end = y_start + height
-        y_start, y_end = y_end, y_start if (y_end < y_start)
-        (y_start..y_end).each do |y|
-          line(x, y, x+width, y, color: color)
-        end
+      def square(x, y, size, color: fill_color, filled: false)
+        rectangle(x, y, size, size, color: color, filled: filled)
       end
 
       # Open ended path
