@@ -162,7 +162,6 @@ module Denko
 
       # Open ended path
       def path(points=[], color: current_color)
-        return unless points
         start = points[0]
         (1..points.length-1).each do |i|
           finish = points[i]
@@ -171,10 +170,10 @@ module Denko
         end
       end
 
-      # Close paths by repeating the start value at the end.
+      # Close path by adding a line between the first and last points.
       def polygon(points=[], color: current_color)
-        points << points[0]
         path(points, color: color)
+        line(points[-1][0], points[-1][1], points[0][0], points[0][1], color: color)
       end
 
       # Filled polygon using horizontal ray casting + stroked polygon.
