@@ -80,7 +80,6 @@ module Denko
         set_pixel(x, y, color: 0)
       end
 
-      # Based on Bresenham's line algorithm.
       def line(x1, y1, x2, y2, color: current_color)
         # Deltas in each axis.
         dy = y2 - y1
@@ -106,6 +105,7 @@ module Denko
           return
         end
 
+        # Based on Bresenham's line algorithm
         # Slope calculations
         step_axis   = (dx.abs > dy.abs) ? :x : :y
         step_count  = (step_axis == :x)  ? dx.abs : dy.abs
@@ -211,13 +211,8 @@ module Denko
       end
 
       # Triangle with 3 points as 6 flat args.
-      def triangle(x1, y1, x2, y2, x3, y3, color: current_color)
-        polygon([[x1,y1], [x2,y2], [x3,y3]], color: color)
-      end
-
-      # Filled triangle with 3 points as 6 flat args.
-      def filled_triangle(x1, y1, x2, y2, x3, y3, color: current_color)
-        filled_polygon([[x1,y1], [x2,y2], [x3,y3]], color: color)
+      def triangle(x1, y1, x2, y2, x3, y3, color: current_color, filled: false)
+        polygon([[x1,y1], [x2,y2], [x3,y3]], color: color, filled: filled)
       end
 
       # Midpoint ellipse / circle based on Bresenham's circle algorithm.
@@ -273,10 +268,6 @@ module Denko
 
       def circle(x_center, y_center, radius, color: current_color, filled: false)
         ellipse(x_center, y_center, radius, radius, color: color, filled: filled)
-      end
-
-      def filled_circle(x_center, y_center, radius, color: current_color)
-        ellipse(x_center, y_center, radius, radius, color: color, filled: true)
       end
 
       def text_cursor=(array=[])
