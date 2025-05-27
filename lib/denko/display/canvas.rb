@@ -171,46 +171,43 @@ module Denko
       end
 
       # Close path by adding a line between the first and last points.
-      def polygon(points=[], color: current_color)
-        path(points, color: color)
-        line(points[-1][0], points[-1][1], points[0][0], points[0][1], color: color)
-      end
+      def polygon(points=[], color: current_color, filled: false)
+        if filled
+          # Get all the X and Y coordinates from the points as floats.
+          coords_x = points.map { |point| point.first.to_f }
+          coords_y = points.map { |point| point.last.to_f  }
 
-      # Filled polygon using horizontal ray casting + stroked polygon.
-      def filled_polygon(points=[], color: current_color)
-        # Get all the X and Y coordinates from the points as floats.
-        coords_x = points.map { |point| point.first.to_f }
-        coords_y = points.map { |point| point.last.to_f  }
+          # Get Y bounds of the polygon to limit rows.
+          y_min = coords_y.min.to_i
+          y_max = coords_y.max.to_i
 
-        # Get Y bounds of the polygon to limit rows.
-        y_min = coords_y.min.to_i
-        y_max = coords_y.max.to_i
+          # Cast horizontal ray on each row, storing nodes where it intersects polygon edges.
+          (y_min..y_max).each do |y|
+            nodes = []
+            i = 0
+            j = points.count - 1
 
-        # Cast horizontal ray on each row, storing nodes where it intersects polygon edges.
-        (y_min..y_max).each do |y|
-          nodes = []
-          i = 0
-          j = points.count - 1
-
-          while (i < points.count) do
-            if (coords_y[i] < y && coords_y[j] >= y || coords_y[j] < y && coords_y[i] >= y)
-              nodes << (coords_x[i] + (y - coords_y[i]) / (coords_y[j] - coords_y[i]) *(coords_x[j] - coords_x[i])).round
+            while (i < points.count) do
+              if (coords_y[i] < y && coords_y[j] >= y || coords_y[j] < y && coords_y[i] >= y)
+                nodes << (coords_x[i] + (y - coords_y[i]) / (coords_y[j] - coords_y[i]) *(coords_x[j] - coords_x[i])).round
+              end
+              j  = i
+              i += 1
             end
-            j  = i
-            i += 1
-          end
-          nodes = nodes.sort
+            nodes = nodes.sort
 
-          # Take pairs of nodes and fill between them. This automatically ignores the spaces
-          # between even then odd nodes, which are outside the polygon.
-          nodes.each_slice(2) do |pair|
-            next if pair.length < 2
-            line(pair.first, y,  pair.last, y, color: color)
+            # Take pairs of nodes and fill between them. This automatically ignores the spaces
+            # between even then odd nodes, which are outside the polygon.
+            nodes.each_slice(2) do |pair|
+              next if pair.length < 2
+              line(pair.first, y,  pair.last, y, color: color)
+            end
           end
         end
 
-        # Stroke the polygon anyway. Floating point math misses thin areas.
-        polygon(points, color: color)
+        # Stroke regardless. For filled version, floating point math misses thin areas.
+        path(points, color: color)
+        line(points[-1][0], points[-1][1], points[0][0], points[0][1], color: color)
       end
 
       # Triangle with 3 points as 6 flat args.
