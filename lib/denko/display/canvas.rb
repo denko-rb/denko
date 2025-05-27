@@ -1,7 +1,7 @@
 module Denko
   module Display
     class Canvas
-      attr_reader :columns, :rows, :framebuffer, :framebuffers, :colors, :font, :x_max, :y_max
+      attr_reader :columns, :rows, :framebuffer, :framebuffers, :colors
 
       def initialize(columns, rows, colors: 1)
         @columns  = columns
@@ -19,9 +19,10 @@ module Denko
         # Only first framebuffer is used for mono displays.
         @framebuffer = @framebuffers.first
 
-        # Font state
-        self.font    = Denko::Display::Font::BMP_6X8
-        @font_scale  = 1
+        # Default drawing state
+        self.font       = Denko::Display::Font::BMP_6X8
+        @font_scale     = 1
+        @current_color  = 1
 
         # Transformation state
         @swap_xy     = false
@@ -170,7 +171,6 @@ module Denko
         end
       end
 
-      # Close path by adding a line between the first and last points.
       def polygon(points=[], color: current_color, filled: false)
         if filled
           # Get all the X and Y coordinates from the points as floats.
@@ -205,8 +205,9 @@ module Denko
           end
         end
 
-        # Stroke regardless. For filled version, floating point math misses thin areas.
+        # Stroke regardless, since floating point math misses thin areas of fill.
         path(points, color: color)
+        # Close open path by adding a line between the first and last points.
         line(points[-1][0], points[-1][1], points[0][0], points[0][1], color: color)
       end
 
@@ -270,82 +271,9 @@ module Denko
         ellipse(x_center, y_center, radius, radius, color: color, filled: filled)
       end
 
-      def text_cursor=(array=[])
-        @text_cursor = array
-      end
-
-      def text_cursor
-        @text_cursor ||= [0, 7]
-      end
-
-      def rotate(degrees)
-        raise ArgumentError, "canvas can only be rotated by multiples of 90 degrees" unless (degrees % 90 == 0)
-        old_rotation = @rotation
-        @rotation = (old_rotation + degrees) % 360
-        change = (@rotation - old_rotation) % 360
-
-        (change / 90).times do
-          @swap_xy = !@swap_xy
-          if (!@invert_x && !@invert_y)
-            @invert_x = true
-            @invert_y = false
-          elsif (@invert_x && !@invert_y)
-            @invert_x = true
-            @invert_y = true
-          elsif (@invert_x && @invert_y)
-            @invert_x = false
-            @invert_y = true
-          elsif (!@invert_x && @invert_y)
-            @invert_x = false
-            @invert_y = false
-          end
-        end
-        compute_limits
-      end
-
-      def reflect(axis)
-        raise ArgumentError "invalid axis for canvas reflection. Only :x or :y accepted" unless [:x, :y].include? (axis)
-        (axis == :x) ? @invert_x = !@invert_x : @invert_y = !@invert_y
-        compute_limits
-      end
-
-      def compute_limits
-        if @swap_xy
-          @x_max = @rows - 1
-          @y_max = @columns - 1
-        else
-          @x_max = @columns - 1
-          @y_max = @rows - 1
-        end
-      end
-
-      def font_scale=(scale)
-        raise ArgumentError, "text scale must be a positive integer" unless (scale.class == Integer) && scale > 0
-        @font_scale = scale
-      end
-
-      def font=(font)
-        if font.class == Symbol
-          @font = Display::Font.const_get(font.to_s.upcase)
-        else
-          @font = font
-        end
-
-        @font_height = @font[:height]
-        @font_width = @font[:width]
-        @font_characters = @font[:characters]
-        @font_last_character = @font_characters.length - 1
-      end
-
-      def current_color
-        @current_color ||= 1
-      end
-
-      def current_color=(color)
-        raise Argument error, "invalid color" if (color < 0) || (color > colors)
-        @current_color = color
-      end
-
+      #
+      # BITMAP TEXT
+      #
       def text(str, color: current_color)
         str.to_s.split("").each { |char| show_char(char, color: color) }
       end
@@ -382,6 +310,90 @@ module Denko
           y = y + (8 * scale)
         end
       end
+
+      #
+      # DRAWING STATE
+      #
+      def current_color=(color)
+        raise Argument error, "color must be within (0..#{colors})" if (color < 0) || (color > colors)
+        @current_color = color
+      end
+
+      attr_reader :current_color
+
+      def text_cursor
+        @text_cursor ||= [0, 7]
+      end
+
+      def text_cursor=(array=[])
+        @text_cursor = array
+      end
+
+      def font=(font)
+        if font.class == Symbol
+          @font = Display::Font.const_get(font.to_s.upcase)
+        else
+          @font = font
+        end
+
+        @font_height = @font[:height]
+        @font_width = @font[:width]
+        @font_characters = @font[:characters]
+        @font_last_character = @font_characters.length - 1
+      end
+
+      def font_scale=(scale)
+        raise ArgumentError, "#font_scale must be a positive integer" unless (scale.class == Integer) && scale > 0
+        @font_scale = scale
+      end
+
+      attr_reader :font, :font_scale
+
+      #
+      # TRANSFORMATION
+      #
+      def rotate(degrees)
+        raise ArgumentError, "Canvas can only be rotated in multiples of 90 degrees" unless (degrees % 90 == 0)
+        old_rotation = @rotation
+        @rotation = (old_rotation + degrees) % 360
+        change = (@rotation - old_rotation) % 360
+
+        (change / 90).times do
+          @swap_xy = !@swap_xy
+          if (!@invert_x && !@invert_y)
+            @invert_x = true
+            @invert_y = false
+          elsif (@invert_x && !@invert_y)
+            @invert_x = true
+            @invert_y = true
+          elsif (@invert_x && @invert_y)
+            @invert_x = false
+            @invert_y = true
+          elsif (!@invert_x && @invert_y)
+            @invert_x = false
+            @invert_y = false
+          end
+        end
+        compute_limits
+      end
+
+      def reflect(axis)
+        raise ArgumentError "Canvas can only be reflected in :x or :y axis" unless [:x, :y].include? (axis)
+        (axis == :x) ? @invert_x = !@invert_x : @invert_y = !@invert_y
+        compute_limits
+      end
+
+      def compute_limits
+        if @swap_xy
+          @x_max = @rows - 1
+          @y_max = @columns - 1
+        else
+          @x_max = @columns - 1
+          @y_max = @rows - 1
+        end
+      end
+
+      attr_reader :x_max, :y_max
     end
   end
 end
