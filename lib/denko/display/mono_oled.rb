@@ -80,74 +80,17 @@ module Denko
         @rotated
       end
 
-      # Decide whether this instnace is I2C or SPI.
+      # Decide whether this instance is I2C or SPI.
       before_initialize do
         bus = params[:bus] || params[:board]
 
-        if bus.class.ancestors.include?(Denko::SPI::Bus) || bus.class.ancestors.include?(Denko::SPI::BitBang)
-          mutate_spi
-        elsif bus.class.ancestors.include?(Denko::I2C::Bus) || bus.class.ancestors.include?(Denko::I2C::BitBang)
+        if bus.class.ancestors.include?(Denko::I2C::BusCommon)
           mutate_i2c
+        elsif bus.class.ancestors.include?(Denko::SPI::BusCommon)
+          mutate_spi
         else
           raise ArgumentError, "#{self.class} must be connected to either an I2C or SPI bus"
         end
-      end
-
-      after_initialize do
-        # Validate known sizes.
-        raise ArgumentError, "error in #{self.class} width: #{columns}. Must be in: #{WIDTHS.inspect}" unless WIDTHS.include?(columns)
-        raise ArgumentError, "error in #{self.class} height: #{rows}. Must be in: #{HEIGHTS.inspect}" unless HEIGHTS.include?(rows)
-
-        # Everything except 96x16 size uses clock 0x80.
-        clock = 0x80
-        clock = 0x60 if (columns == 96 && rows == 16)
-
-        # 128x32 and 96x16 sizes use com pin config 0x02
-        com_pin_config = 0x12
-        com_pin_config = 0x02 if (columns == 96 && rows == 16) || (columns == 128 && rows == 32)
-
-        # Reflecting horizontally and vertically to effectively rotate 180 degrees.
-        seg_remap     = rotated ? 0x01 : 0x00
-        com_direction = rotated ? 0x08 : 0x00
-
-        # Startup sequence (SPI doesn't work properly if this isn't sent twice.)
-        2.times do
-        command [
-          MULTIPLEX_RATIO,        rows - 1,
-          DISPLAY_OFFSET,         0x00,
-          START_LINE            | 0x00,
-          SEGMENT_REMAP         | seg_remap,
-          COM_DIRECTION         | com_direction,
-          COM_PIN_CONFIG,         com_pin_config,
-          PIXELS_FROM_RAM,
-          INVERT_OFF,
-          CLOCK,                  clock,
-          VCOM_DESELECT_LEVEL,    0x20,
-          PRECHARGE_PERIOD,       0xF1,           # Charge period for internal charge pump
-          CHARGE_PUMP,            0x14,           # Internal charge pump
-          ADDRESSING_MODE,        self.class::ADDRESSING_MODE_DEFAULT,
-          DISPLAY_ON
-        ]
-        end
-
-        draw
-      end
-
-      def off
-        command [DISPLAY_OFF]
-      end
-
-      def on
-        command [DISPLAY_ON]
-      end
-
-      def contrast=(value)
-        raise ArgumentError, "contrast must be in range 0..255" if (value < 0 || value > 255)
-        command [CONTRAST, value]
-      end
-
-      def draw_partial(buffer, x_min, x_max, p_min, p_max)
-        raise NotImplementedError, "#draw_partial must be implemented for each class including MonoOLED"
       end
 
       def mutate_i2c
@@ -176,6 +119,65 @@ module Denko
         singleton_class.class_eval do
           include SPICommon
         end
+      end
+
+      after_initialize do
+        # Validate known sizes.
+        raise ArgumentError, "error in #{self.class} width: #{columns}. Must be in: #{WIDTHS.inspect}" unless WIDTHS.include?(columns)
+        raise ArgumentError, "error in #{self.class} height: #{rows}. Must be in: #{HEIGHTS.inspect}" unless HEIGHTS.include?(rows)
+
+        # Everything except 96x16 size uses clock 0x80.
+        clock = 0x80
+        clock = 0x60 if (columns == 96 && rows == 16)
+
+        # 128x32 and 96x16 sizes use com pin config 0x02
+        com_pin_config = 0x12
+        com_pin_config = 0x02 if (columns == 96 && rows == 16) || (columns == 128 && rows == 32)
+
+        # Reflecting horizontally and vertically to effectively rotate 180 degrees.
+        seg_remap     = rotated ? 0x01 : 0x00
+        com_direction = rotated ? 0x08 : 0x00
+
+        # Startup sequence. SPI needs 2 repeats for some reason.
+        startup_count = 1
+        startup_count = 2 if singleton_class.ancestors.include? Denko::SPI::Peripheral
+        startup_count.times do
+          command [
+            MULTIPLEX_RATIO,        rows - 1,
+            DISPLAY_OFFSET,         0x00,
+            START_LINE            | 0x00,
+            SEGMENT_REMAP         | seg_remap,
+            COM_DIRECTION         | com_direction,
+            COM_PIN_CONFIG,         com_pin_config,
+            PIXELS_FROM_RAM,
+            INVERT_OFF,
+            CLOCK,                  clock,
+            VCOM_DESELECT_LEVEL,    0x20,
+            PRECHARGE_PERIOD,       0xF1, # Charge period for internal charge pump
+            CHARGE_PUMP,            0x14, # Internal charge pump
+            ADDRESSING_MODE,        self.class::ADDRESSING_MODE_DEFAULT,
+            DISPLAY_ON
+          ]
+        end
+
+        draw
+      end
+
+      def off
+        command [DISPLAY_OFF]
+      end
+
+      def on
+        command [DISPLAY_ON]
+      end
+
+      def contrast=(value)
+        raise ArgumentError, "contrast must be in range 0..255" if (value < 0 || value > 255)
+        command [CONTRAST, value]
+      end
+
+      def draw_partial(buffer, x_min, x_max, p_min, p_max)
+        raise NotImplementedError, "#draw_partial must be implemented for each class including MonoOLED"
       end
     end
   end
