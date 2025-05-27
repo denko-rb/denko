@@ -49,7 +49,7 @@ module Denko
         @framebuffers.map { |fb| (fb[byte] >> bit) & 0b00000001 }
       end
 
-      def pixel(x, y, color: current_color)
+      def set_pixel(x, y, color: current_color)
         xt = (@invert_x) ? @x_max - x : x
         yt = (@invert_y) ? @y_max - y : y
         if (@swap_xy)
@@ -76,12 +76,8 @@ module Denko
         end
       end
 
-      def set_pixel(x, y, color: current_color)
-        pixel(x, y, color: color)
-      end
-
       def clear_pixel(x, y)
-        pixel(x, y, color: 0)
+        set_pixel(x, y, color: 0)
       end
 
       # Based on Bresenham's line algorithm.
@@ -95,7 +91,7 @@ module Denko
           # Ensure y1 < y2.
           y1, y2 = y2, y1 if (y2 < y1)
           (y1..y2).each do |y|
-            pixel(x1, y, color: color)
+            set_pixel(x1, y, color: color)
           end
           return
         end
@@ -105,7 +101,7 @@ module Denko
           # Ensure x1 < x2.
           x1, x2 = x2, x1 if (x2 < x1)
           (x1..x2).each do |x|
-            pixel(x, y1, color: color)
+            set_pixel(x, y1, color: color)
           end
           return
         end
@@ -124,7 +120,7 @@ module Denko
         y = y1
         error = 0
         (0..step_count).each do |i|
-          pixel(x, y, color: color)
+          set_pixel(x, y, color: color)
 
           if (step_axis == :x)
             x += x_step
@@ -252,10 +248,10 @@ module Denko
             line(x_center - x, y_center - y, x_center + x, y_center - y, color: color)
           else
             # Stroke quadrants in order as if y-axis is reversed and going counter-clockwise from +ve X.
-            pixel(x_center - x, y_center - y, color: color)
-            pixel(x_center + x, y_center - y, color: color)
-            pixel(x_center + x, y_center + y, color: color)
-            pixel(x_center - x, y_center + y, color: color)
+            set_pixel(x_center - x, y_center - y, color: color)
+            set_pixel(x_center + x, y_center - y, color: color)
+            set_pixel(x_center + x, y_center + y, color: color)
+            set_pixel(x_center - x, y_center + y, color: color)
           end
 
           e2 = 2 * e1
@@ -274,8 +270,8 @@ module Denko
         # Continue if y hasn't reached the vertical size.
         while (y < b)
           y += 1
-          pixel(x_center, y_center + y, color: color)
-          pixel(x_center, y_center - y, color: color)
+          set_pixel(x_center, y_center + y, color: color)
+          set_pixel(x_center, y_center - y, color: color)
         end
       end
 
@@ -391,7 +387,7 @@ module Denko
               color_val = (((byte >> bit) & 0b1) > 0) ? color : 0
               scale.times do |x_offset|
                 scale.times do |y_offset|
-                  pixel(x + (col_offset * scale) + x_offset, y + (bit * scale) + y_offset, color: color_val)
+                  set_pixel(x + (col_offset * scale) + x_offset, y + (bit * scale) + y_offset, color: color_val)
                 end
               end
             end
