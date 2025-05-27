@@ -4,41 +4,42 @@ module Denko
       attr_reader :columns, :rows, :framebuffer, :framebuffers, :colors, :font, :x_max, :y_max
 
       def initialize(columns, rows, colors: 1)
-        @columns = columns
-        @rows = rows
-        @rows = ((rows / 8.0).ceil * 8) if (rows % 8 != 0)
+        @columns  = columns
+        @rows     = rows
+        @rows     = ((rows / 8.0).ceil * 8) if (rows % 8 != 0)
+        # Use a byte array for the framebuffer. Each byte is 8 pixels arranged vertically.
+        # Each slice @columns long represents an area @columns wide * 8 pixels tall.
+        @bytes = @columns * (@rows / 8)
 
+        # Framebuffer setup. 1-bit framebuffer for each color.
+        # Works for mono LCDs and OLEDs, or mono/multi-color e-paper.
+        @colors = colors
+        @framebuffers = []
+        @colors.times { @framebuffers << Array.new(@bytes) { 0x00 } }
+        # Only first framebuffer is used for mono displays.
+        @framebuffer = @framebuffers.first
+
+        # Font state
         self.font    = Denko::Display::Font::BMP_6X8
         @font_scale  = 1
 
+        # Transformation state
         @swap_xy     = false
         @invert_x    = false
         @invert_y    = false
         @rotation    = 0
         compute_limits
-
-        # Use a byte array for the framebuffer. Each byte is 8 pixels arranged vertically.
-        # Each slice @columns long represents an area @columns wide * 8 pixels tall.
-        @bytes       = @columns * (@rows / 8)
-
-        # Create a separate 1-bit framebuffer for each color.
-        # For mono LCDs, OLEDs e-paper, or e-paper with 2 or 3 colors + white.
-        @colors = colors
-        @framebuffers = []
-        @colors.times { @framebuffers << Array.new(@bytes) { 0x00 } }
-        # Default framebuffer when 1 color.
-        @framebuffer = @framebuffers.first
-      end
-
-      def fill
-        # Clear all other buffers, and fill the first one.
-        # This should be black on e-paper, and default color on other displays.
-        clear
-        @framebuffers.first.fill 0xFF
       end
 
       def clear
         @framebuffers.each { |fb| fb.fill 0x00 }
+      end
+
+      def fill
+        # Clear all buffers, then fill the first one, which is the only
+        # one for mono displays, black for multi-color e-paper.
+        clear
+        @framebuffers.first.fill 0xFF
       end
 
       def get_pixel(x, y)
