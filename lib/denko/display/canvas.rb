@@ -29,7 +29,7 @@ module Denko
         @invert_x    = false
         @invert_y    = false
         @rotation    = 0
-        compute_limits
+        calculate_bounds
       end
 
       def clear
@@ -374,16 +374,16 @@ module Denko
             @invert_y = false
           end
         end
-        compute_limits
+        calculate_bounds
       end
 
       def reflect(axis)
         raise ArgumentError "Canvas can only be reflected in :x or :y axis" unless [:x, :y].include? (axis)
         (axis == :x) ? @invert_x = !@invert_x : @invert_y = !@invert_y
-        compute_limits
+        calculate_bounds
       end
 
-      def compute_limits
+      def calculate_bounds
         if @swap_xy
           @x_max = @rows - 1
           @y_max = @columns - 1
