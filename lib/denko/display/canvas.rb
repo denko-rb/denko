@@ -212,7 +212,7 @@ module Denko
         end
 
         # Stroke the polygon anyway. Floating point math misses thin areas.
-        polygon(points, color)
+        polygon(points, color: color)
       end
 
       # Triangle with 3 points as 6 flat args.
