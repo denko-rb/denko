@@ -244,9 +244,15 @@ module Denko
         # Since starting at max negative X, continue until x is 0.
         while (x <= 0)
           if filled
-            fill_quadrants(x_center, y_center, x, y, color: color)
+            # Fill left and right quadrants in single line, alternating +ve and -ve y.
+            line(x_center - x, y_center + y, x_center + x, y_center + y, color: color)
+            line(x_center - x, y_center - y, x_center + x, y_center - y, color: color)
           else
-            stroke_quadrants(x_center, y_center, x, y, color: color)
+            # Stroke quadrants in order as if y-axis is reversed and going counter-clockwise from +ve X.
+            pixel(x_center - x, y_center - y, color: color)
+            pixel(x_center + x, y_center - y, color: color)
+            pixel(x_center + x, y_center + y, color: color)
+            pixel(x_center - x, y_center + y, color: color)
           end
 
           e2 = 2 * e1
@@ -268,19 +274,6 @@ module Denko
           pixel(x_center, y_center + y, color: color)
           pixel(x_center, y_center - y, color: color)
         end
-      end
-
-      def stroke_quadrants(x_center, y_center, x, y, color: fill_color)
-        # Quadrants in order as if y-axis is reversed and going counter-clockwise from +ve X.
-        pixel(x_center - x, y_center - y, color: color)
-        pixel(x_center + x, y_center - y, color: color)
-        pixel(x_center + x, y_center + y, color: color)
-        pixel(x_center - x, y_center + y, color: color)
-      end
-
-      def fill_quadrants(x_center, y_center, x, y, color: fill_color)
-        line(x_center - x, y_center + y, x_center + x, y_center + y, color: color)
-        line(x_center - x, y_center - y, x_center + x, y_center - y, color: color)
       end
 
       def circle(x_center, y_center, radius, color: fill_color, filled: false)
