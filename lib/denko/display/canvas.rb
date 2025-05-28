@@ -77,9 +77,9 @@ module Denko
         # When color == 0, clears in all buffers and sets in none.
         for i in 1..colors
           if (color == i)
-            @framebuffers[color-1][byte] |= (0b1 << bit)
+            @framebuffers[i-1][byte] |= (0b1 << bit)
           else
-            @framebuffers[color-1][byte] &= ~(0b1 << bit)
+            @framebuffers[i-1][byte] &= ~(0b1 << bit)
           end
         end
       end
