@@ -4,6 +4,7 @@ module Denko
       def columns
         return @columns if @columns
         @columns = self.class.const_get("COLUMNS") if self.class.const_defined?("COLUMNS")
+        @columns = params[:width] if params[:width]
         @columns = params[:columns] if params[:columns]
         @columns
       end
@@ -12,6 +13,7 @@ module Denko
       def rows
         return @rows if @rows
         @rows = self.class.const_get("ROWS") if self.class.const_defined?("ROWS")
+        @rows = params[:height] if params[:height]
         @rows = params[:rows] if params[:rows]
         @rows
       end
