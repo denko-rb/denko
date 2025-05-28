@@ -43,14 +43,21 @@ module Denko
         @framebuffers.first.fill 0xFF
       end
 
-      def get_pixel(x, y)
+      #
+      # PIXEL OPERATIONS
+      #
+      def _get_pixel(x, y)
         byte = ((y / 8) * @columns) + x
         bit  = y % 8
         # Array with state per color.
         @framebuffers.map { |fb| (fb[byte] >> bit) & 0b00000001 }
       end
 
-      def set_pixel(x, y, color: current_color)
+      def get_pixel(x:, y:)
+        _get_pixel(x, y)
+      end
+
+      def _set_pixel(x, y, color=current_color)
         xt = (@invert_x) ? @x_max - x : x
         yt = (@invert_y) ? @y_max - y : y
         if (@swap_xy)
@@ -77,11 +84,18 @@ module Denko
         end
       end
 
-      def clear_pixel(x, y)
-        set_pixel(x, y, color: 0)
+      def set_pixel(x:, y:, color:current_color)
+        _set_pixel(x, y, color)
       end
 
-      def line(x1, y1, x2, y2, color: current_color)
+      def clear_pixel(x:, y:)
+        _set_pixel(x, y, 0)
+      end
+
+      #
+      # LINE
+      #
+      def _line(x1, y1, x2, y2, color=current_color)
         # Deltas in each axis.
         dy = y2 - y1
         dx = x2 - x1
@@ -90,9 +104,7 @@ module Denko
         if (dx == 0)
           # Ensure y1 < y2.
           y1, y2 = y2, y1 if (y2 < y1)
-          (y1..y2).each do |y|
-            set_pixel(x1, y, color: color)
-          end
+          (y1..y2).each { |y| _set_pixel(x1, y, color) }
           return
         end
 
@@ -100,9 +112,7 @@ module Denko
         if (dy == 0)
           # Ensure x1 < x2.
           x1, x2 = x2, x1 if (x2 < x1)
-          (x1..x2).each do |x|
-            set_pixel(x, y1, color: color)
-          end
+          (x1..x2).each { |x| _set_pixel(x, y1, color) }
           return
         end
 
@@ -121,7 +131,7 @@ module Denko
         y = y1
         error = 0
         (0..step_count).each do |i|
-          set_pixel(x, y, color: color)
+          _set_pixel(x, y, color)
 
           if (step_axis == :x)
             x += x_step
@@ -141,37 +151,54 @@ module Denko
         end
       end
 
-      def rectangle(x, y, width, height, color: current_color, filled: false)
+      def line(x1:, y1:, x2:, y2:, color:current_color)
+        _line(x1, y1, x2, y2, color)
+      end
+
+      #
+      # RECTANGLE & SQUARE
+      #
+      def _rectangle(x1, y1, x2, y2, filled=false, color=current_color)
         if filled
-          y_start = y
-          y_end = y_start + height
-          y_start, y_end = y_end, y_start if (y_end < y_start)
-          (y_start..y_end).each do |y|
-            line(x, y, x+width, y, color: color)
-          end
+          y1, y2 = y2, y1 if (y2 < y1)
+          (y1..y2).each { |y| _line(x1, y, x2, y, color) }
         else
-          line(x,       y,        x+width, y,        color: color)
-          line(x+width, y,        x+width, y+height, color: color)
-          line(x+width, y+height, x,       y+height, color: color)
-          line(x,       y+height, x,       y,        color: color)
+          _line(x1, y1, x2, y1, color)
+          _line(x2, y1, x2, y2, color)
+          _line(x2, y2, x1, y2, color)
+          _line(x1, y2, x1, y1, color)
         end
       end
 
-      def square(x, y, size, color: current_color, filled: false)
-        rectangle(x, y, size, size, color: color, filled: filled)
+      def rectangle(x1:nil, y1:nil, x2:nil, y2:nil, x:nil, y:nil, w:nil, h:nil, filled:false, color:current_color)
+        x1 ||= x
+        y1 ||= y
+        x2 ||= x1 + w - 1
+        y2 ||= y1 + h - 1
+        _rectangle(x1, y1, x2, y2, filled, color)
       end
 
-      # Open ended path
-      def path(points=[], color: current_color)
+      def square(x:, y:, size:, filled:false, color:current_color)
+        rectangle(x: x, y: y, w: size, h: size, filled: filled, color: color)
+      end
+
+      #
+      # PATH, POLYGON & TRIANGLE
+      #
+      def _path(points=[], color=current_color)
         start = points[0]
         (1..points.length-1).each do |i|
           finish = points[i]
-          line(start[0], start[1], finish[0], finish[1], color: color)
+          _line(start[0], start[1], finish[0], finish[1], color)
           start = finish
         end
       end
 
-      def polygon(points=[], color: current_color, filled: false)
+      def path(points=[], color:current_color)
+        _path(points, color)
+      end
+
+      def _polygon(points=[], filled=false, color=current_color)
         if filled
           # Get all the X and Y coordinates from the points as floats.
           coords_x = points.map { |point| point.first.to_f }
@@ -200,24 +227,38 @@ module Denko
             # between even then odd nodes, which are outside the polygon.
             nodes.each_slice(2) do |pair|
               next if pair.length < 2
-              line(pair.first, y,  pair.last, y, color: color)
+              _line(pair.first, y,  pair.last, y, color)
             end
           end
         end
 
         # Stroke regardless, since floating point math misses thin areas of fill.
-        path(points, color: color)
+        _path(points, color)
         # Close open path by adding a line between the first and last points.
-        line(points[-1][0], points[-1][1], points[0][0], points[0][1], color: color)
+        _line(points[-1][0], points[-1][1], points[0][0], points[0][1], color)
       end
 
-      # Triangle with 3 points as 6 flat args.
-      def triangle(x1, y1, x2, y2, x3, y3, color: current_color, filled: false)
-        polygon([[x1,y1], [x2,y2], [x3,y3]], color: color, filled: filled)
+      def polygon(points=[], filled:false, color:current_color)
+        _polygon(points, filled, color)
       end
 
-      # Midpoint ellipse / circle based on Bresenham's circle algorithm.
-      def ellipse(x_center, y_center, a, b, color: current_color, filled: false)
+      def _triangle(x1, y1, x2, y2, x3, y3, filled=false, color=current_color)
+        if filled
+          _polygon([[x1,y1], [x2,y2], [x3,y3]], filled, color)
+        else
+          _line(x1, y1, x2, y2, color)
+          _line(x2, y2, x3, y3, color)
+          _line(x3, y3, x1, y1, color)
+        end
+      end
+
+      def triangle(x1:, y1:, x2:, y2:, x3:, y3:, filled:false, color:current_color)
+        _triangle(x1, y1, x2, y2, x3, y3, filled, color)
+      end
+
+
+      def _ellipse(x_center, y_center, a, b, filled=false, color=current_color)
+        # Midpoint ellipse / circle based on Bresenham's circle algorithm.
         # Start position
         x = -a
         y = 0
@@ -236,14 +277,14 @@ module Denko
         while (x <= 0)
           if filled
             # Fill left and right quadrants in single line, alternating +ve and -ve y.
-            line(x_center - x, y_center + y, x_center + x, y_center + y, color: color)
-            line(x_center - x, y_center - y, x_center + x, y_center - y, color: color)
+            _line(x_center - x, y_center + y, x_center + x, y_center + y, color)
+            _line(x_center - x, y_center - y, x_center + x, y_center - y, color)
           else
             # Stroke quadrants in order as if y-axis is reversed and going counter-clockwise from +ve X.
-            set_pixel(x_center - x, y_center - y, color: color)
-            set_pixel(x_center + x, y_center - y, color: color)
-            set_pixel(x_center + x, y_center + y, color: color)
-            set_pixel(x_center - x, y_center + y, color: color)
+            _set_pixel(x_center - x, y_center - y, color)
+            _set_pixel(x_center + x, y_center - y, color)
+            _set_pixel(x_center + x, y_center + y, color)
+            _set_pixel(x_center - x, y_center + y, color)
           end
 
           e2 = 2 * e1
@@ -262,23 +303,27 @@ module Denko
         # Continue if y hasn't reached the vertical size.
         while (y < b)
           y += 1
-          set_pixel(x_center, y_center + y, color: color)
-          set_pixel(x_center, y_center - y, color: color)
+          _set_pixel(x_center, y_center + y, color)
+          _set_pixel(x_center, y_center - y, color)
         end
       end
 
-      def circle(x_center, y_center, radius, color: current_color, filled: false)
-        ellipse(x_center, y_center, radius, radius, color: color, filled: filled)
+      def ellipse(x:, y:, a:, b:, filled:false, color:current_color)
+        _ellipse(x, y, a, b, filled, color)
+      end
+
+      def circle(x:, y:, r:, filled:false, color:current_color)
+        _ellipse(x, y, r, r, filled, color)
       end
 
       #
       # BITMAP TEXT
       #
-      def text(str, color: current_color)
-        str.to_s.split("").each { |char| show_char(char, color: color) }
+      def text(str, color:current_color)
+        str.to_s.split("").each { |char| draw_char(char, color: color) }
       end
 
-      def show_char(char, color: current_color)
+      def draw_char(char, color:current_color)
         # 0th character in font is SPACE. Offset ASCII code and show ? if character doesn't exist in font.
         index = char.ord - 32
         index = 31 if (index < 0 || index > @font_last_character)
@@ -289,20 +334,20 @@ module Denko
         y = text_cursor[1] + 1 - (@font_height * @font_scale)
 
         # Draw it
-        raw_char(char_map, x, y, @font_width, @font_scale, color: color)
+        _draw_char(char_map, x, y, @font_width, @font_scale, color)
 
         # Increment the text cursor, scaling width.
         self.text_cursor[0] += @font_width * @font_scale
       end
 
-      def raw_char(byte_array, x, y, width, scale, color: current_color)
+      def _draw_char(byte_array, x, y, width, scale, color)
         byte_array.each_slice(width) do |slice|
           slice.each_with_index do |byte, col_offset|
             8.times do |bit|
               color_val = (((byte >> bit) & 0b1) > 0) ? color : 0
               scale.times do |x_offset|
                 scale.times do |y_offset|
-                  set_pixel(x + (col_offset * scale) + x_offset, y + (bit * scale) + y_offset, color: color_val)
+                  _set_pixel(x + (col_offset * scale) + x_offset, y + (bit * scale) + y_offset, color_val)
                 end
               end
             end
@@ -321,11 +366,13 @@ module Denko
 
       attr_reader :current_color
 
+      DEFAULT_TEXT_CURSOR = [0, 7]
+
       def text_cursor
-        @text_cursor ||= [0, 7]
+        @text_cursor ||= DEFAULT_TEXT_CURSOR
       end
 
-      def text_cursor=(array=[])
+      def text_cursor=(array=DEFAULT_TEXT_CURSOR)
         @text_cursor = array
       end
 

@@ -61,7 +61,7 @@ oled   = Denko::Display::SSD1306.new(bus: bus, rotate: true, i2c_frequency: I2C_
 canvas = oled.canvas
 
 # Intro
-canvas.print "SSD1306 Benchmark"
+canvas.text "SSD1306 Benchmark"
 oled.draw
 sleep 1
 
@@ -86,6 +86,6 @@ puts
 # Print to screen
 canvas.clear
 canvas.text_cursor = [0,0]
-canvas.print "#{fps.round(2)} fps"
+canvas.text "#{fps.round(2)} fps"
 oled.draw
 board.finish_write

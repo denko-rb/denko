@@ -30,16 +30,18 @@ canvas = lcd.canvas
 
 # Draw some text on the canvas (a Ruby memory buffer).
 baseline = 42
-canvas.text_cursor = [27,baseline+15]
+canvas.text_cursor = 27, baseline+15
 canvas.text "Hello World!"
 
 # Add some shapes to the canvas.
-canvas.rectangle(10, baseline, 30, -30)
-canvas.circle(66, baseline - 15, 15)
-canvas.triangle(87, baseline, 117, baseline, 102, baseline - 30)
+canvas.rectangle  x: 10, y: baseline,     w: 30, h: -30
+canvas.circle     x: 66, y: baseline-15,  r: 15
+canvas.triangle   x1: 87,   y1: baseline,
+                  x2: 117,  y2: baseline,
+                  x3: 102,  y3: baseline-30
 
-# 1px border to test screen edges.
-canvas.rectangle(2, 2, lcd.columns-5, lcd.rows-5)
+# 1px border, inset 2px from screen edges
+canvas.rectangle x1: 2, y1: 2, x2: canvas.x_max-2, y2: canvas.y_max-2
 
 # Show it
 lcd.draw

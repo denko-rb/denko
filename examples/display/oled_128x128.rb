@@ -16,16 +16,18 @@ canvas = oled.canvas
 baseline = 76
 
 # Draw some text on the OLED's canvas (a Ruby memory buffer).
-canvas.text_cursor = [27,baseline+15]
+canvas.text_cursor = 27, baseline+15
 canvas.text "Hello World!"
 
 # Add some shapes to the canvas.
-canvas.rectangle(10, baseline, 30, -30)
-canvas.circle(66, baseline - 15, 15)
-canvas.triangle(87, baseline, 117, baseline, 102, baseline - 30)
+canvas.square   x: 10,  y: baseline-29, size: 30
+canvas.circle   x: 66,  y: baseline-15, r: 15
+canvas.triangle x1: 87,   y1: baseline,
+                x2: 117,  y2: baseline,
+                x3: 102,  y3: baseline-30
 
 # 1px border to test screen edges.
-canvas.rectangle(0, 0, oled.columns-1, oled.rows-1)
+canvas.rectangle x1: 0, y1: 0, x2: canvas.x_max, y2: canvas.y_max
 
 # Send the canvas to the OLED's graphics RAM so it shows.
 oled.draw

@@ -13,19 +13,21 @@ canvas = lcd.canvas
 
 # Draw some text on the canvas (a Ruby memory buffer).
 baseline = 75
-canvas.text_cursor = [32,baseline+35]
+canvas.text_cursor = 32,baseline+35
 canvas.font = :bmp_8x16
 canvas.font_scale = 2
 canvas.text "Hello World!"
 
 # Add some shapes.
-canvas.rectangle(20, baseline, 60, -60)
-canvas.circle(125, baseline -30, 30)
-triangle_x = 170
-canvas.triangle(triangle_x, baseline, triangle_x+60, baseline, triangle_x+30, baseline-60)
+canvas.rectangle x: 20,   y: baseline,    w: 60, h: -60
+canvas.circle    x: 125,  y: baseline-30, r: 30
+tri_x = 170
+canvas.triangle x1: tri_x,    y1: baseline,
+                x2: tri_x+60, y2: baseline,
+                x3: tri_x+60, y3: baseline-60
 
-# 1px border, inset by 2, to test screen edges.
-canvas.rectangle(2, 2, lcd.columns-5, lcd.rows-5)
+# 1px border, inset 2px from screen edges
+canvas.rectangle x1: 2, y1: 2, x2: canvas.x_max-2, y2: canvas.y_max-2
 
 # Invert it or reset to normal
 # lcd.invert_on

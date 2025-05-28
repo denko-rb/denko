@@ -17,19 +17,21 @@ canvas = epaper.canvas
 
 # Draw some text on the canvas (a Ruby memory buffer).
 baseline = 110
-canvas.text_cursor = [8,baseline+35]
+canvas.text_cursor = 8, baseline+35
 canvas.font = :bmp_8x16
 canvas.font_scale = 2
 canvas.text "Hello World!"
 
 # Add some shapes.
-canvas.rectangle(10, baseline, 50, -50)
-canvas.circle(103, baseline -25, 25)
-triangle_x = 140
-canvas.triangle(triangle_x, baseline, triangle_x+50, baseline, triangle_x+25, baseline-50)
+canvas.rectangle  x: 10,  y: baseline,    w: 50, h: -50
+canvas.circle     x: 103, y: baseline-25, r: 25
+tri_x = 140
+canvas.triangle x1: tri_x,    y1: baseline,
+                x2: tri_x+50, y2: baseline,
+                x3: tri_x+25, y3: baseline-50
 
 # 1px border to test screen edges.
-canvas.rectangle(0, 0, canvas.columns-1, canvas.rows-1)
+canvas.rectangle x1: 0, y1: 0, x2: canvas.x_max, y2: canvas.y_max
 
 # Show it
 epaper.draw

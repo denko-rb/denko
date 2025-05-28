@@ -18,14 +18,16 @@ oled   = Denko::Display::SSD1306.new(bus: bus, width: 128, height: 32, rotate: t
 canvas = oled.canvas
 
 # Draw some text on the OLED's canvas (a Ruby memory buffer).
-canvas.text_cursor = [27,31]
+canvas.text_cursor = 27,31
 canvas.text "Hello World!"
 
 # Add some shapes to the canvas.
 baseline = 15
-canvas.rectangle(10, baseline, 15, -15)
-canvas.circle(66, baseline - 7, 8)
-canvas.triangle(102, baseline, 118, baseline, 110, baseline - 15)
+canvas.rectangle  x: 10, y: baseline,   w: 14, h: -14
+canvas.circle     x: 66, y: baseline-7, r: 8
+canvas.triangle   x1: 102, y1: baseline,
+                  x2: 118, y2: baseline,
+                  x3: 110, y3: baseline-15
 
 # Send the canvas to the OLED's graphics RAM so it shows.
 oled.draw

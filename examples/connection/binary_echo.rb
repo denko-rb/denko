@@ -18,7 +18,7 @@ wait_mutex = Mutex.new
 
 echo.on_data do |data|
   if data == expected_result
-    print " Last echo at: #{Time.now.strftime '%Y-%m-%d %H:%M:%S.%3N'}\r"
+    print "Last echo at:  #{Time.now.strftime '%Y-%m-%d %H:%M:%S.%3N'}\r"
     wait_mutex.synchronize { waiting = false }
   end
 end

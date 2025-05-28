@@ -39,16 +39,18 @@ lcd.draw
 # Their width is about 0.8 of their height. Coordinates below are modified to compensate.
 #
 baseline = 28
-canvas.text_cursor = [7, baseline+12]
+canvas.text_cursor = 7,baseline+12
 canvas.text "Hello World!"
 
 # Add some shapes to the canvas.
-canvas.rectangle(3, baseline, 20, -16)
-canvas.ellipse(38, baseline - 8, 10, 8)
-canvas.triangle(49, baseline, 81, baseline, 81-15, baseline-16)
+canvas.rectangle  x: 3,   y: baseline,    w: 20, h: -16
+canvas.ellipse    x: 38,  y: baseline-8,  a: 10, b: 8
+canvas.triangle   x1: 49, y1: baseline,
+                  x2: 81, y2: baseline,
+                  x3: 66, y3: baseline-16
 
 # 1px border to test screen edges.
-canvas.rectangle(0, 0, lcd.columns-1, lcd.rows-1)
+canvas.rectangle x1: 0, y1: 0, x2: canvas.x_max, y2: canvas.y_max
 
 # Show it
 lcd.draw
