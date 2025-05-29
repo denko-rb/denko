@@ -344,10 +344,11 @@ module Denko
         byte_array.each_slice(width) do |slice|
           slice.each_with_index do |byte, col_offset|
             8.times do |bit|
-              color_val = (((byte >> bit) & 0b1) > 0) ? color : 0
+              next if (((byte >> bit) & 0b1) == 0)
+
               scale.times do |x_offset|
                 scale.times do |y_offset|
-                  _set_pixel(x + (col_offset * scale) + x_offset, y + (bit * scale) + y_offset, color_val)
+                  _set_pixel(x + (col_offset * scale) + x_offset, y + (bit * scale) + y_offset, color)
                 end
               end
             end
