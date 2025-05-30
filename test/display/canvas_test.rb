@@ -35,6 +35,24 @@ class CanvasTest < Minitest::Test
     subject.set_pixel x: 15,  y: 15,  color: 2
   end
 
+  def test_clear
+    setup_test_pixels
+    empty  = Array.new(FB_LENGTH) { 0x00 }
+
+    subject.clear
+    assert_equal empty, subject.framebuffers[0]
+    assert_equal empty,  subject.framebuffers[1]
+  end
+
+  def test_fill
+    empty  = Array.new(FB_LENGTH) { 0x00 }
+    filled = Array.new(FB_LENGTH) { 0xFF }
+
+    subject.fill
+    assert_equal filled, subject.framebuffers[0]
+    assert_equal empty,  subject.framebuffers[1]
+  end
+
   def test_set_pixel
     setup_test_pixels
 
@@ -126,12 +144,12 @@ class CanvasTest < Minitest::Test
     assert_equal LINE_DIAG_NEG_FB, subject.framebuffers[0]
   end
 
-  LINE_KNOCKOUT_FB = [254, 253, 251, 247, 239, 223, 191, 127, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 254, 253, 251, 247, 239, 223, 191, 127, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 254, 253, 251, 247, 239, 223, 191, 127, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 254, 253, 251, 247, 239, 223, 191, 127]
-
   def test_line_knockout
+    inverted_fb = LINE_DIAG_POS_FB.map { |byte| ~byte & 0xFF }
+
     subject.fill
-    subject.line x1: 0, y1: 0, x2: 31, y2: 31, color: 0
-    assert_equal LINE_KNOCKOUT_FB, subject.framebuffers[0]
+    subject.line x1: 5, y1: 5, x2: 8, y2: 10, color: 0
+    assert_equal inverted_fb, subject.framebuffers[0]
   end
 
   RECTANGLE_FB = [0, 0, 0, 0, 0, 224, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 224, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 127, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 127, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -154,5 +172,49 @@ class CanvasTest < Minitest::Test
     subject.square x: 5, y: 5, size: 10, filled: true, color: 1
     subject.square x: 7, y: 7, size: 6,  filled: true, color: 0
     assert_equal SQUARES_FB, subject.framebuffers[0]
+  end
+
+  PATH_FB = [3, 4, 24, 32, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 64, 224, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 4, 4, 8, 16, 32, 32, 64, 128, 128, 64, 48, 8, 4, 3, 0, 0, 1, 14, 112, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 28, 224, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 56, 64]
+
+  def path_points
+     [ [0,0], [7,10], [15, 16], [23,5], [31, 30] ]
+  end
+
+  def test_path
+    subject.path path_points, color: 2
+    assert_equal PATH_FB, subject.framebuffers[1]
+  end
+
+  def test_path_knockout
+    inverted_fb = PATH_FB.map { |byte| ~byte & 0xFF }
+
+    subject.fill
+    subject.path path_points, color: 0
+    assert_equal inverted_fb, subject.framebuffers[0]
+  end
+
+  TRIANGLE_FB = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 96, 24, 6, 12, 48, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 96, 24, 6, 193, 240, 124, 31, 62, 248, 224, 131, 12, 48, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 96, 24, 6, 129, 224, 120, 31, 7, 1, 0, 0, 0, 0, 3, 15, 62, 240, 192, 3, 12, 48, 192, 0, 0, 0, 0, 0, 128, 224, 152, 134, 129, 128, 152, 158, 159, 159, 158, 158, 158, 158, 158, 158, 158, 158, 158, 158, 158, 159, 159, 159, 156, 128, 128, 131, 140, 176, 192]
+
+  def triangle_points
+    [
+      [ [1,31],  [31,31], [16,1]  ],
+      [ [7,28],  [25,28], [16,8]  ],
+      [ [11,24], [21,24], [16,13] ],
+    ]
+  end
+
+  def test_polygon
+    subject.polygon triangle_points[0]
+    subject.polygon triangle_points[1], filled: true
+    subject.polygon triangle_points[2], filled: true, color: 0
+    assert_equal TRIANGLE_FB, subject.framebuffers[0]
+  end
+
+  def test_triangle
+    t = triangle_points
+    subject.triangle x1: t[0][0][0], y1: t[0][0][1], x2: t[0][1][0], y2: t[0][1][1], x3: t[0][2][0], y3: t[0][2][1]
+    subject.triangle x1: t[1][0][0], y1: t[1][0][1], x2: t[1][1][0], y2: t[1][1][1], x3: t[1][2][0], y3: t[1][2][1], filled: true
+    subject.triangle x1: t[2][0][0], y1: t[2][0][1], x2: t[2][1][0], y2: t[2][1][1], x3: t[2][2][0], y3: t[2][2][1], filled: true, color: 0
+    assert_equal TRIANGLE_FB, subject.framebuffers[0]
   end
 end

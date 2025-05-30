@@ -262,7 +262,6 @@ module Denko
         _triangle(x1, y1, x2, y2, x3, y3, filled, color)
       end
 
-
       def _ellipse(x_center, y_center, a, b, filled=false, color=current_color)
         # Midpoint ellipse / circle based on Bresenham's circle algorithm.
         # Start position
