@@ -47,10 +47,16 @@ module Denko
       # PIXEL OPERATIONS
       #
       def _get_pixel(x, y)
-        byte = ((y / 8) * @columns) + x
-        bit  = y % 8
-        # Array with state per color.
-        @framebuffers.map { |fb| (fb[byte] >> bit) & 0b00000001 }
+        byte  = ((y / 8) * @columns) + x
+        bit   = y % 8
+
+        # Go through framebuffers and return that color when bit is set.
+        @framebuffers.each_with_index do |fb, index|
+          return index+1 if ((fb[byte] >> bit) & 0b00000001 == 1)
+        end
+
+        # If bit wasn't set in any framebuffer, color is 0.
+        return 0
       end
 
       def get_pixel(x:, y:)
