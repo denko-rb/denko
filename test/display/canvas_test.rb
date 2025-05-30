@@ -125,4 +125,34 @@ class CanvasTest < Minitest::Test
     subject.line x1: 8, y1: 10, x2: 5, y2: 5
     assert_equal LINE_DIAG_NEG_FB, subject.framebuffers[0]
   end
+
+  LINE_KNOCKOUT_FB = [254, 253, 251, 247, 239, 223, 191, 127, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 254, 253, 251, 247, 239, 223, 191, 127, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 254, 253, 251, 247, 239, 223, 191, 127, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 254, 253, 251, 247, 239, 223, 191, 127]
+
+  def test_line_knockout
+    subject.fill
+    subject.line x1: 0, y1: 0, x2: 31, y2: 31, color: 0
+    assert_equal LINE_KNOCKOUT_FB, subject.framebuffers[0]
+  end
+
+  RECTANGLE_FB = [0, 0, 0, 0, 0, 224, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 224, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 127, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 127, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+  def test_rectangle1
+    subject.rectangle x1: 5, y1: 5, x2: 19, y2: 14
+    assert_equal RECTANGLE_FB, subject.framebuffers[0]
+  end
+
+  def test_rectangle2
+    # w is x2-x1+1 (15) from previous, since first pixel counts
+    # h ix y2-y1+1 (10) from previous, since first pixel counts
+    subject.rectangle x1: 5, y1: 5, w: 15, h: 10
+    assert_equal RECTANGLE_FB, subject.framebuffers[0]
+  end
+
+  SQUARES_FB = [0, 0, 0, 0, 0, 224, 224, 96, 96, 96, 96, 96, 96, 224, 224, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 127, 127, 96, 96, 96, 96, 96, 96, 127, 127, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+  def test_layered_squares
+    subject.square x: 5, y: 5, size: 10, filled: true, color: 1
+    subject.square x: 7, y: 7, size: 6,  filled: true, color: 0
+    assert_equal SQUARES_FB, subject.framebuffers[0]
+  end
 end
