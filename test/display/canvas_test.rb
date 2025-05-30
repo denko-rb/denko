@@ -72,13 +72,20 @@ class CanvasTest < Minitest::Test
     assert_equal 0b00000000, subject.framebuffers[1][1]
 
     # Setting a pixel to color: 0 clears it in all FBs.
-    subject.set_pixel x: 0,   y: 0,   color: 0
+    subject.set_pixel x: 0, y: 0, color: 0
     assert_equal 0b00000000, subject.framebuffers[0][0]
     assert_equal 0b00000000, subject.framebuffers[1][0]
 
-    subject.set_pixel x: 15,  y: 15,  color: 0
+    subject.set_pixel x: 15, y: 15, color: 0
     assert_equal 0b00000000, subject.framebuffers[0][WIDTH+15]
     assert_equal 0b00000000, subject.framebuffers[1][WIDTH+15]
+  end
+
+  def test_current_color
+    subject.current_color = 2
+    subject.set_pixel x: 0, y: 0
+    assert_equal 0b00000000, subject.framebuffers[0][0]
+    assert_equal 0b00000001, subject.framebuffers[1][0]
   end
 
   def test_get_pixel
@@ -216,5 +223,78 @@ class CanvasTest < Minitest::Test
     subject.triangle x1: t[1][0][0], y1: t[1][0][1], x2: t[1][1][0], y2: t[1][1][1], x3: t[1][2][0], y3: t[1][2][1], filled: true
     subject.triangle x1: t[2][0][0], y1: t[2][0][1], x2: t[2][1][0], y2: t[2][1][1], x3: t[2][2][0], y3: t[2][2][1], filled: true, color: 0
     assert_equal TRIANGLE_FB, subject.framebuffers[0]
+  end
+
+  ELLIPSE_CIRCLE_FB = [0, 0, 128, 192, 224, 240, 120, 60, 28, 30, 142, 142, 71, 71, 71, 71, 71, 71, 71, 142, 142, 30, 28, 60, 120, 240, 224, 192, 128, 0, 0, 0, 240, 254, 255, 15, 3, 224, 24, 4, 2, 1, 224, 24, 6, 2, 1, 1, 1, 2, 6, 24, 224, 1, 2, 4, 24, 224, 3, 15, 255, 254, 240, 0, 7, 63, 255, 248, 224, 131, 12, 16, 32, 64, 131, 140, 48, 32, 64, 64, 64, 32, 48, 140, 131, 64, 32, 16, 12, 131, 224, 248, 255, 63, 7, 0, 0, 0, 0, 1, 3, 7, 15, 30, 28, 60, 56, 56, 113, 113, 113, 113, 113, 113, 113, 56, 56, 60, 28, 30, 15, 7, 3, 1, 0, 0, 0, 0]
+
+  def test_ellipse_circle
+    subject.circle x: 15, y: 15, r: 15, filled: true
+    subject.circle x: 15, y: 15, r: 12, filled: true, color: 0
+    subject.ellipse x: 15, y: 15, a: 10, b: 9
+    subject.ellipse x: 15, y: 15, a: 5,  b: 7
+    assert_equal ELLIPSE_CIRCLE_FB, subject.framebuffers[0]
+  end
+
+  TEXT_FB = [0, 0, 1, 1, 127, 1, 1, 0, 56, 84, 84, 84, 24, 0, 72, 84, 84, 84, 32, 0, 4, 63, 68, 64, 32, 0, 0, 0, 47, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 223, 223, 31, 223, 223, 255, 255, 127, 127, 127, 255, 255, 255, 127, 127, 127, 255, 255, 127, 31, 127, 255, 255, 255, 255, 255, 31, 255, 255, 255, 255, 255, 255, 255, 240, 255, 255, 255, 248, 245, 245, 245, 252, 255, 246, 245, 245, 245, 251, 255, 255, 248, 247, 247, 251, 255, 255, 255, 250, 255, 255, 255]
+
+  def test_text
+    # Regular text
+    subject.text_cursor = 1,7
+    subject.text "Test!"
+
+    # Fill bottom half
+    subject.rectangle x1: 0, y1: 16, x2: 31, y2: 31, filled: true
+
+    # Knockout text
+    subject.text_cursor = 1,28
+    subject.text "Test!", color: 0
+    assert_equal TEXT_FB, subject.framebuffers[0]
+  end
+
+  ROTATE_FB = [0, 124, 18, 17, 18, 124, 0, 127, 73, 73, 73, 54, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 34, 34, 62, 34, 34, 20, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 40, 68, 68, 124, 68, 68, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 62, 72, 136, 72, 62, 0]
+
+  def test_rotate
+    4.times do
+      subject.text_cursor = 0,7
+      subject.text "A"
+      subject.rotate(90)
+    end
+    subject.text_cursor = 6,7
+    subject.text "B"
+    assert_equal ROTATE_FB, subject.framebuffers[0]
+  end
+
+  REFLECT_FB = [0, 124, 18, 17, 18, 124, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 70, 41, 25, 9, 127, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 254, 144, 144, 144, 96, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+  def test_reflect
+    # Horizontally flipped, top right
+    subject.reflect(:x)
+    subject.text_cursor = 0,7
+    subject.text "R"
+    subject.reflect(:x)
+
+    # Vertically flipped, bottom left
+    subject.reflect(:y)
+    subject.text_cursor = 0,7
+    subject.text "P"
+    subject.reflect(:y)
+
+    # Restored
+    subject.text_cursor = 0,7
+    subject.text "A"
+    assert_equal REFLECT_FB, subject.framebuffers[0]
+  end
+
+  FONT_8X16_FB = [0, 0, 255, 255, 192, 192, 192, 192, 192, 192, 255, 255, 0, 0, 0, 0, 48, 48, 243, 243, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 0, 0, 63, 63, 0, 0, 0, 0, 0, 0, 63, 63, 0, 0, 0, 0, 48, 48, 63, 63, 48, 48, 0, 0, 0, 0, 0, 0, 0, 0, 12, 12, 24, 8, 8, 248, 8, 8, 24, 0, 8, 248, 136, 136, 232, 8, 16, 0, 0, 112, 136, 8, 8, 8, 56, 0, 24, 8, 8, 248, 8, 8, 24, 0, 0, 0, 32, 63, 32, 0, 0, 0, 32, 63, 32, 32, 35, 32, 24, 0, 0, 56, 32, 33, 33, 34, 28, 0, 0, 0, 32, 63, 32, 0, 0, 0]
+
+  def test_font
+    subject.text_cursor = 0,31
+    subject.font = :bmp_8x16
+    subject.text "TEST"
+
+    subject.text_cursor = 0,15
+    subject.font = :bmp_6x8
+    subject.font_scale = 2
+    subject.text "Hi!"
   end
 end
