@@ -221,19 +221,21 @@ module Denko
             j = points.count - 1
 
             while (i < points.count) do
-              if (coords_y[i] < y && coords_y[j] >= y || coords_y[j] < y && coords_y[i] >= y)
-                nodes << (coords_x[i] + (y - coords_y[i]) / (coords_y[j] - coords_y[i]) *(coords_x[j] - coords_x[i])).round
+              # First condition excludes horizontal edges.
+              # Second and third check for +ve and -ve intersection respectively.
+              if (coords_y[i] != coords_y[j]) && ((coords_y[i] < y && coords_y[j] >= y) || (coords_y[j] < y && coords_y[i] >= y))
+                # Interoplate to find the intersection point (node).
+                nodes << (coords_x[i] + (y - coords_y[i]) / (coords_y[j] - coords_y[i]) * (coords_x[j] - coords_x[i])).round
               end
               j  = i
               i += 1
             end
             nodes = nodes.sort
 
-            # Take pairs of nodes and fill between them. This automatically ignores the spaces
-            # between even then odd nodes, which are outside the polygon.
+            # Take pairs of nodes and fill between them.
+            # This ignores the spaces between odd then even nodes (eg. 1->2), which are outside the polygon.
             nodes.each_slice(2) do |pair|
-              next if pair.length < 2
-              _line(pair.first, y,  pair.last, y, color)
+              _line(pair.first, y,  pair.last, y, color) if pair.length == 2
             end
           end
         end
