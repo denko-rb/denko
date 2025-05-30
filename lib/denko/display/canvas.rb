@@ -52,7 +52,7 @@ module Denko
 
         # Go through framebuffers and return that color when bit is set.
         @framebuffers.each_with_index do |fb, index|
-          return index+1 if ((fb[byte] >> bit) & 0b00000001 == 1)
+          return index+1 if ((fb[byte] >> bit) & 0b1 == 1)
         end
 
         # If bit wasn't set in any framebuffer, color is 0.
@@ -345,15 +345,16 @@ module Denko
         self.text_cursor[0] += @font_width * @font_scale
       end
 
-      def _draw_char(byte_array, x, y, width, scale, color)
+      def _draw_char(byte_array, x, y, width, scale, color=current_color)
         byte_array.each_slice(width) do |slice|
           slice.each_with_index do |byte, col_offset|
             8.times do |bit|
-              next if (((byte >> bit) & 0b1) == 0)
-
-              scale.times do |x_offset|
-                scale.times do |y_offset|
-                  _set_pixel(x + (col_offset * scale) + x_offset, y + (bit * scale) + y_offset, color)
+              # Don't do anything if this bit isn't set in the font.
+              if (((byte >> bit) & 0b1) == 1)
+                scale.times do |x_offset|
+                  scale.times do |y_offset|
+                    _set_pixel(x + (col_offset * scale) + x_offset, y + (bit * scale) + y_offset, color)
+                  end
                 end
               end
             end
