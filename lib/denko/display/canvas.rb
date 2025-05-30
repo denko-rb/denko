@@ -125,7 +125,7 @@ module Denko
         # Based on Bresenham's line algorithm
         # Slope calculations
         step_axis   = (dx.abs > dy.abs) ? :x : :y
-        step_count  = (step_axis == :x)  ? dx.abs : dy.abs
+        step_count  = (step_axis == :x) ? dx.abs : dy.abs
         x_step      = (dx > 0) ? 1 : -1
         y_step      = (dy > 0) ? 1 : -1
 

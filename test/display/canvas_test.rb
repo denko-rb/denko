@@ -69,4 +69,60 @@ class CanvasTest < Minitest::Test
     assert_equal 2, subject.get_pixel(x: 15,  y: 15)
     assert_equal 0, subject.get_pixel(x: 20,  y: 20)
   end
+
+  def test_line_single_pixel
+    subject.line x1: 5, y1: 5, x2: 5, y2: 5
+
+    fb0 = Array.new(FB_LENGTH) { 0 }
+    fb0[5] = 0b00100000
+
+    assert_equal fb0, subject.framebuffers[0]
+  end
+
+  LINE_HORIZONTAL_FB = [0, 0, 32, 32, 32, 32, 32, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+  def test_line_horizontal
+    subject.line x1: 2, y1: 5, x2: 6, y2: 5
+    assert_equal LINE_HORIZONTAL_FB, subject.framebuffers[0]
+  end
+
+  LINE_VERTICAL_FB = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 124, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+  def test_line_vertical
+    subject.line x1: 10, y1: 2, x2: 10, y2: 6
+    assert_equal LINE_VERTICAL_FB, subject.framebuffers[0]
+  end
+
+  # 45 degree diagonal lines should produce the same result regardless of which is the start point (x1,y1).
+  LINE_45_FB = [0, 0, 0, 0, 0, 32, 64, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+  def test_line_45
+    subject.line x1: 5, y1: 5, x2: 10, y2: 10
+    assert_equal LINE_45_FB, subject.framebuffers[0]
+  end
+
+  def test_line_45_swapped
+    subject.line x1: 10, y1: 10, x2: 5, y2: 5
+    assert_equal LINE_45_FB, subject.framebuffers[0]
+  end
+
+  # Non 45 degree diagonals are approximated slightly differently, depending on which point is x1,y1.
+  # This behavior might be useful.
+  # +ve gradients tend to "pull" down and to the left.
+  # -ve gradients tend to "pull" up and to the right.
+  LINE_DIAG_POS_FB = [0, 0, 0, 0, 0, 96, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+  LINE_DIAG_NEG_FB = [0, 0, 0, 0, 0, 32, 64, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+  def test_line_diagonal
+    # Note: run and rise not equal.
+    subject.line x1: 5, y1: 5, x2: 8, y2: 10
+    assert_equal LINE_DIAG_POS_FB, subject.framebuffers[0]
+  end
+
+  def test_line_diagonal_swapped
+    # Note: run and rise not equal.
+    subject.line x1: 8, y1: 10, x2: 5, y2: 5
+    assert_equal LINE_DIAG_NEG_FB, subject.framebuffers[0]
+  end
 end
