@@ -191,7 +191,7 @@ module Denko
       #
       # PATH, POLYGON & TRIANGLE
       #
-      def _path(points=[], color=current_color)
+      def _path(points, color=current_color)
         start = points[0]
         (1..points.length-1).each do |i|
           finish = points[i]
@@ -200,11 +200,11 @@ module Denko
         end
       end
 
-      def path(points=[], color:current_color)
+      def path(points, color:current_color)
         _path(points, color)
       end
 
-      def _polygon(points=[], filled=false, color=current_color)
+      def _polygon(points, filled=false, color=current_color)
         if filled
           # Get all the X and Y coordinates from the points as floats.
           coords_x = points.map { |point| point.first.to_f }
@@ -244,7 +244,7 @@ module Denko
         _line(points[-1][0], points[-1][1], points[0][0], points[0][1], color)
       end
 
-      def polygon(points=[], filled:false, color:current_color)
+      def polygon(points, filled:false, color:current_color)
         _polygon(points, filled, color)
       end
 
