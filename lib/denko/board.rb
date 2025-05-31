@@ -27,8 +27,7 @@ module Denko
       @name = nil if @name.empty?
       load_map(@name)
 
-      # Leave room for null termination of aux messages.
-      @aux_limit = @aux_limit.to_i - 1
+      @aux_limit = @aux_limit.to_i
 
       # Set I2C transaction size limit. Safe minimum is 32.
       # This makes I2C fail silently if board does not implement.
