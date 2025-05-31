@@ -8,7 +8,7 @@ class DenkoCLI::Generator
     core: [:core],
 
     # Specific features for the old mega168 chips.
-    atmega168: [:core, :one_wire, :tone, :i2c, :spi, :servo],
+    atmega168: [:core, :tone, :i2c, :spi, :servo, :uart_bb],
 
     # Other ATmega chips do everything.
     # Add bit bang serial for 328p / UNO since it has no extra hardware UART.
