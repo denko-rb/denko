@@ -439,6 +439,14 @@ module Denko
         calculate_bounds
       end
 
+      def reflect_x
+        reflect(:x)
+      end
+
+      def reflect_y
+        reflect(:y)
+      end
+
       def calculate_bounds
         if @swap_xy
           @x_max = @rows - 1

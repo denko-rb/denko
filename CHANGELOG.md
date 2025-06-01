@@ -4,7 +4,12 @@
 
 ### New Platform
 
-- Denko now runs on mruby! This means it can run self-contained on smaller devices. The first supported platform is the Milk-V Duo eSBC. It has the same footprint as a Raspberry Pi Pico, but runs Buildroot Linux on a 1GHz RISC-V CPU. Prebuilt binaries and instructions are available [here](https://github.com/denko-rb/mruby-denko-milkv-duo).
+Denko now runs on mruby! This means it can run on smaller devices. The first of these is the:
+
+- Milk-V Duo
+  - Same footprint as Raspberry Pi Pico
+  - Runs Buildroot Linux on a 1GHz RISC-V CPU
+  - Prebuilt binaries and instructions available [here](https://github.com/denko-rb/mruby-denko-milkv-duo).
 
 ### New Peripherals
 
@@ -86,9 +91,9 @@
   - Unset pixels/bits in fonts are now ignored (effectively transparent)
   - Added more fonts
   - Added integer scaling for fonts
-  - Added `Canvas#rotate`
-  - Added `Canvas#reflect`
-  - Optimized `Canvas#line` to use only integer math, avoid float
+  - Added `#rotate`
+  - Added `#reflect(axis)`, `#reflect_x`, and `#reflect_y`
+  - Optimized `#line` to use only integer math, avoid float
   - Added support for multicolor e-paper displays
     - Handled as array of 1-bit framebuffers, one per ink color
     - __Not__ real multi-bit color yet
