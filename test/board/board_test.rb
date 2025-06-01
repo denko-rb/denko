@@ -31,7 +31,7 @@ class BoardTest < Minitest::Test
   end
 
   def test_set_aux_limit
-    assert_equal 527, board.aux_limit
+    assert_equal 528, board.aux_limit
   end
 
   def test_set_eeprom_length

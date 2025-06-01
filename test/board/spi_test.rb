@@ -14,40 +14,56 @@ class APISPITest < Minitest::Test
     @board ||= Denko::Board.new(connection)
   end
 
-  def test_spi_modes
-    # Start with mode = 0.
-    args = [nil, [], 0, 1000000, 0, :msbfirst]
-    assert_equal (pack :uint8, 0b10000000), board.spi_header(*args)[0]
+  def header_args
+    length = board.aux_limit - 8
 
-    args[4] = 1
+    [nil, Array.new(length){0}, length, 1000000, 0, :msbfirst]
+  end
+
+  def test_spi_modes
+    # Default to mode 0.
+    assert_equal (pack :uint8, 0b10000000), board.spi_header(*header_args)[0]
+
+    args = header_args.tap { |a| a[4] = 1 }
     assert_equal (pack :uint8, 0b10000001), board.spi_header(*args)[0]
 
-    args[4] = 2
+    args = header_args.tap { |a| a[4] = 2 }
     assert_equal (pack :uint8, 0b10000010), board.spi_header(*args)[0]
 
-    args[4] = 3
+    args = header_args.tap { |a| a[4] = 3 }
     assert_equal (pack :uint8, 0b10000011), board.spi_header(*args)[0]
 
-    # Invalid mode = 4.
-    assert_raises(ArgumentError) { board.spi_header(*args[3] = 4) }
+    args = header_args.tap { |a| a[4] = 4 }
+    assert_raises(ArgumentError) { board.spi_header(*args) }
   end
 
   def test_spi_lsbfirst
-    args = [nil, [], 0, 1000000, 0, :lsbfirst]
+    # Default to :msbfirst
+    assert_equal (pack :uint8, 0b10000000), board.spi_header(*header_args)[0]
+
+    args = header_args.tap { |a| a[5] = :lsbfirst }
     assert_equal (pack :uint8, 0b00000000), board.spi_header(*args)[0]
   end
 
   def test_spi_frequency
-    args = [nil, [], 0, 1000000, 0, :msbfirst]
-    assert_equal (pack :uint32, 1000000), board.spi_header(*args)[3..6]
+    # Default to 1 MHz.
+    assert_equal (pack :uint32, 1_000_000), board.spi_header(*header_args)[4..7]
 
-    args[3] = 8000000
-    assert_equal (pack :uint32, 8000000), board.spi_header(*args)[3..6]
+    args = header_args.tap { |a| a[3] = 8_000_000 }
+    assert_equal (pack :uint32, 8_000_000), board.spi_header(*args)[4..7]
   end
 
   def test_spi_too_many_bytes
-    assert_raises(ArgumentError) { board.spi_header(read: 256) }
-    assert_raises(ArgumentError) { board.spi_header(write: Array.new(256){0})}
+    # Default args have maximum read and write based on aux_limit.
+    board.spi_header(*header_args)
+
+    # Too many write
+    args = header_args.tap { |a| a[1] << 0 }
+    assert_raises(ArgumentError) { board.spi_header(*args) }
+
+    # Too many read
+    args = header_args.tap { |a| a[2] += 1 }
+    assert_raises(ArgumentError) { board.spi_header(*args) }
   end
 
   def test_spi_no_bytes
