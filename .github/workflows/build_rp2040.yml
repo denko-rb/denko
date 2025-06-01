@@ -37,7 +37,7 @@ jobs:
               - name: Ethernet
               - name: WiFi
               - name: IRremote
-                version: 4.4.1
+                version: 4.4.2
               - name: Adafruit NeoPixel
                 version: 1.15.1
 

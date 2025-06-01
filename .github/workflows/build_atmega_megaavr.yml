@@ -34,7 +34,7 @@ jobs:
             libraries: |
               - name: Servo
               - name: IRremote
-                version: 4.4.1
+                version: 4.4.2
               - name: Ethernet
               - name: WiFiNINA
               - name: Adafruit NeoPixel

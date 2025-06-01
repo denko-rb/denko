@@ -44,7 +44,7 @@ All platforms will require libraries to be installed. To install a library do th
     WiFi101                     by Arduino
     WiFiNINA                    by Arduino
     ESP32Servo                  by Kevin Harrington, John K. Bennett
-    IRremote          @ 4.4.1   by shirriff, z3to, ArminJo
+    IRremote          @ 4.4.2   by shirriff, z3to, ArminJo
     Adafruit NeoPixel @ 1.15.1  by Adafruit
     ````
 
