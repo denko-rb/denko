@@ -408,7 +408,7 @@ module Denko
       #
       # TRANSFORMATION
       #
-      def rotate(degrees)
+      def rotate(degrees=180)
         raise ArgumentError, "Canvas can only be rotated in multiples of 90 degrees" unless (degrees % 90 == 0)
         old_rotation = @rotation
         @rotation = (old_rotation + degrees) % 360

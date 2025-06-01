@@ -91,7 +91,7 @@ Denko now runs on mruby! This means it can run on smaller devices. The first of 
   - Unset pixels/bits in fonts are now ignored (effectively transparent)
   - Added more fonts
   - Added integer scaling for fonts
-  - Added `#rotate`
+  - Added `#rotate(degrees)`
   - Added `#reflect(axis)`, `#reflect_x`, and `#reflect_y`
   - Optimized `#line` to use only integer math, avoid float
   - Added support for multicolor e-paper displays
