@@ -95,32 +95,36 @@ void Denko::spiEnd() {
 void Denko::spiTransfer(uint32_t clockRate, uint8_t select, uint8_t settings, uint16_t rLength, uint16_t wLength, byte *data) {
   spiBegin(settings, clockRate);
 
-  // Stream read bytes as if coming from select pin.
-  if (rLength > 0) {
-    stream->print(select);
-    stream->print(':');
-  }
-
   // Pull select low.
   if (bitRead(settings, 6) == 1) {
     pinMode(select, OUTPUT);
     digitalWrite(select, LOW);
   }
 
-  for (uint16_t i=0; (i < rLength || i < wLength); i++) {
-    byte b;
+  // Go one byte at a time if reading bytes out.
+  if (rLength > 0) {
+    // Stream read bytes as if coming from select pin.
+    stream->print(select);
+    stream->print(':');
 
-    if (i < wLength) {
-      b = SPI.transfer(data[i]);
-    } else {
-      b = SPI.transfer(0x00);
-    }
+    for (uint16_t i=0; (i < rLength || i < wLength); i++) {
+      byte b;
 
-    if (i < rLength) {
-      // Print read byte, then a comma or \n if it's the last read byte.
-      stream->print(b);
-      stream->print((i+1 == rLength) ? '\n' : ',');
+      if (i < wLength) {
+        b = SPI.transfer(data[i]);
+      } else {
+        b = SPI.transfer(0x00);
+      }
+
+      if (i < rLength) {
+        // Print read byte, then a comma or \n if it's the last read byte.
+        stream->print(b);
+        stream->print((i+1 == rLength) ? '\n' : ',');
+      }
     }
+  // Write the entire buffer at once if not reading.
+  } else {
+    SPI.transfer(data, wLength);
   }
 
   // Leave select high.
