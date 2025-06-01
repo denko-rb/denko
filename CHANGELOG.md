@@ -9,7 +9,14 @@ Denko now runs on mruby! This means it can run on smaller devices. The first of 
 - Milk-V Duo
   - Same footprint as Raspberry Pi Pico
   - Runs Buildroot Linux on a 1GHz RISC-V CPU
-  - Prebuilt binaries and instructions available [here](https://github.com/denko-rb/mruby-denko-milkv-duo).
+  - Prebuilt binaries and instructions available [here](https://github.com/denko-rb/mruby-denko-milkv-duo)
+  - Limitations:
+    - UART not supported yet. Consequentially, the `JSNSR04T` sensor won't be fully supported fully.
+    - The Duo has no on-board DAC, but `AnalogIO::Output` should work for external DACs.
+
+### Updated Platforms
+
+- See [denko-piboard](https://github.com/denko-rb/denko-piboard) release notes for its matching 0.15.0 release. This is Denko for "big" Linux SBCs running CRuby.
 
 ### New Peripherals
 
@@ -141,8 +148,18 @@ Denko now runs on mruby! This means it can run on smaller devices. The first of 
 
 ### Microcontroller Changes
 
+- Arduino Core Version Updates:
+  - ESP32 Arduino Core  -> 3.2.0
+    - NOTE: HW CDC (UART) still appears to be broken when sending large amounts of data both directions.
+  - All other cores     -> latest released version
+
+- Arduino Library Version Updates:
+  - Adafruit NeoPixel   -> 1.15.1
+  - ESP32Servo          -> 3.0.6
+  - IRremote            -> 4.4.2
+
 - Arduino Uno R4 (Minima and Wi-Fi):
-  - WS2812 RGB LEDs are now supported for the RA4M1 chips used in these
+  - WS2812 RGB LEDs are now supported by the NeoPixel library on the RA4M1, so enabled for these
 
 - ATmega168-based microcontrollers:
   - Removed OneWire support from default build config and replaced with bit-bang UART

@@ -107,7 +107,7 @@ All platforms will require libraries to be installed. To install a library do th
     ````
   * Libraries (latest version unless specified):
     ````
-    ESP32Servo                  by Kevin Harrington, John K. Bennett
+    ESP32Servo        @ 3.0.6   by Kevin Harrington, John K. Bennett
     IRremote          @ 4.4.2   by shirriff, z3to, ArminJo
     Adafruit NeoPixel @ 1.15.1  by Adafruit
     ````
