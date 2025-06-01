@@ -168,7 +168,14 @@ void Denko::process() {
 
     // Implemented in DenkoSPIBB.cpp
     #ifdef DENKO_SPI_BB
-    case 21: spiBBtransfer       (auxMsg[3], auxMsg[4], auxMsg[5], pin, auxMsg[0], auxMsg[1], auxMsg[2], &auxMsg[7]);  break;
+    case 21: {
+      // Unpack read and write lengths from their 3 shared bytes.
+      uint16_t  readLength  = (((uint16_t)auxMsg[3] & 0xF0) << 4) | auxMsg[1];
+      uint16_t  writeLength = (((uint16_t)auxMsg[3] & 0x0F) << 8) | auxMsg[2];
+
+      spiBBtransfer (auxMsg[4], auxMsg[5], auxMsg[6], pin, auxMsg[0], readLength, writeLength, &auxMsg[8]);
+      break;
+    }
     case 22: spiBBaddListener    ();  break;
     #endif
 
@@ -176,11 +183,17 @@ void Denko::process() {
     #ifdef DENKO_SPI
     case 26: {
       // Do this since RP2040 crashes with reinterpet_cast of uint32_t.
-      uint32_t  clockRate  = (uint32_t)auxMsg[3];
-                clockRate |= (uint32_t)auxMsg[4] << 8;
-                clockRate |= (uint32_t)auxMsg[5] << 16;
-                clockRate |= (uint32_t)auxMsg[6] << 24;
-      spiTransfer(clockRate, pin, auxMsg[0], auxMsg[1], auxMsg[2], &auxMsg[7]); break;
+      uint32_t  clockRate  = (uint32_t)auxMsg[4];
+                clockRate |= (uint32_t)auxMsg[5] << 8;
+                clockRate |= (uint32_t)auxMsg[6] << 16;
+                clockRate |= (uint32_t)auxMsg[7] << 24;
+
+      // Unpack read and write lengths from their 3 shared bytes.
+      uint16_t  readLength  = (((uint16_t)auxMsg[3] & 0xF0) << 4) | auxMsg[1];
+      uint16_t  writeLength = (((uint16_t)auxMsg[3] & 0x0F) << 8) | auxMsg[2];
+
+      spiTransfer(clockRate, pin, auxMsg[0], readLength, writeLength, &auxMsg[8]);
+      break;
     }
     case 27: spiAddListener   ();  break;
     #endif

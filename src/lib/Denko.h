@@ -120,7 +120,7 @@ class Denko {
 
     // Bit Bang SPI
     void spiBBtransfer         (uint8_t clock, uint8_t input, uint8_t output, uint8_t select, uint8_t settings,
-                                uint8_t rLength, uint8_t wLength, byte *data);                                                          //cmd = 21
+                                uint16_t rLength, uint16_t wLength, byte *data);                                                        //cmd = 21
     byte spiBBtransferByte     (uint8_t clock, uint8_t input, uint8_t output, uint8_t select,
                                 uint8_t mode, uint8_t bitOrder, byte data);
     void spiBBaddListener      ();                                                                                                      //cmd = 22
@@ -129,7 +129,7 @@ class Denko {
     // Hardware SPI
     void spiBegin              (byte settings, uint32_t clockRate);
     void spiEnd                ();
-    void spiTransfer           (uint32_t clockRate, uint8_t select, uint8_t settings, uint8_t rLength, uint8_t wLength, byte *data);    //cmd = 26
+    void spiTransfer           (uint32_t clockRate, uint8_t select, uint8_t settings, uint16_t rLength, uint16_t wLength, byte *data);  //cmd = 26
     void spiAddListener        ();                                                                                                      //cmd = 27
     void spiReadListener       (uint8_t i);
 
@@ -228,10 +228,10 @@ class Denko {
 
       // How to store a SPI listener.
       struct SpiListener{
-        uint32_t clock;     // Clock rate if hardware SPI. If bit bang: bits[0..7] = clock pin, bits [8..15] = input pin.
+        uint32_t freq;      // Frequency if hardware SPI. If bit bang: bits[0..7] = SCK pin, bits [8..15] = MOSI pin.
         uint8_t  select;    // Select pin.
         uint8_t  settings;  // Settings mask as given in request.
-        uint8_t  length;    // Read length as given in request.
+        uint16_t length;    // Read length as given in request.
         uint8_t  enabled;   // 0 = disabled, 1 = hardware, 2 = bit bang.
       };
       SpiListener spiListeners[SPI_LISTENER_COUNT];

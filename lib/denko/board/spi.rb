@@ -1,12 +1,17 @@
 module Denko
   class Board
+    # Use all of the board's aux buffer, except 8 bytes for header, or default to 512.
+    def spi_limit
+      @spi_limit ||= aux_limit ? aux_limit-8 : 512
+    end
+
     def spi_header_generic(select_pin, write, read, mode, bit_order)
       # Defaults.
       mode      ||= 0
       bit_order ||= :msbfrst
 
-      raise ArgumentError, "can't read more than 255 SPI bytes at a time" if read > 255
-      raise ArgumentError, "can't write more than 255 SPI bytes at a time" if write.length > 255
+      raise ArgumentError, "can't read more than #{spi_limit} SPI bytes at a time" if read > spi_limit
+      raise ArgumentError, "can't write more than #{spi_limit} SPI bytes at a time" if write.length > spi_limit
 
       # Lowest 2 bits of settings control the SPI mode.
       settings = mode
@@ -20,8 +25,13 @@ module Denko
       # Bit 7 of settings toggles MSBFIRST (1) or LSBFIRST (0) for both read and write.
       settings |= 0b10000000 unless bit_order == :lsbfirst
 
-      # Return generic portion of header (used by both hardware and bit bang SPI).
-      pack(:uint8, [settings, read, write.length])
+      # 3 bytes available for read and write length, so 12-bits each.
+      # Bytes 1 and 2 are lower 8 bits for read and write respectively.
+      # Byte 3 is shared: upper 4 = read[8..12], lower 4 = write.length[8..12]
+      shared_byte = ((read & 0xF00) >> 4) | ((write.length & 0xF00) >> 8)
+
+      # Generic portion (first 4 bytes of header c portion of header (used by both hardware and bit bang SPI).
+      pack :uint8, [settings, read & 0xFF, write.length & 0xFF, shared_byte]
     end
 
     def spi_header(select_pin, write, read, frequency, mode, bit_order)

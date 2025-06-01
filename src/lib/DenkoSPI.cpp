@@ -92,7 +92,7 @@ void Denko::spiEnd() {
 // auxMsg[3-6] = clock frequency (uint32_t as 4 bytes)
 // auxMsg[7+]  = data (bytes) (write only)
 //
-void Denko::spiTransfer(uint32_t clockRate, uint8_t select, uint8_t settings, uint8_t rLength, uint8_t wLength, byte *data) {
+void Denko::spiTransfer(uint32_t clockRate, uint8_t select, uint8_t settings, uint16_t rLength, uint16_t wLength, byte *data) {
   spiBegin(settings, clockRate);
 
   // Stream read bytes as if coming from select pin.
@@ -107,7 +107,7 @@ void Denko::spiTransfer(uint32_t clockRate, uint8_t select, uint8_t settings, ui
     digitalWrite(select, LOW);
   }
   
-  for (byte i = 0;  (i < rLength || i < wLength);  i++) {
+  for (uint16_t i=0; (i < rLength || i < wLength); i++) {
     byte b;
 
     if (i < wLength) {
@@ -138,13 +138,15 @@ void Denko::spiAddListener() {
             clockRate |= (uint32_t)auxMsg[5] << 16;
             clockRate |= (uint32_t)auxMsg[6] << 24;
   
+  uint16_t  readLength = (((uint16_t)auxMsg[3] & 0xF0) << 4) | auxMsg[1];
+
   for (int i = 0;  i < SPI_LISTENER_COUNT;  i++) {
     if (spiListeners[i].enabled == 0) {
       spiListeners[i] = {
         clockRate,
         pin,        // Select pin
         auxMsg[0],  // Settings
-        auxMsg[1],  // Read length
+        readLength,
         1           // Enabled = 1 sets hardware SPI listener
       };
       return;
@@ -156,7 +158,7 @@ void Denko::spiAddListener() {
 
 // Called by spiUpdateListeners to read an individual hardware SPI listener.
 void Denko::spiReadListener(uint8_t i) {
-  spiTransfer(spiListeners[i].clock,
+  spiTransfer(spiListeners[i].freq,
               spiListeners[i].select,
               spiListeners[i].settings,
               spiListeners[i].length,

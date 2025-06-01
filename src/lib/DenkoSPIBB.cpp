@@ -22,8 +22,8 @@
 // auxMsg[6]   = ** unused **
 // auxMsg[7+]  = data (bytes) (write only) - Start from 7 for parity with hardware SPI.
 //
-void Denko::spiBBtransfer( uint8_t clock, uint8_t input, uint8_t output, uint8_t select, uint8_t settings,
-                          uint8_t rLength, uint8_t wLength, byte *data) {
+void Denko::spiBBtransfer (uint8_t clock, uint8_t input, uint8_t output, uint8_t select, uint8_t settings,
+                           uint16_t rLength, uint16_t wLength, byte *data) {
 
   // Mode is the lowest 2 bits of settings.
   uint8_t mode = settings & 0b00000011;
@@ -53,7 +53,7 @@ void Denko::spiBBtransfer( uint8_t clock, uint8_t input, uint8_t output, uint8_t
     digitalWrite(select, LOW);
   }
 
-  for (byte i = 0;  (i < rLength || i < wLength);  i++) {
+  for (uint16_t i=0; (i < rLength || i < wLength); i++) {
     byte b;
 
     if (i < wLength) {
@@ -126,14 +126,16 @@ byte Denko::spiBBtransferByte(uint8_t clock, uint8_t input, uint8_t output, uint
 // CMD = 22
 // Start listening to a register with bit bang SPI.
 void Denko::spiBBaddListener() {
+  uint16_t readLength = (((uint16_t)auxMsg[3] & 0xF0) << 4) | auxMsg[1];
+
   for (int i = 0;  i < SPI_LISTENER_COUNT;  i++) {
     // Overwrite the first disabled listener in the struct array.
     if (spiListeners[i].enabled == 0) {
       spiListeners[i] = {
-        ((uint32_t)(auxMsg[4] << 8) | auxMsg[3]),   // Clock: [0..7], input: [8..15]
+        ((uint32_t)(auxMsg[4] << 8) | auxMsg[3]),   // Use freq bytes for pins: SCK: [0..7], MOSI: [8..15]
         pin,                                        // Select pin
         auxMsg[0],                                  // Settings mask
-        auxMsg[1],                                  // Read length
+        readLength,                                 // Read length
         2                                           // Enabled = 2 sets bit bang SPI listener
       };
       return;
@@ -145,8 +147,8 @@ void Denko::spiBBaddListener() {
 
 // Called by spiUpdateListeners to read an individual bit bang SPI listener.
 void Denko::spiBBreadListener(uint8_t i) {
-  spiBBtransfer((spiListeners[i].clock & 0xFF),         // Clock pin is bits [0..7] of the uint32
-                ((spiListeners[i].clock >> 8) & 0xFF),  // Input pin is bits [8..15] of the uint32
+  spiBBtransfer ((spiListeners[i].freq & 0xFF),         // SCK pin is bits [0..7] of freq's uint32
+                ((spiListeners[i].freq >> 8) & 0xFF),   // MOSI pin is bits [8..15] of freq's uint32
                 255,                                    // Disabled output pin
                 spiListeners[i].select,                 // Select pin
                 spiListeners[i].settings,
