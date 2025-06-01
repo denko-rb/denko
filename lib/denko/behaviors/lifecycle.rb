@@ -34,7 +34,7 @@ module Denko
           # Need to check civars in ancestors too.
           klasses = self.class.ancestors
           # If running "after" reverse hierarchy so they run top-down.
-          klasses = klasses.reverse if method_sym.to_s[0..4] == "after"
+          klasses = klasses.reverse if method_sym.to_s.start_with? "after"
 
           blocks = []
           klasses.each do |klass|

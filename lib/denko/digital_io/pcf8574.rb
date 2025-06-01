@@ -3,19 +3,18 @@ module Denko
     class PCF8574
       include I2C::Peripheral
       include Behaviors::Lifecycle
-      
 
       # Default I2C address. Override with i2c_address: key in initialize hash.
       I2C_ADDRESS   = 0x3F
       I2C_FREQUENCY = 400_000
-      
+
       #
       # 8 bit I/O expander where each read/write is a single I2C byte that gets/sets the whole register.
       # - No separate data direction register.
       # - Writing 1 to a bit puts that pin into high-impedance mode. It behaves as input or high output.
       # - Writing 0 is low output.
       # - Reading gives the actual state of the pins, regardless of direction.
-      # 
+      #
       after_initialize do
         read_state
       end
@@ -30,7 +29,7 @@ module Denko
               next unless bit
               byte |= (bit << index)
             end
-                        
+
             bytes.unshift byte
           end
           i2c_write bytes
@@ -39,7 +38,7 @@ module Denko
         @state_mutex.unlock
         @state
       end
-      
+
       def read_state
         @state_mutex.lock
         byte = i2c_read_raw(1)[0]
@@ -91,7 +90,7 @@ module Denko
       def state
         @state ||= Array.new(bytes*8) { 1 }
       end
-      
+
       #
       # Taken from SPI::Output Register.
       #
@@ -106,7 +105,7 @@ module Denko
         @state_mutex.unlock
         value
       end
-    
+
       def pin_is_pwm?(pin)
         false
       end
