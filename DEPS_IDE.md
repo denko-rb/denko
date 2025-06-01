@@ -45,7 +45,7 @@ All platforms will require libraries to be installed. To install a library do th
     WiFiNINA                    by Arduino
     ESP32Servo                  by Kevin Harrington, John K. Bennett
     IRremote          @ 4.4.1   by shirriff, z3to, ArminJo
-    Adafruit NeoPixel @ 1.13.0  by Adafruit
+    Adafruit NeoPixel @ 1.15.1  by Adafruit
     ````
 
 **AVR-based Arduinos & Clones Only:**
@@ -60,7 +60,7 @@ All platforms will require libraries to be installed. To install a library do th
     WiFi                        by Arduino
     WiFiNINA                    by Arduino
     IRremote          @ 4.4.1   by shirriff, z3to, ArminJo
-    Adafruit NeoPixel @ 1.13.0 by Adafruit
+    Adafruit NeoPixel @ 1.15.1  by Adafruit
     ````
 
 **ARM-based Arduinos & Clones Only:**
@@ -78,7 +78,7 @@ All platforms will require libraries to be installed. To install a library do th
     WiFi101                     by Arduino
     WiFiNINA                    by Arduino
     IRremote          @ 4.4.1   by shirriff, z3to, ArminJo
-    Adafruit NeoPixel @ 1.13.0  by Adafruit
+    Adafruit NeoPixel @ 1.15.1  by Adafruit
     ````
 
 **ESP8266 Only:**
@@ -93,7 +93,7 @@ All platforms will require libraries to be installed. To install a library do th
   * Libraries:
     ````
     IRremote          @ 4.4.1   by shirriff, z3to, ArminJo
-    Adafruit NeoPixel @ 1.13.0  by Adafruit
+    Adafruit NeoPixel @ 1.15.1  by Adafruit
     ````
 
 **ESP32 Only:**
@@ -109,7 +109,7 @@ All platforms will require libraries to be installed. To install a library do th
     ````
     ESP32Servo                  by Kevin Harrington, John K. Bennett
     IRremote          @ 4.4.1   by shirriff, z3to, ArminJo
-    Adafruit NeoPixel @ 1.13.0  by Adafruit
+    Adafruit NeoPixel @ 1.15.1  by Adafruit
     ````
 
 **RP2040 Only:**
@@ -124,5 +124,5 @@ All platforms will require libraries to be installed. To install a library do th
   * Libraries:
     ````
     IRremote          @ 4.4.1   by shirriff, z3to, ArminJo
-    Adafruit NeoPixel @ 1.13.0  by Adafruit
+    Adafruit NeoPixel @ 1.15.1  by Adafruit
     ````

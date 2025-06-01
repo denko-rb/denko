@@ -38,7 +38,7 @@ jobs:
               - name: Ethernet
               - name: WiFiNINA
               - name: Adafruit NeoPixel
-                version: 1.13.0
+                version: 1.15.1
 
     steps:
       - name: Checkout
