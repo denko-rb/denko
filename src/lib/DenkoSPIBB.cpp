@@ -68,7 +68,7 @@ void Denko::spiBBtransfer (uint8_t clock, uint8_t input, uint8_t output, uint8_t
       stream->print((i+1 == rLength) ? '\n' : ',');
     }
   }
-  
+
   // Leave select high.
   if (bitRead(settings, 6) == 1) digitalWrite(select, HIGH);
 }
@@ -79,7 +79,7 @@ void Denko::spiBBtransfer (uint8_t clock, uint8_t input, uint8_t output, uint8_t
 byte Denko::spiBBtransferByte(uint8_t clock, uint8_t input, uint8_t output, uint8_t select, uint8_t mode, uint8_t bitOrder, byte data) {
   // Byte to return
   byte b = 0x00;
-  
+
   // Track which of the 8 bits we're on.
   uint8_t bitPos;
 

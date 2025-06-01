@@ -202,7 +202,7 @@ void Denko::process() {
     #if defined(DENKO_SPI) || defined(DENKO_SPI_BB)
     case 28: spiRemoveListener();  break;
     #endif
-    
+
     // Implemented in DenkoI2CBB.cpp
     #ifdef DENKO_I2C_BB
     case 30: i2c_bb_search       ();  break;
@@ -252,11 +252,11 @@ void Denko::process() {
 void Denko::updateListeners() {
   currentTime = micros();
   timeDiff = currentTime - lastTime;
-  
+
   if (timeDiff > 999) {
     // Add a tick for every 1000us passed.
     tickCount = tickCount + (timeDiff / 1000);
-      
+
     // lastTime for next run is currentTime offset by remainder.
     lastTime = currentTime - (timeDiff % 1000);
 
@@ -282,7 +282,7 @@ void Denko::handshake() {
 
   // Reset this so we never send Rx along with ACK:
   rxBytes = 0;
-  
+
   // First handshake value is BOARD_MAP if set.
   stream->print("ACK:");
   #ifdef BOARD_MAP
@@ -294,7 +294,7 @@ void Denko::handshake() {
   #ifdef DENKO_VERSION
     stream->print(DENKO_VERSION);
   #endif
-  
+
   // Third is serial buffer size.
   stream->print(',');
   stream->print(DENKO_SERIAL_BUFFER_SIZE);
@@ -302,7 +302,7 @@ void Denko::handshake() {
   // Fourth is AUX_SIZE.
   stream->print(',');
   stream->print(AUX_SIZE);
-  
+
   // Fifth is EEPROM size. None on Due or Zero.
   stream->print(',');
   #if defined(EEPROM_EMULATED)
@@ -316,7 +316,7 @@ void Denko::handshake() {
   #ifdef DENKO_I2C
   	stream->print(DENKO_I2C_BUFFER_SIZE);
   #endif
-  
+
   // End
   stream->print('\n');
 }

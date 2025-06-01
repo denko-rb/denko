@@ -45,7 +45,7 @@ void Denko::spiBegin(byte settings, uint32_t clockRate) {
 
   // SPI mode is the lowest 2 bits of settings.
   byte mode = settings & 0B00000011;
-  
+
   // Bit 7 of settings controls bit order. 0 = LSBFIRST, 1 = MSBFIRST.
   if (bitRead(settings, 7) == 0) {
     // True integer value for these macros vary by platform, so just do this.
@@ -106,7 +106,7 @@ void Denko::spiTransfer(uint32_t clockRate, uint8_t select, uint8_t settings, ui
     pinMode(select, OUTPUT);
     digitalWrite(select, LOW);
   }
-  
+
   for (uint16_t i=0; (i < rLength || i < wLength); i++) {
     byte b;
 
@@ -137,7 +137,7 @@ void Denko::spiAddListener() {
             clockRate |= (uint32_t)auxMsg[4] << 8;
             clockRate |= (uint32_t)auxMsg[5] << 16;
             clockRate |= (uint32_t)auxMsg[6] << 24;
-  
+
   uint16_t  readLength = (((uint16_t)auxMsg[3] & 0xF0) << 4) | auxMsg[1];
 
   for (int i = 0;  i < SPI_LISTENER_COUNT;  i++) {

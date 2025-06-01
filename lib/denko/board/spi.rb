@@ -19,7 +19,7 @@ module Denko
         raise ArgumentError, "invalid SPI mode: #{settings.inspect}. Must be 0, 1, 2, or 3"
       end
 
-      # Bit 6 of settings indicates wiether a select pin needs to be toggled.
+      # Bit 6 of settings indicates whether a select pin needs to be toggled.
       settings |= 0b01000000 if select_pin
 
       # Bit 7 of settings toggles MSBFIRST (1) or LSBFIRST (0) for both read and write.
