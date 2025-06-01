@@ -142,17 +142,13 @@ void Denko::spiAddListener() {
             clockRate |= (uint32_t)auxMsg[5] << 16;
             clockRate |= (uint32_t)auxMsg[6] << 24;
 
-  uint16_t  readLength = (((uint16_t)auxMsg[3] & 0xF0) << 4) | auxMsg[1];
-
   for (int i = 0;  i < SPI_LISTENER_COUNT;  i++) {
     if (spiListeners[i].enabled == 0) {
-      spiListeners[i] = {
-        clockRate,
-        pin,        // Select pin
-        auxMsg[0],  // Settings
-        readLength,
-        1           // Enabled = 1 sets hardware SPI listener
-      };
+      spiListeners[i].freq      = clockRate;
+      spiListeners[i].select    = pin;                                              // Select pin
+      spiListeners[i].settings  = auxMsg[0];                                        // Settings mask
+      spiListeners[i].length    = (((uint16_t)auxMsg[3] & 0xF0) << 4) | auxMsg[1];  // Read length
+      spiListeners[i].enabled   = 1;                                                // 1 sets this listener as Hardware SPI
       return;
     } else {
     // Should send some kind of error if all are in use.

@@ -126,18 +126,14 @@ byte Denko::spiBBtransferByte(uint8_t clock, uint8_t input, uint8_t output, uint
 // CMD = 22
 // Start listening to a register with bit bang SPI.
 void Denko::spiBBaddListener() {
-  uint16_t readLength = (((uint16_t)auxMsg[3] & 0xF0) << 4) | auxMsg[1];
-
   for (int i = 0;  i < SPI_LISTENER_COUNT;  i++) {
     // Overwrite the first disabled listener in the struct array.
     if (spiListeners[i].enabled == 0) {
-      spiListeners[i] = {
-        ((uint32_t)(auxMsg[4] << 8) | auxMsg[3]),   // Use freq bytes for pins: SCK: [0..7], MOSI: [8..15]
-        pin,                                        // Select pin
-        auxMsg[0],                                  // Settings mask
-        readLength,                                 // Read length
-        2                                           // Enabled = 2 sets bit bang SPI listener
-      };
+      spiListeners[i].freq      = ((uint32_t)(auxMsg[4] << 8) | auxMsg[3]);         // SCK: [0..7], MOSI: [8..15] in freq's uint32.
+      spiListeners[i].select    = pin;                                              // Select pin
+      spiListeners[i].settings  = auxMsg[0];                                        // Settings mask
+      spiListeners[i].length    = (((uint16_t)auxMsg[3] & 0xF0) << 4) | auxMsg[1];  // Read length
+      spiListeners[i].enabled   = 2;                                                // 2 sets this listener as Bit-Bang
       return;
     } else {
     // Should send some kind of error if all are in use.
