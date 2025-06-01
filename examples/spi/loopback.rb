@@ -1,11 +1,13 @@
 require 'bundler/setup'
 require 'denko'
 
+# Bit bang on same pins as hardware SPI for most Arduinos.
 SPI_BIT_BANG_PINS = { clock: 13, input: 12, output: 11 }
 SELECT_PIN        = 10
 
 board = Denko::Board.new(Denko::Connection::Serial.new)
-bus = Denko::SPI::BitBang.new(board: board, pins: SPI_BIT_BANG_PINS)
+bus = Denko::SPI::Bus.new(board: board)
+# bus = Denko::SPI::BitBang.new(board: board, pins: SPI_BIT_BANG_PINS)
 
 # Methods so results print neatly. SPI transfers don't block main thread.
 def stop_waiting
