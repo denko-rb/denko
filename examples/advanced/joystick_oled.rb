@@ -54,9 +54,11 @@ loop do
   frame_count += 1
   if (frame_start - last_fps_show >= 1)
     fps = frame_count / (frame_start - fps_samples_start)
+    # Reset state
+    last_fps_show = frame_start
     fps_samples_start = frame_start
     frame_count = 0
-    print "FPS: #{fps.round}\r"
+    print "FPS: #{fps.round.to_s.rjust(2, " ")}\r"
   end
 
   # Scale joystick sensitivity inversely with actual framerate.
