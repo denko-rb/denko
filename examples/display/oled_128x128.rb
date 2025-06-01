@@ -10,12 +10,16 @@ board = Denko::Board.new(Denko::Connection::Serial.new)
 bus = Denko::I2C::Bus.new(board: board)
 
 # I2C OLED, connected to I2C SDA and SCL.
-oled = Denko::Display::SH1107.new(bus: bus, rotate: false) # address: 0x3C is default
+oled = Denko::Display::SH1107.new(bus: bus) # address: 0x3C is default
 
-canvas = oled.canvas
-baseline = 76
+# Transformation features in hardware.
+# oled.reflect_x
+# oled.reflect_y
+# oled.rotate
 
 # Draw some text on the OLED's canvas (a Ruby memory buffer).
+canvas = oled.canvas
+baseline = 76
 canvas.text_cursor = 27, baseline+15
 canvas.text "Hello World!"
 

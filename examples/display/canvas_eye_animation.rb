@@ -8,7 +8,8 @@ board = Denko::Board.new(Denko::Connection::Serial.new)
 
 # Using SSD1306 OLED (128x64), connected over I2C. Change as needed.
 bus = Denko::I2C::Bus.new(board: board)
-display = Denko::Display::SSD1306.new(bus: bus, rotate: true) # address: 0x3C is default
+display = Denko::Display::SSD1306.new(bus: bus) # address: 0x3C is default
+display.rotate
 canvas = display.canvas
 
 # Eye position and size values.

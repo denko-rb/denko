@@ -8,11 +8,12 @@ board = Denko::Board.new(Denko::Connection::Serial.new)
 
 # Using SSD1306 OLED (128x64), connected over I2C. Change as needed.
 bus = Denko::I2C::Bus.new(board: board)
-display = Denko::Display::SSD1306.new(bus: bus, rotate: true) # address: 0x3C is default
+display = Denko::Display::SSD1306.new(bus: bus) # address: 0x3C is default
+display.rotate
 
 # NOTE: Canvas transforms are independent of any transforms that can be configured
 # on the display itself. Those will perform better and should be used if you simply
-# need to reflect or rotate the entire display always.
+# need to reflect or rotate the entire display all the time.
 canvas = display.canvas
 
 # Very useful reflected text...

@@ -72,14 +72,6 @@ module Denko
       COLUMNS = 128
       ROWS    = 64
 
-      def rotated
-        return @rotated unless @rotated.nil?
-        @rotated = params[:rotated]
-        @rotated = params[:rotate] if @rotated.nil?
-        @rotated = false if @rotated.nil?
-        @rotated
-      end
-
       # Decide whether this instance is I2C or SPI.
       before_initialize do
         bus = params[:bus] || params[:board]
@@ -134,9 +126,9 @@ module Denko
         com_pin_config = 0x12
         com_pin_config = 0x02 if (columns == 96 && rows == 16) || (columns == 128 && rows == 32)
 
-        # Reflecting horizontally and vertically to effectively rotate 180 degrees.
-        seg_remap     = rotated ? 0x01 : 0x00
-        com_direction = rotated ? 0x08 : 0x00
+        # Defaul to no reflection or rotation.
+        @seg_remap     = 0x00
+        @com_direction = 0x00
 
         # Startup sequence. SPI needs 2 repeats for some reason.
         startup_count = 1
@@ -146,8 +138,8 @@ module Denko
             MULTIPLEX_RATIO,        rows - 1,
             DISPLAY_OFFSET,         0x00,
             START_LINE            | 0x00,
-            SEGMENT_REMAP         | seg_remap,
-            COM_DIRECTION         | com_direction,
+            SEGMENT_REMAP         | @seg_remap,
+            COM_DIRECTION         | @com_direction,
             COM_PIN_CONFIG,         com_pin_config,
             PIXELS_FROM_RAM,
             INVERT_OFF,
@@ -174,6 +166,23 @@ module Denko
       def contrast=(value)
         raise ArgumentError, "contrast must be in range 0..255" if (value < 0 || value > 255)
         command [CONTRAST, value]
+      end
+
+      def reflect_x
+        # Swap @seg_remap to the other value and write it.
+        @seg_remap = (@seg_remap == 0x00) ? 0x01 : 0x00
+        command [SEGMENT_REMAP | @seg_remap]
+      end
+
+      def reflect_y
+        # Swap @com_direction to the other value and write it.
+        @com_direction = (@com_direction == 0x00) ? 0x08 : 0x00
+        command [COM_DIRECTION | @com_direction]
+      end
+
+      def rotate
+        reflect_x
+        reflect_y
       end
 
       def draw_partial(buffer, x_min, x_max, p_min, p_max)

@@ -14,7 +14,8 @@ i2c   = Denko::I2C::Bus.new(board: board)
 htu21d = Denko::Sensor::HTU21D.new(bus: i2c)
 htu21d.poll(2)
 
-oled   = Denko::Display::SSD1306.new(bus: i2c, rotate: true)
+oled = Denko::Display::SSD1306.new(bus: i2c)
+oled.rotate
 canvas = oled.canvas
 
 last_refresh = Time.now

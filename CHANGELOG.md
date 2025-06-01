@@ -100,6 +100,11 @@
     - `HD44780#backlight` is an instance of `Denko::LED::Base`
     - Use like: `lcd.backlight.on` / `lcd.backlight.off`, or (if connected to PWM) `lcd.backlight.duty=`
 
+- `Display::MonoOLED` -
+  - Removed `rotate:` option from `#initialize`
+  - Added `#reflect_x`, `#reflect_y` and `#rotate` methods instead, to match the interface of other displays
+  - Affects `SSD1306`, `SH1106` and `SH1107` OLEDs
+
 - `EEPROM::Board` -
   - Renamed from `EEPROM::BuiltIn`
   - Simplified interface, matching `EEPROM::AT24C`
@@ -146,7 +151,7 @@
 
 ### Board Interface Changes
 
-- All `Board` implementations are now expected to implement `Board#spi_Limit` which returns the maximum size (in bytes) of a SPI transaction. The same value is used for both reading and writing.
+- All `Board` implementations are now expected to implement `Board#spi_limit`, which returns the maximum size (in bytes) of a SPI transaction. The same value is used for both reading and writing.
 
 ### Driver convergence with mruby
 - Many classes had small changes made to avoid using CRuby features not available in mruby. These include:

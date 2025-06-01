@@ -57,10 +57,10 @@ I2C_PIN       = :SDA
 # Setup
 board  = Denko::Board.new(Denko::Connection::Serial.new(baud: BAUD_RATE))
 bus    = Denko::I2C::Bus.new(board: board)
-oled   = Denko::Display::SSD1306.new(bus: bus, rotate: true, i2c_frequency: I2C_FREQUENCY)
-canvas = oled.canvas
+oled   = Denko::Display::SSD1306.new(bus: bus, i2c_frequency: I2C_FREQUENCY)
 
 # Intro
+canvas = oled.canvas
 canvas.text "SSD1306 Benchmark"
 oled.draw
 sleep 1
