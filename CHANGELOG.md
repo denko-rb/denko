@@ -2,114 +2,96 @@
 
 ## 0.15.0
 
-### Board Changes
+### New Platform
 
-- Arduino Uno R4 (Minima and Wi-Fi)
-  - WS2812 RGB LEDs are now supported for the RA4M1 chips used in these
+- Denko now runs on mruby! This means it can run self-contained on smaller devices. The first supported platform is the Milk-V Duo eSBC. It has the same footprint as a Raspberry Pi Pico, but runs Buildroot Linux on a 1GHz RISC-V CPU. Prebuilt binaries and instructions are available [here](https://github.com/denko-rb/mruby-denko-milkv-duo).
 
 ### New Peripherals
 
 - `AnalogIO::Joystick` -
-  - MultiPin. Requires `x:` and `y:` in `:pins` of params hash
-  - Both pins must be `AnalogIO::Input` capable
+  - MultiPin. Requires `x:` and `y:` in `:pins` of params hash. Both must be `AnalogIO::Input` capable
   - Inversion configurable, per axis
   - Axes are swappable
   - Deadzone and maxzone configurable, _NOT_ per axis
 
 - `DigitalIO::PCF8574` -
-  - 8-bit (channel) bi-directional I/O expander
-  - I2C interface
-  - Implements `BoardProxy` so arbitrary digital I/O components can treat it as a `Board`. Not recommended for fast inputs.
-  - Commonly found on I2C "backpacks" attached to HD44780 LCDs. See [example](examples/display/hd44780_thru_pcf8574.rb)
+  - 8-bit (channel) bi-directional I/O expander over I2C
+  - Is a `BoardProxy` so `DigitalIO` components may treat it as `Board`. Not recommended for fast inputs.
+  - Common in "backpacks" attached to HD44780 LCDs. See [example](examples/display/hd44780_thru_pcf8574.rb)
 
-- `Display::IL0373` -
-  - 212 x 104 pixel E-Paper display
-  - SPI Interface
-  - Uses the standard `Display::Canvas` class for drawing features.
+- `Display::IL0373` :
+  - 212 x 104 pixel E-Paper display over SPI
   - Black/White and Black/Red/White versions supported (B/R/W version not tested in hardware)
   - Black channel inversion, horizontal/vertical reflection, rotation supported in hardware
 
 - `Display::PCD8544` -
-  - 84 x 48 pixel backlit mono LCD
-  - SPI interface
+  - 84 x 48 pixel backlit mono LCD over SPI
   - Old design from Nokia phones in late 90's and early 00's
-  - Uses standard `Display::Canvas` for drawing features
   - Display inversion, contrast (Vop), and bias configurable in hardware
-  - Gotcha: Pixels appear to have an aspect ratio of about 0.8.
+  - Gotcha: Pixels appear to have an aspect ratio of about 0.8
 
 - `Display::SH1107` -
-  - I2C or SPI interface mono OLED
-  - Practically the same as `SH1106` but 128x128 pixels instead of 128x64.
+  - 128 x 128 mono OLED over I2C or SPI
 
 - `Display::SSD1680` -
-  - 296 x 128 pixel E-Paper display
-  - SPI Interface
-  - Uses the standard `Display::Canvas` class for drawing features.
+  - 296 x 128 pixel E-Paper display over SPI
   - Black/White and Black/Red/White versions supported
   - Black channel inversion and horizontal reflection supported in hardware
 
 - `Display::SSD1681` -
-  - 200 x 200 pixel E-Paper display
-  - Mostly the same as SSD1680, but different size
+  - 200 x 200 pixel variation of SSD1680
 
 - `Display::ST7302` -
-  - 250 x 122 pixel mono reflective LCD
-  - SPI Interface
-  - Uses the standard `Display::Canvas` class for drawing features.
-  - Display inversion and frame rate configurable in hardware.
+  - 250 x 122 pixel mono reflective LCD over SPI
+  - Display inversion and frame rate configurable in hardware
 
 - `Display::ST7565` -
-  - 128 x 64 pixel backlit LCD
-  - SPI Interface
-  - Uses the standard `Display::Canvas` class for drawing features.
-  - Inversion, reflection, rotation, and brightness configurable in hardware.
+  - 128 x 64 pixel backlit LCD over SPI
+  - Inversion, reflection, rotation, and brightness configurable in hardware
 
 - `EEPROM::AT24C` -
-  - I2C interface EEPROM
-  - Tested with 256 kib version
-  - Should also work for 32 kib, 64 kib and 128 kib versions
+  - 32, 64 128  or 256 kib EEPROM over I2C
   - Direct read/write with interface similar to Array. `#[]` and `#[]=`
 
 - `Sensor::AHT3X` -
-  - Temperature + Relative Humidity sensor
-  - I2C interface
-  - Exactly the same interface as `AHT2X`, but more accurate
+  - Temperature + Relative Humidity sensor over I2C
 
 - `Sensor::HDC1080` -
-  - Temperature + Relative Humidity sensor
-  - I2C interface
+  - Temperature + Relative Humidity sensor over I2C
   - Can also monitor battery level. `#battery_low?` is true when VCC < 2.8V.
-  - Similar to HTU21D
 
 - `Sensor::JSNSR04T` -
   - Waterproof ultrasonic distance sensor, similar to HC-SR04
   - Mode 1 supported by `Sensor::HCSR04` class
   - This new class only supports mode 2 (UART mode)
   - Requires `board:` AND `uart:` in params hash for initialize
-  - UART must be set up beforehand, running at 9600 baud
+  - UART must be set to 9600 baud beforehand
 
 - `Sensor::SHT4X` -
-  - Temperature + Relative Humidity sensor
-  - I2C interface
-  - Very similar to `SHT3X`
+  - Temperature + Relative Humidity sensor over I2C
 
 - `Sensor::VL53L0X` -
-  - Laser distance sensor
-  - I2C interface
+  - Laser distance sensor over I2C
   - 20 - 2000mm range
   - Only continuous mode implemented. No configuration yet.
 
 ### Peripheral Changes
 - `Display::Canvas` -
   - `#print` changed to `#text`
-  - `#print_char` changed to `#show_char`
-  - Fonts can be any size and don't need to align to Y axis pages now
+  - `#print_char` changed to `#draw_char`
+  - All drawing methods (`#set_pixel`, `#line`, `#circle` etc.) changed to only take keyword arguments
+  - Removed all `#filled_*` methods. Give `filled: true` to any shape method for the same result instead.
+  - Added `#current_color=` to set the default color for drawing when `color:` not given
+  - Fonts can be any size and don't need to align to page boundaries now
+  - Unset pixels/bits in fonts are now ignored (effectively transparent)
   - Added more fonts
-  - Fonts have integer scaling now
+  - Added integer scaling for fonts
   - Added `Canvas#rotate`
   - Added `Canvas#reflect`
-  - Optimized `Canvas#line` to use only integer math, avoid float, for mruby
-  - Can support multicolor e-paper displays now. Handled as array of 1-bit framebuffers, one per ink color. __Not__ meant for RGB.
+  - Optimized `Canvas#line` to use only integer math, avoid float
+  - Added support for multicolor e-paper displays
+    - Handled as array of 1-bit framebuffers, one per ink color
+    - __Not__ real multi-bit color yet
 
 - `Display::HD44780` -
   - `#print` changed to `#text`, and `#set_cursor` to `#text_cursor` for consistency with `Display::Canvas`
@@ -128,24 +110,46 @@
 
 ### Behavior Changes
 - Raw Read Rework
-  - `Behavior::State`, `Behavior::Callbacks`, `Behavior::Reader`, `Behavior::Poller`, and `Behavior::Listener` have received a combined rework, to allow "raw_reads" which bypass the "update pathway": `#pre_callback_filter`, and `#update`, which runs callbacks and updates component state.
-  - This simplifies development of drivers for things like sensors, where config and calibration data needs to be passed back and forth sometimes, but can't hit the update pathway. It still leaves the old behavior available, which is great for actual readings.
-  - `#_read` is still a delegate method, and should be defined to get readings from the component, expected to hit the update pathway.
-  - `#_read` should _never_ be called directly now. Will make `#_read`s private in future, now that mruby supports it.
-  - Use `#read_nb` to trigger an async read. Delegates to `#_read` in a way that won't interfere with pending `#read_raw` calls.
-  - `#read` is the same as `#read_nb`, except blocking until the read completes.
+  - `Behavior::State`, `Behavior::Callbacks`, `Behavior::Reader`, `Behavior::Poller`, and `Behavior::Listener` have received a combined rework, allowing "raw_reads".
+  - A raw read bypasses the "update pathway": `#pre_callback_filter`, and `#update`, which would run callbacks and update component state.
+  - This simplifies development of drivers for things like sensors, where config and calibration data needs to be passed back and forth, but can't hit the update pathway. The old behavior is still available, for actual sensor data.
+  - `#_read` is a delegate method. Define it to get a single sensor reading, expected to hit the update pathway.
+  - `#_read` should _never_ be called directly now, as it might conflict with raw reads.
+  - Use `#read_nb` to trigger an async read instead. It delegates to `#_read` in a way that won't conflict.
+  - `#read` is now the same as `#read_nb`, except blocking.
   - `#read_raw` _always_ blocks. Use it to get raw data (no `#pre_callback_filter`), and _not_ hit the update pathway.
   - `#read_raw` _cannot_ be called if the component is currently listening. No way to gaurantee message order. Stop listening first.
-  - `#read_raw` takes a method object or Proc. It does _not_ delegate to `#_read`, since that reads data values.
+  - `#read_raw` takes a method object or Proc. It does _not_ delegate to `#_read`, since it's not meant for sensor data.
 
 - Mutex Rework
-  - `Mutex#lock` and `Mutex#unlock` now preferred over `Mutex#synchronize`, so mruby doesn't waste resources passing a block around.
-  - `Mutex` instances are all replaced with `MutexStub` instances in mruby, as in CRuby.
+  - `Mutex#lock` and `Mutex#unlock` now preferred over `Mutex#synchronize`, so mruby doesn't have to pass a block around.
+  - `Mutex` instances are all replaced with `MutexStub` instances in mruby, and CRuby.
   - `Component#state` (reading) is no longer protected by a mutex, unless it's a simple Integer.
   - `Component#state=` (writing) is still portected by `@state_mutex`.
 
+- `SPI::Peripheral::SinglePin` removed. It's simpler to use `SPI::Peripheral::MultiPin` (now renamed to `SPI::Peripheral`) for everything instead.
+
+### Microcontroller Changes
+
+- Arduino Uno R4 (Minima and Wi-Fi):
+  - WS2812 RGB LEDs are now supported for the RA4M1 chips used in these
+
+- ATmega168-based microcontrollers:
+  - Removed OneWire support from default build config and replaced with bit-bang UART
+
+- AUX_SIZE:
+  - AUX_SIZE reduced to 528 bytes for almost all microcontrollers, and still 48 for ATmega168
+  - All implemented interfaces work fine sending/receiving data in chunks. This allows 512 byte chunks, even if using 16 bytes for configuration etc.
+
+- SPI transfer size limits:
+  - SPI transfer sizes are now sent as 12-bit unsigned integers. This allows for a theoretical limit of 4095 bytes per SPI transaction, but AUX_SIZE is lower by default, so 520 (528 - 8 config bytes) is the practical limit, more than doubling the previous 255.
+
+### Board Interface Changes
+
+- All `Board` implementations are now expected to implement `Board#spi_Limit` which returns the maximum size (in bytes) of a SPI transaction. The same value is used for both reading and writing.
+
 ### Driver convergence with mruby
-- Many classes had small changes made to avoid using CRuby features not available or expensive in mruby. These include:
+- Many classes had small changes made to avoid using CRuby features not available in mruby. These include:
   - Avoid using `Integer#[]` to get specific bits
   - Avoid using `Array#pack`
   - Avoid using regexes entirely
