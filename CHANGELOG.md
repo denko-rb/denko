@@ -177,7 +177,12 @@ Denko now runs on mruby! This means it can run on smaller devices. The first of 
 
 ### Board Interface Changes
 
-- All `Board` implementations are now expected to implement `Board#spi_limit`, which returns the maximum size (in bytes) of a SPI transaction. The same value is used for both reading and writing.
+- `Board`s are expected to implement `#spi_limit`, which returns the maximum size (in bytes) of a SPI transaction. The same value is used for both reading and writing.
+
+- `Board`s are expected to implement `#pin_is_pwm?(pin)`. This takes a pin number and returns true if __that pin number is muxed to a hardware PWM output that cannot be remuxed__. This is only relevant on Linux, where calling something like `#digital_write` on a hardware PWM output does nothing, so we want to mimic it with PWM values instead.
+
+- `Board`s are expected to implement `#pwm_write(pin, duty)` so that the second argument is always the duty cycle in nanoseconds, not a percentage, or based on PWM timer bit-depth.
+  - The only exception is for connected microcontrollers on the Arduino firmware. PWM period may not always be controllable (or even known), so we have to use values based on PWM timer bit-depth. This is handled inside the `PulseIO::PWMOutput` class.
 
 ### Driver convergence with mruby
 - Many classes had small changes made to avoid using CRuby features not available in mruby. These include:
