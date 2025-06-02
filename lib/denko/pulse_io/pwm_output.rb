@@ -26,10 +26,15 @@ module Denko
       end
 
       def digital_write(value)
-        if pwm_enabled
+        # Use regular #digital_write for speed until a PWM method is called.
+        unless pwm_enabled?
+          super(value)
+        else
+          # On Arduinos, disable PWM and switch back to regular #digital_write.
           if board.platform == :arduino
-            pwm_disable if pwm_enabled
+            pwm_disable
             super(value)
+          # Can't do that on Linux, so mimic DigitalIO.
           else
             if value == 1
               pwm_write(period)
@@ -37,14 +42,12 @@ module Denko
               pwm_write(0)
             end
           end
-        else
-          super(value)
         end
       end
 
       # Raw write. Takes nanoseconds on Linux, 0..pwm_high on Arduino.
       def pwm_write(value)
-        pwm_enable unless pwm_enabled
+        pwm_enable unless pwm_enabled?
         board.pwm_write(pin, value)
         self.state = value
       end
@@ -102,8 +105,8 @@ module Denko
         self.mode = :output if board.platform == :arduino
       end
 
-      def pwm_enabled
-        mode == :output_pwm
+      def pwm_enabled?
+        self.mode == :output_pwm
       end
     end
   end

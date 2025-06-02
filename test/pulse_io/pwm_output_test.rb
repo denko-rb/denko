@@ -74,7 +74,7 @@ class PWMOutTest < Minitest::Test
     end
     mock.verify
     assert_equal :output_pwm, part.mode
-    assert_equal true,        part.pwm_enabled
+    assert_equal true,        part.pwm_enabled?
   end
 
   def test_pwm_enable_uses_stored_settings
@@ -91,7 +91,7 @@ class PWMOutTest < Minitest::Test
     end
     mock.verify
     assert_equal :output_pwm, part2.mode
-    assert_equal true,        part2.pwm_enabled
+    assert_equal true,        part2.pwm_enabled?
   end
 
   def test_pwm_enable_uses_arg_settings
@@ -108,7 +108,7 @@ class PWMOutTest < Minitest::Test
     end
     mock.verify
     assert_equal :output_pwm, part.mode
-    assert_equal true,        part.pwm_enabled
+    assert_equal true,        part.pwm_enabled?
     assert_equal 14,          part.resolution
     assert_equal 500,         part.frequency
     assert_equal (2**14-1),   part.pwm_high
@@ -123,6 +123,6 @@ class PWMOutTest < Minitest::Test
     end
     mock.verify
     assert_equal :output, part.mode
-    assert_equal false, part.pwm_enabled
+    assert_equal false, part.pwm_enabled?
   end
 end
