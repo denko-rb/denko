@@ -11,7 +11,7 @@ module Denko
 
         # But we can't claim it on Linux (the SPI hardware handles it), so don't.
         if !Denko.mruby? && Object.const_defined?("Denko::PiBoard")
-          bus = params[:bus] || params[:board]
+          board = params[:board]
           if board.class.ancestors.include?(Denko::PiBoard)
             params[:mode] = nil
           end
