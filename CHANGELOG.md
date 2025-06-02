@@ -123,6 +123,10 @@ Denko now runs on mruby! This means it can run on smaller devices. The first of 
   - Only provides `[]` and `[]=`, for individual values or ranges
   - Both block, and read/write hardware immediately, rather than caching state
 
+- `LED::RBG` -
+ - Changed `#write(r,g,b)` so it takes percentages (0-100)
+ - Added `#write_8_bit` that takes an 8 bit range (0-255), regardless of the underlying PWM settings
+
 - `Sensor::DHT` reset pulse changed from 20ms to 10ms. Within spec, and appears more reliable in testing.
 
 ### Behavior Changes
