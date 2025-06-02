@@ -11,8 +11,8 @@ Denko now runs on mruby! This means it can run on smaller devices. The first of 
   - Runs Buildroot Linux on a 1GHz RISC-V CPU
   - Prebuilt binaries and instructions available [here](https://github.com/denko-rb/mruby-denko-milkv-duo)
   - Limitations:
-    - UART not supported yet. Consequentially, the `JSNSR04T` sensor won't be fully supported either.
-    - The Duo has no on-board DAC, but `AnalogIO::Output` should work for external DACs.
+    - UART not supported yet. Consequently, the `JSNSR04T` sensor won't be fully supported either.
+    - Duo has no on-board DAC, but `AnalogIO::Output` should work when support for external DACs is added.
 
 ### Updated Platforms
 
@@ -21,7 +21,7 @@ Denko now runs on mruby! This means it can run on smaller devices. The first of 
 ### New Peripherals
 
 - `AnalogIO::Joystick` -
-  - MultiPin. Give `x:` and `y:` in `:pins` of initialize hash. Both must be capable of analog input.
+  - MultiPin. Give `x:` and `y:` in `:pins` of initialize. Both must be analog input capable.
   - Inversion configurable, per axis
   - Axes are swappable
   - Deadzone and maxzone configurable, _NOT_ per axis
@@ -34,12 +34,12 @@ Denko now runs on mruby! This means it can run on smaller devices. The first of 
 - `Display::IL0373` :
   - 212 x 104 pixel E-Paper display over SPI
   - Black/White and Black/Red/White versions supported (B/R/W version not tested in hardware)
-  - Black channel inversion, horizontal/vertical reflection, rotation supported in hardware
+  - Hardware controls: black channel inversion, H/V reflection, rotation
 
 - `Display::PCD8544` -
   - 84 x 48 pixel backlit mono LCD over SPI
   - Old design from Nokia phones in late 90's and early 00's
-  - Display inversion, contrast (Vop), and bias configurable in hardware
+  - Hardware controls: inversion, contrast (Vop), bias
   - Gotcha: Pixels appear to have an aspect ratio of about 0.8
 
 - `Display::SH1107` -
@@ -48,18 +48,18 @@ Denko now runs on mruby! This means it can run on smaller devices. The first of 
 - `Display::SSD1680` -
   - 296 x 128 pixel E-Paper display over SPI
   - Black/White and Black/Red/White versions supported
-  - Black channel inversion and horizontal reflection supported in hardware
+  - Hardware controls: black channel inversion, horizontal reflection
 
 - `Display::SSD1681` -
   - 200 x 200 pixel variation of SSD1680
 
 - `Display::ST7302` -
   - 250 x 122 pixel mono reflective LCD over SPI
-  - Display inversion and frame rate configurable in hardware
+  - Hardware controls: inversion, refresh rate
 
 - `Display::ST7565` -
   - 128 x 64 pixel backlit LCD over SPI
-  - Inversion, reflection, rotation, and brightness configurable in hardware
+  - Hardware controls: inversion, H/V reflection, rotation, brightness
 
 - `EEPROM::AT24C` -
   - 32, 64 128  or 256 kib EEPROM over I2C
@@ -108,7 +108,7 @@ Denko now runs on mruby! This means it can run on smaller devices. The first of 
 - `Display::HD44780` -
   - `#print` changed to `#text`, and `#set_cursor` to `#text_cursor` for consistency with `Display::Canvas`
   - Added backlight as a subcomponent
-    - Give positive pin (anode) as `backlight:` inside `pins:` hash when initializing
+    - Give positive pin (anode) as `backlight:` in `pins:` hash when initializing
     - `HD44780#backlight` is an instance of `Denko::LED::Base`
     - Use like: `lcd.backlight.on` / `lcd.backlight.off`, or (if connected to PWM) `lcd.backlight.duty=`
 
@@ -154,7 +154,7 @@ Denko now runs on mruby! This means it can run on smaller devices. The first of 
 
 - Arduino Core Version Updates:
   - ESP32 Arduino Core  -> 3.2.0
-    - NOTE: HW CDC (UART) still appears to be broken when sending large amounts of data both directions.
+    - NOTE: HW CDC (UART) is still broken when sending large amounts of data both directions. If using an ESP32 board that has a USB port with a USB-UART chip (not native USB), that will be more reliable for now.
   - All other cores     -> latest released version
 
 - Arduino Library Version Updates:
@@ -170,19 +170,19 @@ Denko now runs on mruby! This means it can run on smaller devices. The first of 
 
 - AUX_SIZE:
   - AUX_SIZE reduced to 528 bytes for almost all microcontrollers, and still 48 for ATmega168
-  - All implemented interfaces work fine sending/receiving data in chunks. This allows 512 byte chunks, even if using 16 bytes for configuration etc.
+  - Most implemented interfaces (except infrared) work fine sending/receiving data in chunks. This allows 512 byte chunks, even if using 16 bytes for configuration etc.
 
 - SPI transfer size limits:
   - SPI transfer sizes are now sent as 12-bit unsigned integers. This allows for a theoretical limit of 4095 bytes per SPI transaction, but AUX_SIZE is lower by default, so 520 (528 - 8 config bytes) is the practical limit, more than doubling the previous 255.
 
 ### Board Interface Changes
 
-- `Board`s are expected to implement `#spi_limit`, which returns the maximum size (in bytes) of a SPI transaction. The same value is used for both reading and writing.
+- `Board` classes must implement `#spi_limit`, which returns the maximum size (in bytes) of a SPI transaction. The same value is used for both reading and writing.
 
-- `Board`s are expected to implement `#pin_is_pwm?(pin)`. This takes a pin number and returns true if __that pin number is muxed to a hardware PWM output that cannot be remuxed__. This is only relevant on Linux, where calling something like `#digital_write` on a hardware PWM output does nothing, so we want to mimic it with PWM values instead.
+- `Board` classes must implement `#pin_is_pwm?(pin)`. This takes a pin number and returns true if __that pin number is muxed to a hardware PWM output that cannot be remuxed__. This is only relevant on Linux, where calling something like `#digital_write` on a hardware PWM output does nothing, so we want to mimic it with PWM values instead.
 
-- `Board`s are expected to implement `#pwm_write(pin, duty)` so that the second argument is always the duty cycle in nanoseconds, not a percentage, or based on PWM timer bit-depth.
-  - The only exception is for connected microcontrollers on the Arduino firmware. PWM period may not always be controllable (or even known), so we have to use values based on PWM timer bit-depth. This is handled inside the `PulseIO::PWMOutput` class.
+- `Board` classes must implement `#pwm_write(pin, duty)` so that the second argument is always the duty cycle in nanoseconds, not a percentage, or based on PWM timer bit-depth.
+  - The only exception is connected microcontrollers on Arduino firmware. PWM period may not always be controllable (or even known), so use values based on PWM timer bit-depth. This is handled conditionally inside `PulseIO::PWMOutput`.
 
 ### Driver convergence with mruby
 - Many classes had small changes made to avoid using CRuby features not available in mruby. These include:
