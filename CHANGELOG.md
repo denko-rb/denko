@@ -11,7 +11,7 @@ Denko now runs on mruby! This means it can run on smaller devices. The first of 
   - Runs Buildroot Linux on a 1GHz RISC-V CPU
   - Prebuilt binaries and instructions available [here](https://github.com/denko-rb/mruby-denko-milkv-duo)
   - Limitations:
-    - UART not supported yet. Consequentially, the `JSNSR04T` sensor won't be fully supported fully.
+    - UART not supported yet. Consequentially, the `JSNSR04T` sensor won't be fully supported either.
     - The Duo has no on-board DAC, but `AnalogIO::Output` should work for external DACs.
 
 ### Updated Platforms
@@ -21,7 +21,7 @@ Denko now runs on mruby! This means it can run on smaller devices. The first of 
 ### New Peripherals
 
 - `AnalogIO::Joystick` -
-  - MultiPin. Requires `x:` and `y:` in `:pins` of params hash. Both must be `AnalogIO::Input` capable
+  - MultiPin. Give `x:` and `y:` in `:pins` of initialize hash. Both must be capable of analog input.
   - Inversion configurable, per axis
   - Axes are swappable
   - Deadzone and maxzone configurable, _NOT_ per axis
@@ -76,7 +76,7 @@ Denko now runs on mruby! This means it can run on smaller devices. The first of 
   - Waterproof ultrasonic distance sensor, similar to HC-SR04
   - Mode 1 supported by `Sensor::HCSR04` class
   - This new class only supports mode 2 (UART mode)
-  - Requires `board:` AND `uart:` in params hash for initialize
+  - Requires `board:` AND `uart:` in initialize hash
   - UART must be set to 9600 baud beforehand
 
 - `Sensor::SHT4X` -
@@ -124,8 +124,8 @@ Denko now runs on mruby! This means it can run on smaller devices. The first of 
   - Both block, and read/write hardware immediately, rather than caching state
 
 - `LED::RBG` -
- - Changed `#write(r,g,b)` so it takes percentages (0-100)
- - Added `#write_8_bit` that takes an 8 bit range (0-255), regardless of the underlying PWM settings
+  - Changed `#write(r,g,b)` so it takes percentages (0-100)
+  - Added `#write_8_bit` that takes an 8 bit range (0-255), regardless of the underlying PWM settings
 
 - `Sensor::DHT` reset pulse changed from 20ms to 10ms. Within spec, and appears more reliable in testing.
 
