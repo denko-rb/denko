@@ -9,6 +9,11 @@ class IROutPutTest < Minitest::Test
     @part ||= Denko::PulseIO::IROutput.new(board: board, pin:1)
   end
 
+  def test_does_not_set_pin_mode
+    refute part.params[:mode]
+    refute part.mode
+  end
+
   def test_pulse_count_validation
     assert_raises(ArgumentError) do
       part.write Array.new(256) { 0 }

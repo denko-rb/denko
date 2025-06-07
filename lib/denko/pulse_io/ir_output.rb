@@ -1,12 +1,8 @@
 module Denko
   module PulseIO
     class IROutput
-      include Behaviors::OutputPin
+      include Behaviors::SinglePin
       include Behaviors::Lifecycle
-
-      before_initialize do
-        params[:mode] = :output_pwm
-      end
 
       def write(pulses=[], frequency: 38)
         if pulses.length > 255 || pulses.length < 1
