@@ -131,6 +131,7 @@
 | Name             | Status         | Interface    | Component Class    | Notes |
 | :--------------- | :------:       | :--------    | :---------------   |------ |
 | HC-SR04          | :green_heart:  | Digi In/Out  | `Sensor::HCSR04`   | Ultrasonic, 20-4000mm
+| RCWL-1601        | :green_heart:  | Digi In/Out  | `Sensor::HCSR04`   | Essentially a 3.3V version of HC-SR04
 | RCWL-9620        | :green_heart:  | I2C          | `Sensor::RCWL9260` | Ultrasonic, 20-4500mm
 | JSN-SR04T        | :green_heart:  | UART         | `Sensor::JSNSR04T` | Mode 2 ONLY. Use HC-SR04 driver for mode 0 or 4.
 | VL53L0X          | :yellow_heart: | I2C          | `Sensor::VL53L0X`  | Laser, 20 - 2000mm. Continuous mode only. No configuration.
