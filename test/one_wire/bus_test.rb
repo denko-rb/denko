@@ -44,7 +44,7 @@ class OneWireBusTest < Minitest::Test
     board_mock.expect(:set_pin_mode, nil, [part.pin, :output])
     board_mock.expect(:low, 0)
     board_mock.expect(:digital_write,  nil, [part.pin, 0])
-    board_mock.expect(:one_wire_reset, nil, [part.pin, 0])
+    board_mock.expect(:one_wire_reset, nil, [part.pin, false])
     board_mock.expect(:one_wire_write, nil, [part.pin, false, [0xCC, 0xB4]])
 
     # Stub the parasite power response from the board.
@@ -81,8 +81,8 @@ class OneWireBusTest < Minitest::Test
 
   def test_set_device_present
     mock = Minitest::Mock.new
-    mock.expect(:call, nil, [1])
-    mock.expect(:call, nil, [1])
+    mock.expect(:call, nil, [true])
+    mock.expect(:call, nil, [true])
 
     part.stub(:reset, mock) do
       # Give 0 for first reading, device present
@@ -105,11 +105,11 @@ class OneWireBusTest < Minitest::Test
   def test_reset
     part
     mock = Minitest::Mock.new
-    mock.expect :call, nil, [1, 1]
-    mock.expect :call, nil, [1, 0]
+    mock.expect :call, nil, [1, true]
+    mock.expect :call, nil, [1, false]
 
     board.stub(:one_wire_reset, mock) do
-      part.reset(1)
+      part.reset(true)
       part.reset
     end
     mock.verify

@@ -34,14 +34,14 @@ module Denko
 
       def device_present
         mutex.lock
-        byte = read_using -> { reset(1) }
+        byte = read_using -> { reset(true) }
         presence = (byte == 0) ? true : false
         mutex.unlock
         presence
       end
       alias :device_present? :device_present
 
-      def reset(get_presence=0)
+      def reset(get_presence=false)
         board.one_wire_reset(pin, get_presence)
       end
 

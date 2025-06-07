@@ -1,9 +1,9 @@
 module Denko
   class Board
-    def one_wire_reset(pin, value=0)
+    def one_wire_reset(pin, read_presence=false)
       write Message.encode  command: 41,
                             pin: pin,
-                            value: value
+                            value: read_presence ? 1 : 0
     end
 
     def one_wire_search(pin, branch_mask)

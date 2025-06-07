@@ -184,6 +184,8 @@ Denko now runs on mruby! This means it can run on smaller devices. The first of 
 - `Board` classes must implement `#pwm_write(pin, duty)` so that the second argument is always the duty cycle in nanoseconds, not a percentage, or based on PWM timer bit-depth.
   - The only exception is connected microcontrollers on Arduino firmware. PWM period may not always be controllable (or even known), so use values based on PWM timer bit-depth. This is handled conditionally inside `PulseIO::PWMOutput`.
 
+- `Board#one_wire_reset` arguments changed from `(pin, read_presence=0)` to `(pin, read_presence=false)`. Any truthy value will update the bus' with the presence result.
+
 ### Driver convergence with mruby
 - Many classes had small changes made to avoid using CRuby features not available in mruby. These include:
   - Avoid using `Integer#[]` to get specific bits
