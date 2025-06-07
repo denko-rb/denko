@@ -70,16 +70,32 @@ module Denko
         [address, complement]
       end
 
-      # 
-      # Set FAMILY_CODE in peripheral class, and add the class to this array
-      # for the class to be identified during search.
+      #
+      # Set FAMILY_CODE in peripheral class, then add the peripheral class
+      # to this array (as a String, since no autoloading on mruby).
+      # The class can then be identified during a bus search.
       #
       PERIPHERAL_CLASSES = [
-        Sensor::DS18B20,
+        "Denko::Sensor::DS18B20",
       ]
 
+      def peripheral_classes
+        return @peripheral_classes if @peripheral_classes
+
+        @peripheral_classes = []
+        PERIPHERAL_CLASSES.each do |class_name|
+          begin
+            klass = Object.const_get(class_name)
+          rescue
+            next
+          end
+          @peripheral_classes << klass
+        end
+        @peripheral_classes
+      end
+
       def family_lookup(family_code)
-        PERIPHERAL_CLASSES.each do |klass|
+        peripheral_classes.each do |klass|
           if (klass.const_defined? "FAMILY_CODE")
             return klass if klass::FAMILY_CODE == family_code
           end

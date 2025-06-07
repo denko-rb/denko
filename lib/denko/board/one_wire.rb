@@ -12,7 +12,7 @@ module Denko
                             aux_message: pack(:uint64, branch_mask, max: 8)
     end
 
-    def one_wire_write(pin, parasite_power, *data)
+    def one_wire_write(pin, parasite_power, data)
       bytes  = pack :uint8, data, min: 1, max: 127 # Should be 128 with 0 = 1.
 
       # Set high bit of length if the bus must drive high after write.

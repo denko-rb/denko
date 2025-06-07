@@ -27,14 +27,6 @@ bus.found_devices.each do |d|
   end
 end
 
-if ds18b20s.empty?
-  puts "No DS18B20 sensors found on the bus... Quitting...";
-else
-  puts "Found DS18B20 sensors with these serials:"
-  puts ds18b20s.map { |d| d.serial_number }
-  puts
-end
-
 # Format a reading for printing on a line.
 def print_reading(reading, sensor)
   print "#{Time.now.strftime '%Y-%m-%d %H:%M:%S'} - "
@@ -48,10 +40,18 @@ def print_reading(reading, sensor)
   end
 end
 
-ds18b20s.each do |sensor|
-  sensor.poll(5) do |reading|
-    print_reading(reading, sensor)
-  end
-end
+if ds18b20s.empty?
+  puts "No DS18B20 sensors found on the bus... Quitting...";
+else
+  puts "Found DS18B20 sensors with these serials:"
+  puts ds18b20s.map { |d| d.serial_number }
+  puts
 
-sleep
+  ds18b20s.each do |sensor|
+    sensor.poll(5) do |reading|
+      print_reading(reading, sensor)
+    end
+  end
+
+  sleep
+end

@@ -26,7 +26,7 @@ module Denko
 
         # Only LSBIT matters, but we can only read whole bytes.
         byte = read(1)
-        @parasite_power = (byte[0] == 0) ? true : false
+        @parasite_power = (byte & 0b1 == 0) ? true : false
 
         mutex.unlock
         @parasite_power
