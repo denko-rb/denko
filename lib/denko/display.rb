@@ -1,30 +1,44 @@
+require_relative "display/font"
+
+# Represent files to be autoloaded in CRuby as an Array.
+# This allows Mruby::Build to parse and preload them instead.
+DISPLAY_FILES = [
+  # Character Displays
+  [:HD44780, "hd44780"],
+
+  # Pixel display mixins and helpers
+  [:PixelCommon,      "pixel_common"],
+  [:SPICommon,        "spi_common"],
+  [:SPIEPaperCommon,  "spi_epaper_common"],
+  [:Canvas,           "canvas"],
+
+  # OLEDs
+  [:MonoOLED, "mono_oled"],
+  [:SSD1306,  "ssd1306"],
+  [:SH1106,   "sh1106"],
+  [:SH1107,   "sh1107"],
+
+  # LCDs
+  [:PCD8544,  "pcd8544"],
+  [:ST7302,   "st7302"],
+  [:ST7565,   "st7565"],
+
+  # E-paper
+  [:IL0373,   "il0373"],
+  [:SSD168X,  "ssd168x"],
+  [:SSD1680,  "ssd1680"],
+  [:SSD1681,  "ssd1681"],
+]
+
 module Denko
   module Display
-    # Character Displays
-    autoload :HD44780,  "#{__dir__}/display/hd44780"
-
-    # Pixel display mixins and helpers
-    autoload :PixelCommon,      "#{__dir__}/display/pixel_common"
-    autoload :SPICommon,        "#{__dir__}/display/spi_common"
-    autoload :SPIEPaperCommon,  "#{__dir__}/display/spi_epaper_common"
-    autoload :Font,             "#{__dir__}/display/font"
-    autoload :Canvas,           "#{__dir__}/display/canvas"
-
-    # OLEDs
-    autoload :MonoOLED, "#{__dir__}/display/mono_oled"
-    autoload :SSD1306,  "#{__dir__}/display/ssd1306"
-    autoload :SH1106,   "#{__dir__}/display/sh1106"
-    autoload :SH1107,   "#{__dir__}/display/sh1107"
-
-    # LCDs
-    autoload :PCD8544,  "#{__dir__}/display/pcd8544"
-    autoload :ST7302,   "#{__dir__}/display/st7302"
-    autoload :ST7565,   "#{__dir__}/display/st7565"
-
-    # E-paper
-    autoload :IL0373,   "#{__dir__}/display/il0373"
-    autoload :SSD168X,  "#{__dir__}/display/ssd168x"
-    autoload :SSD1680,  "#{__dir__}/display/ssd1680"
-    autoload :SSD1681,  "#{__dir__}/display/ssd1681"
+    DISPLAY_FILES.each do |file|
+      file_path = "#{__dir__}/display/#{file[1]}"
+      if file[0]
+        autoload file[0], file_path
+      else
+        require file_path
+      end
+    end
   end
 end

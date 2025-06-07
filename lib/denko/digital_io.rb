@@ -1,11 +1,28 @@
+# Represent files to be autoloaded in CRuby as an Array.
+# This allows Mruby::Build to parse and preload them instead.
+DIGITAL_IO_FILES = [
+  [:Input,          "input"],
+  [:Output,         "output"],
+  [:Button,         "button"],
+  [:Relay,          "relay"],
+  [:RotaryEncoder,  "rotary_encoder"],
+  [:PCF8574,        "pcf8574"],
+]
+
+# On mruby, define this early since bit-bang I2C, SPI and 1-Wire depend on it.
+DIGITAL_IO_EARLY_FILES = [
+  [:CBitBang, "c_bit_bang"],
+]
+
 module Denko
   module DigitalIO
-    autoload :Input,          "#{__dir__}/digital_io/input"
-    autoload :Output,         "#{__dir__}/digital_io/output"
-    autoload :Button,         "#{__dir__}/digital_io/button"
-    autoload :Relay,          "#{__dir__}/digital_io/relay"
-    autoload :RotaryEncoder,  "#{__dir__}/digital_io/rotary_encoder"
-    autoload :CBitBang,       "#{__dir__}/digital_io/c_bit_bang"
-    autoload :PCF8574,        "#{__dir__}/digital_io/pcf8574"
+    (DIGITAL_IO_EARLY_FILES + DIGITAL_IO_FILES).each do |file|
+      file_path = "#{__dir__}/digital_io/#{file[1]}"
+      if file[0]
+        autoload file[0], file_path
+      else
+        require file_path
+      end
+    end
   end
 end

@@ -6,4 +6,8 @@ module Denko
   def self.mruby?
     RUBY_ENGINE == "mruby"
   end
+
+  def self.in_mruby_build?
+    defined?(MRuby::Build)
+  end
 end

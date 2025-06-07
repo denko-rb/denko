@@ -1,12 +1,25 @@
+# Represent files to be autoloaded in CRuby as an Array.
+# This allows Mruby::Build to parse and preload them instead.
+SPI_FILES = [
+  [:BusCommon,      "bus_common"],
+  [:Bus,            "bus"],
+  [:BitBang,        "bit_bang"],
+  [:ChipSelect,     "peripheral"],
+  [:Peripheral,     "peripheral"],
+  [:BaseRegister,   "base_register"],
+  [:InputRegister,  "input_register"],
+  [:OutputRegister, "output_register"],
+]
+
 module Denko
   module SPI
-    autoload :BusCommon,      "#{__dir__}/spi/bus_common"
-    autoload :Bus,            "#{__dir__}/spi/bus"
-    autoload :BitBang,        "#{__dir__}/spi/bit_bang"
-    autoload :ChipSelect,     "#{__dir__}/spi/peripheral"
-    autoload :Peripheral,     "#{__dir__}/spi/peripheral"
-    autoload :BaseRegister,   "#{__dir__}/spi/base_register"
-    autoload :InputRegister,  "#{__dir__}/spi/input_register"
-    autoload :OutputRegister, "#{__dir__}/spi/output_register"
+    SPI_FILES.each do |file|
+      file_path = "#{__dir__}/spi/#{file[1]}"
+      if file[0]
+        autoload file[0], file_path
+      else
+        require file_path
+      end
+    end
   end
 end
