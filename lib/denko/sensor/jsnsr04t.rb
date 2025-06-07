@@ -10,7 +10,6 @@ module Denko
 
       UART_CLASSES = [Denko::UART::Hardware, Denko::UART::BitBang]
       TIMEOUT      = 0.500
-      MATCHER      = /(\d*)mm/
 
       attr_reader :uart
 
@@ -37,8 +36,8 @@ module Denko
         end
 
         # Extract mm as integer
-        if line && match = line.match(MATCHER)
-          value = match[1].to_i
+        if line && line.strip.end_with?("mm")
+          value = line.gsub("mm").strip.to_i
           self.update(value)
           return value
         end
