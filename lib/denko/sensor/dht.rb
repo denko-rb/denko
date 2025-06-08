@@ -20,7 +20,11 @@ module Denko
       end
 
       def pre_callback_filter(data)
-        decode(data.split(",").map(&:to_i))
+        if data.class == String
+          decode(data.split(",").map(&:to_i))
+        else
+          decode(data)
+        end
       end
 
       def decode(data)
