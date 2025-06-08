@@ -7,6 +7,11 @@ module Denko
       include TemperatureHelper
       include HumidityHelper
 
+      def after_initialize
+        # Small delay on startup to prevent Linux from reading too early.
+        sleep 0.100
+      end
+
       def state
         @state ||= { temperature: nil, humidity: nil }
       end
