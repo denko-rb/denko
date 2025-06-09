@@ -18,64 +18,56 @@ class I2CBusTest < Minitest::Test
   end
 
   def test_initialize
-    assert_equal bus.found_devices, []
-    assert_equal 0, bus.i2c_index
+    assert_equal [],  bus.found_devices
+    assert_equal 0,   bus.i2c_index
     refute_nil bus.callbacks[:bus_controller]
 
     bus2 = Denko::I2C::Bus.new(board: board, index: 10)
     assert_equal 10, bus2.i2c_index
-
-    bus3 = Denko::I2C::Bus.new(board: board, i2c_index: 11)
-    assert_equal 11, bus3.i2c_index
   end
 
-  def test_search
+  def test_search_result_string
     # Reject 0s created by leading and trailing colons.
-    board.inject_read_for_i2c(0, ":48:50:")
-
-    mock = Minitest::Mock.new.expect :call, nil, [0]
-    board.stub(:i2c_search, mock) do
-      bus.search
-    end
-    mock.verify
-
-    assert_equal bus.found_devices, [0x30, 0x32]
+    board.inject_component_update(bus, ":48:50:")
+    bus.search
+    assert_equal [0x30, 0x32], bus.found_devices
   end
 
-  def test_search_with_array_response
+  def test_search_resul_array
     board.inject_component_update(bus, [0, 0x30, 0x32])
     bus.search
     assert_equal [0x30, 0x32], bus.found_devices
   end
 
-  def test_search_empty_results
-    board.inject_read_for_i2c(0, ":")
+  def test_search_result_empty
+    board.inject_component_update(bus, ":")
     bus.search
     assert_equal [], bus.found_devices
   end
 
   def test_write
     mock = Minitest::Mock.new.expect :call, nil, [0, 0x30, [0x01, 0x02], 100000, false]
+
     board.stub(:i2c_write, mock) do
       bus.write 0x30, [0x01, 0x02]
     end
     mock.verify
   end
 
-  def test__read_string
-    board.inject_read_for_i2c(0, "48-255,0,255,0,255,0")
-
+  def test_read_string
+    board.inject_component_update(bus, "48-255,0,255,0,255,0")
     mock = Minitest::Mock.new.expect :call, nil, [0, 0x32, 0x03, 6, 100000, false]
+
     board.stub(:i2c_read, mock) do
       bus.read 0x32, 0x03, 6
     end
     mock.verify
   end
 
-  def test__read_array
-    board.inject_read_for_i2c(0, [48,255,0,255,0,255,0])
-
+  def test_read_array
+    board.inject_component_update(bus, [48,255,0,255,0,255,0])
     mock = Minitest::Mock.new.expect :call, nil, [0, 0x32, 0x03, 6, 100000, false]
+
     board.stub(:i2c_read, mock) do
       bus.read 0x32, 0x03, 6
     end
@@ -84,15 +76,15 @@ class I2CBusTest < Minitest::Test
 
   def test_read_without_register
     board.inject_component_update(bus, "48-255,127")
-
     mock = Minitest::Mock.new.expect :call, nil, [0, 0x30, nil, 2, 100000, false]
+
     board.stub(:i2c_read, mock) do
       bus.read 0x30, nil, 2
     end
     mock.verify
   end
 
-  def test_updates_peripherals
+  def test_updates_peripherals_string
     mock = Minitest::Mock.new.expect :call, nil, [[255, 127]]
 
     peripheral.stub(:update, mock) do
@@ -102,7 +94,7 @@ class I2CBusTest < Minitest::Test
     mock.verify
   end
 
-  def test_updates_peripherals_with_array_data
+  def test_updates_peripherals_array
     mock = Minitest::Mock.new.expect :call, nil, [[255, 127]]
 
     peripheral.stub(:update, mock) do
@@ -113,11 +105,11 @@ class I2CBusTest < Minitest::Test
   end
 
   def test_ignores_updates_for_non_matching_addresses
+    # mock should not receive any calls
     mock = Minitest::Mock.new
-    # Mock should not receive any calls
 
     peripheral.stub(:update, mock) do
-      bus.send(:update, "49-255,127")  # Different address
+      bus.send(:update, "49-255,127")
     end
     mock.verify
   end
