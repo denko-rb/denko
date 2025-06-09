@@ -12,7 +12,6 @@ module Denko
       def found_devices
         @found_devices ||= []
       end
-      attr_writer :found_devices
 
       def search
         addresses = read_using -> { _search }

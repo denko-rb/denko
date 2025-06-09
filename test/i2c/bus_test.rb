@@ -42,6 +42,18 @@ class I2CBusTest < Minitest::Test
     assert_equal part.found_devices, [0x30, 0x32]
   end
 
+  def test_search_with_array_response
+    board.inject_component_update(part, [0, 0x30, 0x32])
+    part.search
+    assert_equal [0x30, 0x32], part.found_devices
+  end
+
+  def test_search_empty_results
+    board.inject_read_for_i2c(0, ":")
+    part.search
+    assert_equal [], part.found_devices
+  end
+
   def test_write
     mock = Minitest::Mock.new.expect :call, nil, [0, 0x30, [0x01, 0x02], 100000, false]
     board.stub(:i2c_write, mock) do
@@ -70,6 +82,16 @@ class I2CBusTest < Minitest::Test
     mock.verify
   end
 
+  def test_read_without_register
+    board.inject_component_update(part, "48-255,127")
+
+    mock = Minitest::Mock.new.expect :call, nil, [0, 0x30, nil, 2, 100000, false]
+    board.stub(:i2c_read, mock) do
+      part.read 0x30, nil, 2
+    end
+    mock.verify
+  end
+
   def test_updates_peripherals
     mock = Minitest::Mock.new.expect :call, nil, [[255, 127]]
 
@@ -78,5 +100,54 @@ class I2CBusTest < Minitest::Test
       part.send(:update, "50-128,0")
     end
     mock.verify
+  end
+
+  def test_updates_peripherals_with_array_data
+    mock = Minitest::Mock.new.expect :call, nil, [[255, 127]]
+
+    peripheral.stub(:update, mock) do
+      part.send(:update, [0x30, 255, 127])
+      part.send(:update, [0x32, 128, 0])
+    end
+    mock.verify
+  end
+
+  def test_ignores_updates_for_non_matching_addresses
+    mock = Minitest::Mock.new
+    # Mock should not receive any calls
+
+    peripheral.stub(:update, mock) do
+      part.send(:update, "49-255,127")  # Different address
+    end
+    mock.verify
+  end
+
+  def test_handles_empty_data_gracefully
+    part.send(:update, "48-")
+    part.send(:update, "48")
+  end
+
+  def test_handles_malformed_string_data
+    part.send(:update, "invalid-data")
+    part.send(:update, "")
+    part.send(:update, nil)
+  end
+
+  def test_same_address_fails
+    peripheral
+    assert_raises { I2CPeripheralBase.new(bus: part, address: 0x30) }
+  end
+
+  # Should split up Subcomponents behavior and test there?
+  def test_component_management
+    count = part.components.length
+    new_peripheral = I2CPeripheralBase.new(bus: part, address: 0x40)
+
+    assert_equal count+1, part.components.length
+    assert_includes part.components, new_peripheral
+  end
+
+  def test_found_devices_not_writable
+    assert_raises { part.found_devices = nil }
   end
 end

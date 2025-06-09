@@ -147,16 +147,6 @@ end
 class BoardMock < Denko::Board
   def initialize
     super(ConnectionMock.new)
-    @read_injection_mutex = Mutex.new
-  end
-
-  WAITING_ON_READ_KEYS = [:read, :read_raw, :bus_controller, :board_proxy, :force_update]
-
-  def waiting_on_read(component)
-    WAITING_ON_READ_KEYS.each do |key|
-      return true if component.callbacks[key]
-    end
-    false
   end
 
   def single_pin_component_exists(pin)
@@ -174,21 +164,62 @@ class BoardMock < Denko::Board
   end
 
   #
-  # Inject a message into the Board instance as if it were coming from the phsyical board.
-  # Use this to mock input data for the blocking #read pattern in the Reader behavior.
+  # Reads are async, in a background thread. This is a way to detect when a Component has
+  # initiated a read, and is waiting on a response that will eventually call its #update.
   #
-  def inject_read_for_pin(pin, message)
+  WAITING_ON_READ_KEYS = [:read, :read_raw, :bus_controller, :board_proxy, :force_update]
+
+  def read_injection_mutex
+    @read_injection_mutex ||= Mutex.new
+  end
+
+  def expects_reading?(component)
+    WAITING_ON_READ_KEYS.each { |key| return true if component.callbacks[key] }
+    false
+  end
+
+  def wait_for_component_read(component)
+    sleep(0.001) while !component.callbacks
+    sleep(0.001) while !expects_reading?(component)
+  end
+
+  #
+  # Inject a message directly to the Component's #update method, bypassing Board.
+  # Use for testing above the Board interface.
+  #
+  def inject_component_update(component, data)
     Thread.new do
-      # Wait for a component to be added.
-      component = false
-      while !component
-        sleep(0.001)
-        component = single_pin_component_exists(pin)
-      end
-      inject_read(component, "#{pin}:#{message}")
+      wait_for_component_read(component)
+      read_injection_mutex.synchronize { component.update(data) }
     end
   end
 
+  #
+  # We may also want to inject readings at the pin or bus level, to test Board itself,
+  # or for integration tests. This waits for a pin to have a Component attached to it.
+  #
+  def wait_for_component_on_pin(pin)
+    component = false
+    while !component
+      sleep(0.001)
+      component = single_pin_component_exists(pin)
+    end
+    component
+  end
+
+  #
+  # Inject a message into the Board instance as if it were coming from the phsyical board.
+  # Use this for testing the Board internals and interface.
+  #
+  def inject_read_for_pin(pin, message)
+    Thread.new do
+      component = wait_for_component_on_pin(pin)
+      wait_for_component_read(component)
+      self.update("#{pin}:#{message}")
+    end
+  end
+
+  # These 3 should be replaced by #inject_read_for_pin, and #inject_component_update
   def inject_read_for_i2c(index, message)
     Thread.new do
       # Wait for a component to be added.
@@ -208,13 +239,8 @@ class BoardMock < Denko::Board
   end
 
   def inject_read(component, string)
-    # Wait for the component to have a "WAITING_ON_READ" callback.
-    # sleep(0.001) while !component.instance_variable_get(:@callback_mutex)
-    sleep(0.001) while !component.callbacks
-    sleep(0.001) while !waiting_on_read(component)
-
-    # Then inject the message.
-    @read_injection_mutex.synchronize do
+    wait_for_component_read(component)
+    read_injection_mutex.synchronize do
       self.update(string)
     end
   end
