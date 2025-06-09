@@ -219,19 +219,7 @@ class BoardMock < Denko::Board
     end
   end
 
-  # These 3 should be replaced by #inject_read_for_pin, and #inject_component_update
-  def inject_read_for_i2c(index, message)
-    Thread.new do
-      # Wait for a component to be added.
-      component = false
-      while !component
-        sleep(0.001)
-        component = hw_i2c_exists(index)
-      end
-      inject_read(component, "I2C#{index}:#{message}")
-    end
-  end
-
+  # These 2 should be replaced by #inject_read_for_pin, and #inject_component_update
   def inject_read_for_component(component, pin, message)
     Thread.new do
       inject_read(component, "#{pin}:#{message}")

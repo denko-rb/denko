@@ -34,7 +34,7 @@ class DS3231Test < Minitest::Test
   end
 
   def test_read
-    board.inject_read_for_i2c(0, "104-0,0,0,6,1,1,48")
+    board.inject_component_update(bus, "104-0,0,0,6,1,1,48")
 
     mock = Minitest::Mock.new.expect :call, nil, [part.address, 0x00, 7, 100000, false]
     bus.stub(:read_nb, mock) do
