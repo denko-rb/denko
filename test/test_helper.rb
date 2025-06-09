@@ -145,18 +145,8 @@ class ConnectionMock
 end
 
 class BoardMock < Denko::Board
-  def initialize
+  def initialize(connection=nil, options={})
     super(ConnectionMock.new)
-  end
-
-  def single_pin_component_exists(pin)
-    return single_pin_components[pin]
-    false
-  end
-
-  def hw_i2c_exists(index)
-    return hw_i2c_comps[index]
-    false
   end
 
   def is_a_register?
@@ -202,7 +192,7 @@ class BoardMock < Denko::Board
     component = false
     while !component
       sleep(0.001)
-      component = single_pin_component_exists(pin)
+      component = single_pin_components[pin]
     end
     component
   end
@@ -215,7 +205,9 @@ class BoardMock < Denko::Board
     Thread.new do
       component = wait_for_component_on_pin(pin)
       wait_for_component_read(component)
-      self.update("#{pin}:#{message}")
+      read_injection_mutex.synchronize do
+        self.update("#{pin}:#{message}")
+      end
     end
   end
 end
