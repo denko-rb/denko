@@ -180,6 +180,7 @@ class BoardMock < Denko::Board
   def inject_component_update(component, data)
     Thread.new do
       wait_for_component_read(component)
+      sleep 0.005 unless RUBY_ENGINE == "ruby"
       read_injection_mutex.synchronize { component.update(data) }
     end
   end
@@ -205,6 +206,7 @@ class BoardMock < Denko::Board
     Thread.new do
       component = wait_for_component_on_pin(pin)
       wait_for_component_read(component)
+      sleep 0.005 unless RUBY_ENGINE == "ruby"
       read_injection_mutex.synchronize do
         self.update("#{pin}:#{message}")
       end
