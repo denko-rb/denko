@@ -184,8 +184,8 @@ class BoardMock < Denko::Board
   end
 
   #
-  # Inject a message directly to the Component's #update method, bypassing Board.
-  # Use for testing above the Board interface.
+  # Inject a message that will call the Component#update directly after it reads,
+  # bypassing Board. Use for testing above the Board interface.
   #
   def inject_component_update(component, data)
     Thread.new do
@@ -195,7 +195,7 @@ class BoardMock < Denko::Board
   end
 
   #
-  # We may also want to inject readings at the pin or bus level, to test Board itself,
+  # We also want to inject readings at the pin or bus level, to test Board itself,
   # or for integration tests. This waits for a pin to have a Component attached to it.
   #
   def wait_for_component_on_pin(pin)
@@ -208,28 +208,14 @@ class BoardMock < Denko::Board
   end
 
   #
-  # Inject a message into the Board instance as if it were coming from the phsyical board.
-  # Use this for testing the Board internals and interface.
+  # Inject a message into the Board instance as if coming from a pin on the phsyical board.
+  # Use for testing Board internals, Board interface, and integration tests.
   #
   def inject_read_for_pin(pin, message)
     Thread.new do
       component = wait_for_component_on_pin(pin)
       wait_for_component_read(component)
       self.update("#{pin}:#{message}")
-    end
-  end
-
-  # These 2 should be replaced by #inject_read_for_pin, and #inject_component_update
-  def inject_read_for_component(component, pin, message)
-    Thread.new do
-      inject_read(component, "#{pin}:#{message}")
-    end
-  end
-
-  def inject_read(component, string)
-    wait_for_component_read(component)
-    read_injection_mutex.synchronize do
-      self.update(string)
     end
   end
 end

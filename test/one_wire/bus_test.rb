@@ -19,7 +19,7 @@ class OneWireBusTest < Minitest::Test
   end
 
   def test_read_power_supply
-    board.inject_read_for_component(part, 1, "0")
+    board.inject_component_update(part, "0")
 
     lock_mock = Minitest::Mock.new.expect(:call, nil)
     unlock_mock = Minitest::Mock.new.expect(:call, nil)
@@ -34,7 +34,7 @@ class OneWireBusTest < Minitest::Test
     unlock_mock.verify
     assert part.parasite_power
 
-    board.inject_read_for_component(part, 1, "1")
+    board.inject_component_update(part, "1")
     part.read_power_supply
     refute part.parasite_power
   end
@@ -64,7 +64,7 @@ class OneWireBusTest < Minitest::Test
 
   def test_device_present_in_mutex
     # part.device_present calls #reset which expects a response.
-    board.inject_read_for_component(part, 1, "1")
+    board.inject_component_update(part, "1")
 
     lock_mock = Minitest::Mock.new.expect(:call, nil)
     unlock_mock = Minitest::Mock.new.expect(:call, nil)
@@ -86,11 +86,11 @@ class OneWireBusTest < Minitest::Test
 
     part.stub(:reset, mock) do
       # Give 0 for first reading, device present
-      board.inject_read_for_component(part, 1, "0")
+      board.inject_component_update(part, "0")
       assert part.device_present
 
       # Give 1 for second reading, no device
-      board.inject_read_for_component(part, 1,  "1")
+      board.inject_component_update(part, "1")
       refute part.device_present
     end
     mock.verify

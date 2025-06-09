@@ -56,10 +56,10 @@ class I2CPeripheralTest < Minitest::Test
     end
   end
 
-  def test__read_and_repeated_start
+  def test_read_and_repeated_start
     part.i2c_repeated_start = true
 
-    board.inject_read_for_component(part, 5, "48-127,127,127,127,127,127")
+    board.inject_component_update(part, "48-127,127,127,127,127,127")
 
     mock = Minitest::Mock.new.expect :call, nil, [0x30, 0x03, 6, 400_000, true]
     bus.stub(:read, mock) do

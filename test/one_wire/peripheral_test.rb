@@ -90,10 +90,7 @@ class OneWirePeripheralTest < Minitest::Test
   end
 
   def test_read_scratch_is_atomic
-    # Pre-initialize the bus. 
-    bus
-    # Will read 9 bytes.
-    board.inject_read_for_component(bus, 1, "255,255,255,255,255,255,255,255")
+    board.inject_component_update(bus, "255,255,255,255,255,255,255,255")
 
     mock = Minitest::Mock.new.expect(:call, nil)
     part.stub(:atomically, mock) { part.read_scratch(9) }
@@ -101,10 +98,7 @@ class OneWirePeripheralTest < Minitest::Test
   end
 
   def test_read_scratch_matches_first
-    # Pre-initialize the bus. 
-    bus
-    # Will read 9 bytes.
-    board.inject_read_for_component(bus, 1, "255,255,255,255,255,255,255,255")
+    board.inject_component_update(bus, "255,255,255,255,255,255,255,255")
 
     mock = Minitest::Mock.new.expect(:call, nil)
     part.stub(:match, mock) { part.read_scratch(9) }
@@ -112,10 +106,7 @@ class OneWirePeripheralTest < Minitest::Test
   end
 
   def test_read_scratch_sends_the_command
-    # Pre-initialize the bus. 
-    bus
-    # Will read 9 bytes.
-    board.inject_read_for_component(bus, 1, "255,255,255,255,255,255,255,255")
+    board.inject_component_update(bus, "255,255,255,255,255,255,255,255")
 
     mock = Minitest::Mock.new
     mock.expect(:call, nil, [0xCC])
@@ -125,16 +116,13 @@ class OneWirePeripheralTest < Minitest::Test
   end
 
   def test_read_scratch_reads_bytes_from_bus
-    # Pre-initialize the bus. 
-    bus
-    # Will read 9 bytes.
-    board.inject_read_for_component(bus, 1, "255,255,255,255,255,255,255,255")
+    board.inject_component_update(bus, "255,255,255,255,255,255,255,255")
 
     mock = Minitest::Mock.new.expect(:call, nil, [9])
     bus.stub(:read, mock) { part.read_scratch(9) }
     mock.verify
   end
-  
+
   def test_write_scratch_is_atomic
     mock = Minitest::Mock.new.expect(:call, nil)
     part.stub(:atomically, mock) { part.write_scratch(1) }
