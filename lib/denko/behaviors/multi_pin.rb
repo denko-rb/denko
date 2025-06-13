@@ -25,7 +25,9 @@ module Denko
 
       def convert_pins(options={})
         @pins = {}
-        params[:pins].each { |key,pin| self.pins[key] = board.convert_pin(pin) }
+        params[:pins].each do |key,pin|
+          self.pins[key] = pin ? board.convert_pin(pin) : nil
+        end
         pin_array = pins.values
         raise ArgumentError, "duplicate pins in: #{pins.inspect}" unless pin_array == pin_array.uniq
       end
