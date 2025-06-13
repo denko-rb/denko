@@ -34,9 +34,8 @@ Denko aims to provide a Ruby API for you to directly control physical peripheral
 - Use it in Ruby programs, self-contained on the SBC
 
 ### mruby on Milk-V Duo
-- Download `mruby` and/or `mirb` binaries from the [mruby-denko-milkv-duo](https://github.com/denko-rb/mruby-denko-milkv-duo) repo onto a Milk-V Duo
-- Everything is included. Use hardware in mruby programs, self-contained on the Milk-V Duo
-- Work-in-progress. Will release soon.
+- Download `mruby` and/or `mirb` binaries from the [mruby-denko-milkv-duo](https://github.com/denko-rb/mruby-denko-milkv-duo) repo onto your Milk-V Duo
+- Everything is included. Instances of `Denko::Board` in mruby  will use the Milk-V's GPIO
 
 **Notes:**
 - Peripheral drivers are implemented __only__ in this gem, and the source files are used by __all__ stacks

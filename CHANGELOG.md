@@ -86,6 +86,7 @@ Denko now runs on mruby! This means it can run on smaller devices. The first of 
   - Laser distance sensor over I2C
   - 20 - 2000mm range
   - Only continuous mode implemented. No configuration yet.
+  - Has `#smoothing=` and `#smoothing_size=` for moving averages, like `AnalogIO::Input`
 
 ### Peripheral Changes
 - `Display::Canvas` -
@@ -198,6 +199,9 @@ Denko now runs on mruby! This means it can run on smaller devices. The first of 
 - Fixed bug where `Display::HD44780` would try to call `#board_has_write_bit?` instead of `#board.is_register?`.
 - Fixed a bug with multiple enviro sensors where calling `#state` would reset the values of all keys to `nil`.
 - Fixed bug where `Canvas#polygon` and `#path` were not passing through color to sub-methods.
+- Fixed a bug where `Behavior::MultiPin` would try to convert pins given as `nil` to Integer, creating unnecesary subcomponents on pin `0`.
+- Shortened `Sensor::DHT` reset time to 10ms, which works more reliably.
+- Write twice before rading for `Sensor::RCWL9620`, which works more reliably.
 
 ## 0.14.0
 
