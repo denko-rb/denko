@@ -4,6 +4,7 @@ module Denko
       include I2C::Peripheral
       include Behaviors::Poller
       include Behaviors::Lifecycle
+      include Denko::AnalogIO::InputHelper
 
       I2C_ADDRESS = 0x29
 
@@ -42,18 +43,15 @@ module Denko
       end
 
       def _read
-        add_callback(:read_range)
         i2c_read(2, register: RESULT_RANGE_STATUS + 10)
       end
 
       def pre_callback_filter(bytes)
-        return bytes unless callbacks[:read_range]
-
         # Distance is 2 bytes, big-endian.
-        remove_callback(:read_range)
         mm = (bytes[0] << 8) | bytes[1]
         mm = mm + correction_offset if correction_offset
-        return (mm > 0) ? mm : nil
+        # super handles smoothing if enabled.
+        return (mm > 0) ? super(mm) : nil
       end
     end
   end
