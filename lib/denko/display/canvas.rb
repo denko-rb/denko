@@ -177,10 +177,22 @@ module Denko
       end
 
       def rectangle(x1:nil, y1:nil, x2:nil, y2:nil, x:nil, y:nil, w:nil, h:nil, filled:false, color:current_color)
-        x1 ||= x
-        y1 ||= y
-        x2 ||= x1 + w - 1
-        y2 ||= y1 + h - 1
+        if (x || y || w || h) && (x1 || x2 || y1 || y2)
+          raise ArgumentError, "#rectangle accepts x:, y:, w:, h: OR x1:, y1:, x2:, y2: not a combination of both"
+        end
+
+        if (w && h)
+          x1 = x
+          x2 = x1 + w
+          x2 += 1 if (x2 < x1)
+          x2 -= 1 if (x1 < x2)
+
+          y1 = y
+          y2 = y1 + h
+          y2 += 1 if (y2 < y1)
+          y2 -= 1 if (y1 < y2)
+        end
+
         _rectangle(x1, y1, x2, y2, filled, color)
       end
 

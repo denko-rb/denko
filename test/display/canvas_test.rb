@@ -169,7 +169,13 @@ class CanvasTest < Minitest::Test
   def test_rectangle2
     # w is x2-x1+1 (15) from previous, since first pixel counts
     # h ix y2-y1+1 (10) from previous, since first pixel counts
-    subject.rectangle x1: 5, y1: 5, w: 15, h: 10
+    subject.rectangle x: 5, y: 5, w: 15, h: 10
+    assert_equal RECTANGLE_FB, subject.framebuffers[0]
+  end
+
+  def test_rectangle3
+    # -ve values should produce the same rectangles
+    subject.rectangle x: 19, y: 14, w: -15, h: -10
     assert_equal RECTANGLE_FB, subject.framebuffers[0]
   end
 
