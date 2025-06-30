@@ -5,6 +5,7 @@ module Denko
       include Behaviors::Poller
       include Behaviors::Lifecycle
       include TemperatureHelper
+      include HumidityHelper
 
       I2C_ADDRESS = 0x38
 
