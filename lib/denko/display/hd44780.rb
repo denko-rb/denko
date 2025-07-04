@@ -251,7 +251,7 @@ module Denko
       end
 
       def write4(bits)
-        if board.is_a_proxy?
+        if board.is_a?(Denko::Behaviors::BoardProxy)
           board.bit_set(d4.pin, bits[4].to_i)
           board.bit_set(d5.pin, bits[5].to_i)
           board.bit_set(d6.pin, bits[6].to_i)
@@ -277,7 +277,7 @@ module Denko
       end
 
       def write8(bits)
-        if board.is_a_proxy?
+        if board.is_a?(Denko::Behaviors::BoardProxy)
           board.bit_set(d0.pin, bits[0].to_i)
           board.bit_set(d1.pin, bits[1].to_i)
           board.bit_set(d2.pin, bits[2].to_i)

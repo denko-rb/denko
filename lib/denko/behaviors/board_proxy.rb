@@ -3,10 +3,6 @@ module Denko
     module BoardProxy
       include Subcomponents
 
-      def is_a_proxy?
-        true
-      end
-
       def platform
         :proxy
       end

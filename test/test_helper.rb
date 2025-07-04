@@ -71,10 +71,6 @@ class BoardMock < Denko::Board
     super(ConnectionMock.new)
   end
 
-  def is_a_proxy?
-    false
-  end
-
   #
   # Reads are async, in a background thread. This is a way to detect when a Component has
   # initiated a read, and is waiting on a response that will eventually call its #update.

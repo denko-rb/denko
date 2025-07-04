@@ -99,7 +99,7 @@ module Denko
         bits = bits.map { |b| 1^b } if anode
 
         bits.each_with_index do |bit, index|
-          if board.is_a_proxy?
+          if board.is_a?(Denko::Behaviors::BoardProxy)
             # On a register, use #bit_set except for the last bit. This changes state in memory.
             # #digital_write on the last bit causes the register to write to its parallel out.
             if (index == bits.length-1)
