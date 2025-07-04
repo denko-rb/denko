@@ -3,6 +3,10 @@ module Denko
     module BoardProxy
       include Subcomponents
 
+      def platform
+        :proxy
+      end
+
       def high
         1
       end
