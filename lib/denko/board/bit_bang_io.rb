@@ -7,7 +7,7 @@ module Denko
       raise ArgumentError, "errror in reset_time: #{reset_time}. Should be 0..65535 microseconds" if (reset_time < 0) || (reset_time > 0xFFFF)
       raise ArgumentError, "errror in pulse_limit: #{pulse_limit}. Should be 0..255 pulses"       if (pulse_limit < 0) || (pulse_limit > 0xFF)
       raise ArgumentError, "errror in timeout: #{timeout}. Should be 0..65535 milliseconds"       if (timeout < 0) || (timeout > 0xFFFF)
-      
+
       # Bit 0 of settings mask controls whether to hold high/low for reset.
       settings = reset ? 1 : 0
 
@@ -25,6 +25,14 @@ module Denko
 
     def hcsr04_read(echo_pin, trigger_pin)
       write Message.encode(command: 20, pin: echo_pin, value: trigger_pin)
+    end
+
+    def shift_out_nine(clk, dio, bytes)
+      prepack = bytes.flatten
+      raise ArgumentError, "data must be 1..255 bytes long" if (prepack.length > 255 || prepack.length < 1)
+      prepack.unshift(prepack.length)
+
+      write Message.encode command: 39, pin: clk, value: dio, aux_message: pack(:uint8, prepack)
     end
   end
 end

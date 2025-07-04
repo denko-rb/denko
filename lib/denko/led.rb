@@ -6,6 +6,7 @@ LED_FILES = [
   [:SevenSegment, "seven_segment"],
   [:WS2812,       "ws2812"],
   [:APA102,       "apa102"],
+  [:TM1637,       "tm1637"]
 ]
 
 module Denko

@@ -10,7 +10,6 @@ module Denko
       :arduino
     end
 
-
     def initialize(connection, options={})
       # Shake hands
       @connection = connection

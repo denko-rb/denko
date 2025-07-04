@@ -1,5 +1,8 @@
 //
-// Read chains of input pulses. Only used for DHT sensors right now.
+// Bit-banged implementations which DON'T mimic hardware protocols:
+//   - DHT Sensor Family
+//   - HC-SRO4 Sensor
+//   - TM1637 LEDs
 //
 #include "Denko.h"
 
@@ -85,4 +88,55 @@ void Denko::hcsr04Read(){
   stream->print(':');
   stream->print(us);
   stream->print('\n');
+}
+
+// CMD = 39
+// Used for TM1637. Similar to I2C write, except:
+//  - No address written first.
+//  - LSBFIRST
+//  - (N)ACK ignored, so pins can stay output.
+void Denko::shiftOutNine(){
+  uint8_t clock = pin;
+  uint8_t data = val;
+  uint8_t length = auxMsg[0];
+
+  // Idle bus state is both high.
+  pinMode(data, OUTPUT);
+  pinMode(clock, OUTPUT);
+  digitalWrite(data, HIGH);
+  digitalWrite(clock, HIGH);
+  microDelay(2);
+
+  // Start condition.
+  digitalWrite(data, LOW);
+  microDelay(2);
+  digitalWrite(clock, LOW);
+  microDelay(2);
+
+  uint8_t bit;
+  for (uint8_t i=0; i<length; i++) {
+    // Write 8 bits from byte.
+    for (uint8_t j=0; j<8; j++) {
+      bit = bitRead(auxMsg[1+i], j);
+      digitalWrite(data, bit);
+      digitalWrite(clock, HIGH);
+      microDelay(2);
+      digitalWrite(clock, LOW);
+      microDelay(2);
+    }
+    // Ignore 9th bit (N)ACK
+    digitalWrite(data, LOW);
+    digitalWrite(clock, HIGH);
+    microDelay(2);
+    digitalWrite(clock, LOW);
+    microDelay(2);
+  }
+
+  // Stop condition.
+  //
+  // Already low since ignoring (N)ACK and pulling data low.
+  // digitalWrite(data, LOW);
+  digitalWrite(clock, HIGH);
+  microDelay(2);
+  digitalWrite(data, HIGH);
 }

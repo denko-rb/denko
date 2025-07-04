@@ -61,8 +61,8 @@ class SevenSegmentLEDTest < Minitest::Test
 
   def test_scroll
     mock = Minitest::Mock.new
-    mock.expect :call, nil, ['H']
-    mock.expect :call, nil, ['I']
+    mock.expect :call, nil, ['h']
+    mock.expect :call, nil, ['i']
     part.stub(:write, mock) do
       part.display('hi')
     end
@@ -84,7 +84,7 @@ class SevenSegmentLEDTest < Minitest::Test
 
     # Expect every segment to get #write(1). Inverted logic because anode.
     mocks = []
-    part.segments.each do 
+    part.segments.each do
       mocks << Minitest::Mock.new.expect(:call, nil, [1])
     end
     part.segments[0].stub(:digital_write, mocks[0]) do

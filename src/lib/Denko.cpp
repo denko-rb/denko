@@ -129,8 +129,9 @@ void Denko::process() {
     #endif
 
     // Implemented in DenkoBitBangIO.cpp
-    case 9:  pulseRead             (); break;
-    case 20: hcsr04Read            (); break;
+    case 9:  pulseRead            (); break;
+    case 20: hcsr04Read           (); break;
+    case 39: shiftOutNine         (); break;
 
     // Implemented in DenkoServo.cpp
     #ifdef DENKO_SERVO

@@ -20,7 +20,7 @@
 | RGB LED            | :green_heart:      | Digi/Ana Out      | `LED::RGB`            |
 | 7 Segment Display  | :yellow_heart:     | Digital Out       | `LED::SevenSegment`   | No decimal point
 | 8x8 LED (MAX7219)  | :heart:            | SPI               | `LED::MAX7219`        |
-| TM1637             | :heart:            | SPI               | `LED::TM1637`         | 4x 7 Segment + Colon
+| TM1637             | :green_heart:      | Digi Out Bit-Bang | `LED::TM1637`         | 4x 7 Segment + Colon. Inputs not implemented
 | TM1652             | :heart:            | SPI               | `LED::TM1652`         | 4x 7 Segment w/ decimal point + Colon
 | Neopixel / WS2812B | :green_heart:      | Adafruit Library  | `LED::WS2812`         |
 | Dotstar / APA102   | :green_heart:      | SPI               | `LED::APA102`         |

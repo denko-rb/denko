@@ -78,9 +78,10 @@ class Denko {
     void eepromRead         (); //cmd = 7
     void eepromWrite        (); //cmd = 8
 
-    // Pulse inputs (DHT and HC-SR04)
+    // Oddball bit-bang protocols. See DenkoBitBangIO.cpp
     void pulseRead          (); //cmd = 9
     void hcsr04Read         (); //cmd = 20
+    void shiftOutNine       (); //cmd = 39
 
     // Servos
     void servoToggle        (); //cmd = 10

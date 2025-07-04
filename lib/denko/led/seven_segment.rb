@@ -31,7 +31,7 @@ module Denko
 
       def display(string)
         on unless on?
-        string = string.to_s.upcase
+        string = string.to_s
         (string.length > 1) ? scroll(string) : write(string)
       end
 
@@ -92,23 +92,21 @@ module Denko
         'Z' => [1,1,0,1,1,0,0],
       }
 
-      private
-
-      def write(char)
-        bits = CHARACTERS[char] || ALL_OFF
+      def write(char, soft: false)
+        bits = CHARACTERS[char.upcase] || ALL_OFF
         bits = bits.map { |b| 1^b } if anode
 
         bits.each_with_index do |bit, index|
           if board.is_a?(Denko::Behaviors::BoardProxy)
-            # On a register, use #bit_set except for the last bit. This changes state in memory.
-            # #digital_write on the last bit causes the register to write to its parallel out.
-            if (index == bits.length-1)
+            # On BoardProxy, use #bit_set on all but the last bit, or all if :soft writing.
+            # Calling #digital_write for last bit tells the proxy to flush registers to its parallel outpus.
+            if (index == bits.length-1) && (!soft)
               segments[index].digital_write(bit)
             else
               board.bit_set(segments[index].pin, bit)
             end
           else
-            # On a board, only set bits if changed.
+            # On Board, only write changed bits.
             segments[index].digital_write(bit) unless (segments[index].state == bit)
           end
         end
