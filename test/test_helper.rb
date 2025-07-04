@@ -71,7 +71,7 @@ class BoardMock < Denko::Board
     super(ConnectionMock.new)
   end
 
-  def is_a_register?
+  def is_a_proxy?
     false
   end
 

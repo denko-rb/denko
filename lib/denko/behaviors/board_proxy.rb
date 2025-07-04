@@ -3,6 +3,10 @@ module Denko
     module BoardProxy
       include Subcomponents
 
+      def is_a_proxy?
+        true
+      end
+
       def platform
         :proxy
       end
@@ -34,6 +38,10 @@ module Denko
       def set_pin_mode(pin, mode, options={}); end
 
       def start_read; end
+
+      def bit_set(pin, value)
+        raise NotImplementedError, "#bit_set not implemented for #{self.class}"
+      end
     end
   end
 end

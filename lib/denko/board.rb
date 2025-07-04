@@ -10,6 +10,10 @@ module Denko
       :arduino
     end
 
+    def is_a_proxy?
+      false
+    end
+
     def initialize(connection, options={})
       # Shake hands
       @connection = connection
