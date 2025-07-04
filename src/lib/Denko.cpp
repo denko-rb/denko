@@ -128,7 +128,7 @@ void Denko::process() {
     case 8:  eepromWrite          (); break;
     #endif
 
-    // Implemented in DenkoPulseInput.cpp
+    // Implemented in DenkoBitBangIO.cpp
     case 9:  pulseRead             (); break;
     case 20: hcsr04Read            (); break;
 

@@ -1,6 +1,6 @@
 class DenkoCLI::Generator
 
-# File locations are defined relative to the src/lib directory. 
+# File locations are defined relative to the src/lib directory.
 PACKAGES = {
   # The core package is always included.
   core: {
@@ -11,7 +11,7 @@ PACKAGES = {
       "DenkoDefines.h",
       "Denko.cpp",
       "DenkoCoreIO.cpp",
-      "DenkoPulseInput.cpp",
+      "DenkoBitBangIO.cpp",
       "../../vendor/board-maps/BoardMap.h",
     ]
   },
