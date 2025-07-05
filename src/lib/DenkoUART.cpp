@@ -1,19 +1,22 @@
 #include "Denko.h"
 #ifdef DENKO_UARTS
 
-// Order here must match order in Denko::Board::UART_CONFIGS.
+// Different boards use different types for a UART config.
 #if defined(ESP32) || defined(ESP8266)
-  const SerialConfig uart_config_lut[] = {
+  const SerialConfig
 #elif defined(_RENESAS_RA_)
-  const long unsigned int* uart_config_lut[] = {
+  const long unsigned int
 #elif defined(__SAMD21G18A__) || defined(__SAM3X8E__)
-  const UARTClass::UARTModes uart_config_lut[] = {
+  const UARTClass::UARTModes
 #else
-  const uint8_t* uart_config_lut[] = {
+  const uint8_t*
 #endif
+// Order here must match order in Denko::Board::UART_CONFIGS.
+uart_config_lut[] = {
   SERIAL_8N1,
   SERIAL_8E1,
   SERIAL_8O1,
+  // On the SAM3X, some configs are different types. Just ignore them for now.
   #ifndef __SAM3X8E__
     SERIAL_8N2,
     SERIAL_8E2,
@@ -22,6 +25,14 @@
 };
 
 void Denko::uartBegin(uint8_t index, uint32_t baud, uint8_t config) {
+  // Bounds checking config within uart_config_lut
+  # ifdef __SAM3X8E__
+    uint8_t max = 2;
+  #else
+    uint8_t max = 5;
+  #endif
+  if (config > max) return;
+
   #if DENKO_UARTS
     if (index == 1) {
       uarts[1] = &Serial1;
