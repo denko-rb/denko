@@ -2,21 +2,23 @@
 #ifdef DENKO_UARTS
 
 // Order here must match order in Denko::Board::UART_CONFIGS.
-#if defined(ESP32) || (ESP8266)
-  const SerialConfig* uart_config_lut[] = {
+#if defined(ESP32) || defined(ESP8266)
+  const SerialConfig uart_config_lut[] = {
 #elif defined(_RENESAS_RA_)
   const long unsigned int* uart_config_lut[] = {
-#elif defined(__SAMD21G18A__)
-  const UARTClass::UARTModes* uart_config_lut[] = {
+#elif defined(__SAMD21G18A__) || defined(__SAM3X8E__)
+  const UARTClass::UARTModes uart_config_lut[] = {
 #else
   const uint8_t* uart_config_lut[] = {
 #endif
   SERIAL_8N1,
   SERIAL_8E1,
   SERIAL_8O1,
-  SERIAL_8N2,
-  SERIAL_8E2,
-  SERIAL_8O2
+  #ifndef __SAM3X8E__
+    SERIAL_8N2,
+    SERIAL_8E2,
+    SERIAL_8O2
+  #endif
 };
 
 void Denko::uartBegin(uint8_t index, uint32_t baud, uint8_t config) {
