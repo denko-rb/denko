@@ -143,7 +143,7 @@ void Denko::pwmWrite(byte p, int v, boolean echo) {
 
 #ifdef ESP32
 void Denko::ledcDetachAll() {
-  for(byte i=0; i++; i<255) ledcDetach(i);
+  for(byte i=0; i<255; i++) ledcDetach(i);
 }
 #endif
 
