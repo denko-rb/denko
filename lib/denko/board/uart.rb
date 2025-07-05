@@ -1,22 +1,28 @@
 module Denko
   class Board
-    UART_BAUD_RATES = [
+    UART_BAUDS = [
       300, 600, 750, 1200, 2400, 4800, 9600, 19200, 31250, 38400, 57600, 74880, 115200, 230400
     ]
 
+    UART_CONFIGS = [ "8N1", "8E1", "8O1", "8N2", "8E2", "8O2" ]
+
     # CMD = 14
-    def uart_start(index, baud, listening=true)
+    def uart_start(index, baud=9600, config="8N1", listening=true)
       raise ArgumentError, "given UART: #{index} out of range. Only 1..3 supported" if (index < 1 || index > 3)
-      unless UART_BAUD_RATES.include?(baud)
-        raise ArgumentError, "given baud rate: #{baud} not supported. Must be in #{UART_BAUD_RATES.inspect}"
+      unless UART_BAUDS.include?(baud)
+        raise ArgumentError, "given baud rate: #{baud} not supported. Must be in #{UART_BAUDS.inspect}"
+      end
+      unless UART_CONFIGS.include?(config.upcase)
+        raise ArgumentError, "given config: #{config} not supported. Must be in #{UART_CONFIGS.inspect}"
       end
 
-      config  = index | 0b01000000
-      config |= 0b10000000 if listening
+      index |= 0b10000000  # enabled
+      index |= 0b01000000 if listening
+      config = UART_CONFIGS.find_index(config.upcase)
 
       self.write Message.encode command:     14,
-                                pin:         config,
-                                aux_message: pack(:uint32, baud)
+                                pin:         index,
+                                aux_message: pack(:uint32, baud) + pack(:uint8, config)
     end
 
     # CMD = 14

@@ -107,7 +107,7 @@ class Denko {
       bool uartListenStates[DENKO_UARTS+1];
       byte uartRxPins[DENKO_UARTS+1];
 
-      void uartBegin            (uint8_t index, uint32_t baud);
+      void uartBegin            (uint8_t index, uint32_t baud, uint8_t config);
       void uartEnd              (uint8_t index);
       void uartSetup            (); //cmd = 14
       void uartWrite            (); //cmd = 15

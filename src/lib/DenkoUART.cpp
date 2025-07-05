@@ -1,23 +1,33 @@
 #include "Denko.h"
 #ifdef DENKO_UARTS
 
-void Denko::uartBegin(uint8_t index, uint32_t baud) {
+// Order here must match order in Denko::Board::UART_CONFIGS.
+const uint8_t* uart_config_lut[] = {
+  SERIAL_8N1,
+  SERIAL_8E1,
+  SERIAL_8O1,
+  SERIAL_8N2,
+  SERIAL_8E2,
+  SERIAL_8O2
+};
+
+void Denko::uartBegin(uint8_t index, uint32_t baud, uint8_t config) {
   #if DENKO_UARTS
     if (index == 1) {
       uarts[1] = &Serial1;
-      Serial1.begin(baud);
+      Serial1.begin(baud, uart_config_lut[config]);
     }
   #endif
   #if (DENKO_UARTS == 2) || (DENKO_UARTS == 3)
     else if (index == 2) {
       uarts[2] = &Serial2;
-      Serial2.begin(baud);
+      Serial2.begin(baud, uart_config_lut[config]);
     }
   #endif
   #if (DENKO_UARTS == 3)
     else if (index == 3){
       uarts[3] = &Serial3;
-      Serial3.begin(baud);
+      Serial3.begin(baud, uart_config_lut[config]);
     }
   #endif
 }
@@ -59,10 +69,10 @@ void Denko::uartSetup() {
   uint8_t index  = pin & 0b00000011;
   if ((index < 1) || (index > DENKO_UARTS)) return;
 
-  uint8_t enable = pin & 0b01000000;
-  uint8_t listen = pin & 0b10000000;
+  uint8_t enable = pin & 0b10000000;
+  uint8_t listen = pin & 0b01000000;
 
-  if (enable > 0) {
+  if (enable) {
     // RP2040 crashes with 32-bit reinterpret_cast.
     uint32_t  baud  = (uint32_t)auxMsg[0];
               baud |= (uint32_t)auxMsg[1] << 8;
@@ -71,7 +81,7 @@ void Denko::uartSetup() {
 
     // Serial1 on ESP8266 can't read.
     #ifndef ESP8266
-      if (listen > 0) {
+      if (listen) {
         uartListenStates[index] = true;
 
         // Use "virtual pins" 251 - 253 to represent the UARTs;
@@ -79,7 +89,7 @@ void Denko::uartSetup() {
       }
     #endif
 
-    uartBegin(index, baud);
+    uartBegin(index, baud, auxMsg[4]);
   } else {
     uartEnd(index);
   }
