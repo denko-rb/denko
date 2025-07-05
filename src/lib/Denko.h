@@ -122,8 +122,7 @@ class Denko {
     // Bit Bang SPI
     void spiBBtransfer         (uint8_t clock, uint8_t input, uint8_t output, uint8_t select, uint8_t settings,
                                 uint16_t rLength, uint16_t wLength, byte *data);                                                        //cmd = 21
-    byte spiBBtransferByte     (uint8_t clock, uint8_t input, uint8_t output, uint8_t select,
-                                uint8_t mode, uint8_t bitOrder, byte data);
+    byte spiBBtransferByte     (uint8_t clock, uint8_t input, uint8_t output, uint8_t mode, uint8_t bitOrder, byte data);
     void spiBBaddListener      ();                                                                                                      //cmd = 22
     void spiBBreadListener     (uint8_t i);
 

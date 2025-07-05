@@ -57,9 +57,9 @@ void Denko::spiBBtransfer (uint8_t clock, uint8_t input, uint8_t output, uint8_t
     byte b;
 
     if (i < wLength) {
-      b = spiBBtransferByte(clock, input, output, select, mode, bitOrder, data[i]);
+      b = spiBBtransferByte(clock, input, output, mode, bitOrder, data[i]);
     } else {
-      b = spiBBtransferByte(clock, input, output, select, mode, bitOrder, 0x00);
+      b = spiBBtransferByte(clock, input, output, mode, bitOrder, 0x00);
     }
 
     if (i < rLength) {
@@ -76,7 +76,7 @@ void Denko::spiBBtransfer (uint8_t clock, uint8_t input, uint8_t output, uint8_t
 //
 // Used by spiBBtransfer to transfer a single byte at a time.
 //
-byte Denko::spiBBtransferByte(uint8_t clock, uint8_t input, uint8_t output, uint8_t select, uint8_t mode, uint8_t bitOrder, byte data) {
+byte Denko::spiBBtransferByte(uint8_t clock, uint8_t input, uint8_t output, uint8_t mode, uint8_t bitOrder, byte data) {
   // Byte to return
   byte b = 0x00;
 
