@@ -5,7 +5,7 @@ module Denko
       include SevenSegmentArray
       include Behaviors::Lifecycle
 
-      BYTE_COUNT = 4
+      BYTE_COUNT  = 4
       DIGIT_COUNT = 4
 
       def initialize_pins(options={})

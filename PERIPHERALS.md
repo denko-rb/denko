@@ -18,13 +18,13 @@
 | :---------------   | :------:           | :--------         | :---------------      |------ |
 | LED                | :green_heart:      | Digi/Ana Out      | `LED::Base`           |
 | RGB LED            | :green_heart:      | Digi/Ana Out      | `LED::RGB`            |
-| 7 Segment Display  | :yellow_heart:     | Digital Out       | `LED::SevenSegment`   | Decimal Point not implemented yet
-| 8x8 LED (MAX7219)  | :heart:            | SPI               | `LED::MAX7219`        |
-| TM1637             | :green_heart:      | Digi Out Bit-Bang | `LED::TM1637`         | 4x 7 Segment + colon. Inputs not implemented
-| TM1638             | :yellow_heart:     | SPI Bit-Bang Only | `LED::TM1638`         | 8x 7 Segment w/ DP + 8 discrete LEDs. Inputs not implemented yet
-| TM1652             | :heart:            | SPI               | `LED::TM1652`         | 4x 7 Segment + colon
-| Neopixel / WS2812B | :green_heart:      | Adafruit Library  | `LED::WS2812`         |
-| Dotstar / APA102   | :green_heart:      | SPI               | `LED::APA102`         |
+| Seven Segment      | :yellow_heart:     | Digital Out       | `LED::SevenSegment`   | Decimal Point not implemented yet
+| MAX7219            | :heart:            | SPI               | `LED::MAX7219`        | 8x 7-Segment OR 8x8 LED matrix
+| TM1637             | :green_heart:      | Digi Out Bit-Bang | `LED::TM1637`         | 4x 7-Segment + colon. Inputs ignored
+| TM1638             | :yellow_heart:     | SPI Bit-Bang      | `LED::TM1638`         | 8x 7-Segment w/ DP + 8 LEDs. No inputs yet
+| TM1652             | :green_heart:      | UART Hardware     | `LED::TM1652`         | 4x 7-Segment, 3 w/DP, 1 with colon
+| WS2812 (Neopixel)  | :green_heart:      | Adafruit Library  | `LED::WS2812`         |
+| APA102 (Dotstar)   | :green_heart:      | SPI               | `LED::APA102`         |
 
 ## Display
 

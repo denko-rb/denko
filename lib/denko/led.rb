@@ -9,7 +9,8 @@ LED_FILES = [
   [:SevenSegmentArray, "seven_segment_array"],
   [:TM163x,       "tm163x"],
   [:TM1637,       "tm1637"],
-  [:TM1638,       "tm1638"]
+  [:TM1638,       "tm1638"],
+  [:TM1652,       "tm1652"]
 ]
 
 module Denko
