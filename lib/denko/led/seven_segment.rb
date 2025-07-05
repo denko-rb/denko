@@ -93,7 +93,7 @@ module Denko
       }
 
       def write(char, soft: false)
-        bits = CHARACTERS[char.upcase] || ALL_OFF
+        bits = CHARACTERS[char.to_s.upcase] || ALL_OFF
         bits = bits.map { |b| 1^b } if anode
 
         bits.each_with_index do |bit, index|
