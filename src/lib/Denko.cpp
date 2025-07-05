@@ -164,7 +164,7 @@ void Denko::process() {
 
     // Implemented in DenkoAddressableLED.cppp
     #ifdef DENKO_LED_ARRAY
-    case 19: showLEDArray        ();   //cmd = 19
+    case 19: showLEDArray (); break;
     #endif
 
     // Implemented in DenkoSPIBB.cpp
