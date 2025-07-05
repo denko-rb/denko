@@ -18,10 +18,11 @@
 | :---------------   | :------:           | :--------         | :---------------      |------ |
 | LED                | :green_heart:      | Digi/Ana Out      | `LED::Base`           |
 | RGB LED            | :green_heart:      | Digi/Ana Out      | `LED::RGB`            |
-| 7 Segment Display  | :yellow_heart:     | Digital Out       | `LED::SevenSegment`   | No decimal point
+| 7 Segment Display  | :yellow_heart:     | Digital Out       | `LED::SevenSegment`   | Decimal Point not implemented yet
 | 8x8 LED (MAX7219)  | :heart:            | SPI               | `LED::MAX7219`        |
-| TM1637             | :green_heart:      | Digi Out Bit-Bang | `LED::TM1637`         | 4x 7 Segment + Colon. Inputs not implemented
-| TM1652             | :heart:            | SPI               | `LED::TM1652`         | 4x 7 Segment w/ decimal point + Colon
+| TM1637             | :green_heart:      | Digi Out Bit-Bang | `LED::TM1637`         | 4x 7 Segment + colon. Inputs not implemented
+| TM1638             | :yellow_heart:     | SPI Bit-Bang Only | `LED::TM1638`         | 8x 7 Segment w/ DP + 8 discrete LEDs. Inputs not implemented yet
+| TM1652             | :heart:            | SPI               | `LED::TM1652`         | 4x 7 Segment + colon
 | Neopixel / WS2812B | :green_heart:      | Adafruit Library  | `LED::WS2812`         |
 | Dotstar / APA102   | :green_heart:      | SPI               | `LED::APA102`         |
 
