@@ -12,10 +12,26 @@ module Denko
           proxy_pin(symbol, DigitalIO::Output)
         end
 
+        if params[:pins][:dp] && params[:pins][:colon]
+          raise ArgumentError "SevenSegment can have decimal point or colon, but not both"
+        end
         proxy_pin :dp,      DigitalIO::Output, optional: true
         proxy_pin :colon,   DigitalIO::Output, optional: true
+
+        if params[:pins][:cathode] && params[:pins][:anode]
+          raise ArgumentError "SevenSegment can have cathode or anode, but not both"
+        end
         proxy_pin :cathode, DigitalIO::Output, optional: true
         proxy_pin :anode,   DigitalIO::Output, optional: true
+
+        invert if anode
+        invert if (params[:inverted] || params[:invert])
+      end
+
+      attr_accessor :inverted
+
+      def invert
+        self.inverted = !inverted
       end
 
       def segments
@@ -107,11 +123,14 @@ module Denko
 
       def write(string, soft: false)
         str     = string.to_s.upcase
-        dp_bit  = (str[1] == ".") ? 1 : 0
-        col_bit = (str[1] == ":") ? 1 : 0
         char    =  str[0]
         bits    = CHARACTERS[char] || ALL_OFF
-        bits    = bits.map { |b| 1^b } if anode
+        bits    = bits.map { |b| 1^b } if inverted
+
+        dp_bit  = (str[1] == ".") ? 1 : 0
+        dp_bit  = 1^dp_bit if inverted
+        col_bit = (str[1] == ":") ? 1 : 0
+        col_bit = 1^col_bit if inverted
 
         if board.is_a?(Denko::Behaviors::BoardProxy)
           # On BoardProxy, use #bit_set on all but the last bit, or all if :soft writing.
