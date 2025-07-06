@@ -18,8 +18,8 @@
 | :---------------   | :------:           | :--------         | :---------------      |------ |
 | LED                | :green_heart:      | Digi/Ana Out      | `LED::Base`           |
 | RGB LED            | :green_heart:      | Digi/Ana Out      | `LED::RGB`            |
-| Seven Segment      | :yellow_heart:     | Digital Out       | `LED::SevenSegment`   | Decimal Point not implemented yet
-| MAX7219            | :heart:            | SPI               | `LED::MAX7219`        | 8x 7-Segment OR 8x8 LED matrix
+| Seven Segment      | :green_heart:      | Digital Out       | `LED::SevenSegment`   | Bit 7 can be decimal point **OR** colon
+| MAX7219            | :heart:            | SPI               | `LED::MAX7219`        | 8x 7-Segment w/DP **OR** 8x8 matrix
 | TM1637             | :green_heart:      | Digi Out Bit-Bang | `LED::TM1637`         | 4x 7-Segment + colon. Inputs ignored
 | TM1638             | :yellow_heart:     | SPI Bit-Bang      | `LED::TM1638`         | 8x 7-Segment w/ DP + 8 LEDs. No inputs yet
 | TM1652             | :green_heart:      | UART Hardware     | `LED::TM1652`         | 4x 7-Segment, 3 w/DP, 1 with colon

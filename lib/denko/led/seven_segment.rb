@@ -12,6 +12,8 @@ module Denko
           proxy_pin(symbol, DigitalIO::Output)
         end
 
+        proxy_pin :dp,      DigitalIO::Output, optional: true
+        proxy_pin :colon,   DigitalIO::Output, optional: true
         proxy_pin :cathode, DigitalIO::Output, optional: true
         proxy_pin :anode,   DigitalIO::Output, optional: true
       end
@@ -30,19 +32,30 @@ module Denko
       end
 
       def display(string)
+        str = string.to_s
+
+        if (str.length == 1)
+          write(str)
+        else
+          # If 2 chars long, where second is dp or colon, and it exists.
+          if (str.length == 2) && ((dp && str[1] == ".") || (colon && str[1] == ":"))
+            write(str)
+          else
+            scroll(str)
+          end
+        end
+
         on unless on?
-        string = string.to_s
-        (string.length > 1) ? scroll(string) : write(string)
       end
 
       def on
-        anode.high if anode
+        anode.high  if anode
         cathode.low if cathode
         @on = true
       end
 
       def off
-        anode.low if anode
+        anode.low    if anode
         cathode.high if cathode
         @on = false
       end
@@ -92,21 +105,33 @@ module Denko
         'Z' => [1,1,0,1,1,0,0],
       }
 
-      def write(char, soft: false)
-        bits = CHARACTERS[char.to_s.upcase] || ALL_OFF
-        bits = bits.map { |b| 1^b } if anode
+      def write(string, soft: false)
+        str     = string.to_s.upcase
+        dp_bit  = (str[1] == ".") ? 1 : 0
+        col_bit = (str[1] == ":") ? 1 : 0
+        char    =  str[0]
+        bits    = CHARACTERS[char] || ALL_OFF
+        bits    = bits.map { |b| 1^b } if anode
 
-        bits.each_with_index do |bit, index|
-          if board.is_a?(Denko::Behaviors::BoardProxy)
-            # On BoardProxy, use #bit_set on all but the last bit, or all if :soft writing.
-            # Calling #digital_write for last bit tells the proxy to flush registers to its parallel outpus.
+        if board.is_a?(Denko::Behaviors::BoardProxy)
+          # On BoardProxy, use #bit_set on all but the last bit, or all if :soft writing.
+          # Calling #digital_write for last bit tells the proxy to flush registers to its parallel outpus.
+          board.bit_set(dp.pin, dp_bit) if dp
+          board.bit_set(colon.pin, col_bit) if colon
+
+          bits.each_with_index do |bit, index|
             if (index == bits.length-1) && (!soft)
               segments[index].digital_write(bit)
             else
               board.bit_set(segments[index].pin, bit)
             end
-          else
-            # On Board, only write changed bits.
+          end
+        else
+          # On Board, only write changed bits.
+          dp.digital_write(dp_bit) if (dp && dp.state != dp_bit)
+          colon.digital_write(col_bit) if (colon && colon.state != col_bit)
+
+          bits.each_with_index do |bit, index|
             segments[index].digital_write(bit) unless (segments[index].state == bit)
           end
         end
