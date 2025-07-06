@@ -46,6 +46,6 @@ loop do
   if this_time != last_time
     tm1637.text(this_time)
     last_time = this_time
-    sleep 0.02
   end
+  sleep 0.02
 end
