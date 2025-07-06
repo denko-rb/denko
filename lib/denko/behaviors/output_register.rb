@@ -6,12 +6,17 @@ module Denko
 
       BYTE_COUNT = 1
 
+      def bytes
+        @bytes = params[:bytes] || self.class::BYTE_COUNT
+      end
+
       after_initialize do
+        old_state
         state
       end
 
-      def bytes
-        @bytes = params[:bytes] || self.class::BYTE_COUNT
+      def old_state
+        @old_state ||= Array.new(bytes) { 0 }
       end
 
       def state
@@ -19,7 +24,17 @@ module Denko
       end
 
       def write
-        raise ArgumentError, "#write not implemented in including class, for Behaviors::OutputRegister"
+        @state_mutex.lock
+          if @state != @old_state
+            _write(@state)
+            @state.each_with_index { |byte, i| @old_state[i] = byte }
+          end
+        @state_mutex.unlock
+        state
+      end
+
+      def _write
+        raise ArgumentError, "#_write not implemented in including class, for Behaviors::OutputRegister"
       end
 
       def digital_write(pin, value)
