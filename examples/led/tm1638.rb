@@ -9,10 +9,12 @@ tm1638 = Denko::LED::TM1638.new(board: board, pins: {clk: 4, dio: 5, stb: 6})
 
 # Digits are instances of LED::SevenSegment
 # Access them directly
-tm1638.digits[0].write "1"
-tm1638.digits[1].write "2"
-tm1638.digits[2].write "3"
-tm1638.digits[3].write "4"
+tm1638.digits.each { it.write "0" }
+sleep 1
+
+# Or write a string to them
+tm1638.text "12.345678"
+sleep 1
 
 # Toggle entire display on or off.
 sleep 0.5

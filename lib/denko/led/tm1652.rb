@@ -63,19 +63,23 @@ module Denko
           # Starting bit offset for each digit, treating TM1652 as a 32-bit register.
           i = index*8
 
-          if params[:rotate]
-            # Swap segments to rotate individual digits, and add them in reverse order.
-            digit = SevenSegment.new board: self,
-                                     pins: { a: i+3, b: i+4, c: i+5, d: i+0, e: i+1, f: i+2, g: i+6 }
-            digits[(DIGIT_COUNT-1) - index] = digit
+          if rotated
+            # Swap segments to rotate individual digits, and ignore decimal points when rotated.
+            pins = { a: i+3, b: i+4, c: i+5, d: i+0, e: i+1, f: i+2, g: i+6 }
+            pins[:colon] = i+7 if (index == 1)
+            # Add digits in reverse order to finish rotation.
+            digits[(DIGIT_COUNT-1) - index] = SevenSegment.new(board: self, pins: pins)
           else
-            digit = SevenSegment.new board: self,
-                                     pins: { a: i+0, b: i+1, c: i+2, d: i+3, e: i+4, f: i+5, g: i+6 }
-            digits[index] = digit
+            pins = { a: i+0, b: i+1, c: i+2, d: i+3, e: i+4, f: i+5, g: i+6, dp: i+7 }
+            if (index == 1)
+              pins.delete(:dp)
+              pins[:colon] = i+7
+            end
+            digits[index] = SevenSegment.new(board: self, pins: pins)
           end
         end
 
-        @colon = DigitalIO::Output.new board: self, pin: 15
+        @colon = rotated ? digits[2].proxies[:colon] : digits[1].proxies[:colon]
       end
 
       def display_control_register
