@@ -19,6 +19,7 @@
 | LED                | :green_heart:      | Digi/Ana Out      | `LED::Base`           |
 | RGB LED            | :green_heart:      | Digi/Ana Out      | `LED::RGB`            |
 | Seven Segment      | :green_heart:      | Digital Out       | `LED::SevenSegment`   | Bit 7 can be decimal point **OR** colon
+| Seven Segment SPI  | :green_heart:      | SPI               | `LED::SevenSegmentSPI`| Multiple SevenSegment thru 595 registers
 | MAX7219            | :heart:            | SPI               | `LED::MAX7219`        | 8x 7-Segment w/DP **OR** 8x8 matrix
 | TM1637             | :green_heart:      | Digi Out Bit-Bang | `LED::TM1637`         | 4x 7-Segment + colon. Inputs ignored
 | TM1638             | :yellow_heart:     | SPI Bit-Bang      | `LED::TM1638`         | 8x 7-Segment w/ DP + 8 LEDs. No inputs yet

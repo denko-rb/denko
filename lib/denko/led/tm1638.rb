@@ -29,7 +29,7 @@ module Denko
 
       def initialize_segments
         @digits = []
-        DIGIT_COUNT.times do |index|
+        digit_count.times do |index|
           # Starting bit offset for each digit, treating TM1638 as a 128-bit register, with a digit on every even byte.
           i = index*8*2
 
@@ -37,7 +37,7 @@ module Denko
             # Swap segments to rotate individual digits, and ignore decimal points when rotated.
             pins = { a: i+3, b: i+4, c: i+5, d: i+0, e: i+1, f: i+2, g: i+6 }
             # Add digits in reverse order to finish rotation.
-            digits[(DIGIT_COUNT-1) - index] = SevenSegment.new(board: self, pins: pins)
+            digits[(digit_count-1) - index] = SevenSegment.new(board: self, pins: pins)
           else
             pins = { a: i+0, b: i+1, c: i+2, d: i+3, e: i+4, f: i+5, g: i+6, dp: i+7 }
             digits[index] = SevenSegment.new(board: self, pins: pins)

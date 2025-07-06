@@ -4,12 +4,17 @@ module Denko
       include Behaviors::OutputRegister
       include Behaviors::Lifecycle
 
+      DIGIT_COUNT = 1
+
+      def digit_count
+        @digit_count = params[:digits] || self.class::DIGIT_COUNT
+      end
+      attr_reader :digits, :colon
+
       after_initialize do
         @rotated = params[:rotated] || params[:rotate]
       end
       attr_reader :rotated
-
-      attr_reader :digits, :colon
 
       PUNCTUATION = [".", ":"]
 

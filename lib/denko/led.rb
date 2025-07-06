@@ -7,6 +7,7 @@ LED_FILES = [
   [:WS2812,       "ws2812"],
   [:APA102,       "apa102"],
   [:SevenSegmentArray, "seven_segment_array"],
+  [:SevenSegmentSPI, "seven_segment_spi"],
   [:TM163x,       "tm163x"],
   [:TM1637,       "tm1637"],
   [:TM1638,       "tm1638"],

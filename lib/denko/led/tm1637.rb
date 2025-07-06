@@ -26,7 +26,7 @@ module Denko
 
       def initialize_segments
         @digits = []
-        DIGIT_COUNT.times do |index|
+        digit_count.times do |index|
           # Starting bit offset for each digit, treating TM1652 as a 32-bit register.
           i = index*8
 
@@ -35,7 +35,7 @@ module Denko
             pins = { a: i+3, b: i+4, c: i+5, d: i+0, e: i+1, f: i+2, g: i+6 }
             pins[:colon] = i+7 if (index == 1)
             # Add digits in reverse order to finish rotation.
-            digits[(DIGIT_COUNT-1) - index] = SevenSegment.new(board: self, pins: pins)
+            digits[(digit_count-1) - index] = SevenSegment.new(board: self, pins: pins)
           else
             pins = { a: i+0, b: i+1, c: i+2, d: i+3, e: i+4, f: i+5, g: i+6 }
             pins[:colon] = i+7 if (index == 1)
