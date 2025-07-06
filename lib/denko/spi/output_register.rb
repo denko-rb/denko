@@ -1,60 +1,26 @@
 module Denko
   module SPI
-    class OutputRegister < BaseRegister
+    class OutputRegister < SPI::BaseRegister
+      include Behaviors::OutputRegister
       include Behaviors::Lifecycle
 
       after_initialize do
-        state
+        old_state
         write
       end
 
-      #
-      # Overrides Peripheral#write to always write state.
-      # Convert bit state to array of 0-255 integers (bytes) first.
-      #
+      def old_state
+        @old_state ||= Array.new(bytes) { 0 }
+      end
+
       def write
-        bytes = []
         @state_mutex.lock
-        if @state != @previous_state
-          @state.each_slice(8) do |slice|
-            # Convert nils in the slice to zero.
-            zeroed = slice.map { |bit| bit.to_i }
-
-            # Each slice is 8 bits of a byte, with the lowest on the left.
-            # Reverse to reading order (lowest right) then join into string, and convert to integer.
-            byte = zeroed.reverse.join.to_i(2)
-
-            # Pack bytes in reverse order.
-            bytes.unshift byte
+          if @state != @old_state
+            spi_write(@state)
+            @state.each_with_index { |byte, i| @old_state[i] = byte }
           end
-          spi_write(bytes)
-          @previous_state = @state.dup
-        end
         @state_mutex.unlock
-        @state
-      end
-
-      #
-      # BoardProxy interface
-      #
-      def digital_write(pin, value)
-        bit_set(pin, value)
-        write
-      end
-
-      def bit_set(pin, value)
-        @state_mutex.lock
-        @state[pin] = value
-        @state_mutex.unlock
-        value
-      end
-
-      def digital_read(pin)
-        state[pin]
-      end
-
-      def pin_is_pwm?(pin)
-        false
+        state
       end
     end
   end
