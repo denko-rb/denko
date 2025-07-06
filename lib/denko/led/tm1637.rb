@@ -2,7 +2,6 @@ module Denko
   module LED
     class TM1637
       include TM163x
-      include SevenSegmentArray
       include Behaviors::Lifecycle
 
       BYTE_COUNT  = 4

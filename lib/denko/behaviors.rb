@@ -17,6 +17,7 @@ BEHAVIORS_FILES = [
   [:BusPeripheral,          "bus_peripheral"],
   [:BusPeripheralAddressed, "bus_peripheral_addressed"],
   [:BoardProxy,             "board_proxy"],
+  [:OutputRegister,         "output_register"],
 
   # Async stuff
   [:Threaded,   "threaded"],

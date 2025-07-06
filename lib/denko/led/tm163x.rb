@@ -2,6 +2,7 @@ module Denko
   module LED
     module TM163x
       include Behaviors::MultiPin
+      include SevenSegmentArray
 
       # Always write all bytes, auto incrementing, starting at address 0.
       SET_DATA    = 0b01 << 6
