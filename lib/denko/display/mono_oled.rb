@@ -76,10 +76,10 @@ module Denko
       before_initialize do
         bus = params[:bus] || params[:board]
 
-        if bus.class.ancestors.include?(Denko::I2C::BusCommon)
-          mutate_i2c
-        elsif bus.class.ancestors.include?(Denko::SPI::BusCommon)
-          mutate_spi
+        if Denko.const_defined?("I2C") && Denko::I2C.const_defined?("BusCommon")
+          mutate_i2c if bus.is_a?(Denko::I2C::BusCommon)
+        elsif Denko.const_defined?("SPI") && Denko::SPI.const_defined?("BusCommon")
+          mutate_spi if bus.is_a?(Denko::SPI::BusCommon)
         else
           raise ArgumentError, "#{self.class} must be connected to either an I2C or SPI bus"
         end
@@ -110,7 +110,16 @@ module Denko
       def mutate_spi
         singleton_class.class_eval do
           include SPICommon
+
+          # SPI needs 2 repeats of the startup sequence for some reason.
+          def startup_count
+            2
+          end
         end
+      end
+
+      def startup_count
+        1
       end
 
       after_initialize do
@@ -130,9 +139,7 @@ module Denko
         @seg_remap     = 0x00
         @com_direction = 0x00
 
-        # Startup sequence. SPI needs 2 repeats for some reason.
-        startup_count = 1
-        startup_count = 2 if singleton_class.ancestors.include? Denko::SPI::Peripheral
+        # Startup sequence.
         startup_count.times do
           command [
             MULTIPLEX_RATIO,        rows - 1,
