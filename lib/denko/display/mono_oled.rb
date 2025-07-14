@@ -198,6 +198,10 @@ module Denko
         reflect_y
       end
 
+      def ram_x_offset
+        @ram_x_offset ||= self.class::RAM_X_OFFSET
+      end
+
       def draw_partial(buffer, x_start, x_finish, p_start, p_finish, color=1)
         # Set start column for all pages.
         x = x_start + ram_x_offset
@@ -227,10 +231,6 @@ module Denko
       end
 
       private
-
-      def ram_x_offset
-        @ram_x_offset ||= self.class::RAM_X_OFFSET
-      end
 
       def temp_command_buffer
         @temp_command_buffer ||= Array.new(3) { 0 }
