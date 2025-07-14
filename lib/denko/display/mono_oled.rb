@@ -32,15 +32,19 @@ module Denko
         # Double byte. Following byte sets value.
         ADDRESSING_MODE  = 0x20
           # Values:
-          #   0x00 = horizontal (Pages auto-increment. Used for SSD1306)
+          #   0x00 = horizontal (Pages auto-increment. Works for SSD1306, but unused.)
           #   0x01 = vertical
           #   0x02 = page       (Default. Page and column must be set each time. Needed on SH1106, SH1107)
-        ADDRESSING_MODE_DEFAULT = 0x00
+        ADDRESSING_MODE_DEFAULT = 0x02
 
         # Triple byte. Following 2 bytes sets value. For H/V addressing modes only.
         COLUMN_ADDRESS_RANGE = 0x21
         PAGE_ADDRESS_RANGE   = 0x22
           # For both: first value = min column/row, second value = max column/row
+
+        # Some controllers have more bytes per page than are connected to column lines.
+        # Set this constant in subclasses to offset first byte to match first line.
+        RAM_X_OFFSET = 0
 
       # Hardware Configuration Commands
         # Single byte. OR with value.
@@ -194,8 +198,27 @@ module Denko
         reflect_y
       end
 
-      def draw_partial(buffer, x_min, x_max, p_min, p_max)
-        raise NotImplementedError, "#draw_partial must be implemented for each class including MonoOLED"
+      def draw_partial(buffer, x_start, x_finish, p_start, p_finish, color=1)
+        x = x_start + ram_x_offset
+        x_lower = (x & 0b00001111)
+        x_upper = (x & 0b11110000) >> 4
+
+        (p_start..p_finish).each do |page|
+          # Set the page and column to start writing at.
+          command [PAGE_START | page, COLUMN_START_LOWER | x_lower, COLUMN_START_UPPER | x_upper]
+
+          # Get needed bytes for this page only.
+          src_start       = (columns * page) + x_start
+          src_end         = (columns * page) + x_finish
+          partial_buffer  = buffer[src_start..src_end]
+
+          # Send in chunks up to maximum transfer size.
+          partial_buffer.each_slice(transfer_limit) { |slice| data(slice) }
+        end
+      end
+
+      def ram_x_offset
+        @ram_x_offset ||= self.class::RAM_X_OFFSET
       end
     end
   end
