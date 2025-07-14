@@ -92,12 +92,14 @@ module Denko
 
           # Commands are I2C messages prefixed with 0x00.
           def command(bytes)
-            i2c_write([0x00] + bytes)
+            i2c_write(bytes.unshift(0x00))
+            bytes.shift
           end
 
           # Data are I2C messages prefixed with 0x40.
           def data(bytes)
-            i2c_write([0x40] + bytes)
+            i2c_write(bytes.unshift(0x40))
+            bytes.shift
           end
 
           # Data prefix always takes one byte, so subtract that.
