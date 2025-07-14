@@ -116,16 +116,7 @@ module Denko
       def mutate_spi
         singleton_class.class_eval do
           include SPICommon
-
-          # SPI needs 2 repeats of the startup sequence for some reason.
-          def startup_count
-            2
-          end
         end
-      end
-
-      def startup_count
-        1
       end
 
       after_initialize do
@@ -146,25 +137,22 @@ module Denko
         @com_direction = 0x00
 
         # Startup sequence.
-        startup_count.times do
-          command [
-            MULTIPLEX_RATIO,        rows - 1,
-            DISPLAY_OFFSET,         0x00,
-            START_LINE            | 0x00,
-            SEGMENT_REMAP         | @seg_remap,
-            COM_DIRECTION         | @com_direction,
-            COM_PIN_CONFIG,         com_pin_config,
-            PIXELS_FROM_RAM,
-            INVERT_OFF,
-            CLOCK,                  clock,
-            VCOM_DESELECT_LEVEL,    0x20,
-            PRECHARGE_PERIOD,       0xF1, # Charge period for internal charge pump
-            CHARGE_PUMP,            0x14, # Internal charge pump
-            ADDRESSING_MODE,        self.class::ADDRESSING_MODE_DEFAULT,
-            DISPLAY_ON
-          ]
-        end
-
+        command [
+          MULTIPLEX_RATIO,        rows - 1,
+          DISPLAY_OFFSET,         0x00,
+          START_LINE            | 0x00,
+          SEGMENT_REMAP         | @seg_remap,
+          COM_DIRECTION         | @com_direction,
+          COM_PIN_CONFIG,         com_pin_config,
+          PIXELS_FROM_RAM,
+          INVERT_OFF,
+          CLOCK,                  clock,
+          VCOM_DESELECT_LEVEL,    0x20,
+          PRECHARGE_PERIOD,       0xF1, # Charge period for internal charge pump
+          CHARGE_PUMP,            0x14, # Internal charge pump
+          ADDRESSING_MODE,        self.class::ADDRESSING_MODE_DEFAULT,
+          DISPLAY_ON
+        ]
         draw
       end
 
