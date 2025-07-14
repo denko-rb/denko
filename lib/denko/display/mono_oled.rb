@@ -204,21 +204,41 @@ module Denko
         x_upper = (x & 0b11110000) >> 4
 
         (p_start..p_finish).each do |page|
-          # Set the page and column to start writing at.
-          command [PAGE_START | page, COLUMN_START_LOWER | x_lower, COLUMN_START_UPPER | x_upper]
+          # Set start page and column
+          temp_command_buffer[0] = PAGE_START | page
+          temp_command_buffer[1] = COLUMN_START_LOWER | x_lower
+          temp_command_buffer[2] = COLUMN_START_UPPER | x_upper
+          command(temp_command_buffer)
 
-          # Get needed bytes for this page only.
-          src_start       = (columns * page) + x_start
-          src_end         = (columns * page) + x_finish
-          partial_buffer  = buffer[src_start..src_end]
+          # Copy bytes
+          src_start = (columns * page) + x_start
+          src_end   = (columns * page) + x_finish
+          length    = (src_end - src_start) + 1
+          (0...length).each { |i| temp_data_buffer[i] = buffer[src_start+i] }
 
-          # Send in chunks up to maximum transfer size.
-          partial_buffer.each_slice(transfer_limit) { |slice| data(slice) }
+          # Avoid sending extra bytes
+          temp_data_buffer[length-1..-1] = [] if temp_data_buffer.length < length
+
+          if temp_data_buffer.length > transfer_limit
+            temp_data_buffer.each_slice(transfer_limit) { |slice| data(slice) }
+          else
+            data(temp_data_buffer)
+          end
         end
       end
 
+      private
+
       def ram_x_offset
         @ram_x_offset ||= self.class::RAM_X_OFFSET
+      end
+
+      def temp_command_buffer
+        @temp_command_buffer ||= Array.new(3) { 0 }
+      end
+
+      def temp_data_buffer
+        @temp_data_buffer ||= Array.new(columns) { 0 }
       end
     end
   end
