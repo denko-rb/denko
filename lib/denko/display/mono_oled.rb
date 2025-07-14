@@ -80,10 +80,10 @@ module Denko
       before_initialize do
         bus = params[:bus] || params[:board]
 
-        if Denko.const_defined?("I2C") && Denko::I2C.const_defined?("BusCommon")
-          mutate_i2c if bus.is_a?(Denko::I2C::BusCommon)
-        elsif Denko.const_defined?("SPI") && Denko::SPI.const_defined?("BusCommon")
-          mutate_spi if bus.is_a?(Denko::SPI::BusCommon)
+        if Denko.const_defined?("I2C") && Denko::I2C.const_defined?("BusCommon") && bus.is_a?(Denko::I2C::BusCommon)
+          mutate_i2c
+        elsif Denko.const_defined?("SPI") && Denko::SPI.const_defined?("BusCommon") && bus.is_a?(Denko::SPI::BusCommon)
+          mutate_spi
         else
           raise ArgumentError, "#{self.class} must be connected to either an I2C or SPI bus"
         end
