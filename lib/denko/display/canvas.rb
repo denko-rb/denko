@@ -339,27 +339,25 @@ module Denko
       # BITMAP TEXT
       #
       def text(str, color:current_color)
-        str.to_s.split("").each { |char| draw_char(char, color: color) }
+        str.each_char do |char|
+          # 0th character in font is SPACE. Offset ASCII code and show ? if character doesn't exist in font.
+          index = char.ord - 32
+          index = 31 if (index < 0 || index > @font_last_character)
+          char_map = @font_characters[index]
+
+          # Offset by scaled height, since bottom left of char starts at text cursor.
+          x = text_cursor[0]
+          y = text_cursor[1] + 1 - (@font_height * @font_scale)
+
+          # Draw it
+          _char(char_map, x, y, @font_width, @font_scale, color)
+
+          # Increment the text cursor, scaling width.
+          self.text_cursor[0] += @font_width * @font_scale
+        end
       end
 
-      def draw_char(char, color:current_color)
-        # 0th character in font is SPACE. Offset ASCII code and show ? if character doesn't exist in font.
-        index = char.ord - 32
-        index = 31 if (index < 0 || index > @font_last_character)
-        char_map = @font_characters[index]
-
-        # Offset by scaled height, since bottom left of char starts at text cursor.
-        x = text_cursor[0]
-        y = text_cursor[1] + 1 - (@font_height * @font_scale)
-
-        # Draw it
-        _draw_char(char_map, x, y, @font_width, @font_scale, color)
-
-        # Increment the text cursor, scaling width.
-        self.text_cursor[0] += @font_width * @font_scale
-      end
-
-      def _draw_char(byte_array, x, y, width, scale, color=current_color)
+      def _char(byte_array, x, y, width, scale, color=current_color)
         byte_array.each_slice(width) do |slice|
           slice.each_with_index do |byte, col_offset|
             8.times do |bit|
