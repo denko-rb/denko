@@ -4,7 +4,7 @@ module Denko
       include Behaviors::MultiPin
       include Behaviors::Lifecycle
 
-      def initialize_pins(options={})
+      def initialize_pins
         proxy_pin :step,      DigitalIO::Output
         proxy_pin :direction, DigitalIO::Output
 

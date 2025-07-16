@@ -2,12 +2,12 @@ require_relative '../test_helper'
 
 class MultiPinComponent
   include Denko::Behaviors::MultiPin
-  
-  def initialize_pins(options={})
+
+  def initialize_pins
     require_pin :one
     proxy_pin   :two,         Denko::DigitalIO::Output
     proxy_pin   :maybe,       Denko::DigitalIO::Input,  optional: true
-    proxy_pin   :other_board, Denko::DigitalIO::Output, board: options[:board2], optional: true
+    proxy_pin   :other_board, Denko::DigitalIO::Output, board: params[:board2], optional: true
   end
 end
 
@@ -35,7 +35,7 @@ class MultiPinTest < Minitest::Test
     end
     MultiPinComponent.new board: board, pins: { one: 9, two:10 }
   end
-  
+
   def test_has_nil_pin
     assert_nil part.pin
   end
@@ -48,7 +48,7 @@ class MultiPinTest < Minitest::Test
   def test_build_proxy_on_other_board
     assert_equal board2, part.proxies[:other_board].board
   end
-  
+
   def attr_reader_exists_for_optional_pins
     part = MultiPinComponent.new board: board, pins: { one: 9, two:10 }
     assert_nil part.maybe

@@ -7,8 +7,8 @@ module Denko
       BUSY_WAIT_TIME = 0.005
       RESET_TIME     = 0.010
 
-      def initialize_pins(options={})
-        super(options)
+      def initialize_pins
+        super
         proxy_pin :busy, DigitalIO::Input, board: bus.board
         busy.stop
       end

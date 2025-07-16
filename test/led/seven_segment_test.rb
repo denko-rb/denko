@@ -23,7 +23,7 @@ class SevenSegmentLEDTest < Minitest::Test
 
   def test_clears_during_initialize
     # Avoid reusing pins which would raise a Board error.
-    def part.initialize_pins(options={}); end
+    def part.initialize_pins; end
 
     mock = Minitest::Mock.new.expect :call, nil
     part.stub(:clear, mock) do
@@ -34,7 +34,7 @@ class SevenSegmentLEDTest < Minitest::Test
 
   def test_turns_on_during_initialize
     # Avoid reusing pins which would raise a Board error.
-    def part.initialize_pins(options={}); end
+    def part.initialize_pins; end
 
     mock = Minitest::Mock.new.expect :call, nil
     part.stub(:on, mock) do

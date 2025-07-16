@@ -41,8 +41,8 @@ module Denko
       end
 
       # Chip select pin is always treated as a subcomponent
-      def initialize_pins(params={})
-        super(params)
+      def initialize_pins
+        super
         proxy_pin :select, ChipSelect, mode: :output
       end
 

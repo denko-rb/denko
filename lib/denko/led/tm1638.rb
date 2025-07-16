@@ -8,7 +8,7 @@ module Denko
       DIGIT_COUNT = 8
       LED_COUNT   = 8
 
-      def initialize_pins(options={})
+      def initialize_pins
         proxy_pin :clk, DigitalIO::CBitBang
         proxy_pin :dio, DigitalIO::CBitBang
         proxy_pin :stb, DigitalIO::Output

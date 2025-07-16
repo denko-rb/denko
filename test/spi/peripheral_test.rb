@@ -3,8 +3,8 @@ require_relative '../test_helper'
 class SPITester
   include Denko::SPI::Peripheral
 
-  def initialize_pins(options={})
-    super(options)
+  def initialize_pins
+    super
     proxy_pin :other_pin, Denko::DigitalIO::Output
   end
 

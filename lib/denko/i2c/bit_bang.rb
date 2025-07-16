@@ -5,7 +5,7 @@ module Denko
       include Behaviors::Lifecycle
       include BusCommon
 
-      def initialize_pins(options={})
+      def initialize_pins
         proxy_pin :scl, DigitalIO::CBitBang
         proxy_pin :sda, DigitalIO::CBitBang
       end

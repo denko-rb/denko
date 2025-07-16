@@ -3,7 +3,7 @@ module Denko
     class RGB
       include Behaviors::MultiPin
 
-      def initialize_pins(options={})
+      def initialize_pins
         proxy_pin :red,   LED::Base
         proxy_pin :green, LED::Base
         proxy_pin :blue,  LED::Base

@@ -7,7 +7,7 @@ module Denko
       ALL_OFF = [0,0,0,0,0,0,0]
       BLANK = " "
 
-      def initialize_pins(options={})
+      def initialize_pins
         [:a, :b, :c, :d, :e, :f, :g].each do |symbol|
           proxy_pin(symbol, DigitalIO::Output)
         end

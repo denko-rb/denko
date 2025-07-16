@@ -8,7 +8,7 @@ module Denko
       # Speed of sound in meters per second.
       SPEED_OF_SOUND = 343.0
 
-      def initialize_pins(options={})
+      def initialize_pins
         proxy_pin :trigger, DigitalIO::Output
         proxy_pin :echo,    DigitalIO::Input
       end

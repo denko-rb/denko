@@ -9,8 +9,8 @@ module Denko
         run_before_initialize_cbs
 
         initialize_board
-        convert_pins(params)
-        initialize_pins(params)
+        convert_pins
+        initialize_pins
         register
 
         run_after_initialize_cbs
@@ -38,8 +38,8 @@ module Denko
       # Behaviors::Component only requires a board.
       # Include modules from Setup or override this to use pins.
       #
-      def convert_pins(options={});      end
-      def initialize_pins(options={});   end
+      def convert_pins;     end
+      def initialize_pins;  end
       alias :initialize_pin :initialize_pins
     end
   end

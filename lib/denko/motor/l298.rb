@@ -6,7 +6,7 @@ module Denko
 
       attr_reader :speed
 
-      def initialize_pins(options={})
+      def initialize_pins
         proxy_pin :direction1,  DigitalIO::Output
         proxy_pin :direction2,  DigitalIO::Output
         proxy_pin :enable,      PulseIO::PWMOutput

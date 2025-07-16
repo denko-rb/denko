@@ -7,7 +7,7 @@ module Denko
       BYTE_COUNT  = 4
       DIGIT_COUNT = 4
 
-      def initialize_pins(options={})
+      def initialize_pins
         proxy_pin :clk, DigitalIO::Output
         proxy_pin :dio, DigitalIO::Output
       end

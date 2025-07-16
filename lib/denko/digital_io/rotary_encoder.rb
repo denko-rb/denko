@@ -20,7 +20,7 @@ module Denko
         [:clk, :clock, :dt, :data].each { |key| params[:pins].delete(key) }
       end
 
-      def initialize_pins(params={})
+      def initialize_pins
         proxy_pin :a, DigitalIO::Input
         proxy_pin :b, DigitalIO::Input
       end

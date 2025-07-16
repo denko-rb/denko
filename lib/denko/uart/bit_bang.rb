@@ -14,7 +14,7 @@ module Denko
 
       attr_reader :baud
 
-      def initialize_pins(options={})
+      def initialize_pins
         require_pin(:tx)
         proxy_pin(:rx, UARTRxPin)
       end

@@ -85,7 +85,7 @@ module Denko
 
       attr_writer :columns, :rows, :function, :data_lines, :row_offsets, :control, :entry_mode
 
-      def initialize_pins(options={})
+      def initialize_pins
         # All the required pins.
         [:rs, :enable, :d4, :d5, :d6, :d7].each do |symbol|
           proxy_pin(symbol, DigitalIO::Output)

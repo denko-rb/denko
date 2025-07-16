@@ -20,7 +20,7 @@ module Denko
         raise ArgumentError, "clock pin required" unless param_pins[:clock]
       end
 
-      def initialize_pins(options={})
+      def initialize_pins
         proxy_pin :clock,   DigitalIO::CBitBang
         proxy_pin :output,  DigitalIO::CBitBang if pins[:output]
         proxy_pin :input,   DigitalIO::CBitBang if pins[:input]

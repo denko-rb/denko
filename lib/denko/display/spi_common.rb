@@ -8,8 +8,8 @@ module Denko
       # SPI displays use a D/C pin to toggle whether bytes being sent are data or commands.
       # Most also have a RESET pin which is pulsed low to initalize, then held high.
       #
-      def initialize_pins(options={})
-        super(options)
+      def initialize_pins
+        super
         proxy_pin :dc,    DigitalIO::Output
         proxy_pin :reset, DigitalIO::Output, optional: true
         reset.high if reset

@@ -23,7 +23,7 @@ module Denko
         hash
       end
 
-      def convert_pins(options={})
+      def convert_pins
         @pins = {}
         params[:pins].each do |key,pin|
           self.pins[key] = pin ? board.convert_pin(pin) : nil
