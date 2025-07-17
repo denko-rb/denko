@@ -62,7 +62,8 @@ module Denko
         (p_start..p_finish).each do |page|
           src_start = (columns * page) + x_start
           src_end   = (columns * page) + x_finish
-          temp_buffer += buffer[src_start..src_end]
+          length    = (src_end - src_start) + 1
+          (0...length).each { |i| temp_buffer << buffer[src_start+i].ord }
         end
         temp_buffer
       end

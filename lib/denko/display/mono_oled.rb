@@ -205,7 +205,7 @@ module Denko
           src_start = (columns * page) + x_start
           src_end   = (columns * page) + x_finish
           length    = (src_end - src_start) + 1
-          (0...length).each { |i| temp_data_buffer[i] = buffer[src_start+i] }
+          (0...length).each { |i| temp_data_buffer[i] = buffer[src_start+i].ord }
 
           # Remove extra data bytes before sending.
           temp_data_buffer[length-1..-1] = [] if temp_data_buffer.length < length

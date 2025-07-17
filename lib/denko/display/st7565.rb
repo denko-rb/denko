@@ -155,6 +155,8 @@ module Denko
           src_start       = (columns * page) + x_start
           src_end         = (columns * page) + x_finish
           partial_buffer  = buffer[src_start..src_end]
+          partial_buffer  = []
+          (0...length).each { |i| partial_buffer[i] = buffer[src_start+i].ord }
 
           # Send in chunks up to maximum transfer size.
           partial_buffer.each_slice(transfer_limit) { |slice| data(slice) }

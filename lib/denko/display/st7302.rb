@@ -176,12 +176,12 @@ module Denko
             b1_index = (page * columns)     + x+1
             b2_index = ((page+1) * columns) + x+1
             b3_index = ((page+2) * columns) + x+1
-            a1 = buffer[a1_index] || 0
-            a2 = buffer[a2_index] || 0
-            a3 = buffer[a3_index] || 0
-            b1 = buffer[b1_index] || 0
-            b2 = buffer[b2_index] || 0
-            b3 = buffer[b3_index] || 0
+            a1 = buffer[a1_index].ord || 0
+            a2 = buffer[a2_index].ord || 0
+            a3 = buffer[a3_index].ord || 0
+            b1 = buffer[b1_index].ord || 0
+            b2 = buffer[b2_index].ord || 0
+            b3 = buffer[b3_index].ord || 0
             # Transform them to match the RAM format, and add to their respective temp pages.
             upper_page += [pack_lower4(a1, b1), pack_upper4(a1, b1), pack_lower4(a2, b2)]
             lower_page += [pack_upper4(a2, b2), pack_lower4(a3, b3), pack_upper4(a3, b3)]

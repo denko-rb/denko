@@ -15,7 +15,7 @@ module Denko
         # Works for mono LCDs and OLEDs, or mono/multi-color e-paper.
         @colors = colors
         @framebuffers = []
-        @colors.times { @framebuffers << Array.new(@bytes) { 0x00 } }
+        @colors.times { @framebuffers << ("\x00" * @bytes).b }
         # Only first framebuffer is used for mono displays.
         @framebuffer = @framebuffers.first
 
@@ -33,14 +33,19 @@ module Denko
       end
 
       def clear
-        @framebuffers.each { |fb| fb.fill 0x00 }
+        @framebuffers.each do |fb|
+          @bytes.times do |i|
+            fb[i] = "\x00".b
+          end
+        end
       end
 
       def fill
-        # Clear all buffers, then fill the first one, which is the only
-        # one for mono displays, black for multi-color e-paper.
         clear
-        @framebuffers.first.fill 0xFF
+        # Only fill first one, which is mono, or black on multi-color e-paper.
+        @bytes.times do |i|
+          @framebuffers.first[i] = "\xff".b
+        end
       end
 
       #
@@ -52,7 +57,7 @@ module Denko
 
         # Go through framebuffers and return that color when bit is set.
         @framebuffers.each_with_index do |fb, index|
-          return index+1 if ((fb[byte] >> bit) & 0b1 == 1)
+          return index+1 if ((fb[byte].ord >> bit) & 0b1 == 1)
         end
 
         # If bit wasn't set in any framebuffer, color is 0.
@@ -82,11 +87,13 @@ module Denko
         # Set pixel bit in that color's buffer. Clear in others.
         # When color == 0, clears in all buffers and sets in none.
         for i in 1..colors
+          data = @framebuffers[i-1][byte].ord
           if (color == i)
-            @framebuffers[i-1][byte] |= (0b1 << bit)
+            data |= (0b1 << bit)
           else
-            @framebuffers[i-1][byte] &= ~(0b1 << bit)
+            data &= ~(0b1 << bit)
           end
+          @framebuffers[i-1][byte] = data.chr.b
         end
       end
 

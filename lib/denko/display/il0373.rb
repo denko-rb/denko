@@ -169,7 +169,7 @@ module Denko
         (x_start..x_finish).each do |x|
           (p_start..p_finish).to_a.reverse.each do |page|
             index = (page * columns) + x
-            transformed_buffer << buffer[index]
+            transformed_buffer << buffer[index].ord
           end
         end
         transformed_buffer.each_slice(transfer_limit) { |slice| data(slice) }
