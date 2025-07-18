@@ -1,5 +1,5 @@
 #
-# Example using the SSD160 E-Paper over SPI.
+# Example using the SSD1681 E-Paper over SPI.
 #
 require 'bundler/setup'
 require 'denko'
