@@ -193,32 +193,23 @@ module Denko
       def draw_partial(buffer, x_start, x_finish, p_start, p_finish, color=1)
         # Set start column for all pages.
         x = x_start + ram_x_offset
-        temp_command_array[1] = COLUMN_START_LOWER | (x & 0x0F)
-        temp_command_array[2] = COLUMN_START_UPPER | (x & 0xF0) >> 4
+        x_lower = (x & 0x0F)
+        x_upper = (x & 0xF0) >> 4
+        address_byte_array = [PAGE_START, COLUMN_START_LOWER | x_lower, COLUMN_START_UPPER | x_upper]
 
         (p_start..p_finish).each do |page|
-          # Set start page and write address command.
-          temp_command_array[0] = PAGE_START | page
-          command(temp_command_array)
+          # Update start page and write address command.
+          address_byte_array[0] = PAGE_START | page
+          command(address_byte_array)
 
-          fb_partial_page_to_array(buffer, page, x_start, x_finish, temp_data_array)
+          data_byte_array = partial_page_to_array(buffer, page, x_start, x_finish)
 
-          if temp_data_array.length > transfer_limit
-            temp_data_array.each_slice(transfer_limit) { |slice| data(slice) }
+          if data_byte_array.length > transfer_limit
+            data_byte_array.each_slice(transfer_limit) { |slice| data(slice) }
           else
-            data(temp_data_array)
+            data(data_byte_array)
           end
         end
-      end
-
-      private
-
-      def temp_command_array
-        @temp_command_array ||= Array.new(3) { 0 }
-      end
-
-      def temp_data_array
-        @temp_data_array ||= Array.new(columns) { 0 }
       end
     end
   end

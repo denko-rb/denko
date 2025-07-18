@@ -53,14 +53,11 @@ module Denko
       def refresh
       end
 
-      def fb_partial_page_to_array(fb_str, page, x_start, x_finish, arr_out)
+      def partial_page_to_array(fb_str, page, x_start, x_finish)
         # Copy bytes from framebuffer String into Integer Array.
-        start_byte  = (columns * page) + x_start
-        length      = (x_finish - x_start) + 1
-        arr_out[0, length] = fb_str[start_byte, length].unpack('C*')
-
-        # Truncate Array as neeed.
-        arr_out[length-1..-1] = [] if arr_out.length < length
+        first   = (columns * page) + x_start
+        last    = (columns * page) + x_finish
+        fb_str[first..last].unpack('C*')
       end
 
       def draw(x_start=x_min, x_finish=x_max, y_start=y_min, y_finish=y_max)

@@ -151,22 +151,16 @@ module Denko
           # Set start page and column.
           command [PASET | page, CASET_LOWER | x_lower4, CASET_UPPER | x_upper4]
 
-          fb_partial_page_to_array(buffer, page, x_start, x_finish, temp_data_array)
+          data_byte_array = partial_page_to_array(buffer, page, x_start, x_finish)
 
-          if temp_data_array.length > transfer_limit
-            temp_data_array.each_slice(transfer_limit) { |slice| data(slice) }
+          if data_byte_array.length > transfer_limit
+            data_byte_array.each_slice(transfer_limit) { |slice| data(slice) }
           else
-            data(temp_data_array)
+            data(data_byte_array)
           end
 
           command [RMW_END]
         end
-      end
-
-      private
-
-      def temp_data_array
-        @temp_data_array ||= Array.new(columns) { 0 }
       end
     end
   end
