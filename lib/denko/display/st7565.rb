@@ -151,17 +151,22 @@ module Denko
           # Set start page and column.
           command [PASET | page, CASET_LOWER | x_lower4, CASET_UPPER | x_upper4]
 
-          # Get needed bytes for this page only.
-          src_start       = (columns * page) + x_start
-          src_end         = (columns * page) + x_finish
-          partial_buffer  = buffer[src_start..src_end]
-          partial_buffer  = []
-          (0...length).each { |i| partial_buffer[i] = buffer[src_start+i].ord }
+          fb_partial_page_to_array(buffer, page, x_start, x_finish, temp_data_array)
 
-          # Send in chunks up to maximum transfer size.
-          partial_buffer.each_slice(transfer_limit) { |slice| data(slice) }
+          if temp_data_array.length > transfer_limit
+            temp_data_array.each_slice(transfer_limit) { |slice| data(slice) }
+          else
+            data(temp_data_array)
+          end
+
           command [RMW_END]
         end
+      end
+
+      private
+
+      def temp_data_array
+        @temp_data_array ||= Array.new(columns) { 0 }
       end
     end
   end

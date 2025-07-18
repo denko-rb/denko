@@ -53,19 +53,14 @@ module Denko
       def refresh
       end
 
-      def get_partial_buffer(buffer, x_start, x_finish, p_start, p_finish)
-        # If bounds == max bounds, just return the buffer.
-        return buffer if (x_start == x_min) && (x_finish == x_max) && (p_start == p_min) && (p_finish == p_max)
+      def fb_partial_page_to_array(fb_str, page, x_start, x_finish, arr_out)
+        # Copy bytes from framebuffer String into Integer Array.
+        start_byte  = (columns * page) + x_start
+        length      = (x_finish - x_start) + 1
+        arr_out[0, length] = fb_str[start_byte, length].unpack('C*')
 
-        # Copy bytes for the given rectangle into a temp buffer.
-        temp_buffer = []
-        (p_start..p_finish).each do |page|
-          src_start = (columns * page) + x_start
-          src_end   = (columns * page) + x_finish
-          length    = (src_end - src_start) + 1
-          (0...length).each { |i| temp_buffer << buffer[src_start+i].ord }
-        end
-        temp_buffer
+        # Truncate Array as neeed.
+        arr_out[length-1..-1] = [] if arr_out.length < length
       end
 
       def draw(x_start=x_min, x_finish=x_max, y_start=y_min, y_finish=y_max)

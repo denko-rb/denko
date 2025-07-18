@@ -191,12 +191,19 @@ module Denko
         wake
       end
 
-      def draw_partial(buffer, x_start, x_finish, p_start, p_finish, color=1)
-        partial_buffer = get_partial_buffer(buffer, x_start, x_finish, p_start, p_finish)
+      def refresh
+        booster_soft_start
+        set_driver_output_control
+        set_display_update_control
+        set_display_update_sequence(0xF7)
+        master_activate
+        busy_wait
+      end
 
-        # These displays treat bit 7 of a byte as the top pixel, but canvas uses bit 0 as top.
-        # Bytes are sent reversed to fix this, essentially rotating the image by 180 degrees byte-wise.
-        # Transform framebuffer coordinates to rotated hardware coordinates before sending.
+      def draw_partial(buffer, x_start, x_finish, p_start, p_finish, color=1)
+        # These use bit 7 as top pixel of a byte, but Canvas uses bit 0 as top.
+        # Bytes are sent in reverse order, essentially rotating image data by 180 degrees.
+        # Rotate the bounds too, so data will be written to correct part of the screen.
         x1 = x_max - x_finish
         x2 = x_max - x_start
         p1 = p_max - p_finish
@@ -211,16 +218,25 @@ module Denko
         # Send as black by default, or red if specified
         ram_select = (color == 2) ? RAM_WRITE_RED : RAM_WRITE_BW
         command [ram_select]
-        partial_buffer.reverse.each_slice(transfer_limit) { |slice| data(slice) }
+
+        # Reverse in y direction.
+        (p_start..p_finish).to_a.reverse.each do |page|
+          fb_partial_page_to_array(buffer, page, x_start, x_finish, temp_data_array)
+          # Reverse in x direction to finish rotation.
+          temp_data_array.reverse!
+
+          if temp_data_array.length > transfer_limit
+            temp_data_array.each_slice(transfer_limit) { |slice| data(slice) }
+          else
+            data(temp_data_array)
+          end
+        end
       end
 
-      def refresh
-        booster_soft_start
-        set_driver_output_control
-        set_display_update_control
-        set_display_update_sequence(0xF7)
-        master_activate
-        busy_wait
+      private
+
+      def temp_data_array
+        @temp_data_array ||= Array.new(columns) { 0 }
       end
     end
   end

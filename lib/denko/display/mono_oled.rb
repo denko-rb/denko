@@ -193,39 +193,32 @@ module Denko
       def draw_partial(buffer, x_start, x_finish, p_start, p_finish, color=1)
         # Set start column for all pages.
         x = x_start + ram_x_offset
-        temp_command_buffer[1] = COLUMN_START_LOWER | (x & 0x0F)
-        temp_command_buffer[2] = COLUMN_START_UPPER | (x & 0xF0) >> 4
+        temp_command_array[1] = COLUMN_START_LOWER | (x & 0x0F)
+        temp_command_array[2] = COLUMN_START_UPPER | (x & 0xF0) >> 4
 
         (p_start..p_finish).each do |page|
           # Set start page and write address command.
-          temp_command_buffer[0] = PAGE_START | page
-          command(temp_command_buffer)
+          temp_command_array[0] = PAGE_START | page
+          command(temp_command_array)
 
-          # Copy data bytes from buffer.
-          src_start = (columns * page) + x_start
-          src_end   = (columns * page) + x_finish
-          length    = (src_end - src_start) + 1
-          (0...length).each { |i| temp_data_buffer[i] = buffer[src_start+i].ord }
+          fb_partial_page_to_array(buffer, page, x_start, x_finish, temp_data_array)
 
-          # Remove extra data bytes before sending.
-          temp_data_buffer[length-1..-1] = [] if temp_data_buffer.length < length
-
-          if temp_data_buffer.length > transfer_limit
-            temp_data_buffer.each_slice(transfer_limit) { |slice| data(slice) }
+          if temp_data_array.length > transfer_limit
+            temp_data_array.each_slice(transfer_limit) { |slice| data(slice) }
           else
-            data(temp_data_buffer)
+            data(temp_data_array)
           end
         end
       end
 
       private
 
-      def temp_command_buffer
-        @temp_command_buffer ||= Array.new(3) { 0 }
+      def temp_command_array
+        @temp_command_array ||= Array.new(3) { 0 }
       end
 
-      def temp_data_buffer
-        @temp_data_buffer ||= Array.new(columns) { 0 }
+      def temp_data_array
+        @temp_data_array ||= Array.new(columns) { 0 }
       end
     end
   end
