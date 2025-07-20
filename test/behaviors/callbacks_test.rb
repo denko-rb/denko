@@ -67,13 +67,12 @@ class CallbacksTest < Minitest::Test
     assert_equal [@callback1], part.callbacks[:persistent]
   end
 
-  def test_update_runs_callbacks_and_removes_read_callbacks
+  def test_update_runs_callbacks
     cb1 = Minitest::Mock.new.expect :call, nil
     cb2 = Minitest::Mock.new.expect :call, nil
     part.add_callback        { cb1.call }
     part.add_callback(:read) { cb2.call }
     part.update("data")
-    assert_nil part.callbacks[:read]
     cb1.verify
     cb2.verify
   end

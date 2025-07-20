@@ -33,13 +33,10 @@ module Denko
                 end
               end
             end
-            remove_callback(:read)
             return update_state(filtered_data)
           end
         end
 
-        # No or invalid data. Remove :read callback anyway.
-        remove_callback(:read)
         return nil
       end
 

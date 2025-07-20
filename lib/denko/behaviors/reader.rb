@@ -31,10 +31,10 @@ module Denko
         sleep READ_WAIT_TIME while (@read_type != :idle)
 
         @read_type = :regular
-        add_callback(:read, &block) if block_given?
         reader.call(*args, **kwargs)
 
         sleep READ_WAIT_TIME while (@read_type != :idle)
+        block.call(@read_result) if block_given?
         @read_result
       end
 
