@@ -12,7 +12,7 @@ module Denko
       end
 
       def _read
-        board.digital_read(pin)
+        board.digital_read(@pin)
       end
 
       def _listen(divider=nil)
