@@ -38,19 +38,17 @@ module Denko
         board.analog_read(@pin, @negative_pin, @gain, @sample_rate)
       end
 
-      # Optimized #read instead of Behaviors::Reader default.
       if Denko.mruby?
-        def read
+        # Optimized to bypass *args and **kwargs. Behaves like CRuby.
+        def read(&block)
           board.analog_read(@pin, @negative_pin, @gain, @sample_rate)
+          block.call(@read_result) if block_given?
           @read_result
         end
-      else
-        def read
-          sleep READ_WAIT_TIME while (@read_type != :idle)
-          @read_type = :regular
-          board.analog_read(@pin, @negative_pin, @gain, @sample_rate)
-          sleep READ_WAIT_TIME while (@read_type != :idle)
-          @read_result
+
+        # Bypasses *args, **kwargs, &block, #update, @read_result and @state.
+        def read_raw
+          board.analog_read_raw(@pin)
         end
       end
 
