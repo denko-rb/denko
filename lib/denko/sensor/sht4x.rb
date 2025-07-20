@@ -20,16 +20,11 @@ module Denko
       }
 
       after_initialize do
+        @state    = { temperature: nil, humidity: nil }
+        @reading  = { temperature: nil, humidity: nil }
+
         reset
         self.repeatability = :high
-      end
-
-      def state
-        @state ||= { temperature: nil, humidity: nil }
-      end
-
-      def reading
-        @reading ||= { temperature: nil, humidity: nil }
       end
 
       def repeatability=(key)
@@ -48,27 +43,25 @@ module Denko
         # Temperature is bytes 0 to 2: MSB, LSB, CRC
         if calculate_crc(bytes[0..2]) == bytes[2]
           t_raw = (bytes[0] << 8) | bytes[1]
-          reading[:temperature] = (175 * t_raw / 65535.0) - 45
+          @reading[:temperature] = (175 * t_raw / 65535.0) - 45
         else
-          reading[:temperature] = nil
+          @reading[:temperature] = nil
         end
 
         # Humidity is bytes 3 to 5: MSB, LSB, CRC
         if calculate_crc(bytes[3..5]) == bytes[5]
           h_raw = (bytes[3] << 8) | bytes[4]
-          reading[:humidity] = 100 * h_raw / 65535.0
+          @reading[:humidity] = 100 * h_raw / 65535.0
         else
-          reading[:humidity] = nil
+          @reading[:humidity] = nil
         end
 
-        reading
+        @reading
       end
 
-      def update_state(reading)
-        @state_mutex.lock
-        @state[:temperature] = reading[:temperature]
-        @state[:humidity]    = reading[:humidity]
-        @state_mutex.unlock
+      def update_state(hash)
+        @state[:temperature] = hash[:temperature]
+        @state[:humidity]    = hash[:humidity]
         @state
       end
 

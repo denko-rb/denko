@@ -27,37 +27,6 @@ class CallbacksTest < Minitest::Test
     @part ||= CallbackComponent.new(board: board, pin: 1)
   end
 
-  def callback_mutex_is_correct_class
-    if (RUBY_ENGINE == "ruby")
-      assert_equal Denko::MutexStub, part.instance_variable_get(:@callback_mutex).class
-    else
-      assert_equal Mutex, part.instance_variable_get(:@callback_mutex).class
-    end
-  end
-
-  def test_callback_mutex
-    callback = Proc.new{}
-    lock_mock = Minitest::Mock.new
-    2.times {lock_mock.expect(:call, nil)}
-
-    unlock_mock = Minitest::Mock.new
-    2.times {unlock_mock.expect(:call, nil)}
-
-    mutex = part.instance_variable_get(:@callback_mutex)
-    mutex.stub(:lock, lock_mock) do
-      mutex.stub(:unlock, unlock_mock) do
-        part.callbacks
-        assert_equal({}, part.callbacks)
-        part.add_callback(:key, &callback)
-        assert part.callbacks[:key]
-        part.remove_callbacks(:key)
-        assert_equal({}, part.callbacks)
-      end
-    end
-    lock_mock.verify
-    unlock_mock.verify
-  end
-
   def test_add_callback
     callback = Proc.new{}
     part.add_callback(&callback)
@@ -77,10 +46,18 @@ class CallbacksTest < Minitest::Test
     part.add_callback(:read, &@callback2)
   end
 
+  def test_add_callback
+    add_two_callbacks
+    expected = { persistent: [@callback1], read: [@callback2] }
+    assert_equal expected, part.callbacks
+  end
+
+
   def test_remove_callback
     add_two_callbacks
     part.remove_callbacks
-    assert_equal({}, part.callbacks)
+    expected = {}
+    assert_equal expected, part.callbacks
   end
 
   def test_remove_callback_with_key

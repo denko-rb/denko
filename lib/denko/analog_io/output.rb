@@ -14,7 +14,7 @@ module Denko
 
       def write(value)
         @board.dac_write(@pin, value)
-        self.state = value
+        @state = value
       end
     end
   end

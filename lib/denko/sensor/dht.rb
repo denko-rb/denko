@@ -8,16 +8,11 @@ module Denko
       include HumidityHelper
 
       after_initialize do
+        @state    = { temperature: nil, humidity: nil }
+        @reading  = { temperature: nil, humidity: nil }
+
         # Small delay on startup to prevent Linux from reading too early.
         sleep 0.100
-      end
-
-      def state
-        @state ||= { temperature: nil, humidity: nil }
-      end
-
-      def reading
-        @reading ||= { temperature: nil, humidity: nil }
       end
 
       def _read
@@ -48,17 +43,15 @@ module Denko
         end
         return { error: 'CRC failure' } unless crc(bytes)
 
-        reading[:temperature] = ((bytes[2] << 8) | bytes[3]).to_f / 10
-        reading[:humidity]    = ((bytes[0] << 8) | bytes[1]).to_f / 10
+        @reading[:temperature] = ((bytes[2] << 8) | bytes[3]).to_f / 10
+        @reading[:humidity]    = ((bytes[0] << 8) | bytes[1]).to_f / 10
 
-        reading
+        @reading
       end
 
-      def update_state(reading)
-        @state_mutex.lock
-        @state[:temperature] = reading[:temperature]
-        @state[:humidity]    = reading[:humidity]
-        @state_mutex.unlock
+      def update_state(hash)
+        @state[:temperature] = hash[:temperature]
+        @state[:humidity]    = hash[:humidity]
         @state
       end
 

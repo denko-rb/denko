@@ -18,15 +18,15 @@ class BusControllerAddressedTest < Minitest::Test
   def part
     @part ||= AddressedBus.new(board: board)
   end
-  
+
   def test_has_mutex
-    assert_equal part.mutex.class, Mutex
+    assert_equal Mutex, part.mutex.class
   end
-  
+
   def test_components
     peripheral = AddressedPeripheral.new(bus: part, address: 1)
     assert_equal part.components, [peripheral]
-    
+
     part.remove_component peripheral
     assert_equal part.components, []
   end

@@ -29,7 +29,7 @@ jobs:
     strategy:
       matrix:
         ruby-version:
-          ["2.7", "3.4", "head", "jruby-9", "jruby-10", "truffleruby-24"]
+          ["2.7", "3.4", "head"]
 
     steps:
       - name: Checkout

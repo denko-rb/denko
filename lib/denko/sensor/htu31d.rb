@@ -63,15 +63,10 @@ module Denko
       end
 
       after_initialize do
+        @state    = { temperature: nil, humidity: nil }
+        @reading  = { temperature: nil, humidity: nil }
+
         reset
-      end
-
-      def state
-        @state ||= { temperature: nil, humidity: nil }
-      end
-
-      def reading
-        @reading ||= { temperature: nil, humidity: nil }
       end
 
       def reset
@@ -138,29 +133,27 @@ module Denko
         # Temperature
         t_raw = (bytes[0] << 8) | bytes[1]
         if calculate_crc(t_raw) != bytes[2]
-          reading[:temperature] = nil
+          @reading[:temperature] = nil
         else
-          reading[:temperature] = (165 * t_raw.to_f / 65535) - 40
+          @reading[:temperature] = (165 * t_raw.to_f / 65535) - 40
         end
 
         # Humidity
         h_raw = (bytes[3] << 8) | bytes[4]
         if calculate_crc(h_raw) != bytes[5]
-          reading[:humidity] = nil
+          @reading[:humidity] = nil
         else
-          reading[:humidity] = h_raw.to_f / 655.35
+          @reading[:humidity] = h_raw.to_f / 655.35
         end
 
         # Ignore entire reading if either CRC failed.
-        return nil unless (reading[:temperature] && reading[:humidity])
-        reading
+        return nil unless (@reading[:temperature] && @reading[:humidity])
+        @reading
       end
 
-      def update_state(reading)
-        @state_mutex.lock
-        @state[:temperature] = reading[:temperature]
-        @state[:humidity]    = reading[:humidity]
-        @state_mutex.unlock
+      def update_state(hash)
+        @state[:temperature] = hash[:temperature]
+        @state[:humidity]    = hash[:humidity]
         @state
       end
 

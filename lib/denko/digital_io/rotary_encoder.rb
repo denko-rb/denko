@@ -26,6 +26,9 @@ module Denko
       end
 
       after_initialize do
+        @state    = { count: 0, angle: 0 }
+        @reading  = { count: 0, angle: 0, change: 0 }
+
         a.debounce_time = debounce_time
         b.debounce_time = debounce_time
         a.listen(divider)
@@ -64,14 +67,6 @@ module Denko
         @degrees_per_count ||= (360 / counts_per_revolution.to_f)
       end
 
-      def state
-        @state ||= { count: 0, angle: 0 }
-      end
-
-      def reading
-        @reading ||= { count: 0, angle: 0, change: 0 }
-      end
-
       def angle
         state[:angle]
       end
@@ -98,30 +93,19 @@ module Denko
 
       #
       # Take data (+/- 1 step change) and calculate new state.
-      # Return a hash with the new :count and :angle. Pass through raw
-      # value in :change, so callbacks can use any of these.
+      # Pass through raw value in :change, so callbacks can use any of these.
       #
       def pre_callback_filter(step)
         step = -step if reversed
-
-        @state_mutex.lock
-        reading[:count] = @state[:count] + step
-        @state_mutex.unlock
-
-        reading[:change] = step
-        reading[:angle]  = reading[:count] * degrees_per_count % 360
-
-        reading
+        @reading[:count]  = @state[:count] + step
+        @reading[:change] = step
+        @reading[:angle]  = @reading[:count] * degrees_per_count % 360
+        @reading
       end
 
-      #
-      # After callbacks, set state to the hash from before, except change.
-      #
-      def update_state(reading)
-        @state_mutex.lock
-        @state[:count] = reading[:count]
-        @state[:angle] = reading[:angle]
-        @state_mutex.unlock
+      def update_state(hash)
+        @state[:count] = hash[:count]
+        @state[:angle] = hash[:angle]
         @state
       end
     end

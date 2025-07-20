@@ -55,6 +55,9 @@ module Denko
                           }
 
       after_initialize do
+        @state    = { temperature: nil, pressure: nil, humidity: nil }
+        @reading  = { temperature: nil, pressure: nil, humidity: nil }
+
         #
         # Setup defaults for the config registers:
         #   Oneshot reading mode
@@ -78,14 +81,6 @@ module Denko
         @registers.merge!(f2: 0b00000001) if humidity_available?
 
         @calibration_data_loaded = false
-      end
-
-      def state
-        @state ||= { temperature: nil, humidity: nil, pressure: nil }
-      end
-
-      def reading
-        @reading ||= { temperature: nil, humidity: nil, pressure: nil }
       end
 
       #
@@ -186,21 +181,19 @@ module Denko
 
         # Always read temperature since t_fine is needed to calibrate other values.
         temperature, t_fine = decode_temperature(bytes)
-        reading[:temperature] = temperature
+        @reading[:temperature] = temperature
 
         # Pressure and humidity are optional. Humidity is not available on the BMP280.
-        reading[:pressure] = decode_pressure(bytes, t_fine) if reading_pressure?
-        reading[:humidity] = decode_humidity(bytes, t_fine) if reading_humidity?
+        @reading[:pressure] = decode_pressure(bytes, t_fine) if reading_pressure?
+        @reading[:humidity] = decode_humidity(bytes, t_fine) if reading_humidity?
 
-        reading
+        @reading
       end
 
-      def update_state(reading)
-        @state_mutex.lock
-        @state[:temperature] = reading[:temperature]
-        @state[:pressure]    = reading[:pressure]
-        @state[:humidity]    = reading[:humidity]
-        @state_mutex.unlock
+      def update_state(hash)
+        @state[:temperature] = hash[:temperature]
+        @state[:pressure]    = hash[:pressure]
+        @state[:humidity]    = hash[:humidity]
         @state
       end
 
@@ -345,6 +338,17 @@ module Denko
                         2000 => 0b110,
                         4000 => 0b111,
                       }
+
+      after_initialize do
+        @state.delete(:humidity)
+        @reading.delete(:humidity)
+      end
+
+      def update_state(hash)
+        @state[:temperature] = hash[:temperature]
+        @state[:pressure]    = hash[:pressure]
+        @state
+      end
     end
   end
 end

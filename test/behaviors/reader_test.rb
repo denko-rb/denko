@@ -15,23 +15,6 @@ class ReaderTest < Minitest::Test
     @part ||= ReaderComponent.new(board: board, pin: 1)
   end
 
-  def inject(data, wait_for_callbacks = true)
-    Thread.new do
-      if wait_for_callbacks
-        while (!part.callbacks) do; sleep 0.01; end
-        while (!part.callbacks[:read]) do; sleep 0.01; end
-      end
-      loop do
-        sleep 0.01
-        part.update(data)
-        break unless part.callbacks[:read]
-      end
-    end
-
-    # Give the thread some to get into its loop.
-    sleep 0.05
-  end
-
   def test_include_callbacks
     assert_includes ReaderComponent.ancestors,
                     Denko::Behaviors::Callbacks
@@ -39,7 +22,7 @@ class ReaderTest < Minitest::Test
 
   def test_read_once
     mock = Minitest::Mock.new.expect :call, nil
-    inject(1)
+    board.inject_component_update(part, 1)
 
     part.stub(:_read, mock) do
       part.read
@@ -48,19 +31,19 @@ class ReaderTest < Minitest::Test
   end
 
   def test_return_value
-    inject(42)
-    assert_equal part.read, 42
+    board.inject_component_update(part, 42)
+    assert_equal 42, part.read
   end
 
   def test_read_using_with_lambda
-    inject(1)
+    board.inject_component_update(part, 1)
     reader = Minitest::Mock.new.expect :call, nil
     part.read_using -> { reader.call }
     reader.verify
   end
 
   def test_read_using_with_method_and_args
-    inject(1)
+    board.inject_component_update(part, 1)
     reader = Minitest::Mock.new.expect :call, nil, [10, 20], test_arg: 2
     part.read_using reader, 10, 20, test_arg: 2
     reader.verify
@@ -68,7 +51,7 @@ class ReaderTest < Minitest::Test
 
   def test_add_run_remove_callback
     cb = Minitest::Mock.new.expect :call, nil
-    inject(1)
+    board.inject_component_update(part, 1)
     part.read { cb.call }
     assert_nil part.callbacks[:read]
     cb.verify

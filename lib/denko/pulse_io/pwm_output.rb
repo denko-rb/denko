@@ -49,7 +49,7 @@ module Denko
       def pwm_write(value)
         pwm_enable unless pwm_enabled?
         board.pwm_write(pin, value)
-        self.state = value
+        @state = value
       end
       alias :write :pwm_write
 

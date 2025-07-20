@@ -4,65 +4,46 @@ module Denko
       include Lifecycle
       include State
 
-      after_initialize do
-        @callback_mutex = Denko.gil? ? Denko::MutexStub.new : Mutex.new
-        callbacks
-      end
+      attr_reader :callbacks
 
-      def callbacks
-        @callbacks ||= {}
+      after_initialize do
+        @callbacks = {}
       end
 
       def add_callback(key=:persistent, &block)
-        @callback_mutex.lock
-        @callbacks      ||= {}
         @callbacks[key] ||= []
         @callbacks[key] << block
-        @callback_mutex.unlock
-        @callbacks
       end
 
       def remove_callback(key=nil)
-        @callback_mutex.lock
-        (@callbacks && key) ? @callbacks.delete(key) : @callbacks = {}
-        @callback_mutex.unlock
-        @callbacks
+        key ? @callbacks.delete(key) : @callbacks = {}
       end
 
       alias :on_data :add_callback
       alias :remove_callbacks :remove_callback
 
       def update(data)
-        # nil will unblock #read without running callbacks.
-        unless data
-          remove_callback(:read)
-          return nil
-        end
-
-        filtered_data = pre_callback_filter(data)
-
-        # nil will unblock #read without running callbacks.
-        unless filtered_data
-          remove_callback(:read)
-          return nil
-        end
-
-        @callback_mutex.lock
-        if @callbacks && !@callbacks.empty?
-          @callbacks.each_value do |array|
-            array.each do |callback|
-              callback.call(filtered_data)
+        if data
+          filtered_data = pre_callback_filter(data)
+          if filtered_data
+            unless @callbacks.empty?
+              @callbacks.each_value do |array|
+                array.each do |callback|
+                  callback.call(filtered_data)
+                end
+              end
             end
+            remove_callback(:read)
+            return update_state(filtered_data)
           end
-          # Remove one-time callbacks added by #read.
-          @callbacks.delete(:read)
         end
-        @callback_mutex.unlock
 
-        update_state(filtered_data)
+        # No or invalid data. Remove :read callback anyway.
+        remove_callback(:read)
+        return nil
       end
 
-      # Override to process data before giving to callbacks and state.
+      # Redefine this in classes to process data before it hits callback blocks and state.
       def pre_callback_filter(data)
         data
       end

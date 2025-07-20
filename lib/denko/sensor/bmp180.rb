@@ -26,6 +26,9 @@ module Denko
       }
 
       after_initialize do
+        @state    = { temperature: nil, pressure: nil }
+        @reading  = { temperature: nil, pressure: nil }
+
         # Default to start conversion off, reading temperature, no pressure oversampling.
         @register = 0b00001110
         @calibration_data_loaded = false
@@ -35,14 +38,6 @@ module Denko
         @raw_bytes = [0, 0, 0, 0, 0]
 
         soft_reset
-      end
-
-      def state
-        @state ||= { temperature: nil, pressure: nil }
-      end
-
-      def reading
-        @reading ||= { temperature: nil, pressure: nil }
       end
 
       #
@@ -126,11 +121,9 @@ module Denko
         return nil
       end
 
-      def update_state(reading)
-        @state_mutex.lock
-        @state[:temperature] = reading[:temperature]
-        @state[:pressure]    = reading[:pressure]
-        @state_mutex.unlock
+      def update_state(hash)
+        @state[:temperature] = hash[:temperature]
+        @state[:pressure]    = hash[:pressure]
         @state
       end
 
@@ -139,9 +132,9 @@ module Denko
       #
       def decode_reading(bytes)
         temperature, b5 = decode_temperature(bytes)
-        reading[:temperature] = temperature
-        reading[:pressure] = decode_pressure(bytes, b5)
-        reading
+        @reading[:temperature] = temperature
+        @reading[:pressure] = decode_pressure(bytes, b5)
+        @reading
       end
 
       def decode_temperature(bytes)

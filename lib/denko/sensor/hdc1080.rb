@@ -20,15 +20,10 @@ module Denko
       TEMPERATURE_ADDRESS = 0x00
       HUMIDITY_ADDRESS    = 0x01
 
-      def state
-        @state ||= { temperature: nil, humidity: nil }
-      end
-
-      def reading
-        @reading ||= { temperature: nil, humidity: nil }
-      end
-
       after_initialize do
+        @state    = { temperature: nil, humidity: nil }
+        @reading  = { temperature: nil, humidity: nil }
+
         reset
       end
 
@@ -149,23 +144,21 @@ module Denko
         raw_t = bytes[0] << 8 | bytes[1]
         raw_h = bytes[2] << 8 | bytes[3]
 
-        reading[:temperature] = ((raw_t.to_f / 2 ** 16) * 165) - 40
-        reading[:humidity]    =  (raw_h.to_f / 2 ** 16) * 100
+        @reading[:temperature] = ((raw_t.to_f / 2 ** 16) * 165) - 40
+        @reading[:humidity]    =  (raw_h.to_f / 2 ** 16) * 100
 
-        return nil unless (reading[:temperature] && reading[:humidity])
+        return nil unless (@reading[:temperature] && @reading[:humidity])
 
         reading
       end
 
-      def update_state(reading)
-        @state_mutex.lock
-        @state[:temperature] = reading[:temperature]
-        @state[:humidity]    = reading[:humidity]
-        @state_mutex.unlock
+      def update_state(hash)
+        @state[:temperature] = hash[:temperature]
+        @state[:humidity]    = hash[:humidity]
 
-        # Reset so pre_callback_filter can check for both values.
-        reading[:temperature] = nil
-        reading[:humidity]    = nil
+        # Reset @reading, so pre_callback_filter can check for presence of both values.
+        @reading[:temperature] = nil
+        @reading[:humidity]    = nil
 
         @state
       end

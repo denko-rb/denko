@@ -1,5 +1,7 @@
 require "minitest/autorun"
 
+DENKO_TEST_SLEEP_TIME = 0.002
+
 if RUBY_ENGINE == "ruby"
   require 'simplecov'
   SimpleCov.start do
@@ -77,18 +79,14 @@ class BoardMock < Denko::Board
   #
   WAITING_ON_READ_KEYS = [:read, :read_raw, :bus_controller, :board_proxy, :force_update]
 
-  def read_injection_mutex
-    @read_injection_mutex ||= Mutex.new
-  end
-
   def expects_reading?(component)
     WAITING_ON_READ_KEYS.each { |key| return true if component.callbacks[key] }
     false
   end
 
   def wait_for_component_read(component)
-    sleep(0.001) while !component.callbacks
-    sleep(0.001) while !expects_reading?(component)
+    sleep(DENKO_TEST_SLEEP_TIME) while !component.callbacks
+    sleep(DENKO_TEST_SLEEP_TIME) while !expects_reading?(component)
   end
 
   #
@@ -98,8 +96,8 @@ class BoardMock < Denko::Board
   def inject_component_update(component, data)
     Thread.new do
       wait_for_component_read(component)
-      sleep 0.005 unless RUBY_ENGINE == "ruby"
-      read_injection_mutex.synchronize { component.update(data) }
+      sleep DENKO_TEST_SLEEP_TIME
+      component.update(data)
     end
   end
 
@@ -110,7 +108,7 @@ class BoardMock < Denko::Board
   def wait_for_component_on_pin(pin)
     component = false
     while !component
-      sleep(0.001)
+      sleep DENKO_TEST_SLEEP_TIME
       component = single_pin_components[pin]
     end
     component
@@ -124,10 +122,8 @@ class BoardMock < Denko::Board
     Thread.new do
       component = wait_for_component_on_pin(pin)
       wait_for_component_read(component)
-      sleep 0.005 unless RUBY_ENGINE == "ruby"
-      read_injection_mutex.synchronize do
-        self.update("#{pin}:#{message}")
-      end
+      sleep DENKO_TEST_SLEEP_TIME
+      self.update("#{pin}:#{message}")
     end
   end
 end
@@ -143,14 +139,14 @@ module Denko
   module OneWire
     class Bus
       def sleep(time)
-        super(0.001)
+        super DENKO_TEST_SLEEP_TIME
       end
     end
   end
   module LED
     class SevenSegment
       def sleep(time)
-        super(0.001)
+        super DENKO_TEST_SLEEP_TIME
       end
     end
   end

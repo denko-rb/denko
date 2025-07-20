@@ -84,7 +84,6 @@ module Denko
 
         bits = byte_array_to_bit_array(byte_array)
 
-        @callback_mutex.lock
         if @callbacks && !@callbacks.empty?
           # Arduino doesn't de-duplicate state. Do it, but honor :force_update callbacks.
           if (bits != state) || @callbacks[:force_update]
@@ -97,9 +96,8 @@ module Denko
           @callbacks.delete(:read)
           @callbacks.delete(:force_update)
         end
-        @callback_mutex.unlock
 
-        self.state = bits
+        @state = bits
       end
 
       def update_component(part, pin, value)

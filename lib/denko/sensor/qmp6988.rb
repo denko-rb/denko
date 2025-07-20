@@ -70,8 +70,10 @@ module Denko
       }
 
       after_initialize do
-        reset
+        @state    = { temperature: nil, pressure: nil }
+        @reading  = { temperature: nil, pressure: nil }
 
+        reset
         # Get 5 config registers. Copy 0xF4 to modify it for control.
         get_config_registers
         @ctrl_meas_register = @registers[:f4].dup
@@ -87,14 +89,6 @@ module Denko
         sleep @measurement_time
 
         get_calibration_data
-      end
-
-      def state
-        @state ||= { temperature: nil, pressure: nil }
-      end
-
-      def reading
-        @reading ||= { temperature: nil, pressure: nil }
       end
 
       #
@@ -194,10 +188,10 @@ module Denko
         tr =  @calibration[:a0] +
               @calibration[:a1] * dt +
               @calibration[:a2] * (dt ** 2)
-        reading[:temperature] = tr / 256.0
+        @reading[:temperature] = tr / 256.0
 
         # Compensated pressure calculated in Pascals.
-        reading[:pressure] =  @calibration[:b00] +
+        @reading[:pressure] = @calibration[:b00] +
                               @calibration[:bt1] * tr +
                               @calibration[:bp1] * dp +
                               @calibration[:b11] * (tr * dp)  +
@@ -208,14 +202,12 @@ module Denko
                               @calibration[:bp3] * (dp ** 3)
 
         # Return reading for callbacks.
-        reading
+        @reading
       end
 
-      def update_state(reading)
-        @state_mutex.lock
-        @state[:temperature] = reading[:temperature]
-        @state[:pressure]    = reading[:pressure]
-        @state_mutex.unlock
+      def update_state(hash)
+        @state[:temperature] = hash[:temperature]
+        @state[:pressure]    = hash[:pressure]
         @state
       end
 

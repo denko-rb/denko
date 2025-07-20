@@ -3,33 +3,12 @@ module Denko
     module State
       include Lifecycle
 
-      # Force state and mutex initialization.
-      after_initialize do
-        @state_mutex = Denko.gil? ? Denko::MutexStub.new : Mutex.new
-        state
-      end
+      attr_accessor :state
 
-      # mruby optimization. Bypass state_mutex for simple states.
-      if Denko.mruby?
-        attr_accessor :state
-      else
-        def state
-          @state_mutex.lock
-          value = @state
-          @state_mutex.unlock
-          value
-        end
-
-        def state=(value)
-          @state_mutex.lock
-          @state = value
-          @state_mutex.unlock
-          @state
-        end
-      end
-
+      # Ok for single values. If @state is Array, Hash etc. it is best to redefine
+      # this so values are updated without reallocating memory, for mruby performance.
       def update_state(value)
-        self.state = value if value
+        @state = value
       end
     end
   end

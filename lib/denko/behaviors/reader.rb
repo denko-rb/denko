@@ -30,10 +30,8 @@ module Denko
       #
       def update(data)
         if @reading_raw
-          @callback_mutex.lock
           @callbacks[:read_raw].each { |c| c.call(data) }
           @callbacks.delete(:read_raw)
-          @callback_mutex.unlock
           @reading_raw = false
           data
         else

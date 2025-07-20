@@ -23,10 +23,7 @@ module Denko
 
       # Gives actual state of the pins, regardless of direction.
       def read_state
-        @state_mutex.lock
-          @state = i2c_read_raw(1)
-        @state_mutex.unlock
-        state
+        @state = i2c_read_raw(1)
       end
 
       # Called by Beaviors::OutputRegister to write @state.

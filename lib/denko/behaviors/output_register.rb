@@ -24,12 +24,10 @@ module Denko
       end
 
       def write
-        @state_mutex.lock
-          if @state != @old_state
-            _write(@state)
-            @state.each_with_index { |byte, i| @old_state[i] = byte }
-          end
-        @state_mutex.unlock
+        if @state != @old_state
+          _write(@state)
+          @state.each_with_index { |byte, i| @old_state[i] = byte }
+        end
         state
       end
 
@@ -46,13 +44,11 @@ module Denko
         byte = pin / 8
         bit  = pin % 8
 
-        @state_mutex.lock
-          if value == 0
-            @state[byte] &= ~(0b1 << bit)
-          else
-            @state[byte] |= (0b1 << bit)
-          end
-        @state_mutex.unlock
+        if value == 0
+          @state[byte] &= ~(0b1 << bit)
+        else
+          @state[byte] |= (0b1 << bit)
+        end
 
         value
       end

@@ -43,7 +43,7 @@ module Denko
         microseconds = ((value.to_f / 180) * (max - min)) + min
         write_microseconds(microseconds)
 
-        self.state = value
+        @state = value
       end
 
       def speed=(value)
@@ -52,7 +52,7 @@ module Denko
         microseconds = (((value.to_f + 100) / 200) * (max - min)) + min
         write_microseconds(microseconds)
 
-        self.state = value
+        @state = value
       end
 
       alias :angle=   :position=

@@ -36,8 +36,8 @@ module Denko
         value.to_i
       end
 
-      def high?; state == board.high end
-      def low?;  state == board.low  end
+      def high?; @state == board.high end
+      def low?;  @state == board.low  end
     end
   end
 end

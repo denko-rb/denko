@@ -5,12 +5,9 @@ module Denko
       include TemperatureHelper
       FAMILY_CODE = 0x28
 
-      def state
-        @state ||= { temperature: nil }
-      end
-
-      def reading
-        @reading ||= { temperature: nil }
+      after_initialize do
+        @state    = { temperature: nil }
+        @reading  = { temperature: nil }
       end
 
       def _read
@@ -37,15 +34,13 @@ module Denko
         return { crc_error: true } unless OneWire::Helper.crc(bytes)
 
         @resolution ||= decode_resolution(bytes)
-        reading[:temperature] = decode_temperature(bytes)
+        @reading[:temperature] = decode_temperature(bytes)
 
-        reading
+        @reading
       end
 
-      def update_state(reading)
-        @state_mutex.lock
-        @state[:temperature] = reading[:temperature]
-        @state_mutex.unlock
+      def update_state(hash)
+        @state[:temperature] = hash[:temperature]
         @state
       end
 
