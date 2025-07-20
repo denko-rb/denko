@@ -15,6 +15,22 @@ module Denko
         board.digital_read(@pin)
       end
 
+      # Optimized #read instead of Behaviors::Reader default.
+      if Denko.mruby?
+        def read
+          board.digital_read(@pin)
+          @read_result
+        end
+      else
+        def read
+          sleep READ_WAIT_TIME while (@read_type != :idle)
+          @read_type = :regular
+          board.digital_read(@pin)
+          sleep READ_WAIT_TIME while (@read_type != :idle)
+          @read_result
+        end
+      end
+
       def _listen(divider=nil)
         @divider = divider || @divider
         board.digital_listen(pin, @divider)

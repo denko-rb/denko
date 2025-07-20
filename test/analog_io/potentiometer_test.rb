@@ -15,7 +15,7 @@ class AnalogIOPotentiometerTest < Minitest::Test
       part
     end
 
-    assert_equal 8,   part.divider
+    assert_equal 16,  part.divider
     assert_equal [],  part.smoothing_set
   end
 

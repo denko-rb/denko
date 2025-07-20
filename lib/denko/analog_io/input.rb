@@ -15,38 +15,48 @@ module Denko
         end
       end
 
-      # Default 16ms listener for analog inputs connected to a Board.
-      def divider
-        @divider ||= params[:divider] || 16
+      after_initialize do
+        # Default 16ms listener for analog inputs connected to a Board.
+        @divider = params[:divider] || 16
+
+        # Negative input on ADCs that support it.
+        @negative_pin = params[:negative_pin]
+
+        # PGA gain for ADCs that support it
+        @gain = params[:gain]
+
+        # Sample rate for ADCs that support it.
+        @sample_rate = params[:sample_rate]
       end
 
-      # Negative input on ADCs that support it.
-      def negative_pin
-        @negative_pin ||= params[:negative_pin]
-      end
-
-      # PGA gain for ADCs that support it
-      def gain
-        @gain ||= params[:gain]
-      end
-
-      # Sample rates for ADCs that support it.
-      def sample_rate
-        @sample_rate ||= params[:sample_rate]
-      end
-
-      attr_writer :divider, :negative_pin, :gain, :sample_rate
+      attr_accessor :divider, :negative_pin, :gain, :sample_rate
 
       # Allow ADCs to set this, so exact voltages can be calculated.
       attr_accessor :volts_per_bit
 
       def _read
-        board.analog_read(pin, negative_pin, gain, sample_rate)
+        board.analog_read(@pin, @negative_pin, @gain, @sample_rate)
+      end
+
+      # Optimized #read instead of Behaviors::Reader default.
+      if Denko.mruby?
+        def read
+          board.analog_read(@pin, @negative_pin, @gain, @sample_rate)
+          @read_result
+        end
+      else
+        def read
+          sleep READ_WAIT_TIME while (@read_type != :idle)
+          @read_type = :regular
+          board.analog_read(@pin, @negative_pin, @gain, @sample_rate)
+          sleep READ_WAIT_TIME while (@read_type != :idle)
+          @read_result
+        end
       end
 
       def _listen(div=nil)
-        self.divider = div if div
-        board.analog_listen(pin, divider)
+        @divider = div if div
+        board.analog_listen(@pin, @divider)
       end
     end
   end
