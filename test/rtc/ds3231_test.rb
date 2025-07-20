@@ -33,22 +33,8 @@ class DS3231Test < Minitest::Test
     mock.verify
   end
 
-  def test_read
+  def test_read_and_pre_callback_filter
     board.inject_component_update(bus, "104-0,0,0,6,1,1,48")
-
-    mock = Minitest::Mock.new.expect :call, nil, [part.address, 0x00, 7, 100000, false]
-    bus.stub(:read_nb, mock) do
-      part.time
-    end
-    mock.verify
-  end
-
-  def test_pre_callback_filter
-    mock = Minitest::Mock.new.expect :call, nil, [Time.new(2000, 1, 1, 0, 0, 0.0)]
-    part.read_nb
-    part.stub(:update_state, mock) do
-      bus.send(:update, "104-0,0,0,6,1,1,48")
-    end
-    mock.verify
+    assert_equal Time.new(2000, 1, 1, 0, 0, 0.0), part.time
   end
 end

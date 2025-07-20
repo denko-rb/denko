@@ -22,12 +22,14 @@ class ReaderTest < Minitest::Test
 
   def test_read_once
     mock = Minitest::Mock.new.expect :call, nil
-    board.inject_component_update(part, 1)
+    board.inject_component_update(part, 25)
 
     part.stub(:_read, mock) do
       part.read
     end
     mock.verify
+
+    assert_equal 25, part.instance_variable_get(:@read_result)
   end
 
   def test_return_value

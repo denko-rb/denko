@@ -73,20 +73,8 @@ class BoardMock < Denko::Board
     super(ConnectionMock.new)
   end
 
-  #
-  # Reads are async, in a background thread. This is a way to detect when a Component has
-  # initiated a read, and is waiting on a response that will eventually call its #update.
-  #
-  WAITING_ON_READ_KEYS = [:read, :read_raw, :bus_controller, :board_proxy, :force_update]
-
-  def expects_reading?(component)
-    WAITING_ON_READ_KEYS.each { |key| return true if component.callbacks[key] }
-    false
-  end
-
   def wait_for_component_read(component)
-    sleep(DENKO_TEST_SLEEP_TIME) while !component.callbacks
-    sleep(DENKO_TEST_SLEEP_TIME) while !expects_reading?(component)
+    sleep(DENKO_TEST_SLEEP_TIME) while !([:regular, :raw].include? component.instance_variable_get(:@read_type))
   end
 
   #

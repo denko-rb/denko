@@ -4,7 +4,7 @@ module Denko
       include Reader
       include Threaded
 
-      def poll_using(method, interval, *args, &block)
+      def poll_using(method, interval, *args, **kwargs, &block)
         mruby_thread_check
 
         unless [Integer, Float].include? interval.class
@@ -15,20 +15,17 @@ module Denko
         add_callback(:poll, &block) if block_given?
 
         threaded_loop do
-          # Lock, THEN wait for other normal reads to finish.
-          @reader_mutex.lock
-          sleep 0.001 while read_busy?
-          @reading_normally = true
+          sleep READ_WAIT_TIME while (@read_type != :idle)
 
-          method.call(*args)
-          @reader_mutex.unlock
+          @read_type = :regular
+          method.call(*args, **kwargs)
 
           sleep interval
         end
       end
 
-      def poll(interval, *args, &block)
-        poll_using(self.method(:_read), interval, *args, &block)
+      def poll(interval, *args, **kwargs, &block)
+        poll_using(self.method(:_read), interval, *args, **kwargs, &block)
       end
 
       def stop
