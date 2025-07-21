@@ -5,7 +5,7 @@ module Denko
       include SinglePin
       include Lifecycle
 
-      INPUT_MODES = [:input, :input_pulldown, :input_pullup]
+      INPUT_MODES = [:input, :input_pulldown, :input_pullup, :input_adc]
 
       before_initialize do
         params[:mode] ||= :input

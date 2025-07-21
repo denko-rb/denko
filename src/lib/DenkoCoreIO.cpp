@@ -18,6 +18,7 @@ void Denko::setMode(byte p, byte m) {
   // 0001 = Input with no pull bias
   // 0011 = Input with internal pulldown, if available.
   // 0101 = Input with internal pullup, if available.
+  // 1001 = ADC Input
   m = m & 0b00001111;
 
   #if defined(ESP32)

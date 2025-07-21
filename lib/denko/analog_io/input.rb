@@ -13,6 +13,8 @@ module Denko
           params[:board] = params[:adc]
           params.delete(:adc)
         end
+
+        params[:mode] = :input_adc
       end
 
       after_initialize do

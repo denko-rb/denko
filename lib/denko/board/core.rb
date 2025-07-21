@@ -11,6 +11,7 @@ module Denko
                   input:              0b0001,
                   input_pulldown:     0b0011,
                   input_pullup:       0b0101,
+                  input_adc:          0b1001
     }
 
     # CMD = 0
