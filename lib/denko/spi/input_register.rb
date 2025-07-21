@@ -84,6 +84,12 @@ module Denko
       # Override Callbacks#update and Reader#update to handle @force_update
       #
       def update(data)
+        # If a read is in progress, let that method lock and unlock @state_mutex.
+        # Only lock/unlock here if no read was requested. Probably a listener.
+        read_in_progress = @read_type != :idle
+
+        @state_mutex.lock unless read_in_progress
+
         byte_array   = ensure_byte_array(data)
         @read_result = byte_array_to_bit_array(byte_array)
 
@@ -96,8 +102,12 @@ module Denko
           end
         end
 
-        @read_type = :idle
         @state = @read_result
+        @read_type = :idle
+
+        @state_mutex.unlock unless read_in_progress
+
+        @read_result
       end
 
       def update_component(part, pin, value)
