@@ -23,10 +23,11 @@ class DigitalIOInputTest < Minitest::Test
     assert_equal part.state, 1
   end
 
-  def test__read
+  def test_read
+    board.inject_component_update(part, 0)
     mock = Minitest::Mock.new.expect :call, nil, [14]
     board.stub(:digital_read, mock) do
-      part.read_nb
+      part.read
     end
     mock.verify
   end

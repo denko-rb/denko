@@ -9,10 +9,11 @@ class AnalogIOInputTest < Minitest::Test
     @part ||= Denko::AnalogIO::Input.new(board: board, pin: 14)
   end
 
-  def test__read
+  def test_read
+    board.inject_component_update(part, 128)
     mock = Minitest::Mock.new.expect :call, nil, [14, nil, nil, nil]
     board.stub(:analog_read, mock) do
-      part.read_nb
+      part.read
     end
     mock.verify
   end

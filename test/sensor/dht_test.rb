@@ -23,25 +23,6 @@ class DHTTest < Minitest::Test
     @part ||= Denko::Sensor::DHT.new(board: board, pin:PIN)
   end
 
-  # It should tell the board to do a #pulse_read
-  def test__read
-    part
-    mock = Minitest::Mock.new.expect(:call, nil, [PIN], reset: board.low, reset_time: 10_000, pulse_limit: 84, timeout: 100)
-    board.stub(:pulse_read, mock) do
-      part.read_nb
-    end
-    mock.verify
-  end
-
-  # Callback pre filter should convert string of bytes to array and call #decode with it.
-  def test_pre_callback_filter
-    part
-    mock = Minitest::Mock.new.expect(:call, nil, [GOOD_ARRAY])
-    part.stub(:decode, mock) do
-      part.update(GOOD_STRING)
-    end
-  end
-
   def test_decode
     # Error message in output if data is missing.
     result = part.decode(SHORT_ARRAY)
@@ -56,6 +37,25 @@ class DHTTest < Minitest::Test
     # It should calculate output correctly.
     result = part.decode(GOOD_ARRAY)
     assert_equal result, {temperature: 29.5, humidity: 66.9}
+  end
+
+  # Callback pre filter should convert string of bytes to array and call #decode with it.
+  def test_pre_callback_filter
+    expected = {temperature: 29.5, humidity: 66.9}
+    assert_equal expected, part.pre_callback_filter(GOOD_STRING)
+  end
+
+  def test_read
+    board.inject_read_for_component_on_pin(part, PIN, "#{PIN}:#{GOOD_STRING}")
+
+    mock = Minitest::Mock.new.expect(:call, nil, [PIN], reset: board.low, reset_time: 10_000, pulse_limit: 84, timeout: 100)
+    board.stub(:pulse_read, mock) do
+      part.read
+    end
+    mock.verify
+
+    expected = {temperature: 29.5, humidity: 66.9}
+    assert_equal expected, part.state
   end
 
   def test_crc

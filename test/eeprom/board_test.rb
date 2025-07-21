@@ -9,7 +9,7 @@ class BoardMock < Denko::Board
   def eeprom_read(start_address, length)
     # Pack it up like a string coming from the board and update.
     string = eeprom_stub[start_address, length].map{ |x| x.to_s }.join(",")
-    self.update("254:#{start_address}-#{string}\n")
+    inject_read_for_pin(254, "#{start_address}-#{string}\n")
   end
 
   def eeprom_write(start_address, bytes)

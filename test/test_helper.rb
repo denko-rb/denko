@@ -114,6 +114,15 @@ class BoardMock < Denko::Board
       self.update("#{pin}:#{message}")
     end
   end
+
+  # Same as above, but waits for a component (usually a peripheral on a bus), to start a read.
+  def inject_read_for_component_on_pin(component, pin, message)
+    Thread.new do
+      wait_for_component_read(component)
+      sleep DENKO_TEST_SLEEP_TIME
+      self.update("#{pin}:#{message}")
+    end
+  end
 end
 
 module TestPacker
