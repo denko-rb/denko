@@ -14,19 +14,16 @@ module Denko
         @state_mutex  = Denko.mruby? ? Denko::MutexStub.new : Mutex.new
       end
 
-      # Define #_read in including class to update the component's state.
+      # Define #_read in including class to update the component's @state.
       def _read
         raise NotImplementedError.new("#{self.class.name}#_read is not defined.")
       end
 
       #
-      # Take a proc/lambda/method and call it to read.
-      # Arguments are passed through, allowing dynamic read methods to be defined.
-      # Eg. send commands (in args) to a bus, then wait for data read back.
-      #
-      # Data is received when the board/bus calls our #update. If a read was
-      # started by this method, the data will pass through #pre_callback_filter,
-      # trigger all callbacks, and set @state. Use this for reading the state
+      # Take a proc/lambda/method and call it to read. Data is received when
+      # #update gets called. This may happen in any thread, so use @update_mutex.
+      # When #read initiated an #update, the data passes through #pre_callback_filter,
+      # triggers all callbacks, and updates @state. Use this for getting the state
       # of peripherals, like digital pin level, enviro sensor reading etc.
       #
       def read_using(reader_method, &block)
@@ -40,15 +37,12 @@ module Denko
         @read_result
       end
 
-      # Default read method to be called by user.
+      # Default read method. Should be called by user and Poller#poll.
       def read(&block)
         read_using(self.method(:_read), &block)
       end
 
-      #
-      # Similar to #read_using, but #update will not filter data or run callbacks.
-      # Always blocks calling thread. Use for things like sensor status, config etc.
-      #
+      # Use for things like sensor status, config etc.
       def read_raw(reader_method)
         # Can't guarantee read order.
         raise StandardError, "#read_raw unavailable while listening" if @listening
