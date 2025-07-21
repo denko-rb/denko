@@ -74,9 +74,10 @@ module Denko
 
         @read_result = (@read_type == :raw) ? data : super(data)
         @read_type = :idle
-        @read_result
 
         @state_mutex.unlock unless read_in_progress
+
+        @read_result
       end
     end
   end
