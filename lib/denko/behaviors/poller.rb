@@ -12,19 +12,16 @@ module Denko
         end
 
         stop
-
         add_callback(:poll, &block) if block_given?
 
         threaded_loop do
-          sleep READ_WAIT_TIME while (@read_type != :idle)
-          @read_type = :regular
           reader_method.call
           sleep interval
         end
       end
 
       def poll(interval, &block)
-        poll_using(self.method(:_read), interval, &block)
+        poll_using(self.method(:read), interval, &block)
       end
 
       def stop

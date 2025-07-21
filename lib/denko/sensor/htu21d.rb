@@ -104,11 +104,6 @@ module Denko
         @read_result
       end
 
-      def _read
-        _read_temperature
-        _read_humidity
-      end
-
       def _read_temperature
         i2c_read(3, register: READ_TEMPERATURE_BLOCKING)
       end

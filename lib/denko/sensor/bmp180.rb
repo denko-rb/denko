@@ -98,11 +98,6 @@ module Denko
         @read_result
       end
 
-      def _read
-        _read_temperature
-        _read_pressure
-      end
-
       def pre_callback_filter(data)
         # Temperature is 2 bytes.
         if data.length == 2
