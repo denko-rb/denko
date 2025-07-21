@@ -40,11 +40,11 @@ module Denko
       end
 
       def i2c_read(num_bytes, register: nil)
-        bus.read_nb(i2c_address, register, num_bytes, i2c_frequency, i2c_repeated_start)
+        bus.read(i2c_address, register, num_bytes, i2c_frequency, i2c_repeated_start)
       end
 
       def i2c_read_raw(num_bytes, register: nil)
-        read_raw -> { bus.read_nb(i2c_address, register, num_bytes, i2c_frequency, i2c_repeated_start) }
+        read_raw -> { bus.read(i2c_address, register, num_bytes, i2c_frequency, i2c_repeated_start) }
       end
     end
   end

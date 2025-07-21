@@ -20,10 +20,6 @@ module Denko
       def read(address, register, num_bytes, frequency=100000, repeated_start=false, &block)
         board.i2c_read(@i2c_index, address, register, num_bytes, frequency, repeated_start)
       end
-
-      def read_nb(address, register, num_bytes, frequency=100000, repeated_start=false)
-        board.i2c_read(@i2c_index, address, register, num_bytes, frequency, repeated_start)
-      end
     end
   end
 end

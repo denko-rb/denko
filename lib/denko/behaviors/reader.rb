@@ -12,7 +12,6 @@ module Denko
       end
 
       # Define #_read in including class to update the component's state.
-      # This is used by #read and #read_nb.
       def _read
         raise NotImplementedError.new("#{self.class.name}#_read is not defined.")
       end
@@ -53,16 +52,6 @@ module Denko
       end
 
       #
-      # Similar to #read. No block arg. Does not block calling thread.
-      #
-      def read_nb
-        sleep READ_WAIT_TIME while (@read_type != :idle)
-        @read_type = :regular
-        _read
-        nil
-      end
-
-      #
       # Similar to #read_using, but #update will not filter data or run callbacks.
       # Always blocks calling thread. Use for things like sensor status, config etc.
       #
@@ -81,7 +70,7 @@ module Denko
 
       #
       # Override #update to allow :raw or :regular reads:
-      #   - For :regular reads, see #read, #read_nb and #read_using
+      #   - For :regular reads, see #read, and #read_using
       #   - For :raw reads see #read_raw
       #
       def update(data)
