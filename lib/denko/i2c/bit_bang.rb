@@ -25,7 +25,9 @@ module Denko
       end
 
       def read(address, register, num_bytes, frequency=nil, repeated_start=false)
-        board.i2c_bb_read(pins[:scl], pins[:sda], address, register, num_bytes, repeated_start)
+        read_using -> {
+          board.i2c_bb_read(pins[:scl], pins[:sda], address, register, num_bytes, repeated_start)
+        }
       end
     end
   end

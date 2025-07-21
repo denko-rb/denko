@@ -16,9 +16,10 @@ module Denko
         board.i2c_write(i2c_index, address, bytes, frequency, repeated_start)
       end
 
-      # Don't block at all at the bus level. Peripherals will do that at their level. Maybe change this?
       def read(address, register, num_bytes, frequency=100000, repeated_start=false, &block)
-        board.i2c_read(@i2c_index, address, register, num_bytes, frequency, repeated_start)
+        read_using -> {
+          board.i2c_read(@i2c_index, address, register, num_bytes, frequency, repeated_start)
+        }
       end
     end
   end
