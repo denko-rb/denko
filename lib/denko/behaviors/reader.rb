@@ -6,6 +6,8 @@ module Denko
 
       READ_WAIT_TIME = 0.001
 
+      attr_reader :state_mutex
+
       after_initialize do
         @read_type    = :idle
         @read_result  = nil
