@@ -13,8 +13,7 @@ module Denko
         :spi_register
       end
 
-      # Default registers to 1 byte, or 8 pins when used as Board Proxy.
-      # Can be ignored if reading / writing the register directly.
+      # Default to 1 byte (8 pins), when used as BoardProxy.
       def bytes
         @bytes = params[:bytes] || 1
       end
@@ -25,10 +24,7 @@ module Denko
         self.high
       end
 
-      #
-      # When used as BoardProxy, store the state of each register
-      # pin as a 0 or 1 in an array that is (@bytes * 8) long.
-      #
+      # State for Board proxy as a byte array.
       def state
         @state ||= Array.new(bytes*8) { 0 }
       end

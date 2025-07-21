@@ -1,7 +1,12 @@
 module Denko
   module SPI
     class InputRegister < BaseRegister
+      include Behaviors::Reader
       include Behaviors::Lifecycle
+
+      after_initialize do
+        enable_proxy
+      end
 
       #
       # Keep track of whether anything is listening or reading a specific pin.
@@ -15,11 +20,7 @@ module Denko
         @listening_pins ||= Array.new(bytes*8) { false }
       end
 
-      after_initialize do
-        enable_proxy
-      end
-
-      def read
+      def _read
         spi_read(bytes)
       end
 
@@ -35,8 +36,7 @@ module Denko
       # BoardProxy interface
       #
       def digital_read(pin)
-        # Remember what pin was read and force callbacks to run next update.
-        add_callback(:force_update) { Proc.new{} }
+        @force_update = true
         reading_pins[pin] = true
 
         # Don't actually call #read if already listening.
@@ -74,30 +74,30 @@ module Denko
         end
       end
 
-      #
-      # Override Callbacks#update to make sure we handle :force_update
-      # within the main mutex lock.
-      #
-      def update(message)
-        # Since overriding update, make sure this is a byte array first.
-        byte_array = ensure_byte_array(message)
+      def update(data)
+        @read_result = (@read_type == :raw) ? data : super(data)
 
-        bits = byte_array_to_bit_array(byte_array)
+        @read_result
+      end
 
-        if @callbacks && !@callbacks.empty?
-          # Arduino doesn't de-duplicate state. Do it, but honor :force_update callbacks.
-          if (bits != state) || @callbacks[:force_update]
+      #
+      # Override Callbacks#update and Reader#update to handle @force_update
+      #
+      def update(data)
+        byte_array   = ensure_byte_array(data)
+        @read_result = byte_array_to_bit_array(byte_array)
+
+        unless @callbacks.empty?
+          # Only run callbacks when state has changed or update forced.
+          if (@read_result != @state) || @force_update
             @callbacks.each_value do |array|
-              array.each { |callback| callback.call(bits) }
+              array.each { |callback| callback.call(@read_result) }
             end
           end
-
-          # Remove both :read and :force update while inside the lock.
-          @callbacks.delete(:read)
-          @callbacks.delete(:force_update)
         end
 
-        @state = bits
+        @read_type = :idle
+        @state = @read_result
       end
 
       def update_component(part, pin, value)
@@ -106,7 +106,7 @@ module Denko
           part.update(value)
         # Also update if the component forced a read.
         # Always called inside @callback_mutex, so @callbacks, not callbacks
-        elsif reading_pins[pin] && @callbacks[:force_update]
+        elsif reading_pins[pin] && @force_update
           part.update(value)
         end
       end

@@ -28,6 +28,8 @@ class InputRegisterTest < Minitest::Test
   end
 
   def test_read
+    board.inject_component_update part, [0, 0]
+
     mock = Minitest::Mock.new.expect :call, nil, [9], read: 2, frequency: 800000, mode: 2, bit_order: :lsbfirst
     bus.stub(:transfer, mock) do
       part.read
@@ -78,21 +80,13 @@ class InputRegisterTest < Minitest::Test
   end
 
   def test_read_proxy
-    # Stop automatic listening first.
+    # Disable automatic listener first
     button.stop
+    refute button.state
 
-    # Give #read some value so it stops blocking.
-    Thread.new do
-      sleep(0.01) while !part.callbacks[:force_update]
-      part.update("255")
-    end
-
-    mock = Minitest::Mock.new
-    mock.expect :call, nil
-    part.stub(:read, mock) do
-      button.read
-    end
-    mock.verify
+    board.inject_component_update part, [1, 0]
+    button.read
+    assert_equal 1, button.state
   end
 
   def test_listener_proxy
