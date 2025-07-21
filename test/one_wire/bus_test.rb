@@ -115,15 +115,6 @@ class OneWireBusTest < Minitest::Test
     mock.verify
   end
 
-  def test__read
-    part
-    mock = Minitest::Mock.new.expect :call, nil, [1, 4]
-    board.stub(:one_wire_read, mock) do
-      part.read_nb(4)
-    end
-    mock.verify
-  end
-
   def test_write
     part
     mock = Minitest::Mock.new

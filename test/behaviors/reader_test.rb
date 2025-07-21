@@ -44,10 +44,10 @@ class ReaderTest < Minitest::Test
     reader.verify
   end
 
-  def test_read_using_with_method_and_args
+  def test_read_using_with_method
     board.inject_component_update(part, 1)
-    reader = Minitest::Mock.new.expect :call, nil, [10, 20], test_arg: 2
-    part.read_using reader, 10, 20, test_arg: 2
+    reader = Minitest::Mock.new.expect :call, nil
+    part.read_using reader
     reader.verify
   end
 

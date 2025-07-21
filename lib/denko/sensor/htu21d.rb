@@ -96,10 +96,12 @@ module Denko
         resolution[:humidity]
       end
 
-      # Workaround for :read callbacks getting automatically removed on first reading.
-      def read(*args, **kwargs, &block)
-        read_using(self.method(:_read_temperature), *args, **kwargs)
-        read_using(self.method(:_read_humidity), *args, **kwargs, &block)
+      # Workaround for #read returning before both readings arrive.
+      def read(&block)
+        read_using self.method(:_read_temperature)
+        read_using self.method(:_read_humidity)
+        block.call(@read_result) if block_given?
+        @read_result
       end
 
       def _read

@@ -34,7 +34,7 @@ class DS3231Test < Minitest::Test
   end
 
   def test_read_and_pre_callback_filter
-    board.inject_component_update(bus, "104-0,0,0,6,1,1,48")
+    board.inject_component_update(part, [0,0,0,6,1,1,48])
     assert_equal Time.new(2000, 1, 1, 0, 0, 0.0), part.time
   end
 end

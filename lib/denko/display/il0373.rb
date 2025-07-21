@@ -147,9 +147,9 @@ module Denko
         command [PARTIAL_IN]
       end
 
-      def draw(*args, **kwargs)
+      def draw(x_start, x_finish y_start, y_finish)
         wake
-        super(*args, **kwargs)
+        super(x_start, x_finish, y_start, y_finish)
       end
 
       def draw_partial(buffer, x_start, x_finish, p_start, p_finish, color=1)

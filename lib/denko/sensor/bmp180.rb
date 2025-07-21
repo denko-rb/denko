@@ -38,6 +38,7 @@ module Denko
         @raw_bytes = [0, 0, 0, 0, 0]
 
         soft_reset
+        get_calibration_data
       end
 
       #
@@ -89,17 +90,15 @@ module Denko
         i2c_read(3, register: 0xF6)
       end
 
-      # Workaround for :read callbacks getting automatically removed on first reading.
-      def read(*args, **kwargs, &block)
-        get_calibration_data unless calibration_data_loaded
-
-        read_using(self.method(:_read_temperature), *args, **kwargs)
-        read_using(self.method(:_read_pressure), *args, **kwargs, &block)
+      # Workaround for #read returning before both readings arrive.
+      def read(&block)
+        read_using self.method(:_read_temperature)
+        read_using self.method(:_read_pressure)
+        block.call(@read_result) if block_given?
+        @read_result
       end
 
       def _read
-        get_calibration_data unless calibration_data_loaded
-
         _read_temperature
         _read_pressure
       end

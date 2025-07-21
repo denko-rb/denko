@@ -27,11 +27,11 @@ module Denko
       # trigger all callbacks, and set @state. Use this for reading the state
       # of peripherals, like digital pin level, enviro sensor reading etc.
       #
-      def read_using(reader, *args, **kwargs, &block)
+      def read_using(reader_method, &block)
         sleep READ_WAIT_TIME while (@read_type != :idle)
 
         @read_type = :regular
-        reader.call(*args, **kwargs)
+        reader_method.call
 
         sleep READ_WAIT_TIME while (@read_type != :idle)
         block.call(@read_result) if block_given?
@@ -41,17 +41,24 @@ module Denko
       #
       # Default read method to be called by user.
       #
-      def read(*args, **kwargs, &block)
-        read_using(self.method(:_read), *args, **kwargs, &block)
+      def read(&block)
+        sleep READ_WAIT_TIME while (@read_type != :idle)
+
+        @read_type = :regular
+        _read
+
+        sleep READ_WAIT_TIME while (@read_type != :idle)
+        block.call(@read_result) if block_given?
+        @read_result
       end
 
       #
       # Similar to #read. No block arg. Does not block calling thread.
       #
-      def read_nb(*args, **kwargs)
+      def read_nb
         sleep READ_WAIT_TIME while (@read_type != :idle)
         @read_type = :regular
-        _read(*args, **kwargs)
+        _read
         nil
       end
 
@@ -59,14 +66,14 @@ module Denko
       # Similar to #read_using, but #update will not filter data or run callbacks.
       # Always blocks calling thread. Use for things like sensor status, config etc.
       #
-      def read_raw(reader, *args, **kwargs)
+      def read_raw(reader_method)
         # Can't guarantee read order.
         raise StandardError, "#read_raw unavailable while listening" if @listening
 
         sleep READ_WAIT_TIME while (@read_type != :idle)
 
         @read_type = :raw
-        reader.call(*args, **kwargs)
+        reader_method.call
 
         sleep READ_WAIT_TIME while (@read_type != :idle)
         @read_result

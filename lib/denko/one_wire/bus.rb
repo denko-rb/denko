@@ -45,8 +45,13 @@ module Denko
         board.one_wire_reset(pin, get_presence)
       end
 
-      def _read(num_bytes)
-        board.one_wire_read(pin, num_bytes)
+      def read(num_bytes, &block)
+        @read_type = :regular
+        board.one_wire_read(@pin, num_bytes)
+
+        sleep READ_WAIT_TIME while (@read_type != :idle)
+        block.call(@read_result) if block_given?
+        @read_result
       end
 
       def write(*bytes)

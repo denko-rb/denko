@@ -7,10 +7,10 @@ module Denko
 
       def read_scratch(num_bytes, &block)
         atomically do
-          bus.add_callback(:read, &block) if block_given?
           match
           bus.write(READ_SCRATCH)
           bus.read(num_bytes)
+          block.call(@read_result) if block_given?
         end
       end
 
