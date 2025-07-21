@@ -19,6 +19,7 @@ module Denko
         # Optimized to bypass *args and **kwargs. Behaves like CRuby.
         def read(&block)
           board.digital_read(@pin)
+          # board calls #update on us here.
           block.call(@read_result) if block_given?
           @read_result
         end
