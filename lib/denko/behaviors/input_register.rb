@@ -36,22 +36,17 @@ module Denko
 
       def digital_read(pin)
         @reading_pins[pin] = true
-        read unless any_listening?
+        read unless @listening_pins.any?
       end
 
       def digital_listen(pin, divider)
-        listen unless any_listening?
+        listen unless @listening_pins.any?
         @listening_pins[pin] = true
       end
 
       def stop_listener(pin)
         @listening_pins[pin] = false
-        stop unless any_listening?
-      end
-
-      def any_listening?
-        @listening_pins.each { |p| return true if p }
-        false
+        stop unless @listening_pins.any?
       end
     end
   end
