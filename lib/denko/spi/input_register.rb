@@ -74,12 +74,6 @@ module Denko
         end
       end
 
-      def update(data)
-        @read_result = (@read_type == :raw) ? data : super(data)
-
-        @read_result
-      end
-
       #
       # Override Callbacks#update and Reader#update to handle @force_update
       #

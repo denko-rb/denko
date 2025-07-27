@@ -8,7 +8,7 @@ module Denko
       include Behaviors::Lifecycle
 
       after_initialize do
-        _listen(params[:divider] || 4)
+        listen(params[:divider] || 4)
       end
 
       def _read
@@ -32,18 +32,18 @@ module Denko
 
       def _listen(divider=nil)
         @divider = divider || @divider
-        board.digital_listen(pin, @divider)
+        board.digital_listen(@pin, @divider)
       end
 
       def on_high(&block)
-        add_callback(:high) do |data|
-          block.call(data) if data.to_i == board.high
+        add_callback(:high) do |value|
+          block.call(value) if value == board.high
         end
       end
 
       def on_low(&block)
-        add_callback(:low) do |data|
-          block.call(data) if data.to_i == board.low
+        add_callback(:low) do |value|
+          block.call(value) if value == board.low
         end
       end
 

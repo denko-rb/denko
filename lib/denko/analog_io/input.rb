@@ -55,8 +55,8 @@ module Denko
         end
       end
 
-      def _listen(div=nil)
-        @divider = div if div
+      def _listen(divider=nil)
+        @divider = divider || @divider
         board.analog_listen(@pin, @divider)
       end
     end
