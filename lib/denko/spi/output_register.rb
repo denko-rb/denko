@@ -1,6 +1,7 @@
 module Denko
   module SPI
-    class OutputRegister < SPI::BaseRegister
+    class OutputRegister
+      include Register
       include Behaviors::OutputRegister
       include Behaviors::Lifecycle
 

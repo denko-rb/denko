@@ -21,9 +21,17 @@ class InputRegisterTest < Minitest::Test
     @button ||= Denko::DigitalIO::Button.new(board: part, pin: 0)
   end
 
+  def test_spi_setup
+    assert_equal 800000,      part.spi_frequency
+    assert_equal 2,           part.spi_mode
+    assert_equal :lsbfirst,   part.spi_bit_order
+    assert_equal 2,           part.bytes
+  end
+
   def test_state_setup
-    assert_equal Array.new(16) { false }, part.reading_pins
-    assert_equal Array.new(16) { false }, part.listening_pins
+    assert_equal Array.new(16) { false }, part.instance_variable_get(:@reading_pins)
+    assert_equal Array.new(16) { false }, part.instance_variable_get(:@listening_pins)
+    assert_equal Array.new(2)  { 0 },      part.state
     refute_nil   part.callbacks[:board_proxy]
   end
 
@@ -53,7 +61,7 @@ class InputRegisterTest < Minitest::Test
     mock.verify
   end
 
-  def test_updates_child_components
+  def test_updates_subcomponents
     button
     part.update("1")
     assert button.high?
@@ -61,25 +69,16 @@ class InputRegisterTest < Minitest::Test
     assert button.low?
   end
 
-  def test_bit_array_conversion_and_state_update
+  def test_update_state
     part.update("127")
-    assert_equal [1,1,1,1,1,1,1,0], part.state
+    assert_equal [127, 0], part.state
 
     new_part = Denko::SPI::InputRegister.new(options.merge(bytes: 2, pin: 10))
     new_part.update("127,128")
-    assert_equal [1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1], new_part.state
+    assert_equal [127, 128], new_part.state
   end
 
-  def test_callbacks_get_bit_array
-    mock = Minitest::Mock.new.expect :call, nil, [[1,1,1,1,1,1,1,0]]
-    part.add_callback do |data|
-      mock.call(data)
-    end
-    part.update("127")
-    mock.verify
-  end
-
-  def test_read_proxy
+  def test_board_proxy
     # Disable automatic listener first
     button.stop
     refute button.state
@@ -112,7 +111,7 @@ class InputRegisterTest < Minitest::Test
   def test_stop_listener_proxy
     button
 
-    # Calling stop on a child part, when only it is listening, should call stop on the register too.
+    # Calling subcomponent#stop, when only it is listening, should call stop on the register too.
     mock = Minitest::Mock.new.expect :call, nil
     part.stub(:stop, mock) do
       button.stop
@@ -121,7 +120,7 @@ class InputRegisterTest < Minitest::Test
 
     # Check listener tracking is correct.
     assert_equal Array.new(options[:bytes] * 8) { false }, part.instance_variable_get(:@listening_pins)
-    refute part.any_listening
+    refute part.instance_variable_get(:@listening_pins).any?
   end
 
   def test_gets_reads_through_select

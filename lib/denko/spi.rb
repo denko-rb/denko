@@ -6,7 +6,7 @@ SPI_FILES = [
   [:BitBang,        "bit_bang"],
   [:ChipSelect,     "peripheral"],
   [:Peripheral,     "peripheral"],
-  [:BaseRegister,   "base_register"],
+  [:Register,       "register"],
   [:InputRegister,  "input_register"],
   [:OutputRegister, "output_register"],
 ]
