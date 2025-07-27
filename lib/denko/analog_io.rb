@@ -6,6 +6,7 @@ ANALOG_IO_FILES = [
   [:Output,         "output"],
   [:Potentiometer,  "potentiometer"],
   [:Joystick,       "joystick"],
+  [:ADKeyboard,     "adkeyboard"],
   [:ADS111X,        "ads111x"],
   [:ADS1100,        "ads1100"],
   [:ADS1115,        "ads1115"],

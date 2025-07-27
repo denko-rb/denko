@@ -1,38 +1,16 @@
 module Denko
   module Behaviors
     module OutputRegister
-      include BoardProxy
+      include Register
       include Lifecycle
-
-      BYTE_COUNT = 1
-
-      def bytes
-        @bytes = params[:bytes] || self.class::BYTE_COUNT
-      end
-
-      after_initialize do
-        old_state
-        state
-      end
-
-      def old_state
-        @old_state ||= Array.new(bytes) { 0 }
-      end
-
-      def state
-        @state ||= Array.new(bytes) { 0 }
-      end
 
       def write
         if @state != @old_state
+          # Including classes must implement #_write.
           _write(@state)
           @state.each_with_index { |byte, i| @old_state[i] = byte }
         end
         state
-      end
-
-      def _write
-        raise ArgumentError, "#_write not implemented in including class, for Behaviors::OutputRegister"
       end
 
       def digital_write(pin, value)
@@ -58,10 +36,6 @@ module Denko
         bit  = pin % 8
 
         (state[byte] >> bit) & 0b1
-      end
-
-      def pin_is_pwm?(pin)
-        false
       end
     end
   end

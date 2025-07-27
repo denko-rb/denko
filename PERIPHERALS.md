@@ -7,6 +7,7 @@
 | Name             | Status         | Interface    | Component Class            | Notes |
 | :--------------- | :------:       | :--------    | :---------------           |------ |
 | Button           | :green_heart:  | Digital In   | `DigitalIO::Button`        |
+| ADKeyboard       | :green_heart:  | Analog In    | `AnalogIO::ADKeyboard      | 5 Buttons over 1 Analog In
 | Relay            | :green_heart:  | Digital Out  | `DigitalIO::Relay`         |
 | Rotary Encoder   | :green_heart:  | Digital In   | `DigitalIO::RotaryEncoder` | Listens every 1ms
 | Potentiometer    | :green_heart:  | Analog In    | `AnalogIO::Potentiometer`  | Smoothing on by default
