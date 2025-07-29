@@ -147,7 +147,7 @@ module Denko
         command [PARTIAL_IN]
       end
 
-      def draw(x_start, x_finish y_start, y_finish)
+      def draw(x_start, x_finish, y_start, y_finish)
         wake
         super(x_start, x_finish, y_start, y_finish)
       end
