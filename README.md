@@ -30,16 +30,16 @@ Denko aims to provide a Ruby API for you to directly control physical peripheral
 
 ### Single-Board-Computer
 - Install [denko-piboard](https://github.com/denko-rb/denko-piboard) on a Linux SBC
-- The included C extention makes the SBC's GPIO header available via a `Denko::PiBoard` instance
+- The included C extension makes the SBC's GPIO header available via a `Denko::PiBoard` instance
 - Use it in Ruby programs, self-contained on the SBC
 
 ### mruby on Milk-V Duo
 - Download `mruby` and/or `mirb` binaries from the [mruby-denko-milkv-duo](https://github.com/denko-rb/mruby-denko-milkv-duo) repo onto your Milk-V Duo
-- Everything is included. Instances of `Denko::Board` in mruby  will use the Milk-V's GPIO
+- Everything is included. Instances of `Denko::Board` in mruby will use the Milk-V's GPIO
 
 **Notes:**
 - Peripheral drivers are implemented __only__ in this gem, and the source files are used by __all__ stacks
-- That makes the [examples folder](examples) in this gem relveant to all (ignoring hardware incompatibilities)
+- That makes the [examples folder](examples) in this gem relevant to all (ignoring hardware incompatibilities)
 - If using `denko-piboard` or `mruby-denko-milkv-duo`, ignore the hardware and installation sections here
 
 ## Supported Hardware
@@ -50,7 +50,7 @@ Denko aims to provide a Ruby API for you to directly control physical peripheral
 
 ## Installation
 
-**Note:** On Windows you can follow the Mac/Linux instructions in WSL, but it isn't recommended. Serial (COM port) forwarding isn't working on WSL2, which means you can't communicate with the board. There are workarounds, and it might work on WSL1, but the [RubyInstaller for Windows](https://rubyinstaller.org/) and Arduino IDE are recommended instead. A Linux virtual machine with USB passthrough works too.
+**Note:** On Windows, you can follow the Mac/Linux instructions in WSL, but it isn't recommended. Serial (COM port) forwarding doesn't work reliably on WSL2, preventing communication with the board. While there are workarounds (and it might work on WSL1), we recommend using the [RubyInstaller for Windows](https://rubyinstaller.org/) with the Arduino IDE instead. Alternatively, a Linux virtual machine with USB passthrough also works.
 
 #### 1. Install the Gem
 
@@ -60,7 +60,7 @@ gem install denko
 
 #### 2. Install the Arduino IDE OR CLI
 
-Get the Arduino IDE [here](http://arduino.cc/en/Main/Software) for a graphical interface (recommended for Windows), or use the command line interface from [here](https://github.com/arduino/arduino-cli/releases), or Homebrew.
+Get the Arduino IDE [here](http://arduino.cc/en/Main/Software) for a graphical interface (recommended for Windows), or use the command line interface from [here](https://github.com/arduino/arduino-cli/releases) or via Homebrew.
 
 **CLI Installation with Homebrew on Mac or Linux:**
 
@@ -71,7 +71,7 @@ brew install arduino-cli
 
 #### 3. Install Arduino Dependencies
 
-Denko uses Arduino cores, which support different microcontrollers, and a few libraries. Install only the ones for your microcontroller, or install everything. There are no conflcits. Instructions:
+Denko uses Arduino cores, which support different microcontrollers, and a few libraries. Install only the ones for your microcontroller, or install everything. There are no conflicts. Instructions:
 
 - [Install Dependencies in IDE](DEPS_IDE.md)
 - [Install Dependencies in CLI](DEPS_CLI.md)
@@ -90,7 +90,7 @@ denko sketch wifi --target esp32 --ssid YOUR_SSID --password YOUR_PASSWORD
 denko targets
 ```
 
-**Note:** Boards flashed with a Wi-Fi or Ethernet sketch will [listen for a TCP connection](examples/connection/tcp.rb), but fall back to Serial when there is none active.
+**Note:** Boards flashed with a Wi-Fi or Ethernet sketch will [listen for a TCP connection](examples/connection/tcp.rb) but fall back to Serial when there is none active.
 
 #### 5a. IDE Flashing
 
@@ -132,13 +132,13 @@ arduino-cli board listall
 
 #### 6. Test It
 
-Most boards have a regular LED on-board. Test with the [blink](examples/led/builtin_blink.rb) example. If you have an on-board WS2812 LED (Neopixel), use the [WS2812 blink](examples/led/ws2812_builtin_blink.rb) example instead. If it starts blinking, you're ready for Ruby!
+Most boards have a regular LED on board. Test with the [blink](examples/led/builtin_blink.rb) example. If you have an on-board WS2812 LED (Neopixel), use the [WS2812 blink](examples/led/ws2812_builtin_blink.rb) example instead. If it starts blinking, you're ready for Ruby!
 
 ## Examples and Tutorials
 
 #### Tutorial
 
-- [Here](tutorial) you will find a beginner-friendly tutorial, that goes through the basics, using commented examples and diagrams. Read the comments and try modifying the code. You will need the following:
+- [Here](tutorial) you will find a beginner-friendly tutorial that goes through the basics, using commented examples and diagrams. Read the comments and try modifying the code. You will need the following:
   - 1 [compatible microcontroller](MICROCONTROLLERS.md)
   - 1 button or momentary switch
   - 1 potentiometer (any value)
@@ -153,4 +153,4 @@ Most boards have a regular LED on-board. Test with the [blink](examples/led/buil
 #### Included Examples
 
 - The [examples](examples) folder contains at least one example per peripheral, demonstrating its interface.
-- Each example should incldue a wiring diagram alongside its code (still incomplete).
+- Each example should include a wiring diagram alongside its code (still incomplete).
