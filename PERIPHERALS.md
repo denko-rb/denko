@@ -7,6 +7,7 @@
 | Name             | Status         | Interface    | Component Class            | Notes |
 | :--------------- | :------:       | :--------    | :---------------           |------ |
 | Button           | :green_heart:  | Digital In   | `DigitalIO::Button`        |
+| 5-Way Button     | :heart:        | Digital In   | `DigitalIO::Button5`       |
 | ADKeyboard       | :green_heart:  | Analog In    | `AnalogIO::ADKeyboard`     | 5 Buttons over 1 Analog In
 | Relay            | :green_heart:  | Digital Out  | `DigitalIO::Relay`         |
 | Rotary Encoder   | :green_heart:  | Digital In   | `DigitalIO::RotaryEncoder` | Listens every 1ms
@@ -21,8 +22,8 @@
 | RGB LED            | :green_heart:      | Digi/Ana Out      | `LED::RGB`            |
 | Seven Segment      | :green_heart:      | Digital Out       | `LED::SevenSegment`   | Bit 7 can be decimal point **OR** colon
 | Seven Segment SPI  | :green_heart:      | SPI               | `LED::SevenSegmentSPI`| Multiple SevenSegment thru 595 registers
-| MAX7219            | :heart:            | SPI               | `LED::MAX7219`        | 8x 7-Segment w/DP **OR** 8x8 matrix
-| TM1637             | :green_heart:      | Digi Out Bit-Bang | `LED::TM1637`         | 4x 7-Segment + colon. Inputs ignored
+| MAX7219            | :heart:            | SPI               | `LED::MAX7219`        | 8x 7-Segment w/DP
+| TM1637             | :green_heart:      | Digi Out Bit-Bang | `LED::TM1637`         | 4x 7-Segment + colon **OR** 6x 7-Segment w/DP. Inputs ignored
 | TM1638             | :yellow_heart:     | SPI Bit-Bang      | `LED::TM1638`         | 8x 7-Segment w/ DP + 8 LEDs. No inputs yet
 | TM1652             | :green_heart:      | UART Hardware     | `LED::TM1652`         | 4x 7-Segment, 3 w/DP, 1 with colon
 | WS2812 (Neopixel)  | :green_heart:      | Adafruit Library  | `LED::WS2812`         |
@@ -49,6 +50,7 @@
 | ILI9341             | :heart:        | SPI                          | `Display::ILI9341`  | 240x320 RGB LCD
 | GC9107              | :heart:        | SPI                          | `Display::GC9107`   | 128x128 RGB LCD
 | GC9A01              | :heart:        | SPI                          | `Display::GCA9A01`  | 240x240 Round RGB LCD
+| MAX7219             | :heart:        | SPI                          | `Display::MAX7219`  | 8x8 LED matrix (chainable)
 
 ## Sound
 
@@ -84,7 +86,10 @@
 | ADS1232 ADC      | :heart:        | SPI        | `AnalogIO::ADS1232`  | 2-ch, 24-bit ADC + temperature
 | PCF8591 ADC/DAC  | :heart:        | I2C        | `AnalogIO::PCF8591`  | 4-ch, 8-bit ADC + 1-ch 8-bit DAC
 | MCP4725 DAC      | :heart:        | I2C        | `AnalogIO::MCP4275`  | 1-ch, 12-bit DAC
+| MCP4728 DAC      | :heart:        | I2C        | `AnalogIO::MCP4275`  | 4-ch, 12-bit DAC
 | PCA9548 I2C Mux  | :heart:        | I2C        | `I2C::PCA9548`       | 8-way I2C multiplexer
+| DS2413           | :heart:        | 1-Wire     | `DigitalIO::DS2413`  | 2x Digital Expander
+| CD74HC4067       | :heart:        | Digi/Ana   | `AnanlogIO::CD74HC4067 | 16x Analog Multiplexer
 
 ## Environmental Sensors
 
@@ -112,22 +117,32 @@
 | SCD40            | :heart:        | I2C         | `Sensor::SDC40`    | Temp / Press / CO2       |
 | CCS811           | :heart:        | I2C         | `Sensor::CCS811`   | eCO2                     |
 | MICS5524         | :heart:        | Analog In   | `Sensor::MICS5524` | CO/Alcohol/VOC           |
+| MCP9808          | :heart:        | I2C         | `Sensor::MCP9808`  | Temp                     |
 
 ## Light Sensors
 
-| Name             | Status         | Interface    | Component Class    | Notes |
-| :--------------- | :------:       | :--------    | :---------------   |------ |
-| BH1750           | :heart:        | Digital In   | `Sensor::BH1750`   | Ambient Light
-| TCS34725         | :heart:        | I2C          | `Sensor::TCS34725` | RGB
-| APDS9960         | :heart:        | I2C          | `Sensor::APDS9960` | Proximity, RGB, Gesture
+| Name             | Status         | Interface    | Component Class      | Notes |
+| :--------------- | :------        | :--------    | :---------------     |------ |
+| BH1750           | :heart:        | Digital In   | `Sensor::BH1750`     | Light
+| TCS34725         | :heart:        | I2C          | `Sensor::TCS34725`   | RGB
+| APDS9960         | :heart:        | I2C          | `Sensor::APDS9960`   | Proximity, RGB, Gesture
+| ALS-PT19         | :heart:        | Analog In    | `Sensor::ALSPT19`    | Light
+| TEMT6000         | :heart:        | Analog In    | `Sensor::TEMT6000`   | Light
+| VEML6040         | :heart:        | I2C          | `Sensor::VEML6040`   | RGBW
+| VEML7700         | :heart:        | I2C          | `Sensor::VEML7700`   | Light
+| BH1745NUC        | :heart:        | I2C          | `Sensor::BH1745NUC`  | RGB
+| TSL2561          | :heart:        | I2C          | `Sensor::TSL2561`    | Light
+| TSL2591          | :heart:        | I2C          | `Sensor::TSL2591`    | Light
+| ISL29125         | :heart:        | I2C          | `Sensor::ISL29125`   | RGB
 
-## PIR Motion Sensors
+## Presence / Motion Sensors
 | Name             | Status         | Interface    | Component Class      | Notes |
 | :--------------- | :------:       | :--------    | :---------------     |------ |
-| HC-SR501         | :green_heart:  | Digital In   | `Sensor::GenericPIR` |
-| HC-SR505         | :yellow_heart: | Digital In   | `Sensor::GenericPIR` |
-| AS312            | :green_heart:  | Digital In   | `Sensor::GenericPIR` |
-| AM312            | :yellow_heart: | Digital In   | `Sensor::GenericPIR` |
+| HC-SR501         | :green_heart:  | Digital In   | `Sensor::GenericPIR` | PIR
+| HC-SR505         | :yellow_heart: | Digital In   | `Sensor::GenericPIR` | PIR
+| AS312            | :green_heart:  | Digital In   | `Sensor::GenericPIR` | PIR
+| AM312            | :yellow_heart: | Digital In   | `Sensor::GenericPIR` | PIR
+| LD2410C          | :heart:        | UART         | `Sensor::LD2410C`    | mmWave Human Presence
 
 ## Distance Sensors
 
@@ -150,12 +165,14 @@
 | MPU6050          | :heart:        | I2C       | `Sensor::MPU6050`  | Gyro + Accelerometer
 | MPU6886          | :heart:        | I2C       | `Sensor::MPU6886`  | Gyro + Accelerometer
 | BMI160           | :heart:        | I2C       | `Sensor::BMI160`   | Gyro + Accelerometer
-| LSM6DS3          | :heart:        | I2C       | `Sensor:LSM6DS3`   | Gyro + Accelerometer
+| LSM6DS3          | :heart:        | I2C       | `Sensor::LSM6DS3`  | Gyro + Accelerometer
+| LIS3DSH          | :heart:        | I2C       | `Sensor::LIS3DSH`  | Accelerometer
 
 ## Misc Sensors
 | Name             | Status         | Interface | Component Class    | Notes |
 | :--------------- | :------:       | :-------- | :---------------   |------ |
 | INA219           | :heart:        | I2C       | `Sensor::INA219`   | DC Current Sensor
+| AS5600           | :heart:        | I2C       | `Sensor::AS5600`   | Magnetic Angle Sensor
 
 ## Real Time Clocks
 
