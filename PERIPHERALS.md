@@ -23,7 +23,7 @@
 | Seven Segment      | :green_heart:      | Digital Out       | `LED::SevenSegment`   | Bit 7 can be decimal point **OR** colon
 | Seven Segment SPI  | :green_heart:      | SPI               | `LED::SevenSegmentSPI`| Multiple SevenSegment thru 595 registers
 | MAX7219            | :heart:            | SPI               | `LED::MAX7219`        | 8x 7-Segment w/DP
-| TM1637             | :green_heart:      | Digi Out Bit-Bang | `LED::TM1637`         | 4x 7-Segment + colon **OR** 6x 7-Segment w/DP. Inputs ignored
+| TM1637             | :green_heart:      | Digi Out Bit-Bang | `LED::TM1637`         | 4x 7-Seg+Colon **OR** 6x 7-Seg+DPs
 | TM1638             | :yellow_heart:     | SPI Bit-Bang      | `LED::TM1638`         | 8x 7-Segment w/ DP + 8 LEDs. No inputs yet
 | TM1652             | :green_heart:      | UART Hardware     | `LED::TM1652`         | 4x 7-Segment, 3 w/DP, 1 with colon
 | WS2812 (Neopixel)  | :green_heart:      | Adafruit Library  | `LED::WS2812`         |
