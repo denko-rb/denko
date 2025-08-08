@@ -126,7 +126,7 @@
 | BH1750           | :heart:        | Digital In   | `Sensor::BH1750`     | Light
 | TCS34725         | :heart:        | I2C          | `Sensor::TCS34725`   | RGB
 | APDS9960         | :heart:        | I2C          | `Sensor::APDS9960`   | Proximity, RGB, Gesture
-| ALS-PT19         | :heart:        | Analog In    | `Sensor::ALSPT19`    | Light
+| ALS-PT19         | :green_heart:  | Analog In    | `Sensor::ALSPT19`    | Light
 | TEMT6000         | :heart:        | Analog In    | `Sensor::TEMT6000`   | Light
 | VEML6040         | :heart:        | I2C          | `Sensor::VEML6040`   | RGBW
 | VEML7700         | :heart:        | I2C          | `Sensor::VEML7700`   | Light

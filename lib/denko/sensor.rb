@@ -21,6 +21,7 @@ SENSOR_FILES = [
   [:JSNSR04T,    "jsnsr04t"],
   [:GenericPIR,  "generic_pir"],
   [:VL53L0X,     "vl53l0x"],
+  [:ALSPT19,     "alspt19"],
 ]
 
 module Denko
