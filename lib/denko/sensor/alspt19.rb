@@ -1,8 +1,9 @@
 module Denko
   module Sensor
     class ALSPT19 < AnalogIO::Input
-      # 0.1976 uA per lux, from datasheet Fig. 6
-      LUX_PER_AMP = 1_000_000 / 0.1976
+      # 0.52 uA per lux (CIE standard illuminant)
+      # Taken from datasheet table: Electrical and Optical Characteristics (page 4).
+      LUX_PER_AMP = 1_000_000 / 0.520
 
       # From datasheet Fig. 4, approximated to linear
       VCC_COMP_GRADIENT = 0.0236
