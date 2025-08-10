@@ -45,14 +45,14 @@ module Denko
         vcc_calc = @vcc
         vcc_calc = VCC_CUTOFF_HIGH if vcc_calc >= VCC_CUTOFF_HIGH
         vcc_calc = VCC_CUTOFF_LOW  if vcc_calc <= VCC_CUTOFF_LOW
-        @vcc_compensator = 1.0 + ((vcc_calc - VCC_TYPICAL) * VCC_COMP_GRADIENT)
+        @vcc_compensator = 1.0 / (1.0 + ((vcc_calc - VCC_TYPICAL) * VCC_COMP_GRADIENT))
       end
 
       def set_temp_compensator
         temp_calc = @temperature
         temp_calc = TEMP_CUTOFF_HIGH if temp_calc >= TEMP_CUTOFF_HIGH
         temp_calc = TEMP_CUTOFF_LOW  if temp_calc <= TEMP_CUTOFF_LOW
-        @temp_compensator = 1.0 + ((temp_calc - TEMP_TYPICAL) * TEMP_COMP_GRADIENT)
+        @temp_compensator = 1.0 / (1.0 + ((temp_calc - TEMP_TYPICAL) * TEMP_COMP_GRADIENT))
       end
 
       def pre_callback_filter(value)
