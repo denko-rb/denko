@@ -16,16 +16,14 @@ module Denko
       TEMP_CUTOFF_HIGH   =  85.0
       TEMP_TYPICAL       =  25.0
 
+      attr_accessor :loading_resistance
+
       after_initialize do
         raise ArgumentError, "missing :vcc in params for ALSPT19" unless params[:vcc]
         self.vcc = params[:vcc]
         self.temperature = 25
-        # 10k loading resistor on common breakout boards
+        # 10k loading resistor, common on breakout boards
         self.loading_resistance = 10_000
-      end
-
-      def loading_resistance=(ohms)
-        @loading_resistance = ohms
       end
 
       def temperature=(t)
@@ -56,7 +54,7 @@ module Denko
       end
 
       def pre_callback_filter(value)
-        amps = (value.to_i * volts_per_bit) / @loading_resistance
+        amps = (value.to_i * volts_per_bit) / loading_resistance
         lux  = amps * LUX_PER_AMP * @vcc_compensator * @temp_compensator
       end
     end
