@@ -22,6 +22,7 @@ SENSOR_FILES = [
   [:GenericPIR,  "generic_pir"],
   [:VL53L0X,     "vl53l0x"],
   [:ALSPT19,     "alspt19"],
+  [:TEMT6000,    "temt6000"],
 ]
 
 module Denko
