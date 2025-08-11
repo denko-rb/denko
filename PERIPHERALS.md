@@ -131,7 +131,7 @@
 | VEML6040         | :heart:        | I2C          | `Sensor::VEML6040`   | RGBW
 | VEML7700         | :heart:        | I2C          | `Sensor::VEML7700`   | Light
 | BH1745NUC        | :heart:        | I2C          | `Sensor::BH1745NUC`  | RGB
-| TSL2561          | :heart:        | I2C          | `Sensor::TSL2561`    | Light
+| TSL2561          | :green_heart:  | I2C          | `Sensor::TSL2561`    | Light. No interrupt or custom integration time
 | TSL2591          | :heart:        | I2C          | `Sensor::TSL2591`    | Light
 | ISL29125         | :heart:        | I2C          | `Sensor::ISL29125`   | RGB
 
