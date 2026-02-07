@@ -1,6 +1,32 @@
 # Helpers needed during loading.
 require_relative 'denko/helpers'
 
+# Denko - Electronics Programming in Ruby
+#
+# Program real-life electronics in Ruby. LEDs, buttons, sensors (and more)
+# work just like any Ruby object.
+#
+# Denko provides a Ruby API for controlling physical peripherals while
+# abstracting hardware and software complexity. It supports connected
+# microcontrollers, single-board computers, and mruby on embedded systems.
+#
+# @example Connect to a board and blink an LED
+#   board = Denko::Board.new(Denko::Connection::Serial.new)
+#   led = Denko::LED::Base.new(board: board, pin: 13)
+#   led.blink(0.5)
+#
+# @example Read a sensor
+#   board = Denko::Board.new(Denko::Connection::Serial.new)
+#   sensor = Denko::Sensor::DHT22.new(board: board, pin: 7)
+#   sensor.read
+#   puts "Temperature: #{sensor.temperature}°C"
+#
+# @see https://github.com/denko-rb/denko
+# @author vickash, Austinbv
+#
+module Denko
+end
+
 unless Denko.in_mruby_build?
   Thread.abort_on_exception = true
 

@@ -1,0 +1,13 @@
+--readme README.md
+--markup markdown
+--output-dir doc
+--no-private
+--protected
+--title "Denko - Electronics Programming in Ruby"
+--embed-mixins
+-
+CHANGELOG.md
+MICROCONTROLLERS.md
+PERIPHERALS.md
+LICENSE
+lib/**/*.rb

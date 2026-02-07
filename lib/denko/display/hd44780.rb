@@ -1,10 +1,9 @@
-#
-# Ruby implementation of Hitach HD44780 LCD support.
-# Based on the Adafruit_LiquidCrystal library:
-# https://github.com/adafruit/Adafruit_LiquidCrystal
-#
 module Denko
   module Display
+    # Ruby implementation of Hitachi HD44780 LCD support, based on the
+    # Adafruit_LiquidCrystal library,
+    #
+    # @see https://github.com/adafruit/Adafruit_LiquidCrystal
     class HD44780
       include Behaviors::MultiPin
       include Behaviors::Lifecycle
