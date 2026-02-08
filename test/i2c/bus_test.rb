@@ -26,6 +26,13 @@ class I2CBusTest < Minitest::Test
     assert_equal 10, bus2.i2c_index
   end
 
+  def test_registers_with_board
+    bus2 = Denko::I2C::Bus.new(board: board, index: 10, pins: {scl: 5, sda: 4})
+    assert_equal bus2, board.single_pin_components[4]
+    assert_equal bus2, board.single_pin_components[5]
+    assert_equal bus2, board.hw_i2c_comps[10]
+  end
+
   def test_search_result_string
     # Reject 0s created by leading and trailing colons.
     board.inject_component_update(bus, ":48:50:")
@@ -33,7 +40,7 @@ class I2CBusTest < Minitest::Test
     assert_equal [0x30, 0x32], bus.found_devices
   end
 
-  def test_search_resul_array
+  def test_search_result_array
     board.inject_component_update(bus, [0, 0x30, 0x32])
     bus.search
     assert_equal [0x30, 0x32], bus.found_devices

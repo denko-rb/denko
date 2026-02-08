@@ -16,6 +16,14 @@ class SPIBusTest < Minitest::Test
   PIN = 9
   OPTIONS = { read: 2, frequency: 800000, mode: 2, bit_order: :lsbfirst }
 
+  def test_registers_with_board
+    bus2 = Denko::SPI::Bus.new(board: board, index: 6, pins: {mosi: 11, miso: 12, sck: 13})
+    assert_equal bus2, board.single_pin_components[11]
+    assert_equal bus2, board.single_pin_components[12]
+    assert_equal bus2, board.single_pin_components[13]
+    assert_equal bus2, board.hw_spi_comps[6]
+  end
+
   def test_automatically_adds_and_removes_component
     obj = TempSpiPeripheral.new(bus: part, pin: 1)
     assert part.components.include?(obj)

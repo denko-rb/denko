@@ -25,6 +25,11 @@ module Denko
 
       def convert_pins
         @pins = {}
+
+        # Allow hardware buses to (optionally) pass pins to register and avoid conflicts.
+        # Don't need to care that :pins wasn't given here. #initialize_pins will raise.
+        return unless params[:pins]
+
         params[:pins].each do |key,pin|
           self.pins[key] = pin ? board.convert_pin(pin) : nil
         end

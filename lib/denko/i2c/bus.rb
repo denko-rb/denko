@@ -1,6 +1,7 @@
 module Denko
   module I2C
     class Bus
+      include Behaviors::MultiPin
       include Behaviors::Lifecycle
       include BusCommon
 

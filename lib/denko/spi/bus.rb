@@ -1,6 +1,7 @@
 module Denko
   module SPI
     class Bus
+      include Behaviors::MultiPin
       include BusCommon
 
       # Board expects all components to have #pin.
