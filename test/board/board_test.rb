@@ -84,16 +84,16 @@ class BoardTest < Minitest::Test
 
   def test_update_passes_messages_to_correct_components
     mock1 = Minitest::Mock.new.expect(:update, nil, ["data"])
-    3.times { mock1.expect(:pin, 1) }
+    2.times { mock1.expect(:pin, 1) }
 
     # Make sure lines are split only on the first colon.
     # Tests for string based pine names too.
     mock2 = Minitest::Mock.new.expect(:update, nil, ["with:colon"])
-    3.times { mock2.expect(:pin, 14) }
+    2.times { mock2.expect(:pin, 14) }
 
     # Special EEPROM mock.
     mock3 = Minitest::Mock.new.expect(:update, nil, ["bytes"])
-    3.times { mock3.expect(:pin, 254) }
+    2.times { mock3.expect(:pin, 254) }
 
     board.add_component(mock1)
     board.add_component(mock2)

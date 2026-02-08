@@ -1,94 +1,136 @@
 module Denko
   module Behaviors
+    # This mixin tracks components connected to a parent object (typically a
+    # {Denko::Board} or {Denko::Behaviors::BusController}). Where applicable,
+    # components are indexed by the pin numbers they connect to on the parent,
+    # and bus indices for hardware implemented buses.
+    #
+    # - **Single Pin Components**: Indexed by physical pin number
+    # - **Hardware I2C Buses**: Indexed by I2C device index, and pin numbers (if given).
+    # - **Hardware SPI Buses**: Indexed by SPI device index, and pin numbers (if given).
+    #
+    # Conflicts are automatically prevented by raising an error when two
+    # components are added with the same index.
+    #
+    # @example Adding a single pin component
+    #   board = Denko::Board.new(connection)
+    #   led = Denko::LED.new(board: board, pin: 13)
+    #   # board.single_pin_components[13] is now a reference to led
+    #
+    # @example Adding an I2C component
+    #   i2c_bus = Denko::I2C::Bus.new(board: board, index: 1)
+    #   # board.hw_i2c_comps[1] is now i2c_bus, an object that maps to board's 1st hardware I2C (/dev/i2c-0 on Linux)
+    #
+    # @example Preventing conflicts
+    #   led1 = Denko::LED::Base.new(board: board, pin: 13)
+    #   led2 = Denko::LED::Base.new(board: board, pin: 13)
+    #   # => Raises StandardError: Pin 13 already in use
+    #
     module Subcomponents
+      # Register a child component to this parent component.
       #
-      # Main Methods
+      # @param component [Object] the child component to register
+      # @return [Array] updated list of all this object's subcomponents
+      # @raise [StandardError] if child component's pin or hardware bus index is already in use
+      #
+      # @see #remove_component
       #
       def add_component(component)
-        add_single_pin(component)
-        add_hw_i2c(component)
-        add_hw_spi(component)
+        if component.respond_to?(:i2c_index)
+          i = component.i2c_index
+          if hw_i2c_comps[i]
+            raise StandardError, "Error adding #{component} to #{self}. HW I2C dev: #{i} in use by: #{hw_i2c_comps[i]}"
+          else
+            hw_i2c_comps[i] = component
+          end
+        end
+
+        if component.respond_to?(:spi_index)
+          i = component.spi_index
+          if hw_spi_comps[i]
+            raise StandardError, "Error adding #{component} to #{self}. HW SPI dev: #{i} in use by: #{hw_spi_comps[i]}"
+          else
+            hw_spi_comps[i] = component
+          end
+        end
+
+        if component.respond_to?(:i2c_index) || component.respond_to?(:spi_index)
+          # Allow hardware buses to reserve their pins to avoid conflicts.
+          if component.respond_to?(:pins) && component.pins.class == Hash
+            component.pins.values.each { |pin| add_component_to_pin(component, pin) }
+          end
+        elsif component.respond_to?(:pin) && component.pin.is_a?(Integer)
+          # Standard SinglePin behavior.
+          add_component_to_pin(component, component.pin)
+        end
+
         components << component
       end
 
+      # Deregister a child component from this parent component.
+      #
+      # This removes the subcomponent from all internal collections and
+      # stops it if it responds to the `stop` method (useful for components
+      # with continuous reading or background threads).
+      #
+      # @param component [Object] the component to remove
+      # @return [Object, nil] the removed component, or nil if not found
+      #
       def remove_component(component)
-        remove_single_pin(component)
-        remove_hw_i2c(component)
-        remove_hw_spi(component)
+        if component.respond_to?(:i2c_index)
+          hw_i2c_comps.delete(component.i2c_index)
+        end
+
+        if component.respond_to?(:spi_index)
+          hw_spi_comps.delete(component.spi_index)
+        end
+
+        if component.respond_to?(:i2c_index) || component.respond_to?(:spi_index)
+          # Allow hardware buses to reserve their pins to avoid conflicts.
+          if component.respond_to?(:pins) && component.pins.class == Hash
+            component.pins.values.each { |pin| remove_component_from_pin(pin) }
+          end
+        elsif component.respond_to?(:pin) && component.pin.is_a?(Integer)
+          # Standard SinglePin behavior.
+          remove_component_from_pin(component.pin)
+        end
+
         deleted = components.delete(component)
         component.stop if deleted && component.respond_to?(:stop)
       end
 
+      # @return [Array] all child components
       def components
         @components ||= []
       end
 
-      #
-      # Single Pin
-      #
-      def add_single_pin(component)
-        if component.respond_to?(:pin) && component.pin.class == Integer
-          unless single_pin_components[component.pin]
-            single_pin_components[component.pin] = component
-          else
-            raise StandardError,  "Error adding #{component} to #{self}. Pin: #{component.pin} " \
-                                  "already in use by: #{single_pin_components[component.pin]}"
-          end
-        end
-      end
-
-      def remove_single_pin(component)
-        if component.respond_to?(:pin) && component.pin.class == Integer
-          single_pin_components.delete(component.pin)
-        end
-      end
-
+      # @return [Hash] child components using this parent component's pins, keyed by pin numbers
       def single_pin_components
         @single_pin_components ||= {}
       end
 
-      #
-      # I2C
-      #
-      def add_hw_i2c(component)
-        if component.respond_to?(:i2c_index)
-          unless hw_i2c_comps[component.i2c_index]
-            hw_i2c_comps[component.i2c_index] = component
-          else
-            raise StandardError,  "Error adding #{component} to #{self}. I2C dev: #{component.i2c_index} " \
-                                  "already in use by: #{hw_i2c_comps[component.i2c_index]}"
-          end
-        end
-      end
-
-      def remove_hw_i2c(component)
-        hw_i2c_comps.delete(component.i2c_index) if component.respond_to?(:i2c_index)
-      end
-
+      # @return [Hash] child hardware I2C buses, keyed by index
       def hw_i2c_comps
         @hw_i2c_comps ||= {}
       end
 
-      #
-      # SPI
-      #
-      def add_hw_spi(component)
-        if component.respond_to?(:spi_index)
-          unless hw_spi_comps[component.spi_index]
-            hw_spi_comps[component.spi_index] = component
-          else
-            raise StandardError,  "Error adding #{component} to #{self}. SPI dev: #{component.spi_index} " \
-                                  "already in use by: #{hw_spi_comps[component.spi_index]}"
-          end
+      # @return [Hash] child hardware SPI buses, keyed by index
+      def hw_spi_comps
+        @hw_spi_comps ||= {}
+      end
+
+      private
+
+      def add_component_to_pin(component, pin)
+        if single_pin_components[pin]
+          raise StandardError, "Error adding #{component} to #{self}. Pin: #{pin} already in use by: #{single_pin_components[pin]}"
+        else
+          single_pin_components[pin] = component
         end
       end
 
-      def remove_hw_spi(component)
-        hw_spi_comps.delete(component.spi_index) if component.respond_to?(:spi_index)
-      end
-
-      def hw_spi_comps
-        @hw_spi_comps ||= {}
+      def remove_component_from_pin(pin)
+        single_pin_components.delete(pin)
       end
     end
   end
