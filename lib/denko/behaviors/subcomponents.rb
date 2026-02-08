@@ -5,9 +5,9 @@ module Denko
     # components are indexed by the pin numbers they connect to on the parent,
     # and bus indices for hardware implemented buses.
     #
-    # - **Single Pin Components**: Indexed by physical pin number
-    # - **Hardware I2C Buses**: Indexed by I2C device index, and pin numbers (if given).
-    # - **Hardware SPI Buses**: Indexed by SPI device index, and pin numbers (if given).
+    # - **Single Pin Components**: Indexed by pin number
+    # - **Hardware I2C Buses**: Indexed by I2C device index, and pin numbers (if given)
+    # - **Hardware SPI Buses**: Indexed by SPI device index, and pin numbers (if given)
     #
     # Conflicts are automatically prevented by raising an error when two
     # components are added with the same index.
