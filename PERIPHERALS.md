@@ -35,7 +35,7 @@
 | :---------------    | :------:       | :--------                    | :---------------    |------ |
 | HD44780 LCD         | :green_heart:  | Digital Out, Output Register | `Display::HD44780`  | Char LCD. Also works through PCF8574
 | Canvas              | :yellow_heart: | -                            | `Display::Canvas`   | Mono 2D graphics
-| SSD1306             | :green_heart:  | I2C or SPI                   | `Display::SSD1306`  | Mono OLED: 128x64, 128x32, 64x32
+| SSD1306             | :green_heart:  | I2C or SPI                   | `Display::SSD1306`  | Mono OLED: 128x64, 128x32, 72x40, 64x32
 | SSD1312             | :green_heart:  | I2C                          | `Display::SSD1312`  | Mono OLED: 128x64, ~1.2 pixel aspect ratio
 | SH1106              | :green_heart:  | I2C or SPI                   | `Display::SH1106`   | Mono OLED: 128x64
 | SH1107              | :green_heart:  | I2C or SPI                   | `Display::SH1107`   | Mono OLED: 128x128

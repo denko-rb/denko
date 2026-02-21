@@ -41,8 +41,8 @@
 
 **Type:** OLED\
 **Colors:** Mono, multiple colors available\
-**Size:** Multiple sizes available, 0.49 to 2.42 inch most common\
-**Pixels:** Multiple sizes: 128 x 64, 128 x 32, 64 x 32\
+**Size:** Multiple sizes available, 0.43 to 2.42 inch most common\
+**Pixels:** Multiple sizes: 128 x 64, 128 x 32, 72 x 40, 64 x 32\
 **Interface:** I2C and SPI versions available
 
 ### SSD1312

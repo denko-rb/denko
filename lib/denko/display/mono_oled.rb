@@ -69,8 +69,8 @@ module Denko
         VCOM_DESELECT_LEVEL = 0xDB  # 0x00 = 0.65 x Vcc, 0x20 = x 0.77 * Vcc (default), 0x30 = 0.83 x Vcc
 
       # Valid widths and heights for displays
-      WIDTHS  = [64,96,128]
-      HEIGHTS = [16,32,48,64,128]
+      WIDTHS  = [128,96,72,64]
+      HEIGHTS = [128,64,48,40,32,16]
 
       # Default to a 128x64 display.
       COLUMNS = 128
