@@ -1,5 +1,6 @@
 #
 # Example for 64x32 I2C OLED (0.49"), using SSD1306 driver.
+# Also for 64x48 I2C OLED (0.66") with SSD1306.
 #
 require 'bundler/setup'
 require 'denko'
@@ -7,10 +8,11 @@ require 'denko'
 board = Denko::Board.new(Denko::Connection::Serial.new)
 bus = Denko::I2C::Bus.new(board: board)
 oled = Denko::Display::SSD1306.new(bus: bus, width: 64, height: 32) # address: 0x3C is default
+# oled = Denko::Display::SSD1306.new(bus: bus, width: 64, height: 48) # address: 0x3C is default
 
 # Draw some text on the OLED's canvas (a Ruby memory buffer).
 canvas = oled.canvas
-baseline = 20
+baseline = (oled.rows > 32) ? 28 : 20
 canvas.font = :bmp_5x7
 canvas.text_cursor = 4, baseline+9
 canvas.text "Hello World"
