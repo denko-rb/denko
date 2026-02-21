@@ -14,26 +14,6 @@
 
 ## OLEDs
 
-### SSD1306
-
-<img src="photos/ssd1306_128x32.jpg" width="540" alt="SSD1306 128x32 OLED">
-
-**Type:** OLED\
-**Colors:** Mono, multiple colors available\
-**Size:** Multiple sizes available, 0.9 to 2.42 inch most common\
-**Pixels:** Multiple sizes, 128 x 64 and 128 x 32 most common\
-**Interface:** I2C and SPI versions available
-
-### SSD1312
-
-<img src="photos/ssd1312_128x64.jpg" width="540" alt="SSD1312 128x64 OLED">
-
-**Type:** OLED\
-**Colors:** Mono\
-**Size:** 1.09 inch\
-**Pixels:** 128 x 64 (approximately 1.2 pixel aspect ratio when 128 side taken as horizontal)\
-**Interface:** I2C
-
 ### SH1106
 
 <img src="photos/sh1106.jpg" width="540" alt="SH1106 OLED">
@@ -53,6 +33,27 @@
 **Size:** 1.5"\
 **Pixels:** 128 x 128\
 **Interface:** I2C and SPI versions available
+
+### SSD1306
+
+<img src="photos/ssd1306_128x32.jpg" width="540" alt="SSD1306 128x32 OLED">
+<img src="photos/ssd1306_64x32.jpg" width="540" alt="SSD1306 64x32 OLED">
+
+**Type:** OLED\
+**Colors:** Mono, multiple colors available\
+**Size:** Multiple sizes available, 0.49 to 2.42 inch most common\
+**Pixels:** Multiple sizes: 128 x 64, 128 x 32, 64 x 32\
+**Interface:** I2C and SPI versions available
+
+### SSD1312
+
+<img src="photos/ssd1312_128x64.jpg" width="540" alt="SSD1312 128x64 OLED">
+
+**Type:** OLED\
+**Colors:** Mono\
+**Size:** 1.09 inch\
+**Pixels:** 128 x 64 (approximately 1.2 pixel aspect ratio when 128 side taken as horizontal)\
+**Interface:** I2C
 
 ## LCDs
 
