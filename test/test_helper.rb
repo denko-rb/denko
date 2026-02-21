@@ -1,3 +1,4 @@
+require "minitest/mock"
 require "minitest/autorun"
 
 DENKO_TEST_SLEEP_TIME = 0.002
