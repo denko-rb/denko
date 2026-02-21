@@ -50,8 +50,13 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'bcd',         '~> 1'
 
   gem.add_development_dependency 'rake',          '~> 13'
-  gem.add_development_dependency 'minitest',      '~> 6'
-  gem.add_development_dependency 'minitest-mock', '~> 5'
   gem.add_development_dependency 'simplecov',     '~> 0.22'
   gem.add_development_dependency 'yard',          '~> 0.9'
+
+  if RUBY_VERSION.split(".").first.to_i < 3
+    gem.add_development_dependency 'minitest',      '~> 5'
+  else
+    gem.add_development_dependency 'minitest',      '~> 6'
+    gem.add_development_dependency 'minitest-mock', '~> 5'
+  end
 end

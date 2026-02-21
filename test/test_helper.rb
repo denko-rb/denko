@@ -1,4 +1,6 @@
-require "minitest/mock"
+if RUBY_VERSION.split(".").first.to_i > 2
+  require "minitest/mock"
+end
 require "minitest/autorun"
 
 DENKO_TEST_SLEEP_TIME = 0.002
