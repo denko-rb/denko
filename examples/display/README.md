@@ -55,6 +55,16 @@
 **Pixels:** 128 x 64 (approximately 1.2 pixel aspect ratio when 128 side taken as horizontal)\
 **Interface:** I2C
 
+### CH1115
+
+<img src="photos/ch1115_88x48.jpg" width="540" alt="CH1115 88x48 OLED">
+
+**Type:** OLED\
+**Colors:** Mono\
+**Size:** 0.5 inch\
+**Pixels:** 88 x 48\
+**Interface:** I2C
+
 ## LCDs
 
 ### PCD8544 (aka Nokia 5110 / 3310)

@@ -46,6 +46,10 @@ module Denko
         # Set this constant in subclasses to offset first byte to match first line.
         RAM_X_OFFSET = 0
 
+        # Some controllers (eg. CH1115) have more pages than are connected to rows.
+        # Set this in subclasses to offset pages as needed.
+        RAM_P_OFFSET = 0
+
       # Hardware Configuration Commands
         # Single byte. OR with value.
         START_LINE      = 0x40  # Value: lowest 6 bits set RAM start line (default 0b000000)
@@ -69,7 +73,7 @@ module Denko
         VCOM_DESELECT_LEVEL = 0xDB  # 0x00 = 0.65 x Vcc, 0x20 = x 0.77 * Vcc (default), 0x30 = 0.83 x Vcc
 
       # Valid widths and heights for displays
-      WIDTHS  = [128,96,72,64]
+      WIDTHS  = [128,96,88,72,64]
       HEIGHTS = [128,64,48,40,32,16]
 
       # Default to a 128x64 display.
@@ -138,7 +142,7 @@ module Denko
 
         # Startup sequence.
         command [
-          MULTIPLEX_RATIO,        rows - 1,
+          MULTIPLEX_RATIO,        rows + (ram_p_offset*8) -1,
           DISPLAY_OFFSET,         0x00,
           START_LINE            | 0x00,
           SEGMENT_REMAP         | @seg_remap,
@@ -190,6 +194,10 @@ module Denko
         @ram_x_offset ||= self.class::RAM_X_OFFSET
       end
 
+      def ram_p_offset
+        @ram_p_offset ||= self.class::RAM_P_OFFSET
+      end
+
       def draw_partial(buffer, x_start, x_finish, p_start, p_finish, color=1)
         # Set start column for all pages.
         x = x_start + ram_x_offset
@@ -199,7 +207,7 @@ module Denko
 
         (p_start..p_finish).each do |page|
           # Update start page and write address command.
-          address_byte_array[0] = PAGE_START | page
+          address_byte_array[0] = PAGE_START | (page + ram_p_offset)
           command(address_byte_array)
 
           data_byte_array = partial_page_to_array(buffer, page, x_start, x_finish)
