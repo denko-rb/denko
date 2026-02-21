@@ -15,6 +15,7 @@ bus = Denko::I2C::Bus.new(board: board)
 
 # I2C OLED, connected to I2C SDA and SCL.
 oled = Denko::Display::SSD1306.new(bus: bus) # address: 0x3C is default
+# oled = Denko::Display::SSD1312.new(bus: bus) # address: 0x3C is default
 # oled = Denko::Display::SH1106.new(bus: bus,rotate: true) # address: 0x3C is default
 
 # SPI OLED, connected to SPI CLK and MOSI pins.

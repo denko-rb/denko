@@ -15,6 +15,7 @@ DISPLAY_FILES = [
   # OLEDs
   [:MonoOLED, "mono_oled"],
   [:SSD1306,  "ssd1306"],
+  [:SSD1312,  "ssd1312"],
   [:SH1106,   "sh1106"],
   [:SH1107,   "sh1107"],
 
