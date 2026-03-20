@@ -21,10 +21,11 @@
 | ESP32-C3       | :green_heart:   | LOLIN C3 Mini V2.1.0 | Native USB-CDC (broken in core 3.0+)
 | ESP32-H2       | :green_heart:   | ESP32-H2-MINI-1      | No Wi-Fi. Native USB-CDC (broken in core 3.0+)
 | ESP32-C6       | :green_heart:   | ESP32-C6-WROOM-1     | Native USB-CDC (broken in core 3.0+)
+| ESP32-P4       | :green_heart:   | ESP32-P4-Module-DEV-KIT  | Native USB-CDC (broken in core 3.0+)
 
-**Note:** For ESP32 chips using native USB-CDC, make sure `USB CDC On Boot` is `Enabled` in the IDE's `Tools` menu. Flashing from the CLI doesn't automatically enable this, so the IDE is recommended for now.
+**Note:** For ESP32 chips using native USB-CDC, make sure `Tools -> USB CDC On Boot` is `Enabled`, and `Tools -> USB Mode` is set to `Harware CDC & JTAG` in the Arduino IDE. Flashing from the CLI doesn't automatically enable this, so the IDE is recommended for now.
 
-**Note:** Since Arduino ESP32 Core version 3.0+, USB-CDC is very unreliable when sending lots of data both directions (something denko can do). It's a known issue in the core. Use a regular UART until it's fixed.
+**Note:** Since Arduino ESP32 Core version 3.0, USB-CDC is very unreliable when sending lots of data both directions (something denko can do) for all chips that support it. It's a known issue in the core. You should use a regular UART for the denko connection until this get fixed.
 
 ## AVR/MegaAVR Based Arduino Products (and Clones)
 [![AVR Build Status](https://github.com/denko-rb/denko/actions/workflows/build_atmega_avr.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_atmega_avr.yml)
