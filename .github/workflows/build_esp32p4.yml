@@ -1,4 +1,4 @@
-name: ATSAM3X
+name: ESP32-S3
 
 on:
   workflow_dispatch:
@@ -6,16 +6,16 @@ on:
   pull_request:
     paths:
       - "src/**"
-      - ".github/workflows/build_atsam3x.yml"
+      - ".github/workflows/build_esp32p4.yml"
 
   push:
     paths:
       - "src/**"
-      - ".github/workflows/build_atsam3x.yml"
+      - ".github/workflows/build_esp32p4.yml"
 
 jobs:
-  arduino_due_x:
-    name: atsam3x ${{ matrix.sketches.name }}
+  esp32s3:
+    name: esp32p4 ${{ matrix.sketches.name }}
 
     runs-on: ubuntu-latest
 
@@ -23,18 +23,19 @@ jobs:
       matrix:
         sketches:
           - name: serial
-          - name: ethernet
           - name: wifi
 
         board:
-          - fqbn: arduino:sam:arduino_due_x
-            denko-target: atsam3x
+          - fqbn: esp32:esp32:esp32p4
+            denko-target: esp32
             platforms: |
-              - name: arduino:sam
+              - name: esp32:esp32
+                source-url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
             libraries: |
-              - name: Servo
-              - name: Ethernet
-              - name: WiFi
+              - name: ESP32Servo
+                version: 3.1.3
+              - name: IRremote
+                version: 4.6.1
               - name: Adafruit NeoPixel
                 version: 1.15.4
 

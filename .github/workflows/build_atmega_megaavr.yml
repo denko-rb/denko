@@ -34,11 +34,11 @@ jobs:
             libraries: |
               - name: Servo
               - name: IRremote
-                version: 4.4.2
+                version: 4.6.1
               - name: Ethernet
               - name: WiFiNINA
               - name: Adafruit NeoPixel
-                version: 1.15.1
+                version: 1.15.4
 
     steps:
       - name: Checkout

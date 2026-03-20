@@ -1,4 +1,4 @@
-name: ATSAM3X
+name: RP2040
 
 on:
   workflow_dispatch:
@@ -6,16 +6,16 @@ on:
   pull_request:
     paths:
       - "src/**"
-      - ".github/workflows/build_atsam3x.yml"
+      - ".github/workflows/build_rp2350.yml"
 
   push:
     paths:
       - "src/**"
-      - ".github/workflows/build_atsam3x.yml"
+      - ".github/workflows/build_rp2350.yml"
 
 jobs:
-  arduino_due_x:
-    name: atsam3x ${{ matrix.sketches.name }}
+  rpipico2w:
+    name: rp2350 ${{ matrix.sketches.name }}
 
     runs-on: ubuntu-latest
 
@@ -23,18 +23,20 @@ jobs:
       matrix:
         sketches:
           - name: serial
-          - name: ethernet
           - name: wifi
 
         board:
-          - fqbn: arduino:sam:arduino_due_x
-            denko-target: atsam3x
+          - fqbn: rp2040:rp2040:rpipico2w
+            denko-target: rp2040
             platforms: |
-              - name: arduino:sam
+              - name: rp2040:rp2040
+                source-url: https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
             libraries: |
               - name: Servo
               - name: Ethernet
               - name: WiFi
+              - name: IRremote
+                version: 4.6.1
               - name: Adafruit NeoPixel
                 version: 1.15.4
 
