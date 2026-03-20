@@ -68,7 +68,7 @@
 |    Chip        | Status          | Board Tested            | Notes |
 | :--------      | :------:        | :---------------        |------ |
 | RP2040         | :green_heart:   | Raspberry Pi Pico (W)   |
-| RP2350         | :heart:         | Raspberry Pi Pico 2 (W) |
+| RP2350         | :green_heart:   | Raspberry Pi Pico 2 (W) |
 
 ## AVR Chips from [MightyCore](https://github.com/MCUdude/MightyCore)
 
