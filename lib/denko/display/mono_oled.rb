@@ -94,33 +94,26 @@ module Denko
       end
 
       def mutate_i2c
-        singleton_class.class_eval do
-          include I2C::Peripheral
-          include PixelCommon
+        singleton_class.include I2C::Peripheral
+        singleton_class.include PixelCommon
 
-          # Commands are I2C messages prefixed with 0x00.
-          def command(bytes)
-            i2c_write(bytes.unshift(0x00))
-            bytes.shift
-          end
+        define_singleton_method(:command) do |bytes|
+          i2c_write(bytes.unshift(0x00))
+          bytes.shift
+        end
 
-          # Data are I2C messages prefixed with 0x40.
-          def data(bytes)
-            i2c_write(bytes.unshift(0x40))
-            bytes.shift
-          end
+        define_singleton_method(:data) do |bytes|
+          i2c_write(bytes.unshift(0x40))
+          bytes.shift
+        end
 
-          # Data prefix always takes one byte, so subtract that.
-          def transfer_limit
-            @transfer_limit ||= bus.board.i2c_limit - 1
-          end
+        define_singleton_method(:transfer_limit) do
+          @transfer_limit ||= bus.board.i2c_limit - 1
         end
       end
 
       def mutate_spi
-        singleton_class.class_eval do
-          include SPICommon
-        end
+        singleton_class.include SPICommon
       end
 
       after_initialize do

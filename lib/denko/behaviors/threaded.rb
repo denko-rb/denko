@@ -5,9 +5,10 @@ module Denko
 
       module ClassMethods
         def interrupt_with(*args)
-          interrupts = self.class_eval('@@interrupts') rescue []
+          interrupts = class_variable_defined?(:@@interrupts) ? class_variable_get(:@@interrupts) : []
+          interrupts = [] unless interrupts
           interrupts = (interrupts + args).uniq
-          self.class_variable_set(:@@interrupts, interrupts)
+          class_variable_set(:@@interrupts, interrupts)
         end
       end
 
@@ -47,7 +48,10 @@ module Denko
 
       def enable_interrupts
         unless Denko.mruby?
-          interrupts = self.class.class_eval('@@interrupts') rescue []
+          interrupts = []
+          if self.class.class_variable_defined?(:@@interrupts)
+            interrupts = self.class.class_variable_get(:@@interrupts)
+          end
           interrupts.each do |method_name|
             standard_method = self.method(method_name)
 

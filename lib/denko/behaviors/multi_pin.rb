@@ -58,8 +58,10 @@ module Denko
           instance_variable_set("@#{name}", proxy)
         end
 
-        # Accessor for the proxy's instance var, or nil, if not given.
-        singleton_class.class_eval { attr_reader name }
+        # Accessor for the proxy component.
+        define_singleton_method(name.to_sym) do
+          instance_variable_get("@#{name}")
+        end
       end
 
       #
