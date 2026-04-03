@@ -34,9 +34,6 @@ module Denko
     #   end
     #
     module Lifecycle
-      # @private
-      CALLBACK_METHODS = %i[before_initialize after_initialize]
-
       # Defines callback methods in including classes.
       def self.included(base)
         base.extend ClassMethods
@@ -45,6 +42,7 @@ module Denko
       # @!parse extend ClassMethods
       module ClassMethods
         private
+
         # @!visibility public
 
         # Adds given block as callback to run before main body of {Component#initialize}.
@@ -54,6 +52,10 @@ module Denko
         # @yield callback to run
         # @return [Array<Proc>] all callbacks defined using `.before_initialize` for this class
         # @!method before_initialize
+        def before_initialize(&block)
+          @before_initialize_cbs ||= []
+          @before_initialize_cbs << block
+        end
 
         # Adds given block as callback to run after main body of {Component#initialize}.
         # These are hereditary, running in **top-down order:** callbacks from ancestors first, then descendents.
@@ -62,14 +64,9 @@ module Denko
         # @yield callback to run
         # @return [Array<Proc>] all callbacks defined using `.after_initialize` for this class
         # @!method after_initialize
-
-        CALLBACK_METHODS.each do |method_sym|
-          civar_sym = "@#{method_sym}_cbs".to_sym
-          define_method(method_sym) do |&block|
-            blocks = instance_variable_defined?(civar_sym) ? instance_variable_get(civar_sym) : []
-            blocks << block
-            instance_variable_set(civar_sym, blocks)
-          end
+        def after_initialize(&block)
+          @after_initialize_cbs ||= []
+          @after_initialize_cbs << block
         end
       end
 
@@ -83,6 +80,17 @@ module Denko
       # @return [void]
       # @note called at the start of {Component#initialize}
       # @!method run_before_initialize_cbs
+      def run_before_initialize_cbs
+        # Returns hierarchy in bottom-up order, correct for before callbacks.
+        klasses = self.class.ancestors
+        blocks = []
+        klasses.each do |klass|
+          if klass.instance_variable_defined?(:@before_initialize_cbs)
+            blocks << klass.instance_variable_get(:@before_initialize_cbs)
+          end
+        end
+        blocks.flatten.each { |b| instance_exec(&b) }
+      end
 
       # Runner for callbacks added by #after_initialize.
       #
@@ -90,24 +98,16 @@ module Denko
       # @return [void]
       # @note called at the end of {Component#initialize}
       # @!method run_after_initialize_cbs
-
-      CALLBACK_METHODS.each do |method_sym|
-        civar_sym  = "@#{method_sym}_cbs".to_sym
-        runner_sym = "run_#{method_sym}_cbs".to_sym
-
-        define_method(runner_sym) do
-          # Need to check civars in ancestors too.
-          klasses = self.class.ancestors
-          # If running "after" reverse hierarchy so they run top-down.
-          klasses = klasses.reverse if method_sym.to_s.start_with? 'after'
-
-          blocks = []
-          klasses.each do |klass|
-            blocks << klass.instance_variable_get(civar_sym) if klass.instance_variable_defined?(civar_sym)
+      def run_after_initialize_cbs
+        # Reverse hierarchy so after callbacks are run top-down.
+        klasses = self.class.ancestors.reverse
+        blocks = []
+        klasses.each do |klass|
+          if klass.instance_variable_defined?(:@after_initialize_cbs)
+            blocks << klass.instance_variable_get(:@after_initialize_cbs)
           end
-          blocks = blocks.flatten
-          blocks.each { |b| instance_exec(&b) }
         end
+        blocks.flatten.each { |b| instance_exec(&b) }
       end
     end
   end
