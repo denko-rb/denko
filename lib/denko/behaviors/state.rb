@@ -1,9 +1,9 @@
 module Denko
   module Behaviors
     #
-    # This module provides a standardized state management interface
-    # for {Component}. It typically stores things like sensor readings
-    # or the present level (high or low) of a digital output.
+    # Provides a standardized state management interface for {Component}.
+    # It typically stores things like sensor readings or the present level
+    # (high or low) of a digital output.
     #
     # @example Digital Output
     #   class Output

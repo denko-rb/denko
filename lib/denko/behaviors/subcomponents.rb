@@ -1,16 +1,19 @@
 module Denko
   module Behaviors
-    # This mixin tracks components connected to a parent object (typically a
-    # {Denko::Board} or {Denko::Behaviors::BusController}). Where applicable,
-    # components are indexed by the pin numbers they connect to on the parent,
-    # and bus indices for hardware implemented buses.
+    #
+    # Keeps track of multiple downstream components connected to the including
+    # component's physical interfaces. This mixin is typically included in a {Board},
+    # {BoardProxy} or {BusController}.
+    #
+    # Subcomponents are indexed by the GPIO pin numbers they connect to, and indices
+    # for hardware implemented interfaces (eg. SPI or I2C).
     #
     # - **Single Pin Components**: Indexed by pin number
-    # - **Hardware I2C Buses**: Indexed by I2C device index, and pin numbers (if given)
-    # - **Hardware SPI Buses**: Indexed by SPI device index, and pin numbers (if given)
+    # - **Hardware I2C Interface**: Indexed by I2C device index, and pin numbers (if given)
+    # - **Hardware SPI Interface**: Indexed by SPI device index, and pin numbers (if given)
     #
     # Conflicts are automatically prevented by raising an error when two
-    # components are added with the same index.
+    # components are added with the same pin or index.
     #
     # @example Adding a single pin component
     #   board = Denko::Board.new(connection)
