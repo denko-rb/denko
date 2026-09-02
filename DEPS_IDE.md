@@ -33,9 +33,9 @@ All platforms will require libraries to be installed. To install a library do th
     Arduino SAMD Boards (32-bits ARM Cortex-M0+)
     Arduino UNO R4 Boards
     ESP8266 Boards
-    ESP32 Boards @ 3.2.0
+    ESP32 Boards @ 3.3.11
     Raspberry Pi Pico/RP2040
-    ````r
+    ````
   * Libraries:
     ````
     Servo                       by Michael Margolis, Arduino
@@ -103,7 +103,7 @@ All platforms will require libraries to be installed. To install a library do th
     ````
   * Boards (latest version unless specified):
     ````
-    ESP32 Boards @ v3.2.0
+    ESP32 Boards @ 3.3.11
     ````
   * Libraries (latest version unless specified):
     ````

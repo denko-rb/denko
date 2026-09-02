@@ -2,30 +2,36 @@
 
 :green_heart: Full support :yellow_heart: Partial support :heart: Planned. No support yet :question: Works in theory. Untested in real hardware.
 
-## Espressif Chips with Wi-Fi (Except H2)
-[![ESP8266 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp8266.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp8266.yml)
+## Espressif ESP32 Chips
 [![ESP32 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32.yml)
+[![ESP32-S2 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32s2.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32s2.yml)
+[![ESP32-S3 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32s3.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32s3.yml)
 [![ESP32-C3 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32c3.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32c3.yml)
 [![ESP32-C6 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32c6.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32c6.yml)
 [![ESP32-H2 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32h2.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32h2.yml)
-[![ESP32-S2 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32s2.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32s2.yml)
-[![ESP32-S3 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32s3.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32s3.yml)
+
+|    Chip        | Status          | Board Tested             | Notes |
+| :--------      | :------:        | :---------------         |------ |
+| ESP32          | :green_heart:   | DOIT ESP32 DevKit V1     |
+| ESP32-S2       | :green_heart:   | LOLIN S2 Pico            | Native USB-CDC
+| ESP32-S3       | :green_heart:   | LOLIN S3 V1.0.0          | Native USB-CDC
+| ESP32-C3       | :green_heart:   | LOLIN C3 Mini V2.1.0     | Native USB-CD
+| ESP32-C6       | :green_heart:   | ESP32-C6-WROOM-1         | Native USB-CDC
+| ESP32-H2       | :green_heart:   | ESP32-H2-MINI-1          | Native USB-CDC, NO Wi-Fi
+| ESP32-P4       | :green_heart:   | ESP32-P4-Module-DEV-KIT  | Native USB-CDC
+
+**Notes for using USB-CDC with ESP32 chips:**
+
+- Be sure to use the ESP32 Arduino core version `3.3.11` or later. Prior `3.x` releases cause USB-CDC to fail intermittently.
+- To enable, make sure `Tools -> USB CDC On Boot` is `Enabled`, and `Tools -> USB Mode` is set to `Harware CDC & JTAG` in the Arduino IDE. Flashing from the CLI doesn't automatically enable this, so the IDE is recommended for now.
+
+## Espressif ESP8266 Chips
+[![ESP8266 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp8266.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp8266.yml)
 
 |    Chip        | Status          | Board Tested         | Notes |
 | :--------      | :------:        | :---------------     |------ |
 | ESP8266        | :green_heart:   | NodeMCU              |
 | ESP8285        | :question:      | DOIT ESP-Mx DevKit   | Should be identical to 8266. Not tested in hardware.
-| ESP32          | :green_heart:   | DOIT ESP32 DevKit V1 |
-| ESP32-S2       | :green_heart:   | LOLIN S2 Pico        | Native USB-CDC (broken in core 3.0+)
-| ESP32-S3       | :green_heart:   | LOLIN S3 V1.0.0      | Native USB-CDC (broken in core 3.0+)
-| ESP32-C3       | :green_heart:   | LOLIN C3 Mini V2.1.0 | Native USB-CDC (broken in core 3.0+)
-| ESP32-H2       | :green_heart:   | ESP32-H2-MINI-1      | No Wi-Fi. Native USB-CDC (broken in core 3.0+)
-| ESP32-C6       | :green_heart:   | ESP32-C6-WROOM-1     | Native USB-CDC (broken in core 3.0+)
-| ESP32-P4       | :green_heart:   | ESP32-P4-Module-DEV-KIT  | Native USB-CDC (broken in core 3.0+)
-
-**Note:** For ESP32 chips using native USB-CDC, make sure `Tools -> USB CDC On Boot` is `Enabled`, and `Tools -> USB Mode` is set to `Harware CDC & JTAG` in the Arduino IDE. Flashing from the CLI doesn't automatically enable this, so the IDE is recommended for now.
-
-**Note:** Since Arduino ESP32 Core version 3.0, USB-CDC is very unreliable when sending lots of data both directions (something denko can do) for all chips that support it. It's a known issue in the core. You should use a regular UART for the denko connection until this get fixed.
 
 ## AVR/MegaAVR Based Arduino Products (and Clones)
 [![AVR Build Status](https://github.com/denko-rb/denko/actions/workflows/build_atmega_avr.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_atmega_avr.yml)
