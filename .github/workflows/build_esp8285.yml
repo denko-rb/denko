@@ -1,4 +1,4 @@
-name: RP2350
+name: ESP8285
 
 on:
   workflow_dispatch:
@@ -6,16 +6,16 @@ on:
   pull_request:
     paths:
       - "src/**"
-      - ".github/workflows/build_rp2350.yml"
+      - ".github/workflows/build_esp8285.yml"
 
   push:
     paths:
       - "src/**"
-      - ".github/workflows/build_rp2350.yml"
+      - ".github/workflows/build_esp8285.yml"
 
 jobs:
-  rpipico2w:
-    name: rp2350 ${{ matrix.sketches.name }}
+  esp8266-nodemcuv2:
+    name: esp8266 ${{ matrix.sketches.name }}
 
     runs-on: ubuntu-latest
 
@@ -26,15 +26,12 @@ jobs:
           - name: wifi
 
         board:
-          - fqbn: rp2040:rp2040:rpipico2w
-            denko-target: rp2040
+          - fqbn: esp8266:esp8266:esp8285
+            denko-target: esp8266
             platforms: |
-              - name: rp2040:rp2040
-                source-url: https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
+              - name: esp8266:esp8266
+                source-url: https://arduino.esp8266.com/stable/package_esp8266com_index.json
             libraries: |
-              - name: Servo
-              - name: Ethernet
-              - name: WiFi
               - name: IRremote
                 version: 4.7.1
               - name: Adafruit NeoPixel

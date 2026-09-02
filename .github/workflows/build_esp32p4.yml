@@ -1,4 +1,4 @@
-name: ESP32-S3
+name: ESP32-P4
 
 on:
   workflow_dispatch:

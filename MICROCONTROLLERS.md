@@ -24,7 +24,7 @@
 | Chip           | Support         | Board Tested         | Notes                                           | Test Status |
 | :--------      | :------:        | :---------------     |------                                           | ----------- |
 | ESP8266        | :green_heart:   | NodeMCU              |                                                 | [![ESP8266 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp8266.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp8266.yml) |
-| ESP8285        | :question:      | DOIT ESP-Mx DevKit   | Should match 8266. Not tested in hardware.      |
+| ESP8285        | :question:      | DOIT ESP-Mx DevKit   | Should match 8266. Not tested in hardware.      | [![ESP8285 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp8285.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp8285.yml) |
 
 ## Raspberry Pi Microcontrollers
 
