@@ -4,8 +4,8 @@
 
 ## Espressif ESP32
 
-| Chip           | Support         | Board Tested             | Notes                       | Test Status |
-| :--------      | :------:        | :---------------         |------                       | ----------- |
+| Chip           | Support         | Board Tested             | Notes                       | Build Status  |
+| :--------      | :------:        | :---------------         |------                       | -----------   |
 | ESP32          | :green_heart:   | DOIT ESP32 DevKit V1     |                             | [![ESP32 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32.yml) | 
 | ESP32-S2       | :green_heart:   | LOLIN S2 Pico            | Native USB-CDC              | [![ESP32-S2 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32s2.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32s2.yml) |
 | ESP32-S3       | :green_heart:   | LOLIN S3 V1.0.0          | Native USB-CDC              | [![ESP32-S3 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32s3.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32s3.yml) | 
@@ -21,22 +21,22 @@
 
 ## Espressif ESP8266
 
-| Chip           | Support         | Board Tested         | Notes                                           | Test Status |
-| :--------      | :------:        | :---------------     |------                                           | ----------- |
+| Chip           | Support         | Board Tested         | Notes                                           | Build Status  |
+| :--------      | :------:        | :---------------     |------                                           | -----------   |
 | ESP8266        | :green_heart:   | NodeMCU              |                                                 | [![ESP8266 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp8266.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp8266.yml) |
 | ESP8285        | :question:      | DOIT ESP-Mx DevKit   | Should match 8266. Not tested in hardware.      | [![ESP8285 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp8285.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp8285.yml) |
 
 ## Raspberry Pi Microcontrollers
 
-| Chip           | Support         | Board Tested            | Notes                            | Test Status |
-| :--------      | :------:        | :---------------        |------                            | ----------- |
+| Chip           | Support         | Board Tested            | Notes                            | Build Status  |
+| :--------      | :------:        | :---------------        |------                            | -----------   |
 | RP2040         | :green_heart:   | Raspberry Pi Pico (W)   |                                  | [![RP2040 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_rp2040.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_rp2040.yml) |
 | RP2350         | :green_heart:   | Raspberry Pi Pico 2 (W) |                                  | [![RP2350 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_rp2350.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_rp2350.yml) |
 
 ## AVR/MegaAVR Based Arduino Products (and Clones)
 
-| Chip           | Support         | Products                                             | Notes                                       | Test Status |
-| :--------      | :------:        | :---------------                                     |------                                       | ----------- |
+| Chip           | Support         | Products                                             | Notes                                       | Build Status  |
+| :--------      | :------:        | :---------------                                     |------                                       | -----------   |
 | ATmega168      | :green_heart:   | Duemilanove, Diecimila, Pro                          | Omits features. `denko targets` for info.   | [![AVR Build Status](https://github.com/denko-rb/denko/actions/workflows/build_atmega_avr.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_atmega_avr.yml) |
 | ATmega328      | :green_heart:   | Uno R3, Uno WiFi, Nano, Fio, Pro                     |                                             | [![AVR Build Status](https://github.com/denko-rb/denko/actions/workflows/build_atmega_avr.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_atmega_avr.yml) |
 | ATmega32u4     | :green_heart:   | Leonardo, Micro, Leonardo ETH, Esplora, LilyPad USB  |                                             | [![AVR Build Status](https://github.com/denko-rb/denko/actions/workflows/build_atmega_avr.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_atmega_avr.yml) |
@@ -48,8 +48,8 @@
 
 ## ARM Based Arduino Products (and Clones)
 
-| Chip           | Support         | Products         | Notes                                   | Test Status |
-| :--------      | :------:        | :--------------- |------                                   | ----------- |
+| Chip           | Support         | Products         | Notes                                   | Build Status  |
+| :--------      | :------:        | :--------------- |------                                   | -----------   |
 | ATSAM3X8E      | :green_heart:   | Due | Native USB. Tone and infrared not supported          | [![SAM3X Build Satus](https://github.com/denko-rb/denko/actions/workflows/build_atsam3x.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_atsam3x.yml) |
 | ATSAMD21       | :green_heart:   | Zero, M0 Series, Nano 33 IOT, MKR WiFi 1010 | Native USB   | [![SAMD Build Satus](https://github.com/denko-rb/denko/actions/workflows/build_atsamd21.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_atsamd21.yml) |
 | RA4M1          | :green_heart:   | Uno R4 Minima, Uno R4 WiFi | Infrared not supported        | [![RA4M1 Build Satus](https://github.com/denko-rb/denko/actions/workflows/build_ra4m1.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_ra4m1.yml) |
