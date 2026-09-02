@@ -2,7 +2,7 @@ require_relative '../test_helper'
 
 class APIToneTest < Minitest::Test
   include TestPacker
-  
+
   def connection
     @connection ||= ConnectionMock.new
   end
@@ -15,7 +15,7 @@ class APIToneTest < Minitest::Test
     mock = Minitest::Mock.new
     aux1 = pack(:uint16, 150) + pack(:uint16, 2000)
     aux2 = pack(:uint16, 300)
-    
+
     mock.expect :call, nil, [Denko::Message.encode(command: 17, pin: 10, value: 1, aux_message: aux1)]
     mock.expect :call, nil, [Denko::Message.encode(command: 17, pin: 10, value: 0, aux_message: aux2)]
 
@@ -25,9 +25,10 @@ class APIToneTest < Minitest::Test
     end
     mock.verify
   end
-  
+
   def test_tone_prevents_low_frequencies
-    assert_raises(ArgumentError, /freq/i) { board.tone(4, 30, 3000) }
+    error = assert_raises(ArgumentError) { board.tone(4, 30, 3000) }
+    assert_match(/freq/i, error.message)
   end
 
   def test_no_tone
