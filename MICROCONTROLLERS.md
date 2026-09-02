@@ -3,22 +3,16 @@
 :green_heart: Full support :yellow_heart: Partial support :heart: Planned. No support yet :question: Works in theory. Untested in real hardware.
 
 ## Espressif ESP32 Chips
-[![ESP32 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32.yml)
-[![ESP32-S2 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32s2.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32s2.yml)
-[![ESP32-S3 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32s3.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32s3.yml)
-[![ESP32-C3 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32c3.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32c3.yml)
-[![ESP32-C6 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32c6.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32c6.yml)
-[![ESP32-H2 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32h2.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32h2.yml)
 
-|    Chip        | Status          | Board Tested             | Notes |
-| :--------      | :------:        | :---------------         |------ |
-| ESP32          | :green_heart:   | DOIT ESP32 DevKit V1     |
-| ESP32-S2       | :green_heart:   | LOLIN S2 Pico            | Native USB-CDC
-| ESP32-S3       | :green_heart:   | LOLIN S3 V1.0.0          | Native USB-CDC
-| ESP32-C3       | :green_heart:   | LOLIN C3 Mini V2.1.0     | Native USB-CD
-| ESP32-C6       | :green_heart:   | ESP32-C6-WROOM-1         | Native USB-CDC
-| ESP32-H2       | :green_heart:   | ESP32-H2-MINI-1          | Native USB-CDC, NO Wi-Fi
-| ESP32-P4       | :green_heart:   | ESP32-P4-Module-DEV-KIT  | Native USB-CDC
+|    Chip        | Status          | Board Tested             | Notes                       | Test Status |
+| :--------      | :------:        | :---------------         |------                       | ----------- |
+| ESP32          | :green_heart:   | DOIT ESP32 DevKit V1     |                             | [![ESP32 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32.yml) | 
+| ESP32-S2       | :green_heart:   | LOLIN S2 Pico            | Native USB-CDC              | [![ESP32-S2 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32s2.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32s2.yml) |
+| ESP32-S3       | :green_heart:   | LOLIN S3 V1.0.0          | Native USB-CDC              | [![ESP32-S3 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32s3.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32s3.yml) | 
+| ESP32-C3       | :green_heart:   | LOLIN C3 Mini V2.1.0     | Native USB-CD               | [![ESP32-C3 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32c3.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32c3.yml) |
+| ESP32-C6       | :green_heart:   | ESP32-C6-WROOM-1         | Native USB-CDC              | [![ESP32-C6 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32c6.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32c6.yml) |
+| ESP32-H2       | :green_heart:   | ESP32-H2-MINI-1          | Native USB-CDC, NO Wi-Fi    | [![ESP32-H2 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32h2.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32h2.yml) |
+| ESP32-P4       | :green_heart:   | ESP32-P4-Module-DEV-KIT  | Native USB-CDC              | [![ESP32-P4 Build Status](https://github.com/denko-rb/denko/actions/workflows/build_esp32p4.yml/badge.svg)](https://github.com/denko-rb/denko/actions/workflows/build_esp32p4.yml) |
 
 **Notes for using USB-CDC with ESP32 chips:**
 
