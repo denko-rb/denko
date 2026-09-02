@@ -44,8 +44,8 @@ All platforms will require libraries to be installed. To install a library do th
     WiFi101                     by Arduino
     WiFiNINA                    by Arduino
     ESP32Servo                  by Kevin Harrington, John K. Bennett
-    IRremote          @ 4.4.2   by shirriff, z3to, ArminJo
-    Adafruit NeoPixel @ 1.15.1  by Adafruit
+    IRremote          @ 4.7.1   by shirriff, z3to, ArminJo
+    Adafruit NeoPixel @ 1.15.5  by Adafruit
     ````
 
 **AVR-based Arduinos & Clones Only:**
@@ -59,8 +59,8 @@ All platforms will require libraries to be installed. To install a library do th
     Ethernet                    by Various
     WiFi                        by Arduino
     WiFiNINA                    by Arduino
-    IRremote          @ 4.4.2   by shirriff, z3to, ArminJo
-    Adafruit NeoPixel @ 1.15.1  by Adafruit
+    IRremote          @ 4.7.1   by shirriff, z3to, ArminJo
+    Adafruit NeoPixel @ 1.15.5  by Adafruit
     ````
 
 **ARM-based Arduinos & Clones Only:**
@@ -77,8 +77,8 @@ All platforms will require libraries to be installed. To install a library do th
     WiFi                        by Arduino
     WiFi101                     by Arduino
     WiFiNINA                    by Arduino
-    IRremote          @ 4.4.2   by shirriff, z3to, ArminJo
-    Adafruit NeoPixel @ 1.15.1  by Adafruit
+    IRremote          @ 4.7.1   by shirriff, z3to, ArminJo
+    Adafruit NeoPixel @ 1.15.5  by Adafruit
     ````
 
 **ESP8266 Only:**
@@ -92,8 +92,8 @@ All platforms will require libraries to be installed. To install a library do th
     ````
   * Libraries:
     ````
-    IRremote          @ 4.4.2   by shirriff, z3to, ArminJo
-    Adafruit NeoPixel @ 1.15.1  by Adafruit
+    IRremote          @ 4.7.1   by shirriff, z3to, ArminJo
+    Adafruit NeoPixel @ 1.15.5  by Adafruit
     ````
 
 **ESP32 Only:**
@@ -107,9 +107,9 @@ All platforms will require libraries to be installed. To install a library do th
     ````
   * Libraries (latest version unless specified):
     ````
-    ESP32Servo        @ 3.0.6   by Kevin Harrington, John K. Bennett
-    IRremote          @ 4.4.2   by shirriff, z3to, ArminJo
-    Adafruit NeoPixel @ 1.15.1  by Adafruit
+    ESP32Servo        @ 3.2.1   by Kevin Harrington, John K. Bennett
+    IRremote          @ 4.7.1   by shirriff, z3to, ArminJo
+    Adafruit NeoPixel @ 1.15.5  by Adafruit
     ````
 
 **RP2040 Only:**
@@ -123,6 +123,6 @@ All platforms will require libraries to be installed. To install a library do th
     ````
   * Libraries:
     ````
-    IRremote          @ 4.4.2   by shirriff, z3to, ArminJo
-    Adafruit NeoPixel @ 1.15.1  by Adafruit
+    IRremote          @ 4.7.1   by shirriff, z3to, ArminJo
+    Adafruit NeoPixel @ 1.15.5  by Adafruit
     ````
